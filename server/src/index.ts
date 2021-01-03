@@ -5,15 +5,16 @@ import { ulid } from "ulid";
 
 import getConfig from "./config";
 import DL from "./datalayer";
-import { Game, User, DataLayer } from "./types";
+import Game from "./Game";
+import { DataLayer, HexCoord } from "./types";
 
 const config = getConfig();
 
 let dl: DataLayer;
 switch (config.dbType) {
-  case "sqlite":
-    dl = new DL.SQLite();
-    break;
+  // case "sqlite":
+  //   dl = new DL.SQLite();
+  //   break;
 
   case "memory":
     dl = new DL.Memory();
@@ -69,6 +70,25 @@ app.post("/game/:id/join", (req, res) => {
   const gameId = req.params.id;
   const success = dl.joinGame(user, gameId);
   res.sendStatus(success ? 201 : 404);
+});
+
+app.post("/game/:id/move", (req, res) => {
+  const user = req.cookies.session;
+  const gameId = req.params.id;
+  const parsedMove: HexCoord[] = [];
+  const move = req.body.move || [];
+  for (const m of move) {
+    if (typeof m == "object") {
+      if (m.q && typeof m.q == "number" && m.r && typeof m.r == "number") {
+        parsedMove.push({
+          q: m.q,
+          r: m.r,
+        });
+      }
+    }
+  }
+  dl.makeGameMove(user, gameId, parsedMove);
+  res.send(201);
 });
 
 app.listen(config.port, () => {

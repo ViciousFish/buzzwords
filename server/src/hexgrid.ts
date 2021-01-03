@@ -39,6 +39,10 @@ export default class HexGrid {
     return this.cellMap[`${q},${r}`];
   }
 
+  setCell(cell: Cell): void {
+    this.cellMap[`${cell.q},${cell.r}`] = cell;
+  }
+
   getCellNeighbors(q: number, r: number): Cell[] {
     const potentialNeighbors = [
       this.cellMap[`${q - 1},${r}`],
