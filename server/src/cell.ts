@@ -4,10 +4,12 @@ export default class Cell {
   value: string;
   capital: boolean;
   owner: 0 | 1 | 2;
+  active: boolean;
   constructor(q: number, r: number) {
     this.q = q;
     this.r = r;
     this.capital = false;
+    this.active = false;
     this.owner = 2;
     this.value = "";
   }

@@ -7,6 +7,7 @@ import getConfig from "./config";
 import DL from "./datalayer";
 import Game from "./Game";
 import { DataLayer, HexCoord } from "./types";
+import GameManager from "./GameManager";
 
 const config = getConfig();
 
@@ -61,8 +62,14 @@ app.get("/game/:id", (req, res) => {
 
 app.post("/game", (req, res) => {
   const user = req.cookies.session;
-  const game = dl.createGame(user);
-  res.send(game.id);
+  const gm = new GameManager(null);
+  const game = gm.createGame(user);
+  try {
+    dl.saveGame(game.id, game);
+    res.send(game.id);
+  } catch (e) {
+    res.sendStatus(500);
+  }
 });
 
 app.post("/game/:id/join", (req, res) => {

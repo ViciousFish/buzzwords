@@ -1,3 +1,4 @@
+import { getRandomCharacter } from "./alphaHelpers";
 import HexGrid from "./hexgrid";
 
 export default class Game {
@@ -5,10 +6,32 @@ export default class Game {
   users: string[];
   turn: 0 | 1;
   grid: HexGrid;
-  constructor(state: Game) {
+  constructor(state: {
+    id: string;
+    users: string[];
+    turn: 0 | 1;
+    grid: HexGrid;
+  }) {
     this.id = state.id;
     this.users = state.users;
     this.turn = state.turn;
     this.grid = state.grid;
+  }
+
+  activateCell(q, r) {
+    const cell = this.grid.getCell(q, r);
+    if (cell) {
+      cell.active = true;
+      this.grid.setCell(cell);
+      this.randomizeCellValue(q, r);
+    }
+  }
+
+  randomizeCellValue(q: number, r: number) {
+    const cell = this.grid.getCell(q, r);
+    if (cell) {
+      cell.value = getRandomCharacter();
+      this.grid.setCell(cell);
+    }
   }
 }
