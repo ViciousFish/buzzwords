@@ -6,19 +6,25 @@ export default class Game {
   users: string[];
   turn: 0 | 1;
   grid: HexGrid;
+  gameOver: boolean;
+  winner: 0 | 1 | null;
   constructor(state: {
     id: string;
     users: string[];
     turn: 0 | 1;
     grid: HexGrid;
+    gameOver: boolean;
+    winner: 0 | 1 | null;
   }) {
     this.id = state.id;
     this.users = state.users;
     this.turn = state.turn;
     this.grid = state.grid;
+    this.gameOver = state.gameOver;
+    this.winner = state.winner;
   }
 
-  activateCell(q, r) {
+  activateCell(q: number, r: number) {
     const cell = this.grid.getCell(q, r);
     if (cell) {
       cell.active = true;

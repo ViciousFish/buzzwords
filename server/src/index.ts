@@ -94,8 +94,30 @@ app.post("/game/:id/move", (req, res) => {
       }
     }
   }
-  dl.makeGameMove(user, gameId, parsedMove);
-  res.send(201);
+  const game = dl.getGameById(gameId);
+  if (game == null || game == undefined) {
+    res.sendStatus(404);
+    return;
+  }
+  const gm = new GameManager(game);
+
+  let newGame;
+  try {
+    newGame = gm.makeMove(user, move);
+  } catch (e) {
+    res.status(400);
+    res.send(e.message);
+    return;
+  }
+  try {
+    dl.saveGame(gameId, newGame);
+  } catch (e) {
+    res.sendStatus(500);
+    return;
+  }
+
+  res.status(201);
+  res.send(newGame);
 });
 
 app.listen(config.port, () => {

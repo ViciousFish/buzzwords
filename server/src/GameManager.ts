@@ -19,6 +19,9 @@ export default class GameManager {
     if (!this.game.users.includes(userId)) {
       throw new Error("Not your game");
     }
+    if (this.game.gameOver) {
+      throw new Error("Game is over");
+    }
     const turnUser = this.game.users[this.game.turn];
     if (userId != turnUser) {
       throw new Error("Not your turn");
@@ -31,10 +34,10 @@ export default class GameManager {
     for (const coord of move) {
       try {
         const cell = this.game.grid.getCell(coord.q, coord.r);
-        if (cell && cell.owner == 2) {
+        if (cell && cell.owner == 2 && cell.active) {
           word += cell.value;
         } else {
-          throw new Error("Cell in use");
+          throw new Error("Cell in use or inactive");
         }
       } catch (e) {
         throw new Error("Invalid coords");
@@ -108,7 +111,7 @@ export default class GameManager {
         }
       }
     }
-
+    let capitalCaptured = false;
     // Make all adjacent tiles owned by opponent owned by 2
     for (const coord of move) {
       const cell = this.game.grid.getCell(coord.q, coord.r);
@@ -117,9 +120,16 @@ export default class GameManager {
         for (const neighbor of neighbors) {
           if (neighbor.owner == (Number(!this.game.turn) as 0 | 1)) {
             neighbor.owner = 2;
+            if (neighbor.capital) {
+              capitalCaptured = true;
+              neighbor.capital = false;
+            }
             this.game.grid.setCell(neighbor);
           }
         }
+      }
+      if (cell != null && !cell.active) {
+        this.game.activateCell(cell.q, cell.r);
       }
     }
 
@@ -131,7 +141,38 @@ export default class GameManager {
         this.game.grid.setCell(cell);
       }
     }
-    const nextTurn = this.game.turn == 0 ? 1 : 0;
+
+    const cells = this.game.grid.cellMap;
+    const opponentCells = [];
+    let opponentHasCapital = false;
+    for (const cell of Object.values(cells)) {
+      if (cell.owner == Number(!this.game.turn)) {
+        opponentCells.push(cell);
+        if (cell.capital) {
+          opponentHasCapital = true;
+        }
+      }
+    }
+    // GAME OVER
+    if (opponentCells.length == 0) {
+      this.game.gameOver = true;
+      this.game.winner = this.game.turn;
+      return this.game;
+    }
+
+    // If opponent has no capital at the end of your turn
+    // but you didn't capture their capital this turn
+    // randomly assign one of their cells to be capital
+    if (!capitalCaptured && !opponentHasCapital) {
+      const newCapital =
+        opponentCells[Math.floor(Math.random() * opponentCells.length)];
+      newCapital.capital = true;
+      this.game.grid.setCell(newCapital);
+    }
+
+    const nextTurn = capitalCaptured
+      ? this.game.turn
+      : (Number(!this.game.turn) as 0 | 1);
     this.game.turn = nextTurn;
     return this.game;
   }
@@ -142,6 +183,8 @@ export default class GameManager {
       turn: 0 as 0 | 1,
       users: [userId],
       grid: new HexGrid(),
+      gameOver: false,
+      winner: null,
     };
     const game = new Game(gameData);
     game.grid.cellMap["-2,-1"].capital = true;
