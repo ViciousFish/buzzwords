@@ -55,4 +55,8 @@ export default class HexGrid {
 
     return potentialNeighbors.filter((cell) => Boolean(cell));
   }
+
+  print(): void {
+    console.log("Not yet implemented");
+  }
 }
