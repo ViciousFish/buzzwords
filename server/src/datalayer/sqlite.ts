@@ -20,7 +20,4 @@
 //   joinGame(userId: string, gameId: string): boolean {
 //     throw new Error("Not implemented");
 //   }
-//   makeGameMove(userId: string, gameId: string, move: string): void {
-//     throw new Error("Not implemented");
-//   }
 // }

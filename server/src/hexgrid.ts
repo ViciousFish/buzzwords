@@ -23,14 +23,18 @@ export default class HexGrid {
   cellMap: {
     [key: string]: Cell;
   };
-  constructor() {
+  constructor(cellMap?: { [key: string]: Cell }) {
     this.cellMap = {};
-    for (let q = -3; q <= 3; q++) {
-      const rMin = QRLookup(q);
-      const rMax = rMin + (q % 2) == 0 ? 7 : 6;
-      for (let r = rMin; r <= rMax; r++) {
-        const cell = new Cell(q, r);
-        this.cellMap[`${q},${r}`] = cell;
+    if (cellMap) {
+      this.cellMap = cellMap;
+    } else {
+      for (let q = -3; q <= 3; q++) {
+        const rMin = QRLookup(q);
+        const rMax = rMin + (q % 2) == 0 ? 7 : 6;
+        for (let r = rMin; r <= rMax; r++) {
+          const cell = new Cell(q, r);
+          this.cellMap[`${q},${r}`] = cell;
+        }
       }
     }
   }

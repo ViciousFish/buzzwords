@@ -13,12 +13,16 @@ const config = getConfig();
 
 let dl: DataLayer;
 switch (config.dbType) {
-  // case "sqlite":
-  //   dl = new DL.SQLite();
-  //   break;
-
   case "memory":
     dl = new DL.Memory();
+    break;
+
+  case "postgres":
+    dl = new DL.Postgres();
+    break;
+
+  case "mongo":
+    dl = new DL.Mongo();
     break;
 
   default:
@@ -44,15 +48,15 @@ app.get("/healthz", (req, res) => {
   res.sendStatus(200);
 });
 
-app.get("/games", (req, res) => {
+app.get("/games", async (req, res) => {
   const user = req.cookies.session;
-  const games = dl.getGamesByUserId(user);
+  const games = await dl.getGamesByUserId(user);
   res.send(games);
 });
 
-app.get("/game/:id", (req, res) => {
+app.get("/game/:id", async (req, res) => {
   const gameId = req.params.id;
-  const game = dl.getGameById(gameId);
+  const game = await dl.getGameById(gameId);
   if (game) {
     res.send(game);
   } else {
@@ -60,26 +64,27 @@ app.get("/game/:id", (req, res) => {
   }
 });
 
-app.post("/game", (req, res) => {
+app.post("/game", async (req, res) => {
   const user = req.cookies.session;
   const gm = new GameManager(null);
   const game = gm.createGame(user);
   try {
-    dl.saveGame(game.id, game);
+    await dl.saveGame(game.id, game);
     res.send(game.id);
   } catch (e) {
+    console.log(e);
     res.sendStatus(500);
   }
 });
 
-app.post("/game/:id/join", (req, res) => {
+app.post("/game/:id/join", async (req, res) => {
   const user = req.cookies.session;
   const gameId = req.params.id;
-  const success = dl.joinGame(user, gameId);
+  const success = await dl.joinGame(user, gameId);
   res.sendStatus(success ? 201 : 404);
 });
 
-app.post("/game/:id/move", (req, res) => {
+app.post("/game/:id/move", async (req, res) => {
   const user = req.cookies.session;
   const gameId = req.params.id;
   const parsedMove: HexCoord[] = [];
@@ -94,7 +99,7 @@ app.post("/game/:id/move", (req, res) => {
       }
     }
   }
-  const game = dl.getGameById(gameId);
+  const game = await dl.getGameById(gameId);
   if (game == null || game == undefined) {
     res.sendStatus(404);
     return;
@@ -110,7 +115,7 @@ app.post("/game/:id/move", (req, res) => {
     return;
   }
   try {
-    dl.saveGame(gameId, newGame);
+    await dl.saveGame(gameId, newGame);
   } catch (e) {
     res.sendStatus(500);
     return;

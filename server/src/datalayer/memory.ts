@@ -4,9 +4,9 @@ import { getRandomCharacter, isValidWord } from "../alphaHelpers";
 import Game from "../Game";
 import GameManager from "../GameManager";
 import HexGrid from "../hexgrid";
-import { HexCoord } from "../types";
+import { DataLayer, HexCoord } from "../types";
 
-export default class SQLite {
+export default class SQLite implements DataLayer {
   games: {
     [key: string]: Game;
   };
@@ -14,7 +14,7 @@ export default class SQLite {
     this.games = {};
   }
 
-  getGamesByUserId(id: string): Game[] {
+  async getGamesByUserId(id: string): Promise<Game[]> {
     const games = [];
     const gameIds = Object.keys(this.games);
     for (const gameId of gameIds) {
@@ -25,10 +25,10 @@ export default class SQLite {
 
     return games;
   }
-  getGameById(id: string): Game | null {
+  async getGameById(id: string): Promise<Game | null> {
     return this.games[id];
   }
-  joinGame(userId: string, gameId: string): boolean {
+  async joinGame(userId: string, gameId: string): Promise<boolean> {
     let success = false;
     const game = this.games[gameId];
     if (game) {
@@ -41,23 +41,8 @@ export default class SQLite {
     }
     return success;
   }
-  saveGame(gameId: string, game: Game): boolean {
+  async saveGame(gameId: string, game: Game): Promise<boolean> {
     this.games[gameId] = game;
     return true;
-  }
-  makeGameMove(userId: string, gameId: string, move: HexCoord[]): void {
-    const game = this.games[gameId];
-    if (game == null || game == undefined) {
-      throw new Error("Game not found");
-    }
-    const gm = new GameManager(game);
-
-    try {
-      const newGame = gm.makeMove(userId, move);
-      this.saveGame(gameId, newGame);
-    } catch (e) {
-      console.log("error", e);
-      throw e;
-    }
   }
 }
