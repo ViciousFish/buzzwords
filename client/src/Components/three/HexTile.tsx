@@ -37,14 +37,15 @@ const HexTile: React.FC<HexTileOwnProps & MeshProps> = ({
 
   // Rotate mesh every frame, this is outside of React without overhead
   useFrame(() => {
-    if (mesh.current) mesh.current.rotation.x = mesh.current.rotation.y += 0.01;
+    // if (mesh.current) mesh.current.rotation.x = mesh.current.rotation.y += 0.01;
   });
 
   return (
     <mesh
       {...meshProps}
       ref={mesh}
-      scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
+      // scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
+      scale={[1, 1, 1]}
       onClick={(event) => setActive(!active)}
       onPointerOver={(event) => setHover(true)}
       onPointerOut={(event) => setHover(false)}>

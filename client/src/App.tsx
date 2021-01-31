@@ -4,6 +4,7 @@ import Buzz from './Components/Zdog/Buzz';
 import { Canvas } from 'react-three-fiber';
 import HexTile from './Components/three/HexTile';
 import HexTileWord from './Components/Zdog/HexTileWord';
+import CameraControls from './Components/three/CameraControls';
 
 /* three TODO
 - hexagon
@@ -22,6 +23,7 @@ function App() {
         <Canvas
           pixelRatio={window.devicePixelRatio}
         >
+          <CameraControls />
           <ambientLight />
           {/* <pointLight position={[10, 10, 10]} /> */}
           <HexTile radius={2} position={[0, 0, 0]} />
