@@ -22,14 +22,13 @@ const HexTile: React.FC<HexTileOwnProps & MeshProps> = ({
   const [active, setActive] = useState(false);
 
   const shape = useMemo(() => {
-    var pts = [];
-    pts.push(new Vector2(x+0, y+radius));
-    pts.push(new Vector2(x+radius*0.866, y+radius*0.5));
-    pts.push(new Vector2(x+radius*0.866, y-radius*0.5));
-    pts.push(new Vector2(x+0, y-radius));
-    pts.push(new Vector2(x-radius*0.866, y-radius*0.5));
-    pts.push(new Vector2(x-radius*0.866, y+radius*0.5));
-    const shape = new Shape(pts);
+    const shape = new Shape();
+    shape.moveTo(x+0, y+radius);
+    shape.lineTo(x+radius*0.866, y+radius*0.5);
+    shape.lineTo(x+radius*0.866, y-radius*0.5);
+    shape.lineTo(x+0, y-radius);
+    shape.lineTo(x-radius*0.866, y-radius*0.5);
+    shape.lineTo(x-radius*0.866, y+radius*0.5);
     // shape.moveTo(...start);
     // paths.forEach((path) => shape.bezierCurveTo(...path));
     return shape;
@@ -49,7 +48,7 @@ const HexTile: React.FC<HexTileOwnProps & MeshProps> = ({
       onClick={(event) => setActive(!active)}
       onPointerOver={(event) => setHover(true)}
       onPointerOut={(event) => setHover(false)}>
-      <extrudeGeometry
+      <extrudeBufferGeometry
         args={[
           shape,
           {
