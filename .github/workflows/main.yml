@@ -6,7 +6,7 @@ name: deploy-client
 # events but only for the master branch
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
 
 defaults:
   run:
