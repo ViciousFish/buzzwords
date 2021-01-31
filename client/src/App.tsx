@@ -5,10 +5,10 @@ import { Canvas } from 'react-three-fiber';
 import HexTile from './Components/three/HexTile';
 import HexTileWord from './Components/Zdog/HexTileWord';
 
-/* TODO
+/* three TODO
+- hexagon
 - drag rotate
 - animate with spring
-- hexagon
 - text
 - word component (?textBufferGeometry?)
 */
@@ -24,7 +24,7 @@ function App() {
         >
           <ambientLight />
           {/* <pointLight position={[10, 10, 10]} /> */}
-          <HexTile diameter={65} position={[0, 0, 0]} />
+          <HexTile radius={2} position={[0, 0, 0]} />
         </Canvas>
       </header>
     </div>

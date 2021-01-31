@@ -1,22 +1,39 @@
-import React, { useRef, useState } from 'react';
-import { Canvas, MeshProps, useFrame } from 'react-three-fiber';
-import type { Mesh } from 'three';
+import React, { useRef, useState, useMemo } from 'react';
+import { MeshProps, useFrame } from 'react-three-fiber';
+import { Mesh, Vector2, Shape } from 'three';
 import { theme } from '../../theme';
 
-interface HexTileProps {
-    diameter: number;
+interface HexTileOwnProps {
+  radius: number;
 }
 
-const HexTile: React.FC<HexTileProps & MeshProps> = ({
-  diameter,
+const HexTile: React.FC<HexTileOwnProps & MeshProps> = ({
+  radius,
   ...meshProps
 }) => {
   // This reference will give us direct access to the mesh
   const mesh = useRef<Mesh>();
 
+  const x = 0;
+  const y = 0;
+
   // Set up state for the hovered and active state
   const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
+
+  const shape = useMemo(() => {
+    var pts = [];
+    pts.push(new Vector2(x+0, y+radius));
+    pts.push(new Vector2(x+radius*0.866, y+radius*0.5));
+    pts.push(new Vector2(x+radius*0.866, y-radius*0.5));
+    pts.push(new Vector2(x+0, y-radius));
+    pts.push(new Vector2(x-radius*0.866, y-radius*0.5));
+    pts.push(new Vector2(x-radius*0.866, y+radius*0.5));
+    const shape = new Shape(pts);
+    // shape.moveTo(...start);
+    // paths.forEach((path) => shape.bezierCurveTo(...path));
+    return shape;
+  }, [radius]);
 
   // Rotate mesh every frame, this is outside of React without overhead
   useFrame(() => {
@@ -31,7 +48,16 @@ const HexTile: React.FC<HexTileProps & MeshProps> = ({
       onClick={(event) => setActive(!active)}
       onPointerOver={(event) => setHover(true)}
       onPointerOut={(event) => setHover(false)}>
-      <boxBufferGeometry args={[2, 2, 2]} />
+      <shapeGeometry
+        args={[
+          shape,
+        //   {
+        //   depth: 8,
+        //   steps: 2
+        // }
+        ]}
+      />
+      {/* <boxBufferGeometry args={[2, 2, 2]} /> */}
       <meshBasicMaterial color={hovered ? theme.colors.darkbrown : theme.colors.primary} />
     </mesh>
   );
