@@ -2,12 +2,9 @@ import React from 'react';
 import Zdog from 'zdog';
 import Zfont from 'zfont';
 import HexShape from './shapes/Hex';
-import * as R from 'ramda';
 import { theme } from '../../theme';
 
 Zfont.init(Zdog);
-
-const mapIndexed = R.addIndex(R.map);
 
 interface HexTileWordProps {
   value: string;
@@ -15,23 +12,25 @@ interface HexTileWordProps {
 }
 
 const LetterTile = (anchorOptions: Zdog.AnchorOptions, font: Zdog.Font, letter: string) => {
-  const addTo = new Zdog.Anchor(anchorOptions);
-  new Zdog.Text({
-    addTo,
-    font,
-    value: letter,
-    fontSize: 64,
-    color: theme.colors.darkbrown,
-    fill: true
-  })
+  const addTo = new Zdog.Group(anchorOptions)
   HexShape({
     addTo,
     translate: {
-      z: -5,
+      z: -15,
       y: -25,
       x: 25
     }
-  }, 50)
+  }, 40)
+  new Zdog.Text({
+    addTo,
+    font,
+    backface: false,
+    value: letter,
+    fontSize: 60,
+    color: theme.colors.darkbrown,
+    stroke: 0,
+    fill: true
+  })
 }
 
 const HexTileWord: React.FC<HexTileWordProps> = ({
@@ -40,20 +39,24 @@ const HexTileWord: React.FC<HexTileWordProps> = ({
 }) => {
   React.useEffect(() => {
     let af: number;
-    let illo = new Zdog.Illustration({
+    const illo = new Zdog.Illustration({
       element: `#HexTileWord-${id}`,
       dragRotate: true,
       // onDragStart: () => { isSpinning = false; }
     });
-    let font = new Zdog.Font({
+    const font = new Zdog.Font({
       src: 'https://cdn.jsdelivr.net/gh/jaames/zfont/demo/fredokaone.ttf'
+    })
+
+    const word = new Zdog.Group({
+      addTo: illo
     })
 
     for (let i = 0; i < value.length; i++) {
       LetterTile({
         addTo: illo,
         translate: {
-          x: i * 90
+          x: i * 90 - (value.length * 45)
         },
       }, font, value[i])
     }

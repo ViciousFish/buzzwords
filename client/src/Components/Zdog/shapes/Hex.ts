@@ -10,7 +10,7 @@ const HexShape = (anchorOptions: Zdog.AnchorOptions, radius: number) => {
     fill: true,
     radius,
     color: theme.colors.primary,
-    stroke: false
+    stroke: 20
   })
 
   return final;

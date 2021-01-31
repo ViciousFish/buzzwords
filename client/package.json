@@ -31,14 +31,8 @@
       "react-app/jest"
     ],
     "rules": {
-      "quotes": [
-        "warn",
-        "single"
-      ],
-      "indent": [
-        "warn",
-        2
-      ]
+      "quotes": [ "warn", "single" ],
+      "indent": [ "warn", 2 ]
     }
   },
   "browserslist": {
