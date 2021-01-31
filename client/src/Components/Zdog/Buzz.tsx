@@ -9,7 +9,10 @@ const Buzz: React.FC = () => {
       // set canvas with selector
       element: '.zdog-canvas',
       dragRotate: true,
-      onDragStart: () => { isSpinning = false; }
+      onDragStart: () => { isSpinning = false; },
+      rotate: {
+        y: -0.2
+      }
     });
 
     const beeAnchor = new Zdog.Anchor({
@@ -20,6 +23,24 @@ const Buzz: React.FC = () => {
       }
     })
 
+    const wing = (xMultiplier: number) => ({
+      addTo: beeAnchor,
+      width: 80,
+      height: 60,
+      color: 'white',
+      stroke: 7,
+      fill: true,
+      rotate: {
+        x: Zdog.TAU / 4
+      },
+      translate: {
+        x: xMultiplier * 50,
+        y: -30
+      }
+    })
+
+    new Zdog.Ellipse(wing(1))
+    new Zdog.Ellipse(wing(-1))
     // add circle
     new Zdog.Hemisphere({
       addTo: beeAnchor,
@@ -57,7 +78,7 @@ const Buzz: React.FC = () => {
     function animate() {
       // rotate illo each frame
       if (isSpinning) {
-        illo.rotate.y += 0.03;
+        illo.rotate.y += 0.01;
       }
       illo.updateRenderGraph();
       // animate next frame
