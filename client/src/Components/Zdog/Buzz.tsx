@@ -10,6 +10,7 @@ const Buzz: React.FC = () => {
       element: '.zdog-canvas',
       dragRotate: true,
       onDragStart: () => { isSpinning = false; },
+      onDragEnd: () => setTimeout(() => isSpinning = true, 100),
       rotate: {
         y: -0.2
       }
