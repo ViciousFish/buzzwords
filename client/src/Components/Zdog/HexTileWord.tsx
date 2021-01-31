@@ -93,6 +93,12 @@ const HexTileWord: React.FC<HexTileWordProps> = ({
   }, [value, id, width]);
   return (<>
     <canvas id={`HexTileWord-${id}`} width={width} height={180} />
+    <span id={`HexTileWord-${id}-alt`} style={{
+      position: 'absolute',
+      maxHeight: '1px',
+      maxWidth: '1px',
+      opacity: 0
+    }}>animated 3d text that reads {value}</span>
   </>);
 };
 
