@@ -9,7 +9,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <Buzz />
-        <HexTileWord id="hello" value="hello" />
+        <HexTileWord id="soon" value="SOON!" />
       </header>
     </div>
   );
