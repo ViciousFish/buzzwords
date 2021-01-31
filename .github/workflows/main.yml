@@ -31,7 +31,7 @@ jobs:
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude node_modules --exclude '.git*'
-        path: ./client/dist
+        path: ./client/build
         remote_path: /docker-services/letsencrypt/www/buzzwords
         remote_host: server.chuckdries.com
         remote_user: ${{ secrets.CI_USER }}
