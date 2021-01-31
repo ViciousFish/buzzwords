@@ -48,17 +48,25 @@ const HexTile: React.FC<HexTileOwnProps & MeshProps> = ({
       onClick={(event) => setActive(!active)}
       onPointerOver={(event) => setHover(true)}
       onPointerOut={(event) => setHover(false)}>
-      <shapeGeometry
+      <extrudeGeometry
         args={[
           shape,
-        //   {
-        //   depth: 8,
-        //   steps: 2
-        // }
+          {
+            steps: 1,
+            depth: .5,
+            bevelEnabled: true,
+            bevelThickness: .2,
+            bevelSize: .2,
+            bevelOffset: 0,
+            bevelSegments: 10
+          }
         ]}
       />
       {/* <boxBufferGeometry args={[2, 2, 2]} /> */}
-      <meshBasicMaterial toneMapped={false} color={hovered ? theme.colors.darkbrown : theme.colors.primary} />
+      <meshBasicMaterial
+        toneMapped={false}
+        color={hovered ? theme.colors.darkbrown : theme.colors.primary}
+      />
     </mesh>
   );
 };
