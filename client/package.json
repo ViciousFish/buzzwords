@@ -10,11 +10,14 @@
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
+    "ramda": "^0.27.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.1",
     "typescript": "^4.0.3",
-    "web-vitals": "^0.2.4"
+    "web-vitals": "^0.2.4",
+    "zdog": "^1.1.2",
+    "zfont": "^1.2.7"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -26,7 +29,17 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "quotes": [
+        "warn",
+        "single"
+      ],
+      "indent": [
+        "warn",
+        2
+      ]
+    }
   },
   "browserslist": {
     "production": [
@@ -39,5 +52,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/ramda": "^0.27.36",
+    "@types/zdog": "^1.1.1",
+    "@types/zfont": "^1.2.0"
   }
 }

@@ -1,0 +1,66 @@
+import React from 'react';
+import Zdog from 'zdog';
+
+const Buzz: React.FC = () => {
+  React.useEffect(() => {
+    let isSpinning = true;
+    // create illo
+    let illo = new Zdog.Illustration({
+      // set canvas with selector
+      element: '.zdog-canvas',
+      dragRotate: true,
+      onDragStart: () => { isSpinning = false; }
+    });
+
+    // add circle
+    new Zdog.Hemisphere({
+      addTo: illo,
+      stroke: false,
+      diameter: 70,
+      translate: {
+        z: 45
+      },
+      // rotate: {
+      //   x: Zdog.TAU/4 
+      // },
+      color: '#E0A40B'
+    })
+    new Zdog.Cylinder({
+      addTo: illo,
+      diameter: 70,
+      length: 90,
+      stroke: false,
+      color: '#E0A40B',
+    });
+    new Zdog.Cone({
+      addTo: illo,
+      diameter: 70,
+      length: 50,
+      stroke: false,
+      color: '#59430D',
+      rotate: {
+        y: Zdog.TAU / 2
+      },
+      translate: {
+        z: -45
+      }
+    })
+
+    function animate() {
+      // rotate illo each frame
+      if (isSpinning) {
+        illo.rotate.y += 0.03;
+      }
+      illo.updateRenderGraph();
+      // animate next frame
+      requestAnimationFrame( animate );
+    }
+
+    // start animation
+    animate();
+  }, [])
+
+  return (<canvas className="zdog-canvas" width="240" height="240"></canvas>)
+}
+
+export default Buzz;
