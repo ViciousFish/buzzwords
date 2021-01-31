@@ -67,6 +67,11 @@ const HexTile: React.FC<HexTileOwnProps & MeshProps> = ({
         toneMapped={false}
         color={hovered ? theme.colors.darkbrown : theme.colors.primary}
       />
+      {/* CQ: how to use array of materials for diff color face (as mentioned in extrude docs) */}
+      {/* <meshBasicMaterial
+        toneMapped={false}
+        color='white'
+      /> */}
     </mesh>
   );
 };
