@@ -12,15 +12,13 @@ interface HexTileWordProps {
 }
 
 const LetterTile = (anchorOptions: Zdog.AnchorOptions, font: Zdog.Font, letter: string) => {
-  const addTo = new Zdog.Group(anchorOptions)
+  const addTo = new Zdog.Anchor(anchorOptions);
   HexShape({
     addTo,
     translate: {
       z: -15,
-      y: -25,
-      x: 25
     }
-  }, 40)
+  }, 40);
   new Zdog.Text({
     addTo,
     font,
@@ -29,58 +27,73 @@ const LetterTile = (anchorOptions: Zdog.AnchorOptions, font: Zdog.Font, letter: 
     fontSize: 60,
     color: theme.colors.darkbrown,
     stroke: 0,
-    fill: true
-  })
-}
+    fill: true,
+    translate: {
+      y: 25,
+      x: -23
+    }
+  });
+  return addTo;
+};
 
 const HexTileWord: React.FC<HexTileWordProps> = ({
   value,
   id
 }) => {
+  const width = value.length * 90 + 10;
   React.useEffect(() => {
-    let af: number;
     const illo = new Zdog.Illustration({
-      element: `#HexTileWord-${id}`,
-      dragRotate: true,
-      // onDragStart: () => { isSpinning = false; }
+      element: `#HexTileWord-${id}`
     });
     const font = new Zdog.Font({
       src: 'https://cdn.jsdelivr.net/gh/jaames/zfont/demo/fredokaone.ttf'
-    })
+    });
 
-    const word = new Zdog.Group({
-      addTo: illo
-    })
-
+    const letters: Zdog.Anchor[] = [];
     for (let i = 0; i < value.length; i++) {
-      LetterTile({
+      letters.push(LetterTile({
         addTo: illo,
         translate: {
-          x: i * 90 - (value.length * 45)
+          x: i * 90 - (value.length * 36)
         },
-      }, font, value[i])
+      }, font, value[i]));
     }
 
+    let dragStartRX: number, dragStartRY: number;
+    const viewRotation = new Zdog.Vector();
 
-    // HexShape({
-    //   addTo: illo
-    // }, 40)
+    new Zdog.Dragger({
+      startElement: illo.element,
+      onDragStart: function() {
+        dragStartRX = viewRotation.x;
+        dragStartRY = viewRotation.y;
+      },
+      onDragMove: function( pointer, moveX, moveY ) {
+        // move rotation
+        let moveRX = moveY / width * Zdog.TAU * -1;
+        let moveRY = moveX / 180 * Zdog.TAU * -1;
+        viewRotation.x = dragStartRX + moveRX;
+        viewRotation.y = dragStartRY + moveRY;
+      },
+    });
 
+    let af: number;
     function animate() {
-      // rotate illo each frame
+      // rotate shapes
+      letters.forEach((letter) => letter.rotate.set(viewRotation));
       illo.updateRenderGraph();
-      // animate next frame
       af = requestAnimationFrame( animate );
     }
-
-    // start animation
     animate();
+
     return () => {
       illo.remove();
       cancelAnimationFrame(af);
-    }
-  }, [value, id])
-  return (<canvas id={`HexTileWord-${id}`} width={value.length * 200} height={180} />)
-}
+    };
+  }, [value, id, width]);
+  return (<>
+    <canvas id={`HexTileWord-${id}`} width={width} height={180} />
+  </>);
+};
 
 export default HexTileWord;
