@@ -4,4 +4,4 @@ export const theme = {
     darkbrown: '#59430D',
     lightbg: '#fae7b2',
   }
-}
+};

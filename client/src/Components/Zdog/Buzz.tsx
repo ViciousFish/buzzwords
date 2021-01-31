@@ -21,7 +21,7 @@ const Buzz: React.FC = () => {
         x: Zdog.TAU / 8,
         y: Zdog.TAU / 8
       }
-    })
+    });
 
     const wing = (xMultiplier: number) => ({
       addTo: beeAnchor,
@@ -37,10 +37,10 @@ const Buzz: React.FC = () => {
         x: xMultiplier * 50,
         y: -30
       }
-    })
+    });
 
-    new Zdog.Ellipse(wing(1))
-    new Zdog.Ellipse(wing(-1))
+    new Zdog.Ellipse(wing(1));
+    new Zdog.Ellipse(wing(-1));
     // add circle
     new Zdog.Hemisphere({
       addTo: beeAnchor,
@@ -53,7 +53,7 @@ const Buzz: React.FC = () => {
       //   x: Zdog.TAU/4 
       // },
       color: '#E0A40B'
-    })
+    });
     new Zdog.Cylinder({
       addTo: beeAnchor,
       diameter: 70,
@@ -73,7 +73,7 @@ const Buzz: React.FC = () => {
       translate: {
         z: -45
       }
-    })
+    });
 
     function animate() {
       // rotate illo each frame
@@ -87,9 +87,9 @@ const Buzz: React.FC = () => {
 
     // start animation
     animate();
-  }, [])
+  }, []);
 
-  return (<canvas className="zdog-canvas" width="240" height="240"></canvas>)
-}
+  return (<canvas className="zdog-canvas" width="240" height="240"></canvas>);
+};
 
 export default Buzz;

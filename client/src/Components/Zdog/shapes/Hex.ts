@@ -2,7 +2,7 @@ import Zdog from 'zdog';
 import { theme } from '../../../theme';
 
 const HexShape = (anchorOptions: Zdog.AnchorOptions, radius: number) => {
-  const final = new Zdog.Anchor(anchorOptions)
+  const final = new Zdog.Anchor(anchorOptions);
 
   new Zdog.Polygon({
     addTo: final,
@@ -11,9 +11,9 @@ const HexShape = (anchorOptions: Zdog.AnchorOptions, radius: number) => {
     radius,
     color: theme.colors.primary,
     stroke: 20
-  })
+  });
 
   return final;
-}
+};
 
 export default HexShape;
