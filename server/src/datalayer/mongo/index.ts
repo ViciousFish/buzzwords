@@ -117,7 +117,28 @@ export default class Mongo implements DataLayer {
           $push: { users: userId },
         }
       );
-      console.log(res);
+      return res.nModified == 1;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  }
+  async joinRandomGame(userId: string): Promise<boolean> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res = await Models.Game.updateOne(
+        {
+          users: {
+            $size: 1,
+            $nin: [userId],
+          },
+        },
+        {
+          $push: { users: userId },
+        }
+      );
       return res.nModified == 1;
     } catch (e) {
       console.log(e);

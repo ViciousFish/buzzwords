@@ -17,10 +17,6 @@ switch (config.dbType) {
     dl = new DL.Memory();
     break;
 
-  case "postgres":
-    dl = new DL.Postgres();
-    break;
-
   case "mongo":
     dl = new DL.Mongo();
     break;
@@ -81,6 +77,12 @@ app.post("/game/:id/join", async (req, res) => {
   const user = req.cookies.session;
   const gameId = req.params.id;
   const success = await dl.joinGame(user, gameId);
+  res.sendStatus(success ? 201 : 404);
+});
+
+app.post("/game/join", async (req, res) => {
+  const user = req.cookies.session;
+  const success = await dl.joinRandomGame(user);
   res.sendStatus(success ? 201 : 404);
 });
 

@@ -6,7 +6,7 @@ import GameManager from "../GameManager";
 import HexGrid from "../hexgrid";
 import { DataLayer, HexCoord } from "../types";
 
-export default class SQLite implements DataLayer {
+export default class Memory implements DataLayer {
   games: {
     [key: string]: Game;
   };
@@ -36,6 +36,21 @@ export default class SQLite implements DataLayer {
         success = true;
       } else if (game.users.length < 2) {
         this.games[gameId].users.push(userId);
+        success = true;
+      }
+    }
+    return success;
+  }
+  async joinRandomGame(userId: string): Promise<boolean> {
+    let success = false;
+    const game = Object.values(this.games).filter(
+      (g) => g.users.length == 1 && g.users[0] != userId
+    )[0];
+    if (game) {
+      if (game.users.includes(userId)) {
+        success = true;
+      } else if (game.users.length < 2) {
+        this.games[game.id].users.push(userId);
         success = true;
       }
     }
