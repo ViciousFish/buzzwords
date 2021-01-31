@@ -12,9 +12,17 @@ const Buzz: React.FC = () => {
       onDragStart: () => { isSpinning = false; }
     });
 
+    const beeAnchor = new Zdog.Anchor({
+      addTo: illo,
+      rotate: {
+        x: Zdog.TAU / 8,
+        y: Zdog.TAU / 8
+      }
+    })
+
     // add circle
     new Zdog.Hemisphere({
-      addTo: illo,
+      addTo: beeAnchor,
       stroke: false,
       diameter: 70,
       translate: {
@@ -26,14 +34,14 @@ const Buzz: React.FC = () => {
       color: '#E0A40B'
     })
     new Zdog.Cylinder({
-      addTo: illo,
+      addTo: beeAnchor,
       diameter: 70,
       length: 90,
       stroke: false,
       color: '#E0A40B',
     });
     new Zdog.Cone({
-      addTo: illo,
+      addTo: beeAnchor,
       diameter: 70,
       length: 50,
       stroke: false,
