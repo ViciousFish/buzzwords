@@ -97,6 +97,7 @@ const HexTileWord: React.FC<HexTileWordProps> = ({
       position: 'absolute',
       maxHeight: '1px',
       maxWidth: '1px',
+      overflow: 'hidden',
       opacity: 0
     }}>animated 3d text that reads {value}</span>
   </>);
