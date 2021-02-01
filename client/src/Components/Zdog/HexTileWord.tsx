@@ -92,7 +92,7 @@ const HexTileWord: React.FC<HexTileWordProps> = ({
     };
   }, [value, id, width]);
   return (<>
-    <canvas id={`HexTileWord-${id}`} width={width} height={180} />
+    <svg id={`HexTileWord-${id}`} width={width} height={140} />
     <span id={`HexTileWord-${id}-alt`} style={{
       position: 'absolute',
       maxHeight: '1px',
