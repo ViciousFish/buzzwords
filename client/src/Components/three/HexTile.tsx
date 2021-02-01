@@ -1,6 +1,10 @@
+/* Notes
+Rounded polygon math: https://www.stkent.com/2018/04/06/really-rounded-polygons.html
+Perhaps make a "polygonal prism" component/class?
+*/
 import React, { useRef, useState, useMemo } from 'react';
 import { MeshProps, useFrame } from 'react-three-fiber';
-import { Mesh, Vector2, Shape } from 'three';
+import { Mesh, Shape } from 'three';
 import { theme } from '../../theme';
 
 interface HexTileOwnProps {

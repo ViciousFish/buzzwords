@@ -25,8 +25,8 @@ const CameraControls = () => {
   return <orbitControls
     ref={controls}
     enableDamping
-    autoRotate
-    autoRotateSpeed={10}
+    // autoRotate
+    // autoRotateSpeed={10}
     args={[camera, domElement]}
   />;
 };

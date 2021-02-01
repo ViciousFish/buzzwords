@@ -8,6 +8,7 @@ import CameraControls from './Components/three/CameraControls';
 
 /* three TODO
 - hexagon
+  - rounded corners
 - drag rotate
 - animate with spring
 - text
