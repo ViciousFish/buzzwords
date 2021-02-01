@@ -30,7 +30,7 @@ jobs:
     - name: rsync to server
       uses: burnett01/rsync-deployments@4.1
       with:
-        switches: -avzr --delete --omit-dir-times --no-t --exclude node_modules --exclude '.git*'
+        switches: -avzr --delete --no-perms --omit-dir-times --no-t --exclude node_modules --exclude '.git*'
         path: client/build/
         remote_path: /docker-services/letsencrypt/www/buzzwords
         remote_host: server.chuckdries.com
