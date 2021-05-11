@@ -9,34 +9,57 @@ import { theme } from '../../theme';
 
 interface HexTileOwnProps {
   radius: number;
+  vertices: number;
 }
+const origin = {
+  x: 0,
+  y: 0
+};
 
-const HexTile: React.FC<HexTileOwnProps & MeshProps> = ({
+const Polygon: React.FC<HexTileOwnProps & MeshProps> = ({
   radius,
+  vertices,
   ...meshProps
 }) => {
   // This reference will give us direct access to the mesh
   const mesh = useRef<Mesh>();
-
-  const x = 0;
-  const y = 0;
 
   // Set up state for the hovered and active state
   const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
 
   const shape = useMemo(() => {
+    // https://www.mathsisfun.com/geometry/interior-angles-polygons.html
+    // https://stackoverflow.com/a/11354824/1776000
+    // https://stackoverflow.com/a/3436464/1776000
+    // https://eperezcosano.github.io/hex-grid/ (disagrees on math for calc of `a` - their way only works for hexagons)
+    // their way:
+    //   const interiorAngleSum = (vertices - 2) * 180;
+    //   const angle = (interiorAngleSum / vertices) / 2;
+    //         ^ divide by 2 because we're calculating triangles against the horizontal, not angles between each side
+    //   const a = angle * (Math.PI / 180); // convert to radians
+    const a = 2 * Math.PI / vertices;
+
     const shape = new Shape();
-    shape.moveTo(x+0, y+radius);
-    shape.lineTo(x+radius*0.866, y+radius*0.5);
-    shape.lineTo(x+radius*0.866, y-radius*0.5);
-    shape.lineTo(x+0, y-radius);
-    shape.lineTo(x-radius*0.866, y-radius*0.5);
-    shape.lineTo(x-radius*0.866, y+radius*0.5);
+    // move to starting position (x = radius, y = 0)
+    const startPoint = {
+      x: origin.x + radius * Math.cos(0),
+      y: origin.x + radius * Math.sin(0)
+    };
+    shape.moveTo(startPoint.x, startPoint.y);
+    for (let i = 1; i <= vertices; i++) {
+      const nextPoint = {
+        x: origin.x + radius * Math.cos(a * i),
+        y: origin.y + radius * Math.sin(a * i)
+      };
+      console.log('currentPoint', shape.currentPoint);
+      console.log('nextPoint', nextPoint);
+      shape.lineTo(nextPoint.x, nextPoint.y);
+    }
     // shape.moveTo(...start);
     // paths.forEach((path) => shape.bezierCurveTo(...path));
     return shape;
-  }, [radius]);
+  }, [radius, vertices]);
 
   // Rotate mesh every frame, this is outside of React without overhead
   useFrame(() => {
@@ -48,7 +71,7 @@ const HexTile: React.FC<HexTileOwnProps & MeshProps> = ({
       {...meshProps}
       ref={mesh}
       // scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
-      scale={[1, 1, 1]}
+      // scale={[1, 1, 1]}
       onClick={(event) => setActive(!active)}
       onPointerOver={(event) => setHover(true)}
       onPointerOut={(event) => setHover(false)}>
@@ -58,11 +81,11 @@ const HexTile: React.FC<HexTileOwnProps & MeshProps> = ({
           {
             steps: 1,
             depth: .5,
-            bevelEnabled: true,
-            bevelThickness: .2,
-            bevelSize: .2,
-            bevelOffset: 0,
-            bevelSegments: 10
+            bevelEnabled: false,
+            // bevelThickness: .2,
+            // bevelSize: .2,
+            // bevelOffset: 0,
+            // bevelSegments: 1
           }
         ]}
       />
@@ -80,4 +103,4 @@ const HexTile: React.FC<HexTileOwnProps & MeshProps> = ({
   );
 };
 
-export default HexTile;
+export default Polygon;
