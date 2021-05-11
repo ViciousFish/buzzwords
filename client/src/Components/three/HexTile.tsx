@@ -4,7 +4,7 @@ Perhaps make a "polygonal prism" component/class?
 */
 import React, { useRef, useState, useMemo } from 'react';
 import { MeshProps, useFrame } from 'react-three-fiber';
-import { Mesh, Shape } from 'three';
+import { Euler, Mesh, Shape } from 'three';
 import { theme } from '../../theme';
 
 interface HexTileOwnProps {
@@ -39,18 +39,19 @@ const Polygon: React.FC<HexTileOwnProps & MeshProps> = ({
     //         ^ divide by 2 because we're calculating triangles against the horizontal, not angles between each side
     //   const a = angle * (Math.PI / 180); // convert to radians
     const a = 2 * Math.PI / vertices;
+    const ninetyDeg = 90 * (Math.PI / 180);
 
     const shape = new Shape();
-    // move to starting position (x = radius, y = 0)
+    // move to starting position (x = 0, y = radius in hexagon case)
     const startPoint = {
-      x: origin.x + radius * Math.cos(0),
-      y: origin.x + radius * Math.sin(0)
+      x: origin.x + radius * Math.cos(ninetyDeg),
+      y: origin.x + radius * Math.sin(ninetyDeg)
     };
     shape.moveTo(startPoint.x, startPoint.y);
     for (let i = 1; i <= vertices; i++) {
       const nextPoint = {
-        x: origin.x + radius * Math.cos(a * i),
-        y: origin.y + radius * Math.sin(a * i)
+        x: origin.x + radius * Math.cos(ninetyDeg + (a * i)),
+        y: origin.y + radius * Math.sin(ninetyDeg + (a * i))
       };
       console.log('currentPoint', shape.currentPoint);
       console.log('nextPoint', nextPoint);
@@ -72,6 +73,7 @@ const Polygon: React.FC<HexTileOwnProps & MeshProps> = ({
       ref={mesh}
       // scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
       // scale={[1, 1, 1]}
+      // rotation={new Euler(0, 0, 90 * (Math.PI / 180))}
       onClick={(event) => setActive(!active)}
       onPointerOver={(event) => setHover(true)}
       onPointerOut={(event) => setHover(false)}>

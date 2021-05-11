@@ -24,7 +24,7 @@ function App() {
         <Canvas
           pixelRatio={window.devicePixelRatio}
         >
-          {/* <CameraControls /> */}
+          <CameraControls />
           <ambientLight />
           {/* <pointLight position={[10, 10, 10]} /> */}
           <Polygon vertices={6} radius={2} position={[0, 0, 0]} />
