@@ -33,6 +33,6 @@ jobs:
         switches: -avzr --delete --no-perms --omit-dir-times --no-t --exclude node_modules --exclude '.git*'
         path: client/build/
         remote_path: /docker-services/letsencrypt/www/buzzwords
-        remote_host: server.chuckdries.com
+        remote_host: droplet.chuckdries.com
         remote_user: ${{ secrets.CI_USER }}
         remote_key: ${{ secrets.CI_SSH_KEY }}
