@@ -27,7 +27,7 @@ function App() {
           <CameraControls />
           <ambientLight />
           {/* <pointLight position={[10, 10, 10]} /> */}
-          <Polygon vertices={6} radius={2} position={[0, 0, 0]} />
+          <Polygon vertices={6} radius={Math.PI} position={[0, 0, 0]} />
         </Canvas>
       </header>
     </div>

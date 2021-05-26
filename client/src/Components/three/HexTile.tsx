@@ -48,12 +48,12 @@ const Polygon: React.FC<HexTileOwnProps & MeshProps> = ({
       y: origin.x + radius * Math.sin(ninetyDeg)
     };
     shape.moveTo(startPoint.x, startPoint.y);
+    console.log('startPoint', startPoint);
     for (let i = 1; i <= vertices; i++) {
       const nextPoint = {
-        x: origin.x + radius * Math.cos(ninetyDeg + (a * i)),
-        y: origin.y + radius * Math.sin(ninetyDeg + (a * i))
+        x: origin.x + radius * Math.cos(ninetyDeg - (a * i)),
+        y: origin.y + radius * Math.sin(ninetyDeg - (a * i))
       };
-      console.log('currentPoint', shape.currentPoint);
       console.log('nextPoint', nextPoint);
       shape.lineTo(nextPoint.x, nextPoint.y);
     }
