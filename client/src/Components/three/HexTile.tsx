@@ -91,7 +91,6 @@ const Polygon: React.FC<HexTileOwnProps & MeshProps> = ({
           }
         ]}
       />
-      {/* <boxBufferGeometry args={[2, 2, 2]} /> */}
       <meshBasicMaterial
         toneMapped={false}
         color={hovered ? theme.colors.darkbrown : theme.colors.primary}
