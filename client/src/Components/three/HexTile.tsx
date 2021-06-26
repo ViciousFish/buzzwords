@@ -29,6 +29,8 @@ const Polygon: React.FC<HexTileOwnProps & MeshProps> = ({
   const [active, setActive] = useState(false);
 
   const shape = useMemo(() => {
+    // https://www.redblobgames.com/grids/hexagons/ render code at beginning
+
     // https://www.mathsisfun.com/geometry/interior-angles-polygons.html
     // https://stackoverflow.com/a/11354824/1776000
     // https://stackoverflow.com/a/3436464/1776000
