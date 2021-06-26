@@ -4,9 +4,10 @@ Perhaps make a "polygonal prism" component/class?
 */
 import React, { useRef, useState, useMemo } from 'react';
 import { MeshProps, useFrame, useLoader } from 'react-three-fiber';
-import { Euler, Mesh, Shape } from 'three';
+import { Mesh, Shape } from 'three';
 import { theme } from '../../theme';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { useGLTF } from '@react-three/drei';
 // import hex from '../../assets/hextile.glb';
 
 
@@ -71,9 +72,9 @@ const Polygon: React.FC<HexTileOwnProps & MeshProps> = ({
   useFrame(() => {
     // if (mesh.current) mesh.current.rotation.x = mesh.current.rotation.y += 0.01;
   });
-  const hextile = useLoader(GLTFLoader, './assets/hextile.glb');
+  const { nodes, materials } = useLoader(GLTFLoader, './assets/hextile.glb');
+  // const { nodes, materials } = useGLTF('./assets/hextile.glb', '/draco-gltf/');
 
-  console.log(hextile.nodes);
   return (
     // <mesh
     //   {...meshProps}
@@ -85,7 +86,13 @@ const Polygon: React.FC<HexTileOwnProps & MeshProps> = ({
     //   onPointerOver={(event) => setHover(true)}
     //   onPointerOut={(event) => setHover(false)}>
     // https://github.com/pmndrs/react-three-fiber/blob/master/markdown/api.md#objects-properties-and-constructor-arguments
-    <mesh rotation={[Math.PI / 2, 0, Math.PI / 2]} scale={[2, 2, 2]} visible geometry={hextile.nodes.Circle.geometry}>
+    <mesh
+      rotation={[Math.PI / 2, 0, 0]}
+      scale={[3, 3, 3]}
+      visible
+      geometry={(nodes.Circle as Mesh).geometry}
+    >
+      {/* <primitive object={hextile.nodes.Circle} /> */}
       {/* <extrudeBufferGeometry
         args={[
           shape,
