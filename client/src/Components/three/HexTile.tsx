@@ -84,8 +84,8 @@ const Polygon: React.FC<HexTileOwnProps & MeshProps> = ({
     //   onClick={(event) => setActive(!active)}
     //   onPointerOver={(event) => setHover(true)}
     //   onPointerOut={(event) => setHover(false)}>
-    // @ts-ignore
-    <mesh scale={[2, 2, 2]} visible geometry={hextile.nodes.Circle.geometry}>
+    // https://github.com/pmndrs/react-three-fiber/blob/master/markdown/api.md#objects-properties-and-constructor-arguments
+    <mesh rotation={[Math.PI / 2, 0, Math.PI / 2]} scale={[2, 2, 2]} visible geometry={hextile.nodes.Circle.geometry}>
       {/* <extrudeBufferGeometry
         args={[
           shape,
