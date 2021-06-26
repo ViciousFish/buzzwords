@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import Buzz from './Components/Zdog/Buzz';
 import { Canvas } from 'react-three-fiber';
+// import { Html } from '@react-three/drei';
 import Polygon from './Components/three/HexTile';
 import HexTileWord from './Components/Zdog/HexTileWord';
 import CameraControls from './Components/three/CameraControls';
@@ -24,10 +25,12 @@ function App() {
         <Canvas
           pixelRatio={window.devicePixelRatio}
         >
-          {/* <CameraControls /> */}
+          <CameraControls />
           <ambientLight />
           {/* <pointLight position={[10, 10, 10]} /> */}
-          <Polygon vertices={6} radius={Math.PI} position={[0, 0, 0]} />
+          <React.Suspense fallback={null}>
+            <Polygon vertices={6} radius={Math.PI} position={[0, 0, 0]} />
+          </React.Suspense>
         </Canvas>
       </header>
     </div>

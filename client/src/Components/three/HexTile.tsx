@@ -3,9 +3,12 @@ Rounded polygon math: https://www.stkent.com/2018/04/06/really-rounded-polygons.
 Perhaps make a "polygonal prism" component/class?
 */
 import React, { useRef, useState, useMemo } from 'react';
-import { MeshProps, useFrame } from 'react-three-fiber';
+import { MeshProps, useFrame, useLoader } from 'react-three-fiber';
 import { Euler, Mesh, Shape } from 'three';
 import { theme } from '../../theme';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+// import hex from '../../assets/hextile.glb';
+
 
 interface HexTileOwnProps {
   radius: number;
@@ -68,18 +71,22 @@ const Polygon: React.FC<HexTileOwnProps & MeshProps> = ({
   useFrame(() => {
     // if (mesh.current) mesh.current.rotation.x = mesh.current.rotation.y += 0.01;
   });
+  const hextile = useLoader(GLTFLoader, './assets/hextile.glb');
 
+  console.log(hextile.nodes);
   return (
-    <mesh
-      {...meshProps}
-      ref={mesh}
-      // scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
-      // scale={[1, 1, 1]}
-      // rotation={new Euler(0, 0, 90 * (Math.PI / 180))}
-      onClick={(event) => setActive(!active)}
-      onPointerOver={(event) => setHover(true)}
-      onPointerOut={(event) => setHover(false)}>
-      <extrudeBufferGeometry
+    // <mesh
+    //   {...meshProps}
+    //   ref={mesh}
+    //   // scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
+    //   // scale={[1, 1, 1]}
+    //   // rotation={new Euler(0, 0, 90 * (Math.PI / 180))}
+    //   onClick={(event) => setActive(!active)}
+    //   onPointerOver={(event) => setHover(true)}
+    //   onPointerOut={(event) => setHover(false)}>
+    // @ts-ignore
+    <mesh scale={[2, 2, 2]} visible geometry={hextile.nodes.Circle.geometry}>
+      {/* <extrudeBufferGeometry
         args={[
           shape,
           {
@@ -92,7 +99,7 @@ const Polygon: React.FC<HexTileOwnProps & MeshProps> = ({
             // bevelSegments: 1
           }
         ]}
-      />
+      /> */}
       <meshBasicMaterial
         toneMapped={false}
         color={hovered ? theme.colors.darkbrown : theme.colors.primary}
