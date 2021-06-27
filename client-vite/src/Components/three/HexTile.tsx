@@ -5,11 +5,7 @@ import { useGLTF, PerspectiveCamera } from "@react-three/drei";
 import { Mesh } from "three";
 import hextile from "../../../assets/hextile.glb?url";
 
-const HexTile: React.FC<MeshProps> = ({
-  position,
-  rotation,
-  ...props
-}) => {
+const HexTile: React.FC<MeshProps> = ({ position, rotation, ...props }) => {
   const group = useRef();
   // @ts-ignore
   const { nodes, materials } = useGLTF(hextile);
@@ -18,14 +14,20 @@ const HexTile: React.FC<MeshProps> = ({
   // https://gracious-keller-98ef35.netlify.app/docs/api/automatic-disposal/
   // I think it just keeps the mesh around
   return (
-    <group ref={group} scale={[3, 3, 3]} dispose={null} position={position} rotation={rotation}>
+    <group
+      ref={group}
+      scale={[3, 3, 3]}
+      dispose={null}
+      position={position}
+      rotation={rotation}
+    >
       <mesh
         rotation={[Math.PI / 2, 0, 0]}
         visible
         geometry={(nodes.Circle as Mesh).geometry}
         {...props}
       >
-        <meshBasicMaterial
+        <meshStandardMaterial
           // ToneMapped={false}
           color={theme.colors.primary}
         />

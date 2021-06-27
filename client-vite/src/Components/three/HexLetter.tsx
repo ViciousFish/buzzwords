@@ -17,9 +17,8 @@ interface HexLetterProps {
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
 
 const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
-  const { size, viewport } = useThree()
-  const aspect = size.width / viewport.width
-
+  const { size, viewport } = useThree();
+  const aspect = size.width / viewport.width;
 
   const font = useLoader(FontLoader, fredokaone);
   const config = useMemo(
@@ -49,21 +48,27 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
     }
   }, [letter]);
 
-  const [spring, api] = useSpring(() => ({ rotation: [0, 0, 0], config: {tension: 100, friction: 20, damping: 20} }))
+  const [spring, api] = useSpring(() => ({
+    rotation: [0, 0, 0],
+    config: { tension: 100, friction: 20, damping: 20 },
+  }));
   const bind = useGesture({
-    onDrag: ({down, movement: [mx, my] }) => api.start({
-      rotation: [down ? (my / (aspect * 2)) : 0, down ? (mx / (aspect * 2)) : 0, 0]
-    })
-  })
+    onDrag: ({ down, movement: [mx, my] }) =>
+      api.start({
+        rotation: [
+          down ? my / (aspect * 2) : 0,
+          down ? mx / (aspect * 2) : 0,
+          0,
+        ],
+      }),
+  });
   return (
     // @ts-ignore
     <a.group {...props} {...spring}>
       {/* @ts-ignore */}
-      <a.mesh ref={mesh} position={[0, 0, .2]} {...bind()}>
+      <a.mesh ref={mesh} position={[0, 0, 0.2]} {...bind()}>
         <textGeometry args={[letter, config]} />
-        <meshStandardMaterial
-          color={theme.colors.darkbrown}
-        />
+        <meshStandardMaterial color={theme.colors.darkbrown} />
       </a.mesh>
       {/* @ts-ignore */}
       <HexTile {...bind()} />
