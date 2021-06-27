@@ -5,7 +5,9 @@
     "build": "tsc && vite build",
     "serve": "vite preview",
     "lint": "eslint src --ext .js,.ts,.tsx,.jsx",
-    "pretty": "prettier --write ."
+    "pretty": "prettier --write .",
+    "upload-staging": "rsync -rz --delete dist/ ci@droplet.chuckdries.com:www/buzzwords-staging",
+    "upload": "rsync -rz --delete dist/ ci@droplet.chuckdries.com:www/buzzwords"
   },
   "dependencies": {
     "@react-spring/three": "^9.2.3",

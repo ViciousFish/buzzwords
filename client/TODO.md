@@ -22,6 +22,8 @@
 
 - Misc
   - [ ] read through backend
+  - [ ] report web vitals and framerate
+    - posthog?
 
 
 today
