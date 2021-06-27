@@ -63,16 +63,18 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
   const bind = useGesture({
     onDrag: ({ down, movement: [mx, my] }) => {
       api.start({
-        x: down ? my / (aspect * 3) : 0,
-        y: down ? mx / (aspect * 3) : 0,
+        x: down ? mx / aspect : 0,
+        y: down ? my / aspect : 0,
       });
     },
   });
   useFrame(() => {
     if (group.current) {
-      const q = new Quaternion(Math.tan(spring.x.get()), Math.tan(spring.y.get()), 0, Math.PI / 2);
-      q.normalize();
-      group.current.setRotationFromQuaternion(q);
+      const v = new Vector3(spring.y.get(), spring.x.get(), 0)
+      const a = v.length();
+      // let p = v.cross(new Vector3(0, 0, 1))
+      v.normalize()
+      group.current.setRotationFromAxisAngle(v, a / 3)
     }
   });
   return (
