@@ -70,7 +70,7 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
   });
   useFrame(() => {
     if (group.current) {
-      const q = new Quaternion(spring.x.get(), spring.y.get(), 0, Math.PI);
+      const q = new Quaternion(Math.tan(spring.x.get()), Math.tan(spring.y.get()), 0, Math.PI);
       q.normalize();
       group.current.setRotationFromQuaternion(q);
     }
