@@ -23,8 +23,8 @@ const CameraControls = () => {
       controls.current.update();
     }
   });
-  // @ts-ignore
   return (
+    // @ts-ignore
     <orbitControls
       ref={controls}
       enableDamping
