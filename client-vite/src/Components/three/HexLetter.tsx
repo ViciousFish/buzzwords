@@ -1,5 +1,6 @@
-import {Vector3, useLoader} from '@react-three/fiber';
-import React, {useMemo} from 'react';
+import React, {useMemo, useRef, useLayoutEffect} from 'react';
+import {Vector3} from 'three';
+import {useLoader} from '@react-three/fiber';
 import {FontLoader} from 'three';
 import HexTile from './HexTile';
 import fredokaone from '../../../assets/Fredoka One_Regular.json?url';
@@ -31,16 +32,29 @@ const HexLetter: React.FC<HexLetterProps> = ({
 		}),
 		[font],
 	);
+	const mesh = useRef();
+	useLayoutEffect(() => {
+		const size = new Vector3();
+		if (mesh.current !== undefined) {
+			mesh.current.geometry.computeBoundingBox();
+			mesh.current.geometry.boundingBox.getSize(size);
+			// Mesh.current.position.x = hAlign === 'center' ? -size.x / 2 : hAlign === 'right' ? 0 : -size.x;
+			mesh.current.position.x = -size.x / 2;
+			// Mesh.current.position.y = vAlign === 'center' ? -size.y / 2 : vAlign === 'top' ? 0 : -size.y;
+			mesh.current.position.y = -size.y / 2;
+		}
+	}, [letter]);
 	return (
 		<group {...props} >
 			<mesh
-				position={[-1.5, -1.5, 0]}
+				ref={mesh}
+				// Position={[-1.5, -1.5, 0]}
 			>
 				<textGeometry
 					args={[letter, config]}
 				/>
-				{/* <meshStandardMaterial */}
-				<meshNormalMaterial
+				{/* <meshNormalMaterial */}
+				<meshStandardMaterial
 					// ToneMapped={false}
 					color={theme.colors.darkbrown}
 				/>
