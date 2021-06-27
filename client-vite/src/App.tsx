@@ -42,7 +42,6 @@ function App() {
             position: [0, 0, 100],
             zoom: 20,
           }}
-          shadows
           orthographic
           dpr={Math.max(window.devicePixelRatio, 2)}
           flat

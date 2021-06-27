@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useLayoutEffect } from "react";
-import { Mesh, Vector3 } from "three";
+import { Group, Mesh, Vector3 } from "three";
 import { useLoader, useThree, Vector3 as V3Type } from "@react-three/fiber";
 import { FontLoader } from "three";
 import { useSpring, a } from "@react-spring/three";
@@ -37,6 +37,7 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
   );
 
   const mesh = useRef<Mesh>();
+  const group = useRef<Group>();
 
   useLayoutEffect(() => {
     const size = new Vector3();
@@ -48,23 +49,23 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
     }
   }, [letter]);
 
-  const [spring, api] = useSpring(() => ({
-    rotation: [0, 0, 0],
+  const [{ x, y, z }, api] = useSpring(() => ({
+    x: 0,
+    y: 0,
+    z: 0,
     config: { tension: 100, friction: 20, damping: 20 },
   }));
   const bind = useGesture({
     onDrag: ({ down, movement: [mx, my] }) =>
       api.start({
-        rotation: [
-          down ? my / (aspect * 2) : 0,
-          down ? mx / (aspect * 2) : 0,
-          0,
-        ],
+          y: down ? my / (aspect * 2) : 0,
+          x: down ? mx / (aspect * 2) : 0,
+          z: 0,
       }),
   });
   return (
     // @ts-ignore
-    <a.group {...props} {...spring}>
+    <a.group {...props} rotation={[y, x, z]}>
       {/* @ts-ignore */}
       <a.mesh ref={mesh} position={[0, 0, 0.2]} {...bind()}>
         <textGeometry args={[letter, config]} />
