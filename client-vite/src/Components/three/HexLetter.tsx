@@ -39,8 +39,8 @@ const HexLetter: React.FC<HexLetterProps> = ({
         <textGeometry
           args={[letter, config]}
         />
-        {/* <meshNormalMaterial /> */}
-        <meshStandardMaterial
+        {/* <meshStandardMaterial */}
+        <meshNormalMaterial
           // toneMapped={false}
           color={theme.colors.darkbrown}
         />

@@ -24,12 +24,12 @@ function App() {
       <header className="App-header">
         <Buzz />
         <Canvas
-          gl={{ antialias: false }}
+          // gl={{ antialias: false }}
           camera={{
             position: [0, 0, 100],
             zoom: 20
           }}
-          dpr={window.devicePixelRatio}
+          dpr={window.devicePixelRatio * 2}
           // orthographic
           flat
         >

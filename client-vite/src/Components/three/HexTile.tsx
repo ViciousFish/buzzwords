@@ -25,7 +25,7 @@ const HexTile: React.FC<GroupProps>  = (props) => {
         visible
         geometry={(nodes.Circle as Mesh).geometry}
       >
-        <meshBasicMaterial
+        <meshStandardMaterial
           // toneMapped={false}
           color={theme.colors.primary}
         />
