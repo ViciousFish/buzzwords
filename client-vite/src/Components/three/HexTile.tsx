@@ -27,7 +27,7 @@ const HexTile: React.FC<MeshProps> = ({ position, rotation, ...props }) => {
         geometry={(nodes.Circle as Mesh).geometry}
         {...props}
       >
-        <meshStandardMaterial
+        <meshBasicMaterial
           // ToneMapped={false}
           color={theme.colors.primary}
         />
