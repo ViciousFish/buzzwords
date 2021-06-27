@@ -1,7 +1,10 @@
-import React, { useMemo, useRef, useLayoutEffect } from "react";
+import React, { useMemo, useRef, useLayoutEffect, useState } from "react";
 import { Vector3 } from "three";
-import { useLoader } from "@react-three/fiber";
+import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { FontLoader } from "three";
+import { useSpring, a } from "@react-spring/three";
+import { useDrag, useGesture } from "@use-gesture/react";
+
 import HexTile from "./HexTile";
 import fredokaone from "../../../assets/Fredoka One_Regular.json?url";
 import { theme } from "../../theme";
@@ -14,6 +17,10 @@ interface HexLetterProps {
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
 
 const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
+  const { size, viewport } = useThree()
+  const aspect = size.width / viewport.width
+
+
   const font = useLoader(FontLoader, fredokaone);
   const config = useMemo(
     () => ({
@@ -29,10 +36,12 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
     }),
     [font]
   );
+
   const mesh = useRef();
+
   useLayoutEffect(() => {
     const size = new Vector3();
-    if (mesh.current !== undefined) {
+    if (mesh.current) {
       mesh.current.geometry.computeBoundingBox();
       mesh.current.geometry.boundingBox.getSize(size);
       // Mesh.current.position.x = hAlign === 'center' ? -size.x / 2 : hAlign === 'right' ? 0 : -size.x;
@@ -41,21 +50,26 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
       mesh.current.position.y = -size.y / 2;
     }
   }, [letter]);
+
+  const [spring, api] = useSpring(() => ({ rotation: [0, 0, 0], config: {tension: 100, } }))
+  const bind = useGesture({
+    onDrag: ({ offset: [x, y], movement: [mx, my] }) => api.start({
+      rotation: [y / (aspect * 10), (x / (aspect * 10)), 0]
+    }),
+    // onHover: ({ hovering }) => set({ scale: hovering ? [1.2, 1.2, 1.2] : [1, 1, 1] })
+  })
   return (
-    <group {...props}>
-      <mesh
-        ref={mesh}
-        // Position={[-1.5, -1.5, 0]}
-      >
+    <a.group {...props} {...spring}>
+      <a.mesh ref={mesh} {...bind()}>
         <textGeometry args={[letter, config]} />
         {/* <meshNormalMaterial */}
         <meshStandardMaterial
           // ToneMapped={false}
           color={theme.colors.darkbrown}
         />
-      </mesh>
-      <HexTile />
-    </group>
+      </a.mesh>
+      <HexTile {...bind()} />
+    </a.group>
   );
 };
 

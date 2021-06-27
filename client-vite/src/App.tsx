@@ -24,6 +24,9 @@ function App() {
         {window.devicePixelRatio} - {Math.max(window.devicePixelRatio, 2)}
         <Buzz />
         <Canvas
+        style={{
+          touchAction: 'none'
+        }}
           // Gl={{ antialias: false }}
           camera={{
             position: [0, 0, 100],
@@ -34,12 +37,10 @@ function App() {
           flat
         >
           <Stats />
-          <CameraControls />
+          {/* <CameraControls /> */}
           <ambientLight />
-          {/* <pointLight position={[10, 10, 10]} /> */}
           <directionalLight position={[5, 5, 10]} />
           <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
-            {/* <HexLetter letter='H' position={[0, 0, 0]} /> */}
             <HexWord text="SOON" />
           </React.Suspense>
         </Canvas>
