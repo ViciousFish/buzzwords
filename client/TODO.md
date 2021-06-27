@@ -22,3 +22,9 @@
 
 - Misc
   - [ ] read through backend
+
+
+today
+- vite
+- text
+- board layout
