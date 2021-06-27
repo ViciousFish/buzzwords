@@ -31,7 +31,7 @@ jobs:
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -rz --delete
-        path: dist
+        path: client-vite/dist
         remote_path: www/buzzwords
         remote_host: droplet.chuckdries.com
         remote_user: ${{ secrets.CI_USER }}
