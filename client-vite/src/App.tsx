@@ -40,10 +40,10 @@ function App() {
           }}
           camera={{
             position: [0, 0, 100],
-            zoom: 20,
+            zoom: 6,
           }}
           shadows
-          orthographic
+          // orthographic
           dpr={Math.max(window.devicePixelRatio, 2)}
           flat
         >
