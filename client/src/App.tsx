@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import Buzz from './Components/Zdog/Buzz';
 import { Canvas } from 'react-three-fiber';
+// import { Html } from '@react-three/drei';
 import HexTile from './Components/three/HexTile';
 import HexTileWord from './Components/Zdog/HexTileWord';
 import CameraControls from './Components/three/CameraControls';
@@ -26,8 +27,10 @@ function App() {
         >
           <CameraControls />
           <ambientLight />
-          {/* <pointLight position={[10, 10, 10]} /> */}
-          <HexTile radius={2} position={[0, 0, 0]} />
+          <pointLight position={[10, 10, 10]} />
+          <React.Suspense fallback={null}>
+            <HexTile />
+          </React.Suspense>
         </Canvas>
       </header>
     </div>
