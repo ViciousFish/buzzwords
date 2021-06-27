@@ -10,6 +10,8 @@ interface HexLetterProps {
   letter: string;
 }
 
+// computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
+
 const HexLetter: React.FC<HexLetterProps> = ({
   letter,
   ...props
@@ -32,7 +34,7 @@ const HexLetter: React.FC<HexLetterProps> = ({
   return (
     <group {...props} >
       <mesh
-        position={[-1.4,-1.5,0]}
+        position={[-1.5,-1.5,0]}
       >
         <textGeometry
           args={[letter, config]}
