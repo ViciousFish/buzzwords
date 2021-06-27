@@ -21,22 +21,20 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        {window.devicePixelRatio} - {Math.max(window.devicePixelRatio, 2)}
+        {/* {window.devicePixelRatio} - {Math.max(window.devicePixelRatio, 2)} */}
         <Buzz />
         <Canvas
-        style={{
-          touchAction: 'none'
-        }}
-          // Gl={{ antialias: false }}
+          style={{
+            touchAction: "none",
+          }}
           camera={{
             position: [0, 0, 100],
             zoom: 20,
           }}
           dpr={Math.max(window.devicePixelRatio, 2)}
-          // Orthographic
           flat
         >
-          <Stats />
+          {/* <Stats /> */}
           {/* <CameraControls /> */}
           <ambientLight />
           <directionalLight position={[5, 5, 10]} />
