@@ -1,8 +1,14 @@
 import React, { useMemo, useRef, useLayoutEffect } from "react";
-import { Group, Mesh, Vector3 } from "three";
-import { useLoader, useThree, Vector3 as V3Type } from "@react-three/fiber";
+import { Group, Mesh, Quaternion, Vector3 } from "three";
+import {
+  useFrame,
+  useLoader,
+  useThree,
+  Vector3 as V3Type,
+} from "@react-three/fiber";
 import { FontLoader } from "three";
-import { useSpring, a } from "@react-spring/three";
+import { useSpring } from "@react-spring/three";
+import { config as springConfig } from "@react-spring/core";
 import { useGesture } from "@use-gesture/react";
 
 import HexTile from "./HexTile";
@@ -52,38 +58,33 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
   const [spring, api] = useSpring(() => ({
     x: 0,
     y: 0,
-    config: { tension: 100, friction: 20, damping: 20 },
+    config: springConfig.stiff,
   }));
   const bind = useGesture({
-    onDrag: ({ down, movement: [mx, my] }) =>
+    onDrag: ({ down, movement: [mx, my] }) => {
       api.start({
         x: down ? my / (aspect * 2) : 0,
         y: down ? mx / (aspect * 2) : 0,
-      }),
+      });
+    },
+  });
+  useFrame(() => {
+    if (group.current) {
+      const q = new Quaternion(spring.x.get(), spring.y.get(), 0, Math.PI / 4);
+      q.normalize();
+      group.current.setRotationFromQuaternion(q);
+    }
   });
   return (
-    <a.group ref={group} {...props} rotation-y={spring.y.to(y => {
-      const v = new Vector3(spring.x.get(), y, 0)
-      if (group.current ) {
-        return group.current.worldToLocal(v).y / 5
-      }
-    })} rotation-x={spring.x.to(x => {
-      const v = new Vector3(x, spring.y.get(), 0)
-      if (group.current ) {
-        return group.current.worldToLocal(v).x / 5
-      }
-    })}>
-      // @ts-ignore
-      <a.group >
-        {/* @ts-ignore */}
-        <a.mesh ref={mesh} position={[0, 0, 0.2]} {...bind()}>
-          <textGeometry args={[letter, config]} />
-          <meshStandardMaterial color={theme.colors.darkbrown} />
-        </a.mesh>
-        {/* @ts-ignore */}
-        <HexTile {...bind()} />
-      </a.group>
-    </a.group>
+    <group ref={group} {...props}>
+      {/* @ts-ignore */}
+      <mesh ref={mesh} position={[0, 0, 0.2]} {...bind()}>
+        <textGeometry args={[letter, config]} />
+        <meshStandardMaterial color={theme.colors.darkbrown} />
+      </mesh>
+      {/* @ts-ignore */}
+      <HexTile {...bind()} />
+    </group>
   );
 };
 
