@@ -52,7 +52,7 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
   const [spring, api] = useSpring(() => ({ rotation: [0, 0, 0], config: {tension: 100, friction: 20, damping: 20} }))
   const bind = useGesture({
     onDrag: ({down, movement: [mx, my] }) => api.start({
-      rotation: [down ? (my / (aspect * 4)) : 0, down ? (mx / (aspect * 4)) : 0, 0]
+      rotation: [down ? (my / (aspect * 2)) : 0, down ? (mx / (aspect * 2)) : 0, 0]
     })
   })
   return (

@@ -21,14 +21,15 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        {/* {window.devicePixelRatio} - {Math.max(window.devicePixelRatio, 2)} */}
+        {window.devicePixelRatio} - {Math.max(window.devicePixelRatio, 2)}
         <Buzz />
         {/* <div > */}
           <Canvas
             style={{
               touchAction: "none",
               margin: "1em",
-              height: 300
+              height: 300,
+              minWidth: 600
             }}
             camera={{
               position: [0, 0, 100],
@@ -39,7 +40,7 @@ function App() {
             flat
 
           >
-            {/* <Stats /> */}
+            <Stats />
             {/* <CameraControls /> */}
             <ambientLight />
             <directionalLight position={[5, 5, 10]} />
