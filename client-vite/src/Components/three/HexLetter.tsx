@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useLayoutEffect } from "react";
-import { Mesh, Vector3 } from "three";
+import { Group, Mesh, Vector3 } from "three";
 import { useLoader, useThree, Vector3 as V3Type } from "@react-three/fiber";
 import { FontLoader } from "three";
 import { useSpring, a } from "@react-spring/three";
@@ -37,6 +37,7 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
   );
 
   const mesh = useRef<Mesh>();
+  const group = useRef<Group>();
 
   useLayoutEffect(() => {
     const size = new Vector3();
@@ -49,29 +50,39 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
   }, [letter]);
 
   const [spring, api] = useSpring(() => ({
-    rotation: [0, 0, 0],
+    x: 0,
+    y: 0,
     config: { tension: 100, friction: 20, damping: 20 },
   }));
   const bind = useGesture({
     onDrag: ({ down, movement: [mx, my] }) =>
       api.start({
-        rotation: [
-          down ? my / (aspect * 2) : 0,
-          down ? mx / (aspect * 2) : 0,
-          0,
-        ],
+        x: down ? my / (aspect * 2) : 0,
+        y: down ? mx / (aspect * 2) : 0,
       }),
   });
   return (
-    // @ts-ignore
-    <a.group {...props} {...spring}>
-      {/* @ts-ignore */}
-      <a.mesh ref={mesh} position={[0, 0, 0.2]} {...bind()}>
-        <textGeometry args={[letter, config]} />
-        <meshStandardMaterial color={theme.colors.darkbrown} />
-      </a.mesh>
-      {/* @ts-ignore */}
-      <HexTile {...bind()} />
+    <a.group ref={group} {...props} rotation-y={spring.y.to(y => {
+      const v = new Vector3(spring.x.get(), y, 0)
+      if (group.current ) {
+        return group.current.worldToLocal(v).y / 5
+      }
+    })} rotation-x={spring.x.to(x => {
+      const v = new Vector3(x, spring.y.get(), 0)
+      if (group.current ) {
+        return group.current.worldToLocal(v).x / 5
+      }
+    })}>
+      // @ts-ignore
+      <a.group >
+        {/* @ts-ignore */}
+        <a.mesh ref={mesh} position={[0, 0, 0.2]} {...bind()}>
+          <textGeometry args={[letter, config]} />
+          <meshStandardMaterial color={theme.colors.darkbrown} />
+        </a.mesh>
+        {/* @ts-ignore */}
+        <HexTile {...bind()} />
+      </a.group>
     </a.group>
   );
 };
