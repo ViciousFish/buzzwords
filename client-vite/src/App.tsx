@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import Buzz from './Components/Zdog/Buzz';
 import { Canvas } from '@react-three/fiber';
-import { Html, useProgress } from '@react-three/drei'
+import { Html, Stats, useProgress } from '@react-three/drei'
 import HexTile from './Components/three/HexTile';
 import CameraControls from './Components/three/CameraControls';
 import HexLetter from './Components/three/HexLetter';
@@ -18,10 +18,12 @@ import HexWord from './Components/three/HexWord';
 */
 
 function App() {
+  console.log(window.devicePixelRatio)
   const { progress } = useProgress()
   return (
     <div className="App">
       <header className="App-header">
+      {window.devicePixelRatio} - {Math.max(window.devicePixelRatio, 2)}
         <Buzz />
         <Canvas
           // gl={{ antialias: false }}
@@ -29,10 +31,11 @@ function App() {
             position: [0, 0, 100],
             zoom: 20
           }}
-          dpr={window.devicePixelRatio * 2}
+          dpr={Math.max(window.devicePixelRatio, 2)}
           // orthographic
           flat
         >
+          <Stats />
           <CameraControls />
           <ambientLight />
           {/* <pointLight position={[10, 10, 10]} /> */}
