@@ -18,10 +18,11 @@ import HexWord from "./Components/three/HexWord";
 function App() {
   console.log(window.devicePixelRatio);
   const { progress } = useProgress();
+  const dpr = (<>{window.devicePixelRatio} - {Math.max(window.devicePixelRatio, 2)}</>)
   return (
     <div className="App">
       <header className="App-header">
-        {window.devicePixelRatio} - {Math.max(window.devicePixelRatio, 2)}
+        {import.meta.env.MODE !== 'PRODUCTION' && dpr}
         <Buzz />
         {/* <div > */}
         <Canvas
@@ -39,7 +40,7 @@ function App() {
           dpr={Math.max(window.devicePixelRatio, 2)}
           flat
         >
-          <Stats />
+          {import.meta.env.MODE !== 'PRODUCTION' && <Stats />}
           {/* <CameraControls /> */}
           <ambientLight />
           <directionalLight position={[10, 10, 10]} />
