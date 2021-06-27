@@ -1,14 +1,14 @@
 import React, { useRef } from 'react';
 import { GroupProps, useLoader } from '@react-three/fiber';
 import { theme } from '../../theme';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { useGLTF, PerspectiveCamera } from '@react-three/drei'
 import { Mesh } from 'three';
 import hextile from '../../../assets/hextile.glb?url';
 
 const HexTile: React.FC<GroupProps>  = (props) => {
   const group = useRef();
-  const hovered = false;
-  const { nodes, materials } = useLoader(GLTFLoader, hextile);
+  // @ts-ignore
+  const { nodes, materials } = useGLTF(hextile);
   // https://github.com/pmndrs/@react-three/fiber/blob/master/markdown/api.md#objects-properties-and-constructor-arguments
   // we might not need dispose=null?
   // https://gracious-keller-98ef35.netlify.app/docs/api/automatic-disposal/
@@ -35,3 +35,4 @@ const HexTile: React.FC<GroupProps>  = (props) => {
 };
 
 export default HexTile;
+useGLTF.preload(hextile);
