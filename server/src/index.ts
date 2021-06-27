@@ -100,7 +100,11 @@ app.post("/game/:id/move", async (req, res) => {
       }
     }
   }
-  const game = await dl.getGameById(gameId);
+  const session = await dl.createContext();
+
+  const game = await dl.getGameById(gameId, {
+    session,
+  });
   if (game == null || game == undefined) {
     res.sendStatus(404);
     return;
@@ -116,7 +120,10 @@ app.post("/game/:id/move", async (req, res) => {
     return;
   }
   try {
-    await dl.saveGame(gameId, newGame);
+    await dl.saveGame(gameId, newGame, {
+      session,
+    });
+    await dl.commitContext(session);
   } catch (e) {
     res.sendStatus(500);
     return;

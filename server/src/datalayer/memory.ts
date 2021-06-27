@@ -60,4 +60,12 @@ export default class Memory implements DataLayer {
     this.games[gameId] = game;
     return true;
   }
+
+  async createContext(): Promise<null> {
+    return null;
+  }
+
+  async commitContext(context: null): Promise<boolean> {
+    return true;
+  }
 }

@@ -1,5 +1,5 @@
 // import { Sequelize } from "sequelize";
-import mongoose, { Model } from "mongoose";
+import mongoose, { ClientSession, Model, mongo } from "mongoose";
 import getConfig from "../../config";
 
 import { DataLayer } from "../../types";
@@ -9,6 +9,9 @@ import Models from "./models";
 import Cell from "../../cell";
 import HexGrid from "../../hexgrid";
 
+interface Options extends Record<string, unknown> {
+  session?: ClientSession;
+}
 export default class Mongo implements DataLayer {
   connected = false;
   constructor() {
@@ -47,15 +50,21 @@ export default class Mongo implements DataLayer {
     }
   }
 
-  async getGamesByUserId(id: string): Promise<Game[]> {
+  async getGamesByUserId(id: string, options: Options): Promise<Game[]> {
     const games = [];
     if (!this.connected) {
       throw new Error("Db not connected");
     }
     try {
-      const res = await Models.Game.find({
-        users: id,
-      });
+      const res = await Models.Game.find(
+        {
+          users: id,
+        },
+        null,
+        {
+          session: options?.session,
+        }
+      );
       if (res && res.length) {
         for (const gameDoc of res) {
           const cellMap: {
@@ -75,14 +84,20 @@ export default class Mongo implements DataLayer {
       throw e;
     }
   }
-  async getGameById(id: string): Promise<Game | null> {
+  async getGameById(id: string, options: Options): Promise<Game | null> {
     if (!this.connected) {
       throw new Error("Db not connected");
     }
     try {
-      const res = await Models.Game.findOne({
-        ulid: id,
-      });
+      const res = await Models.Game.findOne(
+        {
+          ulid: id,
+        },
+        null,
+        {
+          session: options?.session,
+        }
+      );
       if (res) {
         const cellMap: {
           [key: string]: Cell;
@@ -100,7 +115,11 @@ export default class Mongo implements DataLayer {
       throw e;
     }
   }
-  async joinGame(userId: string, gameId: string): Promise<boolean> {
+  async joinGame(
+    userId: string,
+    gameId: string,
+    options: Options
+  ): Promise<boolean> {
     if (!this.connected) {
       throw new Error("Db not connected");
     }
@@ -115,6 +134,9 @@ export default class Mongo implements DataLayer {
         },
         {
           $push: { users: userId },
+        },
+        {
+          session: options?.session,
         }
       );
       return res.nModified == 1;
@@ -123,7 +145,7 @@ export default class Mongo implements DataLayer {
       return false;
     }
   }
-  async joinRandomGame(userId: string): Promise<boolean> {
+  async joinRandomGame(userId: string, options: Options): Promise<boolean> {
     if (!this.connected) {
       throw new Error("Db not connected");
     }
@@ -137,6 +159,9 @@ export default class Mongo implements DataLayer {
         },
         {
           $push: { users: userId },
+        },
+        {
+          session: options?.session,
         }
       );
       return res.nModified == 1;
@@ -145,7 +170,11 @@ export default class Mongo implements DataLayer {
       return false;
     }
   }
-  async saveGame(gameId: string, game: Game): Promise<boolean> {
+  async saveGame(
+    gameId: string,
+    game: Game,
+    options: Options
+  ): Promise<boolean> {
     if (!this.connected) {
       return false;
     }
@@ -154,6 +183,7 @@ export default class Mongo implements DataLayer {
       dbGame.grid = Object.values(game.grid.cellMap);
       const res = await Models.Game.updateOne({ ulid: gameId }, dbGame, {
         upsert: true,
+        session: options?.session,
       });
       console.log(res);
       return true;
@@ -161,5 +191,18 @@ export default class Mongo implements DataLayer {
       console.log(e);
       return false;
     }
+  }
+
+  async createContext(): Promise<ClientSession> {
+    const db = mongoose.connection;
+    const session = await db.startSession();
+    session.startTransaction();
+    return session;
+  }
+
+  async commitContext(context: ClientSession): Promise<boolean> {
+    await context.commitTransaction();
+    context.endSession();
+    return true;
   }
 }

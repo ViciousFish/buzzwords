@@ -6,9 +6,28 @@ export interface HexCoord {
 }
 
 export interface DataLayer {
-  getGamesByUserId(id: string): Promise<Game[]>;
-  getGameById(id: string): Promise<Game | null>;
-  saveGame(gameId: string, game: Game): Promise<boolean>;
-  joinGame(userId: string, gameId: string): Promise<boolean>;
-  joinRandomGame(userId: string): Promise<boolean>;
+  getGamesByUserId(
+    id: string,
+    options?: Record<string, unknown>
+  ): Promise<Game[]>;
+  getGameById(
+    id: string,
+    options?: Record<string, unknown>
+  ): Promise<Game | null>;
+  saveGame(
+    gameId: string,
+    game: Game,
+    options?: Record<string, unknown>
+  ): Promise<boolean>;
+  joinGame(
+    userId: string,
+    gameId: string,
+    options?: Record<string, unknown>
+  ): Promise<boolean>;
+  joinRandomGame(
+    userId: string,
+    options?: Record<string, unknown>
+  ): Promise<boolean>;
+  createContext(): Promise<unknown>;
+  commitContext(context: unknown): Promise<boolean>;
 }
