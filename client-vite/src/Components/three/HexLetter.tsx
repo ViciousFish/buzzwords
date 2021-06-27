@@ -69,7 +69,7 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
     },
   });
   useFrame(() => {
-    if (group.current) {
+    if (group.current && (spring.x.isAnimating || spring.y.isAnimating)) {
       const v = new Vector3(spring.y.get(), spring.x.get(), 0)
       const a = v.length();
       // let p = v.cross(new Vector3(0, 0, 1))
