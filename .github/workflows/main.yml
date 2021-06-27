@@ -26,11 +26,11 @@ jobs:
     - name: install deps
       run: yarn install --frozen-lockfile
     - name: compile
-      run: yarn build
+      run: yarn build --mode PRODUCTION
     - name: rsync to server
       uses: burnett01/rsync-deployments@4.1
       with:
-        switches: -rz --delete
+        switches: -rzv --delete
         path: client-vite/dist
         remote_path: www/buzzwords
         remote_host: droplet.chuckdries.com

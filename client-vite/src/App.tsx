@@ -22,7 +22,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        {import.meta.env.MODE !== 'PRODUCTION' && dpr}
+        {!import.meta.env.PROD && dpr}
         <Buzz />
         {/* <div > */}
         <Canvas
@@ -40,7 +40,7 @@ function App() {
           dpr={Math.max(window.devicePixelRatio, 2)}
           flat
         >
-          {import.meta.env.MODE !== 'PRODUCTION' && <Stats />}
+          {!import.meta.env.PROD && <Stats />}
           {/* <CameraControls /> */}
           <ambientLight />
           <directionalLight position={[10, 10, 10]} />
