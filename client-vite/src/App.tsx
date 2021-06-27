@@ -7,6 +7,7 @@ import { Html, Stats, useProgress } from "@react-three/drei";
 import CameraControls from "./Components/three/CameraControls";
 import HexWord from "./Components/three/HexWord";
 import { Buzz } from "./Components/three/Buzz";
+import { GameBoard } from "./Components/three/GameBoard";
 
 /* Three TODO
 - hexagon
@@ -33,9 +34,8 @@ function App() {
         {/* <div > */}
         <Canvas
           style={{
-            touchAction: "none",
             margin: "1em",
-            height: 500,
+            height: 800,
             minWidth: 600,
           }}
           camera={{
@@ -56,6 +56,9 @@ function App() {
             <group position={[0, -2, 0]}>
               <HexWord position={[0, 0, 0]} text="COMING" />
               <HexWord position={[0, -4.8, 0]} text="SOON!" />
+            </group>
+            <group position={[0, -16, 0]}>
+              <GameBoard />
             </group>
           </React.Suspense>
         </Canvas>

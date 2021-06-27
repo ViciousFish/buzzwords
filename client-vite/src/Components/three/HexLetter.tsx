@@ -25,7 +25,7 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
     () => ({
       font,
       size: 3,
-      height: 1,
+      height: .5,
       curveSegments: 32,
       bevelEnabled: true,
       bevelThickness: 0.1,
@@ -66,7 +66,7 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
     // @ts-ignore
     <a.group {...props} {...spring}>
       {/* @ts-ignore */}
-      <a.mesh ref={mesh} position={[0, 0, 0.2]} {...bind()}>
+      <a.mesh castShadow ref={mesh} position={[0, 0, .75]} {...bind()}>
         <textGeometry args={[letter, config]} />
         <meshStandardMaterial color={theme.colors.darkbrown} />
       </a.mesh>

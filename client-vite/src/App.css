@@ -25,6 +25,9 @@
   flex-direction: column; */
   minwidth: 700px;
 }
+canvas {
+  touch-action: none;
+}
 
 .App-link {
   color: #61dafb;

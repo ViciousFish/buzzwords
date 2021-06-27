@@ -24,6 +24,7 @@ const HexTile: React.FC<MeshProps> = ({ position, rotation, ...props }) => {
       <mesh
         rotation={[Math.PI / 2, 0, 0]}
         visible
+        receiveShadow
         geometry={(nodes.Circle as Mesh).geometry}
         {...props}
       >
