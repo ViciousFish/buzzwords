@@ -8,12 +8,20 @@ interface HexWordProps {
 
 const HexWord: React.FC<HexWordProps & GroupProps> = ({
   text,
+  position,
   ...props
 }) => {
   const characters = text.split("");
+  const positionOffset = -1 * (((characters.length - 1) * 5.5) / 2);
   return (
     <group
-      position={[-1 * (((characters.length - 1) * 5.5) / 2), 0, 0]}
+      position={[
+        position && Array.isArray(position)
+          ? position[0] + positionOffset
+          : positionOffset,
+        position && Array.isArray(position) ? position[1] : 0,
+        position && Array.isArray(position) ? position[2] : 0,
+      ]}
       {...props}
     >
       {characters.map((character, index) => (

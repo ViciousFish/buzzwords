@@ -1,16 +1,16 @@
-import React, { useMemo, useRef, useLayoutEffect, useState } from "react";
-import { Vector3 } from "three";
-import { useFrame, useLoader, useThree } from "@react-three/fiber";
+import React, { useMemo, useRef, useLayoutEffect } from "react";
+import { Mesh, Vector3 } from "three";
+import { useLoader, useThree, Vector3 as V3Type } from "@react-three/fiber";
 import { FontLoader } from "three";
 import { useSpring, a } from "@react-spring/three";
-import { useDrag, useGesture } from "@use-gesture/react";
+import { useGesture } from "@use-gesture/react";
 
 import HexTile from "./HexTile";
 import fredokaone from "../../../assets/Fredoka One_Regular.json?url";
 import { theme } from "../../theme";
 
 interface HexLetterProps {
-  position: Vector3 | undefined;
+  position: V3Type;
   letter: string;
 }
 
@@ -37,16 +37,14 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
     [font]
   );
 
-  const mesh = useRef();
+  const mesh = useRef<Mesh>();
 
   useLayoutEffect(() => {
     const size = new Vector3();
     if (mesh.current) {
       mesh.current.geometry.computeBoundingBox();
-      mesh.current.geometry.boundingBox.getSize(size);
-      // Mesh.current.position.x = hAlign === 'center' ? -size.x / 2 : hAlign === 'right' ? 0 : -size.x;
+      mesh.current.geometry.boundingBox?.getSize(size);
       mesh.current.position.x = -size.x / 2;
-      // Mesh.current.position.y = vAlign === 'center' ? -size.y / 2 : vAlign === 'top' ? 0 : -size.y;
       mesh.current.position.y = -size.y / 2;
     }
   }, [letter]);
@@ -54,19 +52,20 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
   const [spring, api] = useSpring(() => ({ rotation: [0, 0, 0], config: {tension: 100, friction: 20, damping: 20} }))
   const bind = useGesture({
     onDrag: ({down, movement: [mx, my] }) => api.start({
-      rotation: [down ? (my / (aspect * 20)) : 0, down ? (mx / (aspect * 20)) : 0, 0]
+      rotation: [down ? (my / (aspect * 4)) : 0, down ? (mx / (aspect * 4)) : 0, 0]
     })
   })
   return (
+    // @ts-ignore
     <a.group {...props} {...spring}>
-      <a.mesh ref={mesh} {...bind()}>
+      {/* @ts-ignore */}
+      <a.mesh ref={mesh} position={[0, 0, .2]} {...bind()}>
         <textGeometry args={[letter, config]} />
-        {/* <meshNormalMaterial */}
         <meshStandardMaterial
-          // ToneMapped={false}
           color={theme.colors.darkbrown}
         />
       </a.mesh>
+      {/* @ts-ignore */}
       <HexTile {...bind()} />
     </a.group>
   );
