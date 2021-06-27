@@ -21,7 +21,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        {/* {window.devicePixelRatio} - {Math.max(window.devicePixelRatio, 2)} */}
+        {window.devicePixelRatio} - {Math.max(window.devicePixelRatio, 2)}
         <Buzz />
         {/* <div > */}
         <Canvas
@@ -39,10 +39,10 @@ function App() {
           dpr={Math.max(window.devicePixelRatio, 2)}
           flat
         >
-          {/* <Stats /> */}
+          <Stats />
           {/* <CameraControls /> */}
           <ambientLight />
-          <directionalLight position={[5, 5, 10]} />
+          <directionalLight position={[10, 10, 10]} />
           <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
             <HexWord position={[0, 2.4, 0]} text="COMING" />
             <HexWord position={[0, -2.4, 0]} text="SOON!" />

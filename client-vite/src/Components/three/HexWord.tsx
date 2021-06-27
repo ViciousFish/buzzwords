@@ -4,6 +4,7 @@ import HexLetter from "./HexLetter";
 
 interface HexWordProps {
   text: string;
+  position: [number, number, number];
 }
 
 const HexWord: React.FC<HexWordProps & GroupProps> = ({
@@ -16,11 +17,9 @@ const HexWord: React.FC<HexWordProps & GroupProps> = ({
   return (
     <group
       position={[
-        position && Array.isArray(position)
-          ? position[0] + positionOffset
-          : positionOffset,
-        position && Array.isArray(position) ? position[1] : 0,
-        position && Array.isArray(position) ? position[2] : 0,
+        position ? position[0] + positionOffset : positionOffset,
+        position ? position[1] : 0,
+        position ? position[2] : 0,
       ]}
       {...props}
     >
