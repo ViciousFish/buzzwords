@@ -31,3 +31,6 @@ today
 - [x] text
 - [x] animation/interaction
 - [ ] board layout
+- [x] buzz in threejs
+- [ ] auto zoom fit (/flex layout?)
+- [ ] world space rotate (fix wonky tile rotation)

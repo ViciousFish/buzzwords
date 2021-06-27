@@ -1,8 +1,14 @@
 import React, { useMemo, useRef, useLayoutEffect } from "react";
-import { Mesh, Vector3 } from "three";
-import { useLoader, useThree, Vector3 as V3Type } from "@react-three/fiber";
+import { Group, Mesh, Quaternion, Vector3 } from "three";
+import {
+  useFrame,
+  useLoader,
+  useThree,
+  Vector3 as V3Type,
+} from "@react-three/fiber";
 import { FontLoader } from "three";
-import { useSpring, a } from "@react-spring/three";
+import { useSpring } from "@react-spring/three";
+import { config as springConfig } from "@react-spring/core";
 import { useGesture } from "@use-gesture/react";
 
 import HexTile from "./HexTile";
@@ -37,6 +43,7 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
   );
 
   const mesh = useRef<Mesh>();
+  const group = useRef<Group>();
 
   useLayoutEffect(() => {
     const size = new Vector3();
@@ -49,30 +56,35 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
   }, [letter]);
 
   const [spring, api] = useSpring(() => ({
-    rotation: [0, 0, 0],
-    config: { tension: 100, friction: 20, damping: 20 },
+    x: 0,
+    y: 0,
+    config: springConfig.stiff,
   }));
   const bind = useGesture({
-    onDrag: ({ down, movement: [mx, my] }) =>
+    onDrag: ({ down, movement: [mx, my] }) => {
       api.start({
-        rotation: [
-          down ? my / (aspect * 2) : 0,
-          down ? mx / (aspect * 2) : 0,
-          0,
-        ],
-      }),
+        x: down ? my / (aspect * 2) : 0,
+        y: down ? mx / (aspect * 2) : 0,
+      });
+    },
+  });
+  useFrame(() => {
+    if (group.current) {
+      const q = new Quaternion(Math.tan(spring.x.get()), Math.tan(spring.y.get()), 0, Math.PI);
+      q.normalize();
+      group.current.setRotationFromQuaternion(q);
+    }
   });
   return (
-    // @ts-ignore
-    <a.group {...props} {...spring}>
+    <group ref={group} {...props}>
       {/* @ts-ignore */}
-      <a.mesh ref={mesh} position={[0, 0, 0.2]} {...bind()}>
+      <mesh ref={mesh} position={[0, 0, 0.2]} {...bind()}>
         <textGeometry args={[letter, config]} />
         <meshStandardMaterial color={theme.colors.darkbrown} />
-      </a.mesh>
+      </mesh>
       {/* @ts-ignore */}
       <HexTile {...bind()} />
-    </a.group>
+    </group>
   );
 };
 
