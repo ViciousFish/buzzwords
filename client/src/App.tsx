@@ -3,7 +3,7 @@ import './App.css';
 import Buzz from './Components/Zdog/Buzz';
 import { Canvas } from 'react-three-fiber';
 // import { Html } from '@react-three/drei';
-import Polygon from './Components/three/HexTile';
+import HexTile from './Components/three/HexTile';
 import HexTileWord from './Components/Zdog/HexTileWord';
 import CameraControls from './Components/three/CameraControls';
 
@@ -27,9 +27,9 @@ function App() {
         >
           <CameraControls />
           <ambientLight />
-          {/* <pointLight position={[10, 10, 10]} /> */}
+          <pointLight position={[10, 10, 10]} />
           <React.Suspense fallback={null}>
-            <Polygon vertices={6} radius={Math.PI} position={[0, 0, 0]} />
+            <HexTile />
           </React.Suspense>
         </Canvas>
       </header>
