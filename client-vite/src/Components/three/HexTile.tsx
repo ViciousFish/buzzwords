@@ -1,28 +1,33 @@
 import React, { useRef } from 'react';
-import { useLoader } from '@react-three/fiber';
+import { GroupProps, useLoader } from '@react-three/fiber';
 import { theme } from '../../theme';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { Mesh } from 'three';
+import hextile from '../../../assets/hextile.glb?url';
 
-const HexTile: React.FC = (props) => {
+const HexTile: React.FC<GroupProps>  = (props) => {
   const group = useRef();
   const hovered = false;
-  const { nodes, materials } = useLoader(GLTFLoader, './assets/hextile.glb');
+  const { nodes, materials } = useLoader(GLTFLoader, hextile);
   // https://github.com/pmndrs/@react-three/fiber/blob/master/markdown/api.md#objects-properties-and-constructor-arguments
   // we might not need dispose=null?
   // https://gracious-keller-98ef35.netlify.app/docs/api/automatic-disposal/
   // I think it just keeps the mesh around
   return (
-    <group ref={group} {...props} dispose={null}>
+    <group
+      ref={group}
+      scale={[3, 3, 3]}
+      {...props}
+      dispose={null}
+    >
       <mesh
         rotation={[Math.PI / 2, 0, 0]}
-        scale={[3, 3, 3]}
         visible
         geometry={(nodes.Circle as Mesh).geometry}
       >
         <meshStandardMaterial
-          toneMapped={false}
-          color={hovered ? theme.colors.darkbrown : theme.colors.primary}
+          // toneMapped={false}
+          color={theme.colors.primary}
         />
       </mesh>
     </group>

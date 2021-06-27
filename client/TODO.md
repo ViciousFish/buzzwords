@@ -25,6 +25,7 @@
 
 
 today
-- vite
-- text
-- board layout
+- [x] vite
+- [ ] text
+- [ ] animation/interaction
+- [ ] board layout
