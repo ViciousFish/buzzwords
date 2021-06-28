@@ -45,6 +45,12 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
   const mesh = useRef<Mesh>();
   const group = useRef<Group>();
 
+  const [spring, api] = useSpring(() => ({
+    x: 10,
+    y: 0,
+    config: springConfig.stiff,
+  }));
+
   useLayoutEffect(() => {
     const size = new Vector3();
     if (mesh.current) {
@@ -53,13 +59,12 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
       mesh.current.position.x = -size.x / 2;
       mesh.current.position.y = -size.y / 2;
     }
+    api.start({
+      x: 0,
+      y: 0,
+    });
   }, [letter]);
 
-  const [spring, api] = useSpring(() => ({
-    x: 0,
-    y: 0,
-    config: springConfig.stiff,
-  }));
   const bind = useGesture({
     onDrag: ({ down, movement: [mx, my] }) => {
       api.start({
@@ -74,7 +79,7 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
       const a = v.length();
       // let p = v.cross(new Vector3(0, 0, 1))
       v.normalize();
-      group.current.setRotationFromAxisAngle(v, a / 6);
+      group.current.setRotationFromAxisAngle(v, a / 7);
     }
   });
   return (
