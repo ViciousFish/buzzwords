@@ -1,5 +1,6 @@
+import { SpringRef, useChain } from "@react-spring/three";
 import { GroupProps } from "@react-three/fiber";
-import React from "react";
+import React, { useRef } from "react";
 import HexLetter from "./HexLetter";
 
 interface HexWordProps {
@@ -12,6 +13,14 @@ const HexWord: React.FC<HexWordProps & GroupProps> = ({
   position,
   ...props
 }) => {
+  const chainArray = useRef([] as SpringRef[]);
+  const attachChain = React.useCallback(
+    (spring: SpringRef) => {
+      chainArray.current.push(spring);
+    },
+    [chainArray]
+  );
+  useChain(chainArray.current);
   const characters = text.split("");
   const positionOffset = -1 * (((characters.length - 1) * 5.5) / 2);
   return (
@@ -25,6 +34,7 @@ const HexWord: React.FC<HexWordProps & GroupProps> = ({
     >
       {characters.map((character, index) => (
         <HexLetter
+          attachChain={attachChain}
           letter={character}
           key={index}
           position={[index * 5.5, 0, 0]}

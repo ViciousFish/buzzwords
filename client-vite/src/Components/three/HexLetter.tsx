@@ -7,7 +7,7 @@ import {
   Vector3 as V3Type,
 } from "@react-three/fiber";
 import { FontLoader } from "three";
-import { useSpring } from "@react-spring/three";
+import { SpringRef, useSpring, useSpringRef } from "@react-spring/three";
 import { config as springConfig } from "@react-spring/core";
 import { useGesture } from "@use-gesture/react";
 
@@ -18,11 +18,12 @@ import { theme } from "../../theme";
 interface HexLetterProps {
   position: V3Type;
   letter: string;
+  attachChain?: (springRef: SpringRef) => void;
 }
 
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
 
-const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
+const HexLetter: React.FC<HexLetterProps> = ({ letter, attachChain, ...props }) => {
   const { size, viewport } = useThree();
   const aspect = size.width / viewport.width;
 
@@ -45,11 +46,23 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
   const mesh = useRef<Mesh>();
   const group = useRef<Group>();
 
+  const springRef = useSpringRef()
   const [spring, api] = useSpring(() => ({
-    x: 10,
-    y: 0,
+    from: {
+      x: 10,
+      y: 0
+    },
+    to: {
+      x: 0,
+      y: 0,
+    },
     config: springConfig.stiff,
+    ref: springRef
   }));
+
+  if (attachChain) {
+    attachChain(springRef);
+  }
 
   useLayoutEffect(() => {
     const size = new Vector3();
@@ -59,10 +72,6 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
       mesh.current.position.x = -size.x / 2;
       mesh.current.position.y = -size.y / 2;
     }
-    api.start({
-      x: 0,
-      y: 0,
-    });
   }, [letter]);
 
   const bind = useGesture({
