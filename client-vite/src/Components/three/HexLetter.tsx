@@ -74,7 +74,7 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, ...props }) => {
       const a = v.length();
       // let p = v.cross(new Vector3(0, 0, 1))
       v.normalize();
-      group.current.setRotationFromAxisAngle(v, a / 6);
+      group.current.setRotationFromAxisAngle(v, a / 12);
     }
   });
   return (
