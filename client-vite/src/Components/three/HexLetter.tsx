@@ -7,7 +7,7 @@ import {
   Vector3 as V3Type,
 } from "@react-three/fiber";
 import { FontLoader } from "three";
-import { SpringRef, useSpring, useSpringRef } from "@react-spring/three";
+import { SpringRef, useSpring, useSpringRef, animated as a } from "@react-spring/three";
 import { config as springConfig } from "@react-spring/core";
 import { useGesture } from "@use-gesture/react";
 
@@ -23,7 +23,11 @@ interface HexLetterProps {
 
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
 
-const HexLetter: React.FC<HexLetterProps> = ({ letter, attachChain, ...props }) => {
+const HexLetter: React.FC<HexLetterProps> = ({
+  letter,
+  attachChain,
+  ...props
+}) => {
   const { size, viewport } = useThree();
   const aspect = size.width / viewport.width;
 
@@ -46,18 +50,22 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, attachChain, ...props }) 
   const mesh = useRef<Mesh>();
   const group = useRef<Group>();
 
-  const springRef = useSpringRef()
+  const springRef = useSpringRef();
   const [spring, api] = useSpring(() => ({
     from: {
-      x: 10,
-      y: 0
-    },
-    to: {
+      scale: [0.5, 0.5, 0.5],
       x: 0,
       y: 0,
     },
-    config: springConfig.stiff,
-    ref: springRef
+    to: {
+      scale: [1, 1, 1],
+      x: 0,
+      y: 0,
+    },
+    // CQ: do this based on grid coordinate
+    delay: (Math.random() * 300),
+    config: springConfig.slow,
+    ref: springRef,
   }));
 
   if (attachChain) {
@@ -72,7 +80,7 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, attachChain, ...props }) 
       mesh.current.position.x = -size.x / 2;
       mesh.current.position.y = -size.y / 2;
     }
-  }, [letter]);
+  }, [letter, group, spring]);
 
   const bind = useGesture({
     onDrag: ({ down, movement: [mx, my] }) => {
@@ -92,7 +100,8 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, attachChain, ...props }) 
     }
   });
   return (
-    <group ref={group} {...props}>
+    // @ts-ignore
+    <a.group ref={group} {...props} scale={spring.scale}>
       {/* @ts-ignore */}
       <mesh ref={mesh} position={[0, 0, 0.2]} {...bind()}>
         <textGeometry args={[letter, config]} />
@@ -102,7 +111,7 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, attachChain, ...props }) 
         {/* @ts-ignore */}
         <HexTile {...bind()} />
       </group>
-    </group>
+    </a.group>
   );
 };
 
