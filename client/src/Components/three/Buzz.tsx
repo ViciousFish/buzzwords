@@ -28,7 +28,7 @@ const Wing: React.FC<MeshProps> = (props) => {
           },
         ]}
       />
-      <meshBasicMaterial color="#ffffff" />
+      <meshStandardMaterial color="#eeeeee" />
     </mesh>
   );
 };
@@ -47,17 +47,17 @@ export const Buzz: React.FC<GroupProps> = (props) => {
           {/* head */}
           <mesh position={[0, 2.5, 0]}>
             <sphereBufferGeometry args={[1.7, 16, 16]} />
-            <meshBasicMaterial color="#E0A40B" />
+            <meshStandardMaterial color="#E0A40B" />
           </mesh>
           {/* body */}
           <mesh>
             <cylinderBufferGeometry args={[1.7, 1.7, 5, 16]} />
-            <meshBasicMaterial color="#E0A40B" />
+            <meshStandardMaterial color="#E0A40B" />
           </mesh>
           {/* stinger */}
           <mesh position={[0, -3.75, 0]} rotation={[Math.PI, 0, 0]}>
             <coneBufferGeometry args={[1.7, 2.5, 16]} />
-            <meshBasicMaterial color="#59430D" />
+            <meshStandardMaterial color="#59430D" />
           </mesh>
           {/* wings */}
           <Wing position={[2, 0, 2]} />
