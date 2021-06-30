@@ -1,28 +1,37 @@
-import React, { useRef } from 'react';
-import { useLoader } from '@react-three/fiber';
-import { theme } from '../../theme';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { Mesh } from 'three';
+import React, { useRef } from "react";
+import { MeshProps, useLoader } from "@react-three/fiber";
+import { theme } from "../../theme";
+import { useGLTF, PerspectiveCamera } from "@react-three/drei";
+import { Mesh } from "three";
+// import hextile from "../../../assets/hextile.glb?url";
 
-const HexTile: React.FC = (props) => {
+const hextile = "/assets/hextile.glb";
+
+const HexTile: React.FC<MeshProps> = ({ position, rotation, ...props }) => {
   const group = useRef();
-  const hovered = false;
-  const { nodes, materials } = useLoader(GLTFLoader, './assets/hextile.glb');
-  // https://github.com/pmndrs/react-three-fiber/blob/master/markdown/api.md#objects-properties-and-constructor-arguments
+  // @ts-ignore
+  const { nodes, materials } = useGLTF(hextile);
+  // https://github.com/pmndrs/@react-three/fiber/blob/master/markdown/api.md#objects-properties-and-constructor-arguments
   // we might not need dispose=null?
   // https://gracious-keller-98ef35.netlify.app/docs/api/automatic-disposal/
   // I think it just keeps the mesh around
   return (
-    <group ref={group} {...props} dispose={null}>
+    <group
+      ref={group}
+      scale={[3, 3, 3]}
+      dispose={null}
+      position={position}
+      rotation={rotation}
+    >
       <mesh
         rotation={[Math.PI / 2, 0, 0]}
-        scale={[3, 3, 3]}
         visible
         geometry={(nodes.Circle as Mesh).geometry}
+        {...props}
       >
         <meshStandardMaterial
-          toneMapped={false}
-          color={hovered ? theme.colors.darkbrown : theme.colors.primary}
+          // ToneMapped={false}
+          color={theme.colors.primary}
         />
       </mesh>
     </group>
@@ -30,3 +39,4 @@ const HexTile: React.FC = (props) => {
 };
 
 export default HexTile;
+useGLTF.preload(hextile);

@@ -1,4 +1,5 @@
 - Hex tiles
+
   - [ ] rounded
   - states
     - [ ] blank/grey
@@ -7,9 +8,11 @@
     - [ ] selected letter
 
 - Game Board
+
   - [ ] layout
 
 - Gameplay
+
   - [ ] mid-turn state
   - [ ] submit turn to api
   - [ ] receive turn from api
@@ -17,6 +20,7 @@
 
 - Navigation
 - Onboarding
+
   - [ ] tutorial
   - [ ] register/signin prompt and sync
 
@@ -25,8 +29,8 @@
   - [ ] report web vitals and framerate
     - posthog?
 
-
 today
+
 - [x] vite
 - [x] text
 - [x] animation/interaction

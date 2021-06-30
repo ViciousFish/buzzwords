@@ -2,11 +2,10 @@
 Rounded polygon math: https://www.stkent.com/2018/04/06/really-rounded-polygons.html
 Perhaps make a "polygonal prism" component/class?
 */
-import React, { useRef, useState, useMemo } from 'react';
-import { MeshProps, useFrame } from '@react-three/fiber';
-import { Mesh, Shape } from 'three';
-import { theme } from '../../theme';
-
+import React, { useRef, useState, useMemo } from "react";
+import { MeshProps, useFrame } from "@react-three/fiber";
+import { Mesh, Shape } from "three";
+import { theme } from "../../theme";
 
 interface PolygonOwnprops {
   radius: number;
@@ -14,7 +13,7 @@ interface PolygonOwnprops {
 }
 const origin = {
   x: 0,
-  y: 0
+  y: 0,
 };
 
 const Polygon: React.FC<PolygonOwnprops & MeshProps> = ({
@@ -41,33 +40,34 @@ const Polygon: React.FC<PolygonOwnprops & MeshProps> = ({
     //   const angle = (interiorAngleSum / vertices) / 2;
     //         ^ divide by 2 because we're calculating triangles against the horizontal, not angles between each side
     //   const a = angle * (Math.PI / 180); // convert to radians
-    const a = 2 * Math.PI / vertices;
+    const a = (2 * Math.PI) / vertices;
     const ninetyDeg = 90 * (Math.PI / 180);
 
     const shape = new Shape();
-    // move to starting position (x = 0, y = radius in hexagon case)
+    // Move to starting position (x = 0, y = radius in hexagon case)
     const startPoint = {
       x: origin.x + radius * Math.cos(ninetyDeg),
-      y: origin.x + radius * Math.sin(ninetyDeg)
+      y: origin.x + radius * Math.sin(ninetyDeg),
     };
     shape.moveTo(startPoint.x, startPoint.y);
-    console.log('startPoint', startPoint);
+    console.log("startPoint", startPoint);
     for (let i = 1; i <= vertices; i++) {
       const nextPoint = {
-        x: origin.x + radius * Math.cos(ninetyDeg - (a * i)),
-        y: origin.y + radius * Math.sin(ninetyDeg - (a * i))
+        x: origin.x + radius * Math.cos(ninetyDeg - a * i),
+        y: origin.y + radius * Math.sin(ninetyDeg - a * i),
       };
-      console.log('nextPoint', nextPoint);
+      console.log("nextPoint", nextPoint);
       shape.lineTo(nextPoint.x, nextPoint.y);
     }
-    // shape.moveTo(...start);
+
+    // Shape.moveTo(...start);
     // paths.forEach((path) => shape.bezierCurveTo(...path));
     return shape;
   }, [radius, vertices]);
 
   // Rotate mesh every frame, this is outside of React without overhead
   useFrame(() => {
-    // if (mesh.current) mesh.current.rotation.x = mesh.current.rotation.y += 0.01;
+    // If (mesh.current) mesh.current.rotation.x = mesh.current.rotation.y += 0.01;
   });
 
   return (
@@ -84,19 +84,20 @@ const Polygon: React.FC<PolygonOwnprops & MeshProps> = ({
       rotation={[Math.PI / 2, 0, 0]}
       scale={[3, 3, 3]}
       visible
+      {...meshProps}
     >
       <extrudeBufferGeometry
         args={[
           shape,
           {
             steps: 1,
-            depth: .5,
+            depth: 0.5,
             bevelEnabled: false,
-            // bevelThickness: .2,
+            // BevelThickness: .2,
             // bevelSize: .2,
             // bevelOffset: 0,
             // bevelSegments: 1
-          }
+          },
         ]}
       />
       <meshBasicMaterial
