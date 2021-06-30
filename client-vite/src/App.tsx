@@ -8,6 +8,8 @@ import CameraControls from "./Components/three/CameraControls";
 import HexWord from "./Components/three/HexWord";
 import { Buzz } from "./Components/three/Buzz";
 
+import { Counter } from './features/counter/Counter';
+
 /* Three TODO
 - hexagon
   - rounded corners
@@ -28,6 +30,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <Counter />
         {!import.meta.env.PROD && dpr}
         {/* <Buzz /> */}
         {/* <div > */}

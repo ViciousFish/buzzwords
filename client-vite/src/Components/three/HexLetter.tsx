@@ -7,7 +7,12 @@ import {
   Vector3 as V3Type,
 } from "@react-three/fiber";
 import { FontLoader } from "three";
-import { SpringRef, useSpring, useSpringRef, animated as a } from "@react-spring/three";
+import {
+  SpringRef,
+  useSpring,
+  useSpringRef,
+  animated as a,
+} from "@react-spring/three";
 import { config as springConfig } from "@react-spring/core";
 import { useGesture } from "@use-gesture/react";
 
@@ -32,7 +37,7 @@ const HexLetter: React.FC<HexLetterProps> = ({
   const aspect = size.width / viewport.width;
 
   const font = useLoader(FontLoader, fredokaone);
-  const config = useMemo(
+  const fontConfig = useMemo(
     () => ({
       font,
       size: 3,
@@ -47,25 +52,29 @@ const HexLetter: React.FC<HexLetterProps> = ({
     [font]
   );
 
+  // const [config, setConfig] = React.useState('stiff' as keyof typeof springConfig);
+
   const mesh = useRef<Mesh>();
   const group = useRef<Group>();
 
   const springRef = useSpringRef();
-  const [spring, api] = useSpring(() => ({
+  const [rotateSpring, rotateSpringApi] = useSpring(() => ({
+    x: 0,
+    y: 0,
+    config: springConfig.stiff,
+    ref: springRef,
+  }));
+
+  const [{ scale }] = useSpring(() => ({
     from: {
       scale: [0.5, 0.5, 0.5],
-      x: 0,
-      y: 0,
     },
     to: {
       scale: [1, 1, 1],
-      x: 0,
-      y: 0,
     },
     // CQ: do this based on grid coordinate
-    delay: (Math.random() * 300),
+    delay: Math.random() * 500,
     config: springConfig.slow,
-    ref: springRef,
   }));
 
   if (attachChain) {
@@ -80,19 +89,22 @@ const HexLetter: React.FC<HexLetterProps> = ({
       mesh.current.position.x = -size.x / 2;
       mesh.current.position.y = -size.y / 2;
     }
-  }, [letter, group, spring]);
+  }, [letter]);
 
   const bind = useGesture({
     onDrag: ({ down, movement: [mx, my] }) => {
-      api.start({
+      rotateSpringApi.start({
         x: down ? mx / aspect : 0,
         y: down ? my / aspect : 0,
       });
     },
   });
   useFrame(() => {
-    if (group.current && (spring.x.isAnimating || spring.y.isAnimating)) {
-      const v = new Vector3(spring.y.get(), spring.x.get(), 0);
+    if (
+      group.current &&
+      (rotateSpring.x.isAnimating || rotateSpring.y.isAnimating)
+    ) {
+      const v = new Vector3(rotateSpring.y.get(), rotateSpring.x.get(), 0);
       const a = v.length();
       // let p = v.cross(new Vector3(0, 0, 1))
       v.normalize();
@@ -101,10 +113,10 @@ const HexLetter: React.FC<HexLetterProps> = ({
   });
   return (
     // @ts-ignore
-    <a.group ref={group} {...props} scale={spring.scale}>
+    <a.group ref={group} {...props} scale={scale}>
       {/* @ts-ignore */}
       <mesh ref={mesh} position={[0, 0, 0.2]} {...bind()}>
-        <textGeometry args={[letter, config]} />
+        <textGeometry args={[letter, fontConfig]} />
         <meshStandardMaterial color={theme.colors.darkbrown} />
       </mesh>
       <group position={[0, 0, -0.2]}>
