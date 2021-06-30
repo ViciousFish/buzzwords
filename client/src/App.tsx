@@ -7,7 +7,7 @@ import { Html, Stats, useProgress } from "@react-three/drei";
 import CameraControls from "./Components/three/CameraControls";
 import HexWord from "./Components/three/HexWord";
 import { Buzz } from "./Components/three/Buzz";
-import { Flex } from "@react-three/flex";
+import { Flex, Box } from "@react-three/flex";
 
 import { Counter } from "./features/counter/Counter";
 
@@ -37,12 +37,12 @@ function App() {
           style={{
             touchAction: "none",
             margin: "1em",
-            height: 800,
+            height: 600,
             minWidth: 600,
             // background: 'green'
           }}
           camera={{
-            position: [0, 0, 100],
+            position: [0, 0, 60],
             zoom: 4,
           }}
           shadows
@@ -50,16 +50,16 @@ function App() {
           dpr={Math.max(window.devicePixelRatio, 2)}
           flat
         >
-          <Flex>
-            <Buzz position={[0, 12, 0]} />
+          <Flex flexDirection="column" justifyContent="center" pt={4}>
+            <Buzz />
             {process.env.NODE_ENV !== "production" && <Stats />}
             {/* <CameraControls /> */}
             <ambientLight />
             <directionalLight position={[10, 10, 10]} />
-            <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
+            <React.Suspense fallback={<Box><Html center>{progress} % loaded</Html></Box>}>
               <group position={[0, 2, 0]}>
-                <HexWord position={[0, -4.8, 0]} text="COMING" />
-                <HexWord position={[0, -9.6, 0]} text="SOON!" />
+                <HexWord text="COMING" />
+                <HexWord text="SOON!" />
               </group>
             </React.Suspense>
           </Flex>

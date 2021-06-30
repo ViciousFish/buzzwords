@@ -1,6 +1,7 @@
 import React, { useMemo, useRef } from "react";
 import { GroupProps, MeshProps, useFrame } from "@react-three/fiber";
 import { Group, Shape } from "three";
+import { Box } from "@react-three/flex";
 
 const Wing: React.FC<MeshProps> = (props) => {
   const wingShape = useMemo(() => {
@@ -40,27 +41,29 @@ export const Buzz: React.FC<GroupProps> = (props) => {
     }
   });
   return (
-    <group ref={groupRef}>
-      <group rotation={[-1 * (Math.PI / 3), 0, 0]} {...props}>
-        {/* head */}
-        <mesh position={[0, 2.5, 0]}>
-          <sphereBufferGeometry args={[1.7, 16, 16]} />
-          <meshBasicMaterial color="#E0A40B" />
-        </mesh>
-        {/* body */}
-        <mesh>
-          <cylinderBufferGeometry args={[1.7, 1.7, 5, 16]} />
-          <meshBasicMaterial color="#E0A40B" />
-        </mesh>
-        {/* stinger */}
-        <mesh position={[0, -3.75, 0]} rotation={[Math.PI, 0, 0]}>
-          <coneBufferGeometry args={[1.7, 2.5, 16]} />
-          <meshBasicMaterial color="#59430D" />
-        </mesh>
-        {/* wings */}
-        <Wing position={[2, 0, 2]} />
-        <Wing position={[-2, 0, 2]} />
+    <Box mb={2} mt={2}>
+      <group ref={groupRef}>
+        <group rotation={[-1 * (Math.PI / 3), 0, 0]} {...props}>
+          {/* head */}
+          <mesh position={[0, 2.5, 0]}>
+            <sphereBufferGeometry args={[1.7, 16, 16]} />
+            <meshBasicMaterial color="#E0A40B" />
+          </mesh>
+          {/* body */}
+          <mesh>
+            <cylinderBufferGeometry args={[1.7, 1.7, 5, 16]} />
+            <meshBasicMaterial color="#E0A40B" />
+          </mesh>
+          {/* stinger */}
+          <mesh position={[0, -3.75, 0]} rotation={[Math.PI, 0, 0]}>
+            <coneBufferGeometry args={[1.7, 2.5, 16]} />
+            <meshBasicMaterial color="#59430D" />
+          </mesh>
+          {/* wings */}
+          <Wing position={[2, 0, 2]} />
+          <Wing position={[-2, 0, 2]} />
+        </group>
       </group>
-    </group>
+    </Box>
   );
 };
