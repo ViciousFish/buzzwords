@@ -35,8 +35,8 @@
     "eject": "react-scripts eject",
     "lint": "eslint src --ext .js,.ts,.tsx,.jsx",
     "pretty": "prettier --write .",
-    "upload-staging": "rsync -rz --delete dist/ ci@droplet.chuckdries.com:www/buzzwords-staging",
-    "upload": "rsync -rz --delete dist/ ci@droplet.chuckdries.com:www/buzzwords"
+    "upload-staging": "rsync -rz --delete build/ ci@droplet.chuckdries.com:www/buzzwords-staging",
+    "upload": "rsync -rz --delete build/ ci@droplet.chuckdries.com:www/buzzwords"
   },
   "browserslist": {
     "production": [
