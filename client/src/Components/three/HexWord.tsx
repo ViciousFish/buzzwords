@@ -2,7 +2,7 @@ import { SpringRef, useChain } from "@react-spring/three";
 import { GroupProps } from "@react-three/fiber";
 import React, { useRef } from "react";
 import HexLetter from "./HexLetter";
-import { Box } from "@react-three/flex";
+import { Box, Flex } from "@react-three/flex";
 
 interface HexWordProps {
   text: string;
@@ -34,14 +34,18 @@ const HexWord: React.FC<HexWordProps & GroupProps> = ({
         ]}
         {...props}
       >
+        <Flex flexDir='row'>
         {characters.map((character, index) => (
-          <HexLetter
-            attachChain={attachChain}
-            letter={character}
-            key={index}
-            position={[index * 5.5, 0, 0]}
-          />
+          <Box mr={.3} key={index}>
+            <HexLetter
+              attachChain={attachChain}
+              letter={character}
+              // key={index}
+              // position={[index * 5.5, 0, 0]}
+            />
+          </Box>
         ))}
+        </Flex>
       </group>
     </Box>
   );

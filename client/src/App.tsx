@@ -4,7 +4,6 @@ import "./App.css";
 
 import { Canvas } from "@react-three/fiber";
 import { Html, Stats, useProgress } from "@react-three/drei";
-import CameraControls from "./Components/three/CameraControls";
 import HexWord from "./Components/three/HexWord";
 import { Buzz } from "./Components/three/Buzz";
 import { Flex, Box } from "@react-three/flex";
@@ -42,8 +41,8 @@ function App() {
             // background: 'green'
           }}
           camera={{
-            position: [0, 0, 60],
-            zoom: 4,
+            position: [0, 0, 80],
+            zoom: 5,
           }}
           shadows
           // orthographic

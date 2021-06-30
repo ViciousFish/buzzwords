@@ -21,7 +21,7 @@ import HexTile from "./HexTile";
 import { theme } from "../../theme";
 
 interface HexLetterProps {
-  position: V3Type;
+  position?: V3Type;
   letter: string;
   attachChain?: (springRef: SpringRef) => void;
 }
