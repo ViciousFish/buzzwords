@@ -41,7 +41,7 @@ export const Buzz: React.FC<GroupProps> = (props) => {
   });
   return (
     <group ref={groupRef}>
-      <group rotation={[-1 * (Math.PI / 3), 0,0]} {...props}>
+      <group rotation={[-1 * (Math.PI / 3), 0, 0]} {...props}>
         {/* head */}
         <mesh position={[0, 2.5, 0]}>
           <sphereBufferGeometry args={[1.7, 16, 16]} />

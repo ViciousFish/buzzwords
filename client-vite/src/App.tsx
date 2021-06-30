@@ -7,8 +7,9 @@ import { Html, Stats, useProgress } from "@react-three/drei";
 import CameraControls from "./Components/three/CameraControls";
 import HexWord from "./Components/three/HexWord";
 import { Buzz } from "./Components/three/Buzz";
+import { Flex } from "@react-three/flex";
 
-import { Counter } from './features/counter/Counter';
+import { Counter } from "./features/counter/Counter";
 
 /* Three TODO
 - hexagon
@@ -30,10 +31,8 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Counter />
+        {!import.meta.env.PROD && <Counter />}
         {!import.meta.env.PROD && dpr}
-        {/* <Buzz /> */}
-        {/* <div > */}
         <Canvas
           style={{
             touchAction: "none",
@@ -51,19 +50,19 @@ function App() {
           dpr={Math.max(window.devicePixelRatio, 2)}
           flat
         >
-          <Buzz position={[0, 12, 0]} />
-          {!import.meta.env.PROD && <Stats />}
-          {/* <CameraControls /> */}
-          <ambientLight />
-          <directionalLight position={[10, 10, 10]} />
-          <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
-            <group position={[0, 2, 0]}>
-              {/* <HexWord position={[0, 0, 0]} text="     " /> */}
-              <HexWord position={[0, -4.8, 0]} text="COMING" />
-              <HexWord position={[0, -9.6, 0]} text="SOON!" />
-              {/* <HexWord position={[0, -14.4, 0]} text="      " /> */}
-            </group>
-          </React.Suspense>
+          <Flex>
+            <Buzz position={[0, 12, 0]} />
+            {!import.meta.env.PROD && <Stats />}
+            {/* <CameraControls /> */}
+            <ambientLight />
+            <directionalLight position={[10, 10, 10]} />
+            <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
+              <group position={[0, 2, 0]}>
+                <HexWord position={[0, -4.8, 0]} text="COMING" />
+                <HexWord position={[0, -9.6, 0]} text="SOON!" />
+              </group>
+            </React.Suspense>
+          </Flex>
         </Canvas>
         {/* </div> */}
       </header>
