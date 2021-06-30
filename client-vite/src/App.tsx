@@ -58,10 +58,10 @@ function App() {
           <directionalLight position={[10, 10, 10]} />
           <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
             <group position={[0, 2, 0]}>
-              <HexWord position={[0, 0, 0]} text="     " />
+              {/* <HexWord position={[0, 0, 0]} text="     " /> */}
               <HexWord position={[0, -4.8, 0]} text="COMING" />
               <HexWord position={[0, -9.6, 0]} text="SOON!" />
-              <HexWord position={[0, -14.4, 0]} text="      " />
+              {/* <HexWord position={[0, -14.4, 0]} text="      " /> */}
             </group>
           </React.Suspense>
         </Canvas>

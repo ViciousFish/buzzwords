@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useLayoutEffect } from "react";
+import React, { useMemo, useRef, useLayoutEffect, useEffect } from "react";
 import { Group, Mesh, Quaternion, Vector3 } from "three";
 import {
   useFrame,
@@ -67,7 +67,8 @@ const HexLetter: React.FC<HexLetterProps> = ({
 
   const [{ scale }] = useSpring(() => ({
     from: {
-      scale: [0.5, 0.5, 0.5],
+      // scale: [0.5, 0.5, 0.5],
+      scale: [1,1,1]
     },
     to: {
       scale: [1, 1, 1],
@@ -90,6 +91,23 @@ const HexLetter: React.FC<HexLetterProps> = ({
       mesh.current.position.y = -size.y / 2;
     }
   }, [letter]);
+
+  useEffect(() => {
+    let timer = Math.random() * 8000 + 2000
+    setTimeout(() => {
+      rotateSpringApi.start({
+        x: Math.PI * 7,
+        y: 0
+      })
+    },  timer)
+    timer +=  Math.random() * 5000 + 200
+    setTimeout(() => {
+      rotateSpringApi.start({
+        x: 0,
+        y: 0
+      })
+    },  timer)
+  }, [rotateSpringApi])
 
   const bind = useGesture({
     onDrag: ({ down, movement: [mx, my] }) => {
