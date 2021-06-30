@@ -30,7 +30,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "cross-env REACT_APP_BUZZ_MODE=production react-scripts build",
+    "build-staging": "cross-env REACT_APP_BUZZ_MODE=staging react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint src --ext .js,.ts,.tsx,.jsx",
@@ -54,6 +55,7 @@
     "@types/ramda": "^0.27.36",
     "@types/zdog": "^1.1.1",
     "@types/zfont": "^1.2.0",
+    "cross-env": "^7.0.3",
     "eslint-config-prettier": "^8.3.0",
     "prettier": "^2.3.2"
   }

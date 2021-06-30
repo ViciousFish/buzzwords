@@ -20,7 +20,7 @@ import { Counter } from "./features/counter/Counter";
 */
 
 function App() {
-  console.log(window.devicePixelRatio);
+  console.log(process.env.REACT_APP_BUZZ_MODE);
   const { progress } = useProgress();
   const dpr = (
     <>
@@ -51,7 +51,7 @@ function App() {
         >
           <Flex flexDirection="column" justifyContent="center" pt={4}>
             <Buzz />
-            {process.env.NODE_ENV !== "production" && <Stats />}
+            {(process.env.NODE_ENV === "development" || process.env.REACT_APP_BUZZ_MODE === 'staging') && <Stats />}
             {/* <CameraControls /> */}
             <ambientLight />
             <directionalLight position={[10, 10, 10]} />
