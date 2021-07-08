@@ -7,7 +7,6 @@ import { Html, Stats, useProgress } from "@react-three/drei";
 import CameraControls from "./Components/three/CameraControls";
 import HexWord from "./Components/three/HexWord";
 import { Buzz } from "./Components/three/Buzz";
-import { Flex } from "@react-three/flex";
 
 import { Counter } from "./features/counter/Counter";
 
@@ -21,7 +20,6 @@ import { Counter } from "./features/counter/Counter";
 */
 
 function App() {
-  console.log(window.devicePixelRatio);
   const { progress } = useProgress();
   const dpr = (
     <>
@@ -50,8 +48,7 @@ function App() {
           dpr={Math.max(window.devicePixelRatio, 2)}
           flat
         >
-          <Flex>
-            <Buzz position={[0, 12, 0]} />
+            <Buzz position={[0, 6, 0]} />
             {!import.meta.env.PROD && <Stats />}
             {/* <CameraControls /> */}
             <ambientLight />
@@ -62,9 +59,7 @@ function App() {
                 <HexWord position={[0, -9.6, 0]} text="SOON!" />
               </group>
             </React.Suspense>
-          </Flex>
         </Canvas>
-        {/* </div> */}
       </header>
     </div>
   );

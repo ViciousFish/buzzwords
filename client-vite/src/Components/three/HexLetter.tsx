@@ -61,7 +61,7 @@ const HexLetter: React.FC<HexLetterProps> = ({
   const [rotateSpring, rotateSpringApi] = useSpring(() => ({
     x: 0,
     y: 0,
-    config: springConfig.stiff,
+    config: springConfig.gentle,
     ref: springRef,
   }));
 
@@ -126,6 +126,8 @@ const HexLetter: React.FC<HexLetterProps> = ({
       const a = v.length();
       // let p = v.cross(new Vector3(0, 0, 1))
       v.normalize();
+      console.log(v);
+      console.log(a / 7);
       group.current.setRotationFromAxisAngle(v, a / 7);
     }
   });
