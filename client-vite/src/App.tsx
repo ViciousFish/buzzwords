@@ -19,33 +19,34 @@ import { Counter } from "./features/counter/Counter";
 function App() {
   const dpr = (
     <>
-      {window.devicePixelRatio} - {Math.max(window.devicePixelRatio, 2)}
+      {window.devicePixelRatio} - {Math.max(window.devicePixelRatio, 1)}
     </>
   );
   return (
     <div className="App">
       <header className="App-header">
-        {/* {!import.meta.env.PROD && <Counter />}
-        {!import.meta.env.PROD && dpr} */}
+        {!import.meta.env.PROD && <Counter />}
+        {!import.meta.env.PROD && dpr}
         <Canvas
           style={{
             touchAction: "none",
             margin: "1em",
+            flex: 'auto',
             // height: '100%',
             // width: '100%'
-            height: 800,
+            // height: 800,
             // minWidth: 600,
             // background: 'green'
           }}
           camera={
             {
-              // position: [0, 0, 100]
-              zoom: 4
+              position: [0, 0, 100],
+              zoom: 4,
             }
           }
           shadows
           // orthographic
-          dpr={Math.max(window.devicePixelRatio, 2)}
+          dpr={Math.max(window.devicePixelRatio, 1)}
           flat
         >
           <App3d />

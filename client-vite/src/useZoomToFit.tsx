@@ -24,6 +24,33 @@ const useZoomToFit = (group: Group | null) => {
     return;
   }
 
+  console.log(aspect);
+
+  var cameraZ = camera.position.z;
+  var planeZ = 0;
+  var distance = cameraZ - planeZ;
+
+  var vFov = (camera.fov * Math.PI) / 180;
+  var planeHeightAtDistance = 2 * Math.tan(vFov / 2) * distance;
+  var planeWidthAtDistance = planeHeightAtDistance * aspect;
+  // console.log(planeWidthAtDistance);
+
+  // camera.fov = planeHeightAtDistance;
+  // camera.updateProjectionMatrix();
+
+  // or
+
+  // let dist = camera.position.z - group.position.z;
+  // boundingBox.setFromObject(group)
+  // boundingBox.getSize(size)
+  // let height = Math.max(size.x, size.y, size.z); // desired height to fit
+
+  // camera.fov = 2 * Math.atan(height / (2 * dist)) * (180 / Math.PI);
+  // camera.updateProjectionMatrix();
+
+  // Basically solving an AAS triangle https://www.mathsisfun.com/algebra/trig-solving-aas-triangles.html
+  // https://i.stack.imgur.com/PgSn3.jpg
+  // --------------
   // const pixelToThreeUnitRatio = 30;
   // const planeDistance = 0;
   // const cameraDistance = 100;
@@ -44,36 +71,5 @@ const useZoomToFit = (group: Group | null) => {
   //   });
   //   console.log(fov)
   // }, [fov, aspect, set]);
-
-  const offset = 1.25;
-
-  camera.aspect = aspect;
-  camera.updateProjectionMatrix();
-
-  // get bounding box of object - this will be used to setup controls and camera
-  boundingBox.setFromObject(group);
-
-  boundingBox.getCenter(center);
-
-  boundingBox.getSize(size);
-  console.log("size", size);
-  // console.log("canvasSize", canvasSize);
-
-  // get the max side of the bounding box (fits to width OR height as needed )
-  const maxDim = Math.max(size.x, size.y, size.z);
-  const fov = camera.fov * (Math.PI / 180);
-  let cameraZ = Math.abs(maxDim * 4 * Math.tan(fov * 2));
-
-  cameraZ *= offset; // zoom out a little so that objects don't fill the screen
-
-  camera.position.z = center.z + cameraZ;
-
-  const minZ = boundingBox.min.z;
-  const cameraToFarEdge = minZ < 0 ? -minZ + cameraZ : cameraZ - minZ;
-
-  camera.far = cameraToFarEdge * 3;
-  camera.updateProjectionMatrix();
-
-  // camera.lookAt(center);
 };
 export default useZoomToFit;
