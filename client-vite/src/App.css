@@ -15,16 +15,6 @@
 
 .App-header {
   background-color: #fae7b2;
-  height: 100vh;
-  /* min-height: 100vh; */
-  /* display: grid;
-  font-size: calc(10px + 2vmin); */
-  /* grid-template-rows: 20px 200px; */
-  /* minwidth: 700px; */
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  position: relative;
 }
 
 .App-link {

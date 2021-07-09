@@ -1,5 +1,4 @@
 import React from "react";
-import "./App.css";
 // import Buzz from "./Components/Zdog/Buzz";
 
 import { Canvas } from "@react-three/fiber";
@@ -24,23 +23,25 @@ function App() {
   );
   return (
     <div className="App">
-      {!import.meta.env.PROD && <Counter />}
-      {!import.meta.env.PROD && dpr}
-      <header className="App-header">
-        <Canvas
-          camera={{
-            position: [0, 0, 100],
-            zoom: 2,
-          }}
-          gl={{
-            powerPreference: "low-power",
-          }}
-          // orthographic
-          dpr={Math.max(window.devicePixelRatio, 1)}
-          flat
-        >
-          <App3d />
-        </Canvas>
+      <header className="App-header h-screen flex flex-col items-stretch">
+        {!import.meta.env.PROD && <Counter />}
+        {!import.meta.env.PROD && dpr}
+        <div className="flex-auto flex-shrink bg-primary">
+          <Canvas
+            camera={{
+              position: [0, 0, 100],
+              zoom: 2,
+            }}
+            gl={{
+              powerPreference: "low-power",
+            }}
+            // orthographic
+            dpr={Math.max(window.devicePixelRatio, 1)}
+            flat
+          >
+            <App3d />
+          </Canvas>
+        </div>
       </header>
     </div>
   );
