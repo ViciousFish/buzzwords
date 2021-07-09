@@ -19,9 +19,11 @@ import { Box3, Group, PerspectiveCamera, Vector3 } from "three";
  * @param aspect - The aspect ratio, which is generally width/height of the viewport.
  * @returns - The horizontal field of view.
  */
- function vfovToHfov(vfov: number, aspect: number): number {
-  const {tan, atan} = Math
-  return atan(aspect * tan(vfov / 2)) * 2
+function vfovToHfov(vfov: number, aspect: number): number {
+  const { tan, atan, PI } = Math;
+  const vfovrad = vfov * (PI / 180);
+  const hfovrad = atan(aspect * tan(vfovrad / 2)) * 2;
+  return hfovrad * (180 / PI);
 }
 
 /**
@@ -36,8 +38,11 @@ import { Box3, Group, PerspectiveCamera, Vector3 } from "three";
  * edge to edge of the viewport.
  */
 function _distanceToFitObjectInView(size: number, fov: number): number {
-  const {tan} = Math
-  return size / (2 * tan(fov / 2))
+  const { tan, PI } = Math;
+  const fovrad = fov * (PI / 180);
+  const distrad = size / (2 * tan(fovrad / 2));
+  return distrad;
+  // return distRad * (180 / PI);
 }
 
 function distanceToFitObjectToView(
@@ -46,21 +51,19 @@ function distanceToFitObjectToView(
   objWidth: number,
   objHeight: number
 ): number {
-  const objAspect = objWidth / objHeight
+  const objAspect = objWidth / objHeight;
 
-  const cameraHFov = vfovToHfov(cameraVFov, cameraAspect)
+  const cameraHFov = vfovToHfov(cameraVFov, cameraAspect);
 
-  let distance: number = 0
-
-  console.log(cameraHFov, cameraVFov);
+  let distance: number = 0;
 
   if (objAspect > cameraAspect) {
-    distance = _distanceToFitObjectInView(objHeight, cameraVFov)
+    distance = _distanceToFitObjectInView(objHeight, cameraVFov);
   } else if (objAspect <= cameraAspect) {
-    distance = _distanceToFitObjectInView(objWidth, cameraHFov)
+    distance = _distanceToFitObjectInView(objWidth, cameraHFov);
   }
 
-  return distance
+  return distance;
 }
 
 const useZoomToFit = (group: Group | null) => {
@@ -80,55 +83,10 @@ const useZoomToFit = (group: Group | null) => {
   boundingBox.getSize(size);
   // console.log(canvasSize);
 
-  const dist = distanceToFitObjectToView(aspect, camera.fov * (Math.PI / 180), size.x, size.y)
+  const dist = distanceToFitObjectToView(aspect, camera.fov, size.x, size.y);
   // console.log('dist', dist);
-
-  camera.position.set(0, 0, dist * 6)
-
-  // var cameraZ = camera.position.z;
-  // var planeZ = 0;
-  // var distance = cameraZ - planeZ;
-
-  // var vFov = (camera.fov * Math.PI) / 180;
-  // var planeHeightAtDistance = 2 * Math.tan(vFov / 2) * distance;
-  // var planeWidthAtDistance = planeHeightAtDistance * aspect;
-  // console.log(planeWidthAtDistance);
-
-  // camera.fov = planeHeightAtDistance;
-  // camera.updateProjectionMatrix();
-
-  // or
-
-  // let dist = camera.position.z - group.position.z;
-  // boundingBox.setFromObject(group)
-  // boundingBox.getSize(size)
-  // let height = Math.max(size.x, size.y, size.z); // desired height to fit
-
-  // camera.fov = 2 * Math.atan(height / (2 * dist)) * (180 / Math.PI);
-  // camera.updateProjectionMatrix();
-
-  // Basically solving an AAS triangle https://www.mathsisfun.com/algebra/trig-solving-aas-triangles.html
-  // https://i.stack.imgur.com/PgSn3.jpg
-  // --------------
-  // const pixelToThreeUnitRatio = 30;
-  // const planeDistance = 0;
-  // const cameraDistance = 100;
-  // const distance = cameraDistance - planeDistance;
-  // const height = size.height / pixelToThreeUnitRatio;
-  // const width = size.width / pixelToThreeUnitRatio;
-  // const smallestDimension = Math.min(height, width);
-  // const halfFovRadians = Math.tan((smallestDimension / 2 ) / distance);
-  // const fov = 5 * halfFovRadians * (180 / Math.PI);
-
-  // useLayoutEffect(() => {
-  //   const newCam = new PerspectiveCamera(60 - fov, aspect, .5, 300);
-  //   newCam.position.set(0, 0, cameraDistance)
-  //   // newCam.copy(camera);
-  //   // newCam.fov = fov;
-  //   set({
-  //     camera: newCam,
-  //   });
-  //   console.log(fov)
-  // }, [fov, aspect, set]);
+  console.log(dist);
+  // magic number
+  camera.position.set(0, 0, dist * 5);
 };
 export default useZoomToFit;
