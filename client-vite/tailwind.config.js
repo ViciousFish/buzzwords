@@ -4,7 +4,16 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#fae7b2'
+        primary: ({ opacityVariable, opacityValue }) => {
+          console.log(opacityValue)
+          if (opacityValue !== undefined) {
+            return `rgba(250, 231, 178, ${opacityValue})`
+          }
+          if (opacityVariable !== undefined) {
+            return `rgba(250, 231, 178, var(${opacityVariable}, 1))`
+          }
+          return `rgb(250, 231, 178)`
+        },
       }
     },
   },
