@@ -11,9 +11,61 @@ import { Box3, Group, PerspectiveCamera, Vector3 } from "three";
 
 // https://gist.github.com/ayamflow/96a1f554c3f88eef2f9d0024fc42940f
 
+/**
+ * Convert vertical field of view to horizontal field of view, given an aspect
+ * ratio. See https://arstechnica.com/civis/viewtopic.php?f=6&t=37447
+ *
+ * @param vfov - The vertical field of view.
+ * @param aspect - The aspect ratio, which is generally width/height of the viewport.
+ * @returns - The horizontal field of view.
+ */
+ function vfovToHfov(vfov: number, aspect: number): number {
+  const {tan, atan} = Math
+  return atan(aspect * tan(vfov / 2)) * 2
+}
+
+/**
+ * Get the distance from the camera to fit an object in view by either its
+ * horizontal or its vertical dimension.
+ *
+ * @param size - This should be the width or height of the object to fit.
+ * @param fov - If `size` is the object's width, `fov` should be the horizontal
+ * field of view of the view camera. If `size` is the object's height, then
+ * `fov` should be the view camera's vertical field of view.
+ * @returns - The distance from the camera so that the object will fit from
+ * edge to edge of the viewport.
+ */
+function _distanceToFitObjectInView(size: number, fov: number): number {
+  const {tan} = Math
+  return size / (2 * tan(fov / 2))
+}
+
+function distanceToFitObjectToView(
+  cameraAspect: number,
+  cameraVFov: number,
+  objWidth: number,
+  objHeight: number
+): number {
+  const objAspect = objWidth / objHeight
+
+  const cameraHFov = vfovToHfov(cameraVFov, cameraAspect)
+
+  let distance: number = 0
+
+  console.log(cameraHFov, cameraVFov);
+
+  if (objAspect > cameraAspect) {
+    distance = _distanceToFitObjectInView(objHeight, cameraVFov)
+  } else if (objAspect <= cameraAspect) {
+    distance = _distanceToFitObjectInView(objWidth, cameraHFov)
+  }
+
+  return distance
+}
+
 const useZoomToFit = (group: Group | null) => {
   const { aspect } = useThree((state) => state.viewport);
-  // const canvasSize = useThree((state) => state.size);
+  const canvasSize = useThree((state) => state.size);
   // const set = useThree((state) => state.set);
   const camera = useThree((state) => state.camera) as PerspectiveCamera;
 
@@ -24,15 +76,22 @@ const useZoomToFit = (group: Group | null) => {
     return;
   }
 
-  console.log(aspect);
+  boundingBox.setFromObject(group);
+  boundingBox.getSize(size);
+  // console.log(canvasSize);
 
-  var cameraZ = camera.position.z;
-  var planeZ = 0;
-  var distance = cameraZ - planeZ;
+  const dist = distanceToFitObjectToView(aspect, camera.fov * (Math.PI / 180), size.x, size.y)
+  // console.log('dist', dist);
 
-  var vFov = (camera.fov * Math.PI) / 180;
-  var planeHeightAtDistance = 2 * Math.tan(vFov / 2) * distance;
-  var planeWidthAtDistance = planeHeightAtDistance * aspect;
+  camera.position.set(0, 0, dist * 6)
+
+  // var cameraZ = camera.position.z;
+  // var planeZ = 0;
+  // var distance = cameraZ - planeZ;
+
+  // var vFov = (camera.fov * Math.PI) / 180;
+  // var planeHeightAtDistance = 2 * Math.tan(vFov / 2) * distance;
+  // var planeWidthAtDistance = planeHeightAtDistance * aspect;
   // console.log(planeWidthAtDistance);
 
   // camera.fov = planeHeightAtDistance;

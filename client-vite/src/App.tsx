@@ -40,7 +40,7 @@ function App() {
           }}
           camera={
             {
-              position: [0, 0, 100],
+              // position: [0, 0, 100],
               zoom: 4,
             }
           }
