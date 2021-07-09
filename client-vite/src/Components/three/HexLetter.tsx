@@ -96,7 +96,7 @@ const HexLetter: React.FC<HexLetterProps> = ({
     let timer = Math.random() * 8000 + 2000
     setTimeout(() => {
       rotateSpringApi.start({
-        x: Math.PI * 7,
+        x: Math.PI * 5,
         y: 0
       })
     },  timer)
@@ -127,7 +127,7 @@ const HexLetter: React.FC<HexLetterProps> = ({
       const a = v.length();
       // let p = v.cross(new Vector3(0, 0, 1))
       v.normalize();
-      group.current.setRotationFromAxisAngle(v, a / 7);
+      group.current.setRotationFromAxisAngle(v, a / 5);
     }
   });
   return (

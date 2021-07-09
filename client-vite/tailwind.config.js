@@ -5,7 +5,6 @@ module.exports = {
     extend: {
       colors: {
         primary: ({ opacityVariable, opacityValue }) => {
-          console.log(opacityValue)
           if (opacityValue !== undefined) {
             return `rgba(250, 231, 178, ${opacityValue})`
           }

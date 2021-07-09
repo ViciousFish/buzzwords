@@ -24,18 +24,17 @@ function App() {
   return (
     <div className="App">
       <header className="App-header h-screen flex flex-col items-stretch">
-        {!import.meta.env.PROD && <Counter />}
-        {!import.meta.env.PROD && dpr}
+        {!import.meta.env.PROD && <div className='ml-20 flex justify-around'><Counter />{dpr}</div>}
         <div className="flex-auto flex-shrink bg-primary min-h-0">
           <Canvas
             camera={{
-              position: [0, 0, 100],
+              position: [0, 0, 10],
               zoom: 2,
             }}
             gl={{
               powerPreference: "low-power",
             }}
-            // orthographic
+            orthographic
             dpr={Math.max(window.devicePixelRatio, 1)}
             flat
           >

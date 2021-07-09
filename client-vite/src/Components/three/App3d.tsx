@@ -1,7 +1,7 @@
 import { Html, Stats, useProgress } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import React, { useEffect, useRef, useState } from "react";
-import { Box3, Group, PerspectiveCamera } from "three";
+import { Box3, Color, Group, PerspectiveCamera } from "three";
 import { Buzz } from "./Buzz";
 import HexWord from "./HexWord";
 
@@ -14,14 +14,16 @@ const setZoom = (
 ) => {
   boundingBox.setFromObject(group);
   // console.log('dist', dist);
-  const zoom = Math.min(
-    width / (boundingBox.max.x - boundingBox.min.x),
-    height / (boundingBox.max.y - boundingBox.min.y)
-  );
-  const dpr = Math.max(window.devicePixelRatio, 2)
+  const wzoom = width / (boundingBox.max.x - boundingBox.min.x);
+  const hzoom = height / (boundingBox.max.y - boundingBox.min.y);
+  console.log(wzoom);
+  console.log(hzoom);
+  const zoom = Math.min(wzoom, hzoom);
+  const dpr = Math.max(window.devicePixelRatio, 2);
   const magicConstant = 24 / dpr;
   // magic adjustment numbers!
-  camera.zoom = zoom / magicConstant - 0;
+  // camera.zoom = zoom / magicConstant - 0;
+  camera.zoom = Math.min(zoom - 2, 25 * dpr);
   console.log(camera.zoom);
   camera.updateProjectionMatrix();
 };
@@ -34,34 +36,37 @@ const App3d = () => {
   const camera = useThree((state) => state.camera) as PerspectiveCamera;
   const [boundingBox] = useState(() => new Box3());
 
-  useEffect(() => {
-    if (groupRef.current) {
-      console.log("yes");
-      setZoom(groupRef.current, width, height, boundingBox, camera);
-    } else {
-      console.log("nope");
-    }
-  }, [width, height, groupRef.current]);
+  // useEffect(() => {
+  //   if (groupRef.current) {
+  //     console.log("yes");
+  //     setZoom(groupRef.current, width, height, boundingBox, camera);
+  //   } else {
+  //     console.log("nope");
+  //   }
+  // }, [width, height, groupRef.current]);
 
   useEffect(() => {
-    if (progress === 100) {
+    if (progress === 100 && groupRef.current) {
       setZoom(groupRef.current, width, height, boundingBox, camera);
     }
-    console.log(progress);
-  }, [progress]);
+  }, [progress, width, height, groupRef, boundingBox, camera]);
   return (
     <group ref={groupRef}>
-      {progress === 100 && <Buzz position={[0, 6, 0]} />}
-      {!import.meta.env.PROD && <Stats />}
-      {/* <CameraControls /> */}
-      <ambientLight />
-      <directionalLight position={[10, 10, 10]} />
-      <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
-        <group position={[0, 2, 0]}>
-          <HexWord position={[0, -4.8, 0]} text="COMING" />
-          <HexWord position={[0, -9.6, 0]} text="SOON!" />
-        </group>
-      </React.Suspense>
+      <group position={[0, 0, 0]}>
+        {progress === 100 && <Buzz position={[0, 6, 0]} />}
+        {!import.meta.env.PROD && <Stats />}
+        <ambientLight />
+        <directionalLight position={[10, 10, 10]} />
+        {!import.meta.env.PROD && (
+          <box3Helper args={[boundingBox, new Color(0xff0000)]} />
+        )}
+        <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
+          <group position={[0, 4, 0]}>
+            <HexWord position={[0, -4.8, 0]} text="COMING" />
+            <HexWord position={[0, -9.6, 0]} text="SOON!" />
+          </group>
+        </React.Suspense>
+      </group>
     </group>
   );
 };
