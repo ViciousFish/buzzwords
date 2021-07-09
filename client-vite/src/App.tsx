@@ -25,13 +25,13 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        {!import.meta.env.PROD && <Counter />}
-        {!import.meta.env.PROD && dpr}
+        {/* {!import.meta.env.PROD && <Counter />}
+        {!import.meta.env.PROD && dpr} */}
         <Canvas
           style={{
             touchAction: "none",
             margin: "1em",
-            height: '100%',
+            // height: '100%',
             // width: '100%'
             height: 800,
             // minWidth: 600,
@@ -39,7 +39,8 @@ function App() {
           }}
           camera={
             {
-              position: [0, 0, 100]
+              // position: [0, 0, 100]
+              zoom: 4
             }
           }
           shadows

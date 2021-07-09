@@ -1,5 +1,5 @@
 import { useThree } from "@react-three/fiber";
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useState } from "react";
 import { Box3, Group, PerspectiveCamera, Vector3 } from "three";
 
 // https://github.com/pmndrs/react-three-fiber/issues/67
@@ -9,68 +9,70 @@ import { Box3, Group, PerspectiveCamera, Vector3 } from "three";
 
 // https://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
 
+// https://gist.github.com/ayamflow/96a1f554c3f88eef2f9d0024fc42940f
+
 const useZoomToFit = (group: Group | null) => {
-  const {aspect} = useThree(state => state.viewport)
-  const size = useThree(state => state.size);
-  const set = useThree((state) => state.set);
+  const { aspect } = useThree((state) => state.viewport);
+  // const canvasSize = useThree((state) => state.size);
+  // const set = useThree((state) => state.set);
+  const camera = useThree((state) => state.camera) as PerspectiveCamera;
 
-  // if (!group) {
-  //   return;
-  // }
+  const [size] = useState(() => new Vector3());
+  const [center] = useState(() => new Vector3());
+  const [boundingBox] = useState(() => new Box3());
+  if (!group) {
+    return;
+  }
 
-  const pixelToThreeUnitRatio = 30;
-  const planeDistance = 0;
-  const cameraDistance = 100;
-  const distance = cameraDistance - planeDistance;
-  const height = size.height / pixelToThreeUnitRatio;
-  const width = size.width / pixelToThreeUnitRatio;
-  const smallestDimension = Math.min(height, width);
-  const halfFovRadians = Math.tan((smallestDimension / 2 ) / distance);
-  const fov = 5 * halfFovRadians * (180 / Math.PI);
+  // const pixelToThreeUnitRatio = 30;
+  // const planeDistance = 0;
+  // const cameraDistance = 100;
+  // const distance = cameraDistance - planeDistance;
+  // const height = size.height / pixelToThreeUnitRatio;
+  // const width = size.width / pixelToThreeUnitRatio;
+  // const smallestDimension = Math.min(height, width);
+  // const halfFovRadians = Math.tan((smallestDimension / 2 ) / distance);
+  // const fov = 5 * halfFovRadians * (180 / Math.PI);
 
-  useLayoutEffect(() => {
-    const newCam = new PerspectiveCamera(60 - fov, aspect, .5, 300);
-    newCam.position.set(0, 0, cameraDistance)
-    // newCam.copy(camera);
-    // newCam.fov = fov;
-    set({
-      camera: newCam,
-    });
-    console.log(fov)
-  }, [fov, aspect, set]);
+  // useLayoutEffect(() => {
+  //   const newCam = new PerspectiveCamera(60 - fov, aspect, .5, 300);
+  //   newCam.position.set(0, 0, cameraDistance)
+  //   // newCam.copy(camera);
+  //   // newCam.fov = fov;
+  //   set({
+  //     camera: newCam,
+  //   });
+  //   console.log(fov)
+  // }, [fov, aspect, set]);
 
-  // const offset = 1.25;
+  const offset = 1.25;
 
-  // camera.aspect = aspect;
-  // camera.updateProjectionMatrix();
+  camera.aspect = aspect;
+  camera.updateProjectionMatrix();
 
-  // const boundingBox = new Box3();
+  // get bounding box of object - this will be used to setup controls and camera
+  boundingBox.setFromObject(group);
 
-  // // get bounding box of object - this will be used to setup controls and camera
-  // boundingBox.setFromObject(group);
+  boundingBox.getCenter(center);
 
-  // const center = new Vector3();
-  // boundingBox.getCenter(center);
-
-  // const size = new Vector3();
-  // boundingBox.getSize(size);
-  // console.log("size", size);
+  boundingBox.getSize(size);
+  console.log("size", size);
   // console.log("canvasSize", canvasSize);
 
-  // // get the max side of the bounding box (fits to width OR height as needed )
-  // const maxDim = Math.max(size.x, size.y, size.z);
-  // const fov = camera.fov * (Math.PI / 180);
-  // let cameraZ = Math.abs((maxDim / 4) * Math.tan(fov * 2));
+  // get the max side of the bounding box (fits to width OR height as needed )
+  const maxDim = Math.max(size.x, size.y, size.z);
+  const fov = camera.fov * (Math.PI / 180);
+  let cameraZ = Math.abs(maxDim * 4 * Math.tan(fov * 2));
 
-  // cameraZ *= offset; // zoom out a little so that objects don't fill the screen
+  cameraZ *= offset; // zoom out a little so that objects don't fill the screen
 
-  // camera.position.z = center.z + cameraZ;
+  camera.position.z = center.z + cameraZ;
 
-  // const minZ = boundingBox.min.z;
-  // const cameraToFarEdge = minZ < 0 ? -minZ + cameraZ : cameraZ - minZ;
+  const minZ = boundingBox.min.z;
+  const cameraToFarEdge = minZ < 0 ? -minZ + cameraZ : cameraZ - minZ;
 
-  // camera.far = cameraToFarEdge * 3;
-  // camera.updateProjectionMatrix();
+  camera.far = cameraToFarEdge * 3;
+  camera.updateProjectionMatrix();
 
   // camera.lookAt(center);
 };
