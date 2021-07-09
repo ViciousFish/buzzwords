@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import "./App.css";
 // import Buzz from "./Components/Zdog/Buzz";
 
@@ -24,27 +24,17 @@ function App() {
   );
   return (
     <div className="App">
+      {!import.meta.env.PROD && <Counter />}
+      {!import.meta.env.PROD && dpr}
       <header className="App-header">
-        {!import.meta.env.PROD && <Counter />}
-        {!import.meta.env.PROD && dpr}
         <Canvas
-          style={{
-            touchAction: "none",
-            margin: "1em",
-            flex: 'auto',
-            // height: '100%',
-            // width: '100%'
-            // height: 800,
-            // minWidth: 600,
-            // background: 'green'
+          camera={{
+            position: [0, 0, 100],
+            zoom: 2,
           }}
-          camera={
-            {
-              // position: [0, 0, 100],
-              zoom: 4,
-            }
-          }
-          shadows
+          gl={{
+            powerPreference: "low-power",
+          }}
           // orthographic
           dpr={Math.max(window.devicePixelRatio, 1)}
           flat

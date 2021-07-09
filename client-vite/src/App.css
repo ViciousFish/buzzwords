@@ -15,13 +15,16 @@
 
 .App-header {
   background-color: #fae7b2;
-  min-height: 100vh;
+  height: 100vh;
+  /* min-height: 100vh; */
+  /* display: grid;
+  font-size: calc(10px + 2vmin); */
+  /* grid-template-rows: 20px 200px; */
+  /* minwidth: 700px; */
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  /* minwidth: 700px; */
+  width: 100%;
+  position: relative;
 }
 
 .App-link {

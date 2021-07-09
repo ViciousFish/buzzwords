@@ -1,15 +1,40 @@
 import { Html, Stats, useProgress } from "@react-three/drei";
-import React, { useRef } from "react";
-import { Group } from "three";
-import useZoomToFit from "../../useZoomToFit";
+import { useThree } from "@react-three/fiber";
+import React, { useEffect, useRef, useState } from "react";
+import { Box3, Group, PerspectiveCamera } from "three";
 import { Buzz } from "./Buzz";
 import HexWord from "./HexWord";
 
-const App3d = () => {
-  const groupRef = useRef<Group>();
-  const { progress } = useProgress();
+const setZoom = (group: Group, width: number, height: number, boundingBox: Box3, camera: PerspectiveCamera) => {
+  boundingBox.setFromObject(group);
+  // console.log('dist', dist);
+  const zoom = Math.min(
+    (width) / (boundingBox.max.x - boundingBox.min.x),
+    (height) / (boundingBox.max.y - boundingBox.min.y)
+  );
+  // magic adjustment numbers!
+  camera.zoom = zoom / 12 - 0
+  console.log(camera.zoom);
+  camera.updateProjectionMatrix();
+}
 
-  useZoomToFit(groupRef.current);
+const App3d = () => {
+  const { progress } = useProgress();
+  
+  const groupRef = useRef<Group>();
+  const { width, height } = useThree((state) => state.size);
+  const camera = useThree((state) => state.camera) as PerspectiveCamera;
+  const [boundingBox] = useState(() => new Box3());
+
+  useEffect(() => {
+    if (groupRef.current) {
+      console.log('yes')
+      setZoom(groupRef.current, width, height, boundingBox, camera);
+    } else {
+      console.log('nope')
+    }
+  }, [width, height])
+
   return (
     <group ref={groupRef}>
       <Buzz position={[0, 6, 0]} />
