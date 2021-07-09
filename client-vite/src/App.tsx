@@ -26,7 +26,7 @@ function App() {
       <header className="App-header h-screen flex flex-col items-stretch">
         {!import.meta.env.PROD && <Counter />}
         {!import.meta.env.PROD && dpr}
-        <div className="flex-auto flex-shrink bg-primary">
+        <div className="flex-auto flex-shrink bg-primary min-h-0">
           <Canvas
             camera={{
               position: [0, 0, 100],
