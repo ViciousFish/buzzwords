@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useLayoutEffect, useEffect } from "react";
+import React, { useMemo, useRef, useLayoutEffect, useEffect, useState } from "react";
 import { Group, Mesh, Quaternion, Vector3 } from "three";
 import {
   useFrame,
@@ -117,17 +117,16 @@ const HexLetter: React.FC<HexLetterProps> = ({
       });
     },
   });
+  const [v] = useState(() => new Vector3())
   useFrame(() => {
     if (
       group.current &&
       (rotateSpring.x.isAnimating || rotateSpring.y.isAnimating)
     ) {
-      const v = new Vector3(rotateSpring.y.get(), rotateSpring.x.get(), 0);
+      v.set(rotateSpring.y.get(), rotateSpring.x.get(), 0);
       const a = v.length();
       // let p = v.cross(new Vector3(0, 0, 1))
       v.normalize();
-      console.log(v);
-      console.log(a / 7);
       group.current.setRotationFromAxisAngle(v, a / 7);
     }
   });

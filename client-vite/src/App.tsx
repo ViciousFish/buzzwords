@@ -1,12 +1,9 @@
-import React from "react";
+import React, { useRef } from "react";
 import "./App.css";
 // import Buzz from "./Components/Zdog/Buzz";
 
 import { Canvas } from "@react-three/fiber";
-import { Html, Stats, useProgress } from "@react-three/drei";
-import CameraControls from "./Components/three/CameraControls";
-import HexWord from "./Components/three/HexWord";
-import { Buzz } from "./Components/three/Buzz";
+import App3d from "./Components/three/App3d";
 
 import { Counter } from "./features/counter/Counter";
 
@@ -20,7 +17,6 @@ import { Counter } from "./features/counter/Counter";
 */
 
 function App() {
-  const { progress } = useProgress();
   const dpr = (
     <>
       {window.devicePixelRatio} - {Math.max(window.devicePixelRatio, 2)}
@@ -35,30 +31,23 @@ function App() {
           style={{
             touchAction: "none",
             margin: "1em",
+            height: '100%',
+            // width: '100%'
             height: 800,
-            minWidth: 600,
+            // minWidth: 600,
             // background: 'green'
           }}
-          camera={{
-            position: [0, 0, 100],
-            zoom: 4,
-          }}
+          camera={
+            {
+              position: [0, 0, 100]
+            }
+          }
           shadows
           // orthographic
           dpr={Math.max(window.devicePixelRatio, 2)}
           flat
         >
-            <Buzz position={[0, 6, 0]} />
-            {!import.meta.env.PROD && <Stats />}
-            {/* <CameraControls /> */}
-            <ambientLight />
-            <directionalLight position={[10, 10, 10]} />
-            <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
-              <group position={[0, 2, 0]}>
-                <HexWord position={[0, -4.8, 0]} text="COMING" />
-                <HexWord position={[0, -9.6, 0]} text="SOON!" />
-              </group>
-            </React.Suspense>
+          <App3d />
         </Canvas>
       </header>
     </div>

@@ -1,6 +1,6 @@
 - Hex tiles
 
-  - [ ] rounded
+  - [x] rounded
   - states
     - [ ] blank/grey
     - [ ] owned territory
