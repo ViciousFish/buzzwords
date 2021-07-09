@@ -18,8 +18,10 @@ const setZoom = (
     width / (boundingBox.max.x - boundingBox.min.x),
     height / (boundingBox.max.y - boundingBox.min.y)
   );
+  const dpr = Math.max(window.devicePixelRatio, 2)
+  const magicConstant = 24 / dpr;
   // magic adjustment numbers!
-  camera.zoom = zoom / 12 - 0;
+  camera.zoom = zoom / magicConstant - 0;
   console.log(camera.zoom);
   camera.updateProjectionMatrix();
 };
