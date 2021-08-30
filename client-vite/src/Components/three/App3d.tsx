@@ -16,15 +16,12 @@ const setZoom = (
   // console.log('dist', dist);
   const wzoom = width / (boundingBox.max.x - boundingBox.min.x);
   const hzoom = height / (boundingBox.max.y - boundingBox.min.y);
-  console.log(wzoom);
-  console.log(hzoom);
   const zoom = Math.min(wzoom, hzoom);
   const dpr = Math.max(window.devicePixelRatio, 2);
   const magicConstant = 24 / dpr;
   // magic adjustment numbers!
   // camera.zoom = zoom / magicConstant - 0;
   camera.zoom = Math.min(zoom - 2, 25 * dpr);
-  console.log(camera.zoom);
   camera.updateProjectionMatrix();
 };
 
@@ -33,17 +30,9 @@ const App3d = () => {
 
   const groupRef = useRef<Group>();
   const { width, height } = useThree((state) => state.size);
+  const set = useThree(({ set }) => set);
   const camera = useThree((state) => state.camera) as PerspectiveCamera;
   const [boundingBox] = useState(() => new Box3());
-
-  // useEffect(() => {
-  //   if (groupRef.current) {
-  //     console.log("yes");
-  //     setZoom(groupRef.current, width, height, boundingBox, camera);
-  //   } else {
-  //     console.log("nope");
-  //   }
-  // }, [width, height, groupRef.current]);
 
   useEffect(() => {
     if (progress === 100 && groupRef.current) {

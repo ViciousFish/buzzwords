@@ -5,6 +5,8 @@ import { Canvas } from "@react-three/fiber";
 import App3d from "./Components/three/App3d";
 
 import { Counter } from "./features/counter/Counter";
+import { useContextBridge } from "@react-three/drei";
+import { ReactReduxContext } from "react-redux";
 
 /* Three TODO
 - hexagon
@@ -21,10 +23,16 @@ function App() {
       {window.devicePixelRatio} - {Math.max(window.devicePixelRatio, 1)}
     </>
   );
+  const ReduxProvider = useContextBridge(ReactReduxContext);
   return (
     <div className="App">
       <header className="App-header h-screen flex flex-col items-stretch">
-        {!import.meta.env.PROD && <div className='ml-20 flex justify-around'><Counter />{dpr}</div>}
+        {!import.meta.env.PROD && (
+          <div className="ml-20 flex justify-around">
+            <Counter />
+            {dpr}
+          </div>
+        )}
         <div className="flex-auto flex-shrink bg-primary min-h-0">
           <Canvas
             camera={{
@@ -38,7 +46,9 @@ function App() {
             dpr={Math.max(window.devicePixelRatio, 1)}
             flat
           >
-            <App3d />
+            <ReduxProvider>
+              <App3d />
+            </ReduxProvider>
           </Canvas>
         </div>
       </header>

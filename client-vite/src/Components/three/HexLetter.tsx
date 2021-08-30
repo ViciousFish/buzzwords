@@ -1,5 +1,11 @@
-import React, { useMemo, useRef, useLayoutEffect, useEffect, useState } from "react";
-import { Group, Mesh, Quaternion, Vector3 } from "three";
+import React, {
+  useMemo,
+  useRef,
+  useLayoutEffect,
+  useEffect,
+  useState,
+} from "react";
+import { Group, Mesh, Vector3 } from "three";
 import {
   useFrame,
   useLoader,
@@ -33,8 +39,9 @@ const HexLetter: React.FC<HexLetterProps> = ({
   attachChain,
   ...props
 }) => {
-  const { size, viewport } = useThree();
-  const aspect = size.width / viewport.width;
+  const viewport = useThree(({ viewport }) => viewport);
+  const size = useThree(({ size }) => size);
+  const aspect = size.width / viewport.getCurrentViewport().width;
 
   const font = useLoader(FontLoader, fredokaone);
   const fontConfig = useMemo(
@@ -65,19 +72,6 @@ const HexLetter: React.FC<HexLetterProps> = ({
     ref: springRef,
   }));
 
-  const [{ scale }] = useSpring(() => ({
-    from: {
-      // scale: [0.5, 0.5, 0.5],
-      scale: [1,1,1]
-    },
-    to: {
-      scale: [1, 1, 1],
-    },
-    // CQ: do this based on grid coordinate
-    delay: Math.random() * 500,
-    config: springConfig.slow,
-  }));
-
   if (attachChain) {
     attachChain(springRef);
   }
@@ -93,21 +87,21 @@ const HexLetter: React.FC<HexLetterProps> = ({
   }, [letter]);
 
   useEffect(() => {
-    let timer = Math.random() * 8000 + 2000
+    let timer = Math.random() * 8000 + 2000;
     setTimeout(() => {
       rotateSpringApi.start({
-        x: Math.PI * 5,
-        y: 0
-      })
-    },  timer)
-    timer +=  Math.random() * 5000 + 200
+        x: Math.PI * 4,
+        y: 0,
+      });
+    }, timer);
+    timer += Math.random() * 5000 + 200;
     setTimeout(() => {
       rotateSpringApi.start({
         x: 0,
-        y: 0
-      })
-    },  timer)
-  }, [rotateSpringApi])
+        y: 0,
+      });
+    }, timer);
+  }, [rotateSpringApi]);
 
   const bind = useGesture({
     onDrag: ({ down, movement: [mx, my] }) => {
@@ -117,7 +111,7 @@ const HexLetter: React.FC<HexLetterProps> = ({
       });
     },
   });
-  const [v] = useState(() => new Vector3())
+  const [v] = useState(() => new Vector3());
   useFrame(() => {
     if (
       group.current &&
@@ -125,14 +119,13 @@ const HexLetter: React.FC<HexLetterProps> = ({
     ) {
       v.set(rotateSpring.y.get(), rotateSpring.x.get(), 0);
       const a = v.length();
-      // let p = v.cross(new Vector3(0, 0, 1))
       v.normalize();
-      group.current.setRotationFromAxisAngle(v, a / 5);
+      group.current.setRotationFromAxisAngle(v, a / 4);
     }
   });
   return (
     // @ts-ignore
-    <a.group ref={group} {...props} scale={scale}>
+    <a.group ref={group} {...props}>
       {/* @ts-ignore */}
       <mesh ref={mesh} position={[0, 0, 0.2]} {...bind()}>
         <textGeometry args={[letter, fontConfig]} />
