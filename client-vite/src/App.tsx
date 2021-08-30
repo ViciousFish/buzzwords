@@ -7,8 +7,11 @@ import App3d from "./Components/three/App3d";
 import { Counter } from "./features/counter/Counter";
 import { useContextBridge } from "@react-three/drei";
 import { ReactReduxContext } from "react-redux";
+import { useAppDispatch } from "./app/hooks";
+import { createNewGame } from "./features/game/gameActions";
 
 function App() {
+  const dispatch = useAppDispatch();
   const dpr = (
     <>
       {window.devicePixelRatio} - {Math.max(window.devicePixelRatio, 1)}
@@ -22,6 +25,11 @@ function App() {
           <div className="ml-20 flex justify-around">
             <Counter />
             {dpr}
+            <button
+              onClick={() => dispatch(createNewGame('asdf'))}
+            >
+              Create game
+            </button>
           </div>
         )}
         <div className="flex-auto flex-shrink bg-primary min-h-0">
