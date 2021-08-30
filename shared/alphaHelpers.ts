@@ -1,4 +1,4 @@
-import WordsJSON from "../words.json";
+import WordsJSON from "./words.json";
 
 const words = Object.keys(WordsJSON);
 const letters = [

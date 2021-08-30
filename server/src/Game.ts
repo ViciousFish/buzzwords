@@ -1,4 +1,4 @@
-import { getRandomCharacter } from "./alphaHelpers";
+import { getRandomCharacter } from "../../shared/alphaHelpers";
 import HexGrid from "./hexgrid";
 
 export default class Game {
