@@ -1,15 +1,16 @@
 - Hex tiles
-
   - [x] rounded
+  - [x] animated
   - states
     - [ ] blank/grey
     - [ ] owned territory
     - [ ] unselected letter
     - [ ] selected letter
+    - [ ] player capital
 
 - Game Board
-
-  - [ ] layout
+  - [ ] redux
+  - [ ] basic tile layout
 
 - Gameplay
 
@@ -36,5 +37,7 @@ today
 - [x] animation/interaction
 - [ ] board layout
 - [x] buzz in threejs
-- [ ] auto zoom fit (/flex layout?)
-- [ ] world space rotate (fix wonky tile rotation)
+- [x] auto zoom fit
+- [x] fix wonky tile rotation
+- [ ] board in redux
+- [ ] decorative capital tiles
