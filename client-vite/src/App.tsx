@@ -1,12 +1,12 @@
 import React from "react";
-import "./App.css";
 // import Buzz from "./Components/Zdog/Buzz";
 
 import { Canvas } from "@react-three/fiber";
-import { Html, Stats, useProgress } from "@react-three/drei";
-import CameraControls from "./Components/three/CameraControls";
-import HexWord from "./Components/three/HexWord";
-import { Buzz } from "./Components/three/Buzz";
+import App3d from "./Components/three/App3d";
+
+import { Counter } from "./features/counter/Counter";
+import { useContextBridge } from "@react-three/drei";
+import { ReactReduxContext } from "react-redux";
 
 /* Three TODO
 - hexagon
@@ -18,48 +18,39 @@ import { Buzz } from "./Components/three/Buzz";
 */
 
 function App() {
-  console.log(window.devicePixelRatio);
-  const { progress } = useProgress();
   const dpr = (
     <>
-      {window.devicePixelRatio} - {Math.max(window.devicePixelRatio, 2)}
+      {window.devicePixelRatio} - {Math.max(window.devicePixelRatio, 1)}
     </>
   );
+  const ReduxProvider = useContextBridge(ReactReduxContext);
   return (
     <div className="App">
-      <header className="App-header">
-        {!import.meta.env.PROD && dpr}
-        {/* <Buzz /> */}
-        {/* <div > */}
-        <Canvas
-          style={{
-            touchAction: "none",
-            margin: "1em",
-            height: 500,
-            minWidth: 600,
-          }}
-          camera={{
-            position: [0, 0, 100],
-            zoom: 6,
-          }}
-          shadows
-          // orthographic
-          dpr={Math.max(window.devicePixelRatio, 2)}
-          flat
-        >
-          <Buzz position={[0, 5, 0]} />
-          {!import.meta.env.PROD && <Stats />}
-          {/* <CameraControls /> */}
-          <ambientLight />
-          <directionalLight position={[10, 10, 10]} />
-          <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
-            <group position={[0, -2, 0]}>
-              <HexWord position={[0, 0, 0]} text="COMING" />
-              <HexWord position={[0, -4.8, 0]} text="SOON!" />
-            </group>
-          </React.Suspense>
-        </Canvas>
-        {/* </div> */}
+      <header className="App-header h-screen flex flex-col items-stretch">
+        {!import.meta.env.PROD && (
+          <div className="ml-20 flex justify-around">
+            <Counter />
+            {dpr}
+          </div>
+        )}
+        <div className="flex-auto flex-shrink bg-primary min-h-0">
+          <Canvas
+            camera={{
+              position: [0, 0, 10],
+              zoom: 2,
+            }}
+            gl={{
+              powerPreference: "low-power",
+            }}
+            orthographic
+            dpr={Math.max(window.devicePixelRatio, 1)}
+            flat
+          >
+            <ReduxProvider>
+              <App3d />
+            </ReduxProvider>
+          </Canvas>
+        </div>
       </header>
     </div>
   );

@@ -21,11 +21,17 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  /* display: flex;
+  flex-direction: column; */
+  minwidth: 700px;
 }
 
 .App-link {
   color: #61dafb;
+}
+
+canvas {
+  touch-action: none;
 }
 
 @keyframes App-logo-spin {

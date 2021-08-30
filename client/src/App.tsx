@@ -1,13 +1,16 @@
-import React from 'react';
-import './App.css';
-import Buzz from './Components/Zdog/Buzz';
-import { Canvas } from 'react-three-fiber';
-// import { Html } from '@react-three/drei';
-import HexTile from './Components/three/HexTile';
-import HexTileWord from './Components/Zdog/HexTileWord';
-import CameraControls from './Components/three/CameraControls';
+import React from "react";
+import "./App.css";
+// import Buzz from "./Components/Zdog/Buzz";
 
-/* three TODO
+import { Canvas } from "@react-three/fiber";
+import { Html, Stats, useProgress } from "@react-three/drei";
+import HexWord from "./Components/three/HexWord";
+import { Buzz } from "./Components/three/Buzz";
+import { Flex, Box } from "@react-three/flex";
+
+import { Counter } from "./features/counter/Counter";
+
+/* Three TODO
 - hexagon
   - rounded corners
 - drag rotate
@@ -17,21 +20,50 @@ import CameraControls from './Components/three/CameraControls';
 */
 
 function App() {
+  console.log(process.env.REACT_APP_BUZZ_MODE);
+  const { progress } = useProgress();
+  const dpr = (
+    <>
+      {window.devicePixelRatio} - {Math.max(window.devicePixelRatio, 2)}
+    </>
+  );
   return (
     <div className="App">
       <header className="App-header">
-        <Buzz />
-        <HexTileWord id="soon" value="SOON!" />
+        {process.env.NODE_ENV !== "production" && <Counter />}
+        {process.env.NODE_ENV !== "production" && dpr}
         <Canvas
-          pixelRatio={window.devicePixelRatio}
+          style={{
+            touchAction: "none",
+            margin: "1em",
+            height: 600,
+            minWidth: 600,
+            // background: 'green'
+          }}
+          camera={{
+            position: [0, 0, 80],
+            zoom: 5,
+          }}
+          shadows
+          // orthographic
+          dpr={Math.max(window.devicePixelRatio, 2)}
+          flat
         >
-          <CameraControls />
-          <ambientLight />
-          <pointLight position={[10, 10, 10]} />
-          <React.Suspense fallback={null}>
-            <HexTile />
-          </React.Suspense>
+          <Flex flexDirection="column" justifyContent="center" pt={4}>
+            <Buzz />
+            {(process.env.NODE_ENV === "development" || process.env.REACT_APP_BUZZ_MODE === 'staging') && <Stats />}
+            {/* <CameraControls /> */}
+            <ambientLight />
+            <directionalLight position={[10, 10, 10]} />
+            <React.Suspense fallback={<Box><Html center>{progress} % loaded</Html></Box>}>
+              <group position={[0, 2, 0]}>
+                <HexWord text="COMING" />
+                <HexWord text="SOON!" />
+              </group>
+            </React.Suspense>
+          </Flex>
         </Canvas>
+        {/* </div> */}
       </header>
     </div>
   );
