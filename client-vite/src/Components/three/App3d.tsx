@@ -2,6 +2,7 @@ import { Html, Stats, useProgress } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import React, { useEffect, useRef, useState } from "react";
 import { Box3, Color, Group, PerspectiveCamera } from "three";
+import { Bee } from "./Bee";
 import { Buzz } from "./Buzz";
 import HexWord from "./HexWord";
 
@@ -42,7 +43,8 @@ const App3d = () => {
   return (
     <group ref={groupRef}>
       <group position={[0, 0, 0]}>
-        {progress === 100 && <Buzz position={[0, 6, 0]} />}
+        {/* {progress === 100 && <Buzz position={[0, 6, 0]} />} */}
+        {progress === 100 && <Bee position={[0, 5, 0]} scale={1.7} />}
         {!import.meta.env.PROD && <Stats />}
         <ambientLight />
         <directionalLight position={[10, 10, 10]} />
