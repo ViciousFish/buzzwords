@@ -42,6 +42,7 @@ const HexLetter: React.FC<HexLetterProps> = ({
   const viewport = useThree(({ viewport }) => viewport);
   const size = useThree(({ size }) => size);
   const aspect = size.width / viewport.getCurrentViewport().width;
+  const isAnimating = useRef(false);
 
   const font = useLoader(FontLoader, fredokaone);
   const fontConfig = useMemo(
@@ -89,6 +90,7 @@ const HexLetter: React.FC<HexLetterProps> = ({
   useEffect(() => {
     let timer = Math.random() * 8000 + 2000;
     setTimeout(() => {
+      isAnimating.current = true;
       rotateSpringApi.start({
         x: Math.PI * 2,
         y: 0,
@@ -96,6 +98,7 @@ const HexLetter: React.FC<HexLetterProps> = ({
     }, timer);
     timer += Math.random() * 5000 + 200;
     setTimeout(() => {
+      isAnimating.current = true;
       rotateSpringApi.start({
         x: 0,
         y: 0,
@@ -105,22 +108,30 @@ const HexLetter: React.FC<HexLetterProps> = ({
 
   const bind = useGesture({
     onDrag: ({ down, movement: [mx, my] }) => {
-      rotateSpringApi.start({
-        x: down ? mx / aspect : 0,
-        y: down ? my / aspect : 0,
-      });
+      isAnimating.current = true;
+      if (down) {
+        rotateSpringApi.set({
+          x: mx / aspect,
+          y: my / aspect,
+        });
+      } else {
+        rotateSpringApi.start({
+          x: 0,
+          y: 0,
+        });
+      }
     },
   });
   const [v] = useState(() => new Vector3());
   useFrame(() => {
-    if (
-      group.current &&
-      (rotateSpring.x.isAnimating || rotateSpring.y.isAnimating)
-    ) {
+    if (group.current && isAnimating.current) {
       v.set(rotateSpring.y.get(), rotateSpring.x.get(), 0);
       const a = v.length();
       v.normalize();
       group.current.setRotationFromAxisAngle(v, a / 2);
+      if (a === 0) {
+        isAnimating.current = false;
+      }
     }
   });
   return (
