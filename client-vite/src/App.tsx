@@ -8,15 +8,6 @@ import { Counter } from "./features/counter/Counter";
 import { useContextBridge } from "@react-three/drei";
 import { ReactReduxContext } from "react-redux";
 
-/* Three TODO
-- hexagon
-  - rounded corners
-- drag rotate
-- animate with spring
-- text
-- word component (?textBufferGeometry?)
-*/
-
 function App() {
   const dpr = (
     <>
