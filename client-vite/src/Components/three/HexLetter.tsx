@@ -69,7 +69,7 @@ const HexLetter: React.FC<HexLetterProps> = ({
   const [rotateSpring, rotateSpringApi] = useSpring(() => ({
     x: 0,
     y: 0,
-    config: springConfig.gentle,
+    config: springConfig.slow,
     ref: springRef,
   }));
 
