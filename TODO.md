@@ -13,7 +13,6 @@
   - [ ] basic tile layout
 
 - Gameplay
-
   - [ ] mid-turn state
   - [ ] submit turn to api
   - [ ] receive turn from api
@@ -21,7 +20,6 @@
 
 - Navigation
 - Onboarding
-
   - [ ] tutorial
   - [ ] register/signin prompt and sync
 
