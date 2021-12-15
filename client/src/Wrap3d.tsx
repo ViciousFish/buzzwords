@@ -30,7 +30,9 @@ const setZoom = (
   camera.updateProjectionMatrix();
 };
 
-const App3d = () => {
+const Wrap3d: React.FC = ({
+  children
+}) => {
   const { progress } = useProgress();
 
   const groupRef = useRef<Group>();
@@ -53,21 +55,10 @@ const App3d = () => {
         {!import.meta.env.PROD && (
           <box3Helper args={[boundingBox, new Color(0xff0000)]} />
         )}
-        <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="play" element={<Play />}>
-                <Route index />
-                <Route path="offline" />
-                <Route path=":gameid" />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </React.Suspense>
+        {children}
       </group>
     </group>
   );
 };
 
-export default App3d;
+export default Wrap3d;
