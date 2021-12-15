@@ -11,7 +11,7 @@ export function GameList() {
   }, [dispatch]);
 
   return (
-    <div>
+    <div className="mt-12">
       <button
         onClick={() => {
           dispatch(createNewGame());
@@ -28,7 +28,7 @@ export function GameList() {
       </button>
       <ul>
         {Object.entries(games).map(([id, game]) => (
-          <li key={game.id}>{game.id}</li>
+          <li className="mx-2 my-1" key={game.id}>{game.id}</li>
         ))}
       </ul>
     </div>
