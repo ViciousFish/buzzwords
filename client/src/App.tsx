@@ -5,6 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import App3d from "./App3d";
 
 import { Counter } from "./features/counter/Counter";
+import { GameList } from "./features/gamelist/GameList";
 import { useContextBridge } from "@react-three/drei";
 import { ReactReduxContext } from "react-redux";
 
@@ -43,6 +44,7 @@ function App() {
           </Canvas>
         </div>
       </header>
+      <GameList />
     </div>
   );
 }

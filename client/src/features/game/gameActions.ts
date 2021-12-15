@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { AppDispatch, AppThunk } from "../../../../client-vite/src/app/store";
+import { AppDispatch, AppThunk } from "../../app/store";
 import { getEmptyGame } from "./game";
 import { addGame } from "./gameSlice";
 

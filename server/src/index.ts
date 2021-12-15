@@ -1,6 +1,8 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import { nanoid } from "nanoid";
+import { ulid } from "ulid";
+import morgan from "morgan";
 
 import getConfig from "./config";
 import DL from "./datalayer";
@@ -27,6 +29,8 @@ switch (config.dbType) {
 
 const app = express();
 
+app.use(morgan("dev"));
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -43,13 +47,13 @@ app.get("/healthz", (req, res) => {
   res.sendStatus(200);
 });
 
-app.get("/games", async (req, res) => {
+app.get("/api/games", async (req, res) => {
   const user = req.cookies.session;
   const games = await dl.getGamesByUserId(user);
   res.send(games);
 });
 
-app.get("/game/:id", async (req, res) => {
+app.get("/api/game/:id", async (req, res) => {
   const gameId = req.params.id;
   const game = await dl.getGameById(gameId);
   if (game) {
@@ -59,12 +63,15 @@ app.get("/game/:id", async (req, res) => {
   }
 });
 
-app.post("/game", async (req, res) => {
+app.post("/api/game", async (req, res) => {
+  console.log("HERE");
   const user = req.cookies.session;
+  console.log("🚀 ~ file: index.ts ~ line 68 ~ app.post ~ user", user);
   const gm = new GameManager(null);
   const game = gm.createGame(user);
   try {
     await dl.saveGame(game.id, game);
+    console.log("🚀 ~ file: index.ts ~ line 73 ~ app.post ~ game.id", game.id);
     res.send(game.id);
   } catch (e) {
     console.log(e);
@@ -72,20 +79,20 @@ app.post("/game", async (req, res) => {
   }
 });
 
-app.post("/game/:id/join", async (req, res) => {
+app.post("/api/game/:id/join", async (req, res) => {
   const user = req.cookies.session;
   const gameId = req.params.id;
   const success = await dl.joinGame(user, gameId);
   res.sendStatus(success ? 201 : 404);
 });
 
-app.post("/game/join", async (req, res) => {
+app.post("/api/game/join", async (req, res) => {
   const user = req.cookies.session;
   const success = await dl.joinRandomGame(user);
   res.sendStatus(success ? 201 : 404);
 });
 
-app.post("/game/:id/move", async (req, res) => {
+app.post("/api/game/:id/move", async (req, res) => {
   const user = req.cookies.session;
   const gameId = req.params.id;
   const parsedMove: HexCoord[] = [];
@@ -114,7 +121,7 @@ app.post("/game/:id/move", async (req, res) => {
   let newGame;
   try {
     newGame = gm.makeMove(user, move);
-  } catch (e) {
+  } catch (e: any) {
     res.status(400);
     res.send(e.message);
     return;

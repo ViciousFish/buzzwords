@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { getRandomCharacter, isValidWord } from "../alphaHelpers";
+import { getRandomCharacter, isValidWord } from "../../../shared/alphaHelpers";
 // import { Game,  } from "../types";
 import Game from "../Game";
 import GameManager from "../GameManager";

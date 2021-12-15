@@ -11,12 +11,12 @@ export const withRetry = <P extends any[], R>(
 ) => async (...args: P): Promise<R> => {
   let retries = 0;
   let delay = 2;
-  let error;
+  let error = "";
   while (retries < maxRetries || maxRetries == 0) {
     try {
       return await fn(...args);
     } catch (e) {
-      error = e;
+      error = e as string;
       retries++;
       await sleep(delay);
       delay = Math.min(delay * 2, maxDelay);

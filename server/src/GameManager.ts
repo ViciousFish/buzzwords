@@ -1,6 +1,6 @@
 import Game from "./Game";
 import { HexCoord } from "./types";
-import { isValidWord, getRandomCharacter } from "./alphaHelpers";
+import { isValidWord, getRandomCharacter } from "../../shared/alphaHelpers";
 import { nanoid } from "nanoid";
 import HexGrid from "./hexgrid";
 

@@ -5,6 +5,13 @@ import reactRefresh from "@vitejs/plugin-react-refresh";
 export default ({ command, mode }) => {
   console.log(mode);
   return defineConfig({
+    server: {
+      proxy: {
+        "/api": {
+          target: "http://localhost:8080",
+        },
+      },
+    },
     plugins: [
       {
         name: "replace-code",
