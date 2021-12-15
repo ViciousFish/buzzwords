@@ -13,7 +13,7 @@ function App() {
   );
   return (
     <BrowserRouter>
-      <div className="App flex h-screen bg-primary">
+      <div className="App flex sm:flex-col lg:flex-row h-screen bg-primary">
         <GameList />
         {/* <header className="App-header h-screen flex flex-col items-stretch"> */}
         <div className="flex flex-auto flex-col">
