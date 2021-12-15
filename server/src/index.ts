@@ -1,6 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
-import { ulid } from "ulid";
+import { nanoid } from "nanoid";
 
 import getConfig from "./config";
 import DL from "./datalayer";
@@ -34,7 +34,7 @@ app.use((req, res, next) => {
   const cookies = req.cookies || {};
   const session = cookies.session || null;
   if (!session) {
-    res.cookie("session", ulid());
+    res.cookie("session", nanoid());
   }
   next();
 });

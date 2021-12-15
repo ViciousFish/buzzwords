@@ -1,4 +1,4 @@
-import { ulid } from "ulid";
+import { nanoid } from "nanoid";
 import { getRandomCharacter, isValidWord } from "../alphaHelpers";
 // import { Game,  } from "../types";
 import Game from "../Game";

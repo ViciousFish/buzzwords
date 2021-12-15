@@ -1,0 +1,21 @@
+{
+  "name": "buzzwords",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chuckdries/buzzwords.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chuckdries/buzzwords/issues"
+  },
+  "homepage": "https://github.com/chuckdries/buzzwords#readme",
+  "dependencies": {
+    "typescript": "^4.4.2"
+  }
+}

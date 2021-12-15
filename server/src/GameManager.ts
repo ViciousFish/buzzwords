@@ -1,7 +1,7 @@
 import Game from "./Game";
 import { HexCoord } from "./types";
 import { isValidWord, getRandomCharacter } from "./alphaHelpers";
-import { ulid } from "ulid";
+import { nanoid } from "nanoid";
 import HexGrid from "./hexgrid";
 
 export const errors = {};
@@ -179,7 +179,7 @@ export default class GameManager {
 
   createGame(userId: string): Game {
     const gameData = {
-      id: ulid(),
+      id: nanoid(),
       turn: 0 as 0 | 1,
       users: [userId],
       grid: new HexGrid(),
