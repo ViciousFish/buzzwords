@@ -2,7 +2,7 @@ import React from "react";
 // import Buzz from "./Components/Zdog/Buzz";
 
 import { Canvas } from "@react-three/fiber";
-import App3d from "./Components/three/App3d";
+import App3d from "./App3d";
 
 import { Counter } from "./features/counter/Counter";
 import { useContextBridge } from "@react-three/drei";

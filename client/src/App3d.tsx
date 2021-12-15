@@ -1,10 +1,14 @@
 import { Html, Stats, useProgress } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import React, { useEffect, useRef, useState } from "react";
+import { Route, Routes } from "react-router";
+import { BrowserRouter } from "react-router-dom";
 import { Box3, Color, Group, PerspectiveCamera } from "three";
-import { Bee } from "./Bee";
-import { Buzz } from "./Buzz";
-import HexWord from "./HexWord";
+import { Bee } from "./Components/three/Bee";
+import { Buzz } from "./Components/three/Buzz";
+import HexWord from "./Components/three/HexWord";
+import Home from "./features/home-route/Home";
+import Play from "./features/play-route/Play";
 
 const setZoom = (
   group: Group,
@@ -43,8 +47,6 @@ const App3d = () => {
   return (
     <group ref={groupRef}>
       <group position={[0, 0, 0]}>
-        {/* {progress === 100 && <Buzz position={[0, 6, 0]} />} */}
-        {progress === 100 && <Bee position={[0, 5, 0]} scale={1.7} />}
         {!import.meta.env.PROD && <Stats />}
         <ambientLight />
         <directionalLight position={[10, 10, 10]} />
@@ -52,10 +54,16 @@ const App3d = () => {
           <box3Helper args={[boundingBox, new Color(0xff0000)]} />
         )}
         <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
-          <group position={[0, 4, 0]}>
-            <HexWord position={[0, -4.8, 0]} text="COMING" />
-            <HexWord position={[0, -9.6, 0]} text="SOON!" />
-          </group>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="play" element={<Play />}>
+                <Route index />
+                <Route path="offline" />
+                <Route path=":gameid" />
+              </Route>
+            </Routes>
+          </BrowserRouter>
         </React.Suspense>
       </group>
     </group>
