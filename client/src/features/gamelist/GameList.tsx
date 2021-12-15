@@ -8,7 +8,7 @@ export function GameList() {
 
   useEffect(() => {
     dispatch(refresh());
-  }, []);
+  }, [dispatch]);
 
   return (
     <div>

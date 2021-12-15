@@ -1,14 +1,7 @@
-import { Html, Stats, useProgress } from "@react-three/drei";
+import { Stats, useProgress } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import React, { useEffect, useRef, useState } from "react";
-import { Route, Routes } from "react-router";
-import { BrowserRouter } from "react-router-dom";
 import { Box3, Color, Group, PerspectiveCamera } from "three";
-import { Bee } from "./Components/three/Bee";
-import { Buzz } from "./Components/three/Buzz";
-import HexWord from "./Components/three/HexWord";
-import Home from "./features/home-route/Home";
-import Play from "./features/play-route/Play";
 
 const setZoom = (
   group: Group,

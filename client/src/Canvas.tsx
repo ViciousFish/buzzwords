@@ -1,6 +1,6 @@
 import React from "react";
 import { Canvas as ThreeCanvas } from "@react-three/fiber";
-import { useContextBridge } from "@react-three/drei";
+import { useContextBridge, useProgress } from "@react-three/drei";
 import { ReactReduxContext } from "react-redux";
 
 import Wrap3d from "./Wrap3d";
