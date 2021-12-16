@@ -13,7 +13,7 @@ function App() {
   return (
     <BrowserRouter>
     {/* TODO: switch app main from flex to grid? */}
-      <div className="App flex sm:flex-col lg:flex-row h-screen bg-primary">
+      <div className="App flex flex-col lg:flex-row h-screen bg-primary">
         <GameList />
         <div className="flex flex-auto flex-col">
           {!import.meta.env.PROD && (
