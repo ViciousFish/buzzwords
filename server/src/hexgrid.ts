@@ -30,7 +30,7 @@ export default class HexGrid {
     } else {
       for (let q = -3; q <= 3; q++) {
         const rMin = QRLookup(q);
-        const rMax = rMin + (q % 2) == 0 ? 7 : 6;
+        const rMax = rMin + (q % 2 == 0 ? 6 : 5);
         for (let r = rMin; r <= rMax; r++) {
           const cell = new Cell(q, r);
           this.cellMap[`${q},${r}`] = cell;

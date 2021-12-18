@@ -47,6 +47,13 @@ app.get("/healthz", (req, res) => {
   res.sendStatus(200);
 });
 
+app.get("/api/user", async (req, res) => {
+  const user = req.cookies.session;
+  res.send({
+    id: user,
+  });
+});
+
 app.get("/api/games", async (req, res) => {
   const user = req.cookies.session;
   const games = await dl.getGamesByUserId(user);

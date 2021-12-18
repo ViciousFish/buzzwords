@@ -18,30 +18,30 @@ export interface Game {
   winner: GamePlayer | null;
 }
 
-export const getEmptyGame = (userId: string): Game => {
-  const game = {
-    id: nanoid(),
-    turn: GamePlayer.P1,
-    users: [userId],
-    grid: getEmptyGrid(),
-    gameOver: false,
-    winner: null,
-  };
+// export const getEmptyGame = (userId: string): Game => {
+//   const game = {
+//     id: nanoid(),
+//     turn: GamePlayer.P1,
+//     users: [userId],
+//     grid: getEmptyGrid(),
+//     gameOver: false,
+//     winner: null,
+//   };
 
-  game.grid["-2,-1"].capital = true;
-  game.grid["-2,-1"].owner = GamePlayer.P1
-  game.grid["-2,-1"].active = true;
-  let neighbors = getCellNeighbors(-2, -1, game.grid);
-  for (const cell of neighbors) {
-    game.grid[`${cell.q},${cell.r}`] = getActivatedCell(cell);
-  }
+//   game.grid["-2,-1"].capital = true;
+//   game.grid["-2,-1"].owner = GamePlayer.P1
+//   game.grid["-2,-1"].active = true;
+//   let neighbors = getCellNeighbors(-2, -1, game.grid);
+//   for (const cell of neighbors) {
+//     game.grid[`${cell.q},${cell.r}`] = getActivatedCell(cell);
+//   }
 
-  game.grid["2,1"].capital = true;
-  game.grid["2,1"].owner = GamePlayer.P2
-  game.grid["2,1"].active = true;
-  neighbors = getCellNeighbors(2, 1, game.grid);
-  for (const cell of neighbors) {
-    game.grid[`${cell.q},${cell.r}`] = getActivatedCell(cell);
-  }
-  return game;
-};
+//   game.grid["2,1"].capital = true;
+//   game.grid["2,1"].owner = GamePlayer.P2
+//   game.grid["2,1"].active = true;
+//   neighbors = getCellNeighbors(2, 1, game.grid);
+//   for (const cell of neighbors) {
+//     game.grid[`${cell.q},${cell.r}`] = getActivatedCell(cell);
+//   }
+//   return game;
+// };

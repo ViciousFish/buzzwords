@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { refresh, createNewGame } from "./gamelistActions";
+import { getUser } from "../user/UserActions";
+import { refresh, createNewGame, joinGameById } from "./gamelistActions";
 
 export function GameList() {
   const games = useAppSelector((state) => state.gamelist.games);
@@ -9,10 +10,20 @@ export function GameList() {
 
   useEffect(() => {
     dispatch(refresh());
+    dispatch(getUser());
   }, [dispatch]);
 
+  const [joinGameId, setJoinGameId] = useState('');
   return (
     <div className="mt-12">
+      <form onSubmit={(e) => {
+        dispatch(joinGameById(joinGameId));
+        setJoinGameId('')
+        e.preventDefault();
+      }}>
+        <input type="text" value={joinGameId} onChange={e => setJoinGameId(e.target.value)}/>
+        <button type="submit">join</button>
+      </form>
       <button
         onClick={() => {
           dispatch(createNewGame());

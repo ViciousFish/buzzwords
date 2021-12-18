@@ -7,7 +7,7 @@ import HexWord from "../../Components/three/HexWord";
 const Home: React.FC = () => {
   const { progress } = useProgress();
   return (
-    <div className="flex-auto lg:w-[calc(100vw-200px)]">
+    <div className="flex-auto lg:w-[calc(100vw-300px)]">
       <Canvas key='home'>
         <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
           <Bee position={[0, 5, 0]} scale={1.7} />

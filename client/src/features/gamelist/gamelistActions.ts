@@ -1,7 +1,7 @@
 import { AppDispatch, AppThunk } from "../../app/store";
 import { Game } from "../game/game";
 import { HexGrid } from "../hexGrid/hexGrid";
-import { refreshReceived } from "./gamelist-slice";
+import { refreshReceived } from "./gamelistSlice";
 
 export interface ApiGame {
   gameOver: boolean;
@@ -38,3 +38,12 @@ export const createNewGame = (): AppThunk => async (dispatch) => {
 
   dispatch(refresh());
 };
+
+export const joinGameById = (id: string): AppThunk => async (dispatch) => {
+  const res = await fetch(`/api/game/${id}/join`, {
+    method: "POST",
+  }).then((response) => response.json());
+  console.log('res', res);
+
+  dispatch(refresh());
+}

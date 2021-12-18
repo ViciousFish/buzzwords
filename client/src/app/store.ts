@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import gamelistReducer from "../features/gamelist/gamelist-slice";
+import gamelistReducer from "../features/gamelist/gamelistSlice";
+import userReducer from "../features/user/userSlice";
 
 export const store = configureStore({
   reducer: {
     gamelist: gamelistReducer,
+    user: userReducer
   },
 });
 
@@ -14,3 +16,10 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 export type AppThunk = (dispatch: AppDispatch, getState: () => RootState) => any;
+
+if (!import.meta.env.PROD) {
+  // @ts-ignore
+  window.dev = {
+    store
+  }
+}

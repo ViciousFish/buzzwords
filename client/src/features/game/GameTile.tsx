@@ -25,11 +25,15 @@ import { useGesture } from "@use-gesture/react";
 import HexTile from "../../Components/three/HexTile";
 import fredokaone from "../../../assets/Fredoka One_Regular.json?url";
 import { theme } from "../../theme";
+import { Html } from "@react-three/drei";
+import { Cell } from "../cell/cell";
 
 interface GameTileProps {
   position: V3Type;
   letter: string | null;
   allowSpinning?: boolean;
+  cell: Cell;
+  color?: 'primary' | 'p1' | 'p2'
 }
 
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
@@ -37,6 +41,8 @@ interface GameTileProps {
 const GameTile: React.FC<GameTileProps> = ({
   letter,
   allowSpinning,
+  cell,
+  color,
   ...props
 }) => {
   const viewport = useThree(({ viewport }) => viewport);
@@ -118,6 +124,7 @@ const GameTile: React.FC<GameTileProps> = ({
   return (
     // @ts-ignore
     <a.group ref={group} {...props}>
+      <Html><span className="text-white">{cell.q},{cell.r}</span></Html>
       {/* @ts-ignore */}
       <mesh ref={characterMesh} position={[0, 0, 0.2]} >
         <textGeometry args={[letter, fontConfig]} />
@@ -125,7 +132,7 @@ const GameTile: React.FC<GameTileProps> = ({
       </mesh>
       <group position={[0, 0, -0.2]}>
         {/* @ts-ignore */}
-        <HexTile orientation="flat"/>
+        <HexTile orientation="flat" color={color}/>
       </group>
     </a.group>
   );
