@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import { Group, Mesh, Vector3 } from "three";
 import {
+  GroupProps,
   useFrame,
   useLoader,
   useThree,
@@ -26,17 +27,18 @@ import HexTile from "../../assets/HexTile";
 import fredokaone from "../../../assets/Fredoka One_Regular.json?url";
 import { theme } from "../../app/theme";
 import { Cell } from "../cell/cell";
+import { usePrevious } from "../../utils/usePrevious";
 
 interface GameTileProps {
   position: V3Type;
   letter: string | null;
   cell: Cell;
-  color?: 'primary' | 'p1' | 'p2'
+  color?: "primary" | "p1" | "p2";
 }
 
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
 
-const GameTile: React.FC<GameTileProps> = ({
+const GameTile: React.FC<GameTileProps & GroupProps> = ({
   letter,
   cell,
   color,
@@ -70,7 +72,7 @@ const GameTile: React.FC<GameTileProps> = ({
   const [rotateSpring, rotateSpringApi] = useSpring(() => ({
     x: 0,
     y: 0,
-    config: springConfig.slow,
+    config: springConfig.molasses,
     ref: springRef,
   }));
 
@@ -85,28 +87,22 @@ const GameTile: React.FC<GameTileProps> = ({
   }, [letter]);
 
   // TODO: animate flip when letter or activated state changes
+  const prevLetter = usePrevious(letter);
   useLayoutEffect(() => {
-    
-
-  }, [letter])
-  useEffect(() => {
-      let timer = Math.random() * 8000 + 2000;
+    if (letter && letter.length && prevLetter !== letter) {
+      rotateSpringApi.set({
+        x: Math.PI * 2,
+        y: 0,
+      });
+      isAnimating.current = true;
       setTimeout(() => {
-        isAnimating.current = true;
-        rotateSpringApi.start({
-          x: Math.PI * 2,
-          y: 0,
-        });
-      }, timer);
-      timer += Math.random() * 5000 + 200;
-      setTimeout(() => {
-        isAnimating.current = true;
         rotateSpringApi.start({
           x: 0,
           y: 0,
         });
-      }, timer);
-  }, [rotateSpringApi]);
+      }, Math.random() * 300 + 200)
+    }
+  }, [letter, prevLetter, rotateSpringApi]);
 
   const [v] = useState(() => new Vector3());
   useFrame(() => {
@@ -124,13 +120,15 @@ const GameTile: React.FC<GameTileProps> = ({
     // @ts-ignore
     <a.group ref={group} {...props}>
       {/* @ts-ignore */}
-      <mesh ref={characterMesh} position={[0, 0, 0.2]} >
-        <textGeometry args={[letter, fontConfig]} />
-        <meshStandardMaterial color={theme.colors.darkbrown} />
-      </mesh>
+      {letter && (
+        <mesh ref={characterMesh} position={[0, 0, 0.2]}>
+          <textGeometry args={[letter, fontConfig]} />
+          <meshStandardMaterial color={theme.colors.darkbrown} />
+        </mesh>
+      )}
       <group position={[0, 0, -0.2]}>
         {/* @ts-ignore */}
-        <HexTile orientation="flat" color={color}/>
+        <HexTile orientation="flat" color={color} />
       </group>
     </a.group>
   );

@@ -2,7 +2,7 @@ import { Html, useProgress } from "@react-three/drei";
 import React from "react";
 import Canvas from "../canvas/Canvas";
 import { Bee } from "../../assets/Bee";
-import HexWord from "../presentational-thereed-lettering/HexWord";
+import HexWord from "../thereed-lettering/HexWord";
 
 const Home: React.FC = () => {
   const { progress } = useProgress();

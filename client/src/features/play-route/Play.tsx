@@ -1,14 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Html, useProgress } from "@react-three/drei";
 import { Link, useParams } from "react-router-dom";
 
 import Canvas from "../canvas/Canvas";
-import { Bee } from "../../assets/Bee";
-import HexWord from "../presentational-thereed-lettering/HexWord";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import GameTile from "../game/GameTile";
-import { Cell } from "../cell/cell";
 import { QRCoord } from "../hexGrid/hexGrid";
 
 const Play: React.FC = () => {
@@ -16,9 +13,15 @@ const Play: React.FC = () => {
   const { id } = useParams();
   const game = useSelector((state: RootState) => state.gamelist.games[id]);
   const currentUser = useSelector((state: RootState) => state.user.user);
-  console.log('currentUser :', currentUser);
+  const [revealLetters, setRevealLetters] = useState(false);
+
   const userIndex = game && currentUser ? game.users.findIndex((val) => val === currentUser.id) : null;
-  console.log("userIndex", userIndex);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setRevealLetters(true);
+    }, 500)
+  })
   return game ? (
     <>
       <div>
@@ -36,7 +39,7 @@ const Play: React.FC = () => {
                 return (
                   <GameTile
                     cell={gridTile}
-                    letter={gridTile.value.toUpperCase()}
+                    letter={revealLetters ? gridTile.value.toUpperCase() : null}
                     position={[
                       3.1 * (3 / 2) * gridTile.q,
                       -1 * 3.1 *
