@@ -5,7 +5,11 @@ import { useGLTF, PerspectiveCamera } from "@react-three/drei";
 import { Mesh } from "three";
 import hextile from "../../../assets/hextile.glb?url";
 
-const HexTile: React.FC<MeshProps> = ({ position, rotation, ...props }) => {
+interface HexTileProps {
+  orientation?: 'flat' | 'pointy'
+}
+
+const HexTile: React.FC<MeshProps & HexTileProps> = ({ position, rotation, orientation, ...props }) => {
   const group = useRef();
   // @ts-ignore
   const { nodes, materials } = useGLTF(hextile);
@@ -22,7 +26,7 @@ const HexTile: React.FC<MeshProps> = ({ position, rotation, ...props }) => {
       rotation={rotation}
     >
       <mesh
-        rotation={[Math.PI / 2, 0, 0]}
+        rotation={[Math.PI / 2, orientation === 'flat' ? Math.PI / 2 : 0, 0]}
         visible
         geometry={(nodes.Circle as Mesh).geometry}
         {...props}

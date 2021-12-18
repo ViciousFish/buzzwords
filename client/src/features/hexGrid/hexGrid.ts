@@ -1,7 +1,9 @@
 import { Cell, getEmptyCell } from "../cell/cell";
 
+
+export type QRCoord = `${number},${number}`
 export interface HexGrid {
-  [position: `${number},${number}`]: Cell;
+  [position: QRCoord]: Cell;
 }
 
 const QRLookup = (q: number): number => {

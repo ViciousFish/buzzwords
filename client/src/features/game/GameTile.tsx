@@ -22,19 +22,19 @@ import {
 import { config as springConfig } from "@react-spring/core";
 import { useGesture } from "@use-gesture/react";
 
-import HexTile from "./HexTile";
+import HexTile from "../../Components/three/HexTile";
 import fredokaone from "../../../assets/Fredoka One_Regular.json?url";
 import { theme } from "../../theme";
 
-interface HexLetterProps {
+interface GameTileProps {
   position: V3Type;
-  letter: string;
+  letter: string | null;
   allowSpinning?: boolean;
 }
 
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
 
-const HexLetter: React.FC<HexLetterProps> = ({
+const GameTile: React.FC<GameTileProps> = ({
   letter,
   allowSpinning,
   ...props
@@ -60,9 +60,7 @@ const HexLetter: React.FC<HexLetterProps> = ({
     [font]
   );
 
-  // const [config, setConfig] = React.useState('stiff' as keyof typeof springConfig);
-
-  const mesh = useRef<Mesh>();
+  const characterMesh = useRef<Mesh>();
   const group = useRef<Group>();
 
   const springRef = useSpringRef();
@@ -75,14 +73,15 @@ const HexLetter: React.FC<HexLetterProps> = ({
 
   useLayoutEffect(() => {
     const size = new Vector3();
-    if (mesh.current) {
-      mesh.current.geometry.computeBoundingBox();
-      mesh.current.geometry.boundingBox?.getSize(size);
-      mesh.current.position.x = -size.x / 2;
-      mesh.current.position.y = -size.y / 2;
+    if (characterMesh.current) {
+      characterMesh.current.geometry.computeBoundingBox();
+      characterMesh.current.geometry.boundingBox?.getSize(size);
+      characterMesh.current.position.x = -size.x / 2;
+      characterMesh.current.position.y = -size.y / 2;
     }
   }, [letter]);
 
+  // TODO: animate flip when letter or activated state changes
   useEffect(() => {
     if (allowSpinning) {
       let timer = Math.random() * 8000 + 2000;
@@ -104,22 +103,6 @@ const HexLetter: React.FC<HexLetterProps> = ({
     }
   }, [rotateSpringApi, allowSpinning]);
 
-  const bind = useGesture({
-    onDrag: allowSpinning ? ({ down, movement: [mx, my] }) => {
-      isAnimating.current = true;
-      if (down) {
-        rotateSpringApi.set({
-          x: mx / aspect,
-          y: my / aspect,
-        });
-      } else {
-        rotateSpringApi.start({
-          x: 0,
-          y: 0,
-        });
-      }
-    } : null,
-  });
   const [v] = useState(() => new Vector3());
   useFrame(() => {
     if (allowSpinning && group.current && isAnimating.current) {
@@ -136,16 +119,16 @@ const HexLetter: React.FC<HexLetterProps> = ({
     // @ts-ignore
     <a.group ref={group} {...props}>
       {/* @ts-ignore */}
-      <mesh ref={mesh} position={[0, 0, 0.2]} {...bind()}>
+      <mesh ref={characterMesh} position={[0, 0, 0.2]} >
         <textGeometry args={[letter, fontConfig]} />
         <meshStandardMaterial color={theme.colors.darkbrown} />
       </mesh>
       <group position={[0, 0, -0.2]}>
         {/* @ts-ignore */}
-        <HexTile orientation="pointy" {...bind()} />
+        <HexTile orientation="flat"/>
       </group>
     </a.group>
   );
 };
 
-export default HexLetter;
+export default GameTile;

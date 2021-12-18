@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { getActivatedCell } from "../cell/cell";
+import { Cell, getActivatedCell } from "../cell/cell";
 
 import { getCellNeighbors, getEmptyGrid, HexGrid } from "../hexGrid/hexGrid";
 

@@ -29,7 +29,9 @@ export function GameList() {
       </button>
       <ul>
         {Object.entries(games).map(([id, game]) => (
-          <li className="mx-2 my-1" key={game.id}><Link to={`/play/${game.id}`}>{game.id}</Link></li>
+          <li className="mx-2 my-1 underline text-blue-800" key={game.id}>
+            <Link to={`/play/${game.id}`}>{game.id}</Link>
+          </li>
         ))}
       </ul>
     </div>
