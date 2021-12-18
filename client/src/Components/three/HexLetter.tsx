@@ -29,6 +29,7 @@ import { theme } from "../../theme";
 interface HexLetterProps {
   position: V3Type;
   letter: string;
+  allowSpinning: boolean;
   attachChain?: (springRef: SpringRef) => void;
 }
 
@@ -37,6 +38,7 @@ interface HexLetterProps {
 const HexLetter: React.FC<HexLetterProps> = ({
   letter,
   attachChain,
+  allowSpinning,
   ...props
 }) => {
   const viewport = useThree(({ viewport }) => viewport);
@@ -88,23 +90,25 @@ const HexLetter: React.FC<HexLetterProps> = ({
   }, [letter]);
 
   useEffect(() => {
-    let timer = Math.random() * 8000 + 2000;
-    setTimeout(() => {
-      isAnimating.current = true;
-      rotateSpringApi.start({
-        x: Math.PI * 2,
-        y: 0,
-      });
-    }, timer);
-    timer += Math.random() * 5000 + 200;
-    setTimeout(() => {
-      isAnimating.current = true;
-      rotateSpringApi.start({
-        x: 0,
-        y: 0,
-      });
-    }, timer);
-  }, [rotateSpringApi]);
+    if (allowSpinning) {
+      let timer = Math.random() * 8000 + 2000;
+      setTimeout(() => {
+        isAnimating.current = true;
+        rotateSpringApi.start({
+          x: Math.PI * 2,
+          y: 0,
+        });
+      }, timer);
+      timer += Math.random() * 5000 + 200;
+      setTimeout(() => {
+        isAnimating.current = true;
+        rotateSpringApi.start({
+          x: 0,
+          y: 0,
+        });
+      }, timer);
+    }
+  }, [rotateSpringApi, allowSpinning]);
 
   const bind = useGesture({
     onDrag: ({ down, movement: [mx, my] }) => {
@@ -124,7 +128,7 @@ const HexLetter: React.FC<HexLetterProps> = ({
   });
   const [v] = useState(() => new Vector3());
   useFrame(() => {
-    if (group.current && isAnimating.current) {
+    if (group.current && isAnimating.current && allowSpinning) {
       v.set(rotateSpring.y.get(), rotateSpring.x.get(), 0);
       const a = v.length();
       v.normalize();

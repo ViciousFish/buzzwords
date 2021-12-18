@@ -6,11 +6,13 @@ import HexLetter from "./HexLetter";
 interface HexWordProps {
   text: string;
   position?: [number, number, number];
+  allowSpinning?: boolean;
 }
 
 const HexWord: React.FC<HexWordProps & GroupProps> = ({
   text,
   position,
+  allowSpinning,
   ...props
 }) => {
   const chainArray = useRef([] as SpringRef[]);
@@ -34,6 +36,7 @@ const HexWord: React.FC<HexWordProps & GroupProps> = ({
     >
       {characters.map((character, index) => (
         <HexLetter
+          allowSpinning={allowSpinning}
           attachChain={attachChain}
           letter={character}
           key={index}

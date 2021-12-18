@@ -1,7 +1,7 @@
 import { Cell, getEmptyCell } from "../cell/cell";
 
 export interface HexGrid {
-  [position: `${number},${number}`]: Cell
+  [position: `${number},${number}`]: Cell;
 }
 
 const QRLookup = (q: number): number => {

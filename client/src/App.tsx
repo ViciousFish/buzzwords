@@ -1,8 +1,9 @@
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { GameList } from "./features/gamelist/GameList";
 import Home from "./features/home-route/Home";
+import Play from "./features/play-route/Play";
 
 function App() {
   const dpr = (
@@ -21,7 +22,11 @@ function App() {
               {dpr}
             </div>
           )}
-          <Home />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/play/:id" element={<Play />} />
+          </Routes>
+          
         </div>
       </div>
     </BrowserRouter>

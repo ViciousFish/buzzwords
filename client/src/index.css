@@ -5,6 +5,6 @@
 canvas {
   touch-action: none;
 }
-button {
+button, .btn {
   @apply rounded-md border-black border p-1 m-1;
 }

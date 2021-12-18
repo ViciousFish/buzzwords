@@ -11,14 +11,11 @@ const setZoom = (
   camera: PerspectiveCamera
 ) => {
   boundingBox.setFromObject(group);
-  // console.log('dist', dist);
   const wzoom = width / (boundingBox.max.x - boundingBox.min.x);
   const hzoom = height / (boundingBox.max.y - boundingBox.min.y);
   const zoom = Math.min(wzoom, hzoom);
   const dpr = Math.max(window.devicePixelRatio, 2);
   const magicConstant = 24 / dpr;
-  // magic adjustment numbers!
-  // camera.zoom = zoom / magicConstant - 0;
   camera.zoom = Math.min(zoom - 2, 25 * dpr);
   camera.updateProjectionMatrix();
 };
@@ -36,7 +33,9 @@ const Wrap3d: React.FC = ({
 
   useEffect(() => {
     if (progress === 100 && groupRef.current) {
-      setZoom(groupRef.current, width, height, boundingBox, camera);
+      setTimeout(() => {
+        setZoom(groupRef.current, width, height, boundingBox, camera);
+      })
     }
   }, [progress, width, height, groupRef, boundingBox, camera]);
   return (
