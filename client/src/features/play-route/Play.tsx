@@ -21,7 +21,7 @@ const Play: React.FC = () => {
     setTimeout(() => {
       setRevealLetters(true);
     }, 500)
-  })
+  }, [])
   return game ? (
     <>
       <div>
@@ -49,6 +49,9 @@ const Play: React.FC = () => {
                     ]}
                     key={coord}
                     color={gridTile.owner == 2 ? 'primary' : (`p${gridTile.owner + 1}` as 'p1' | 'p2')}
+                    onClick={() => {
+                      setRevealLetters(!revealLetters);
+                    }}
                   />
                 );
               })}

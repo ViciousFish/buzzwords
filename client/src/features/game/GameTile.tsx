@@ -8,6 +8,7 @@ import React, {
 import { Group, Mesh, Vector3 } from "three";
 import {
   GroupProps,
+  ThreeEvent,
   useFrame,
   useLoader,
   useThree,
@@ -34,19 +35,18 @@ interface GameTileProps {
   letter: string | null;
   cell: Cell;
   color?: "primary" | "p1" | "p2";
+  onClick?: (e: ThreeEvent<MouseEvent>) => void;
 }
 
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
 
-const GameTile: React.FC<GameTileProps & GroupProps> = ({
+const GameTile: React.FC<GameTileProps> = ({
   letter,
   cell,
   color,
-  ...props
+  position,
+  onClick,
 }) => {
-  const viewport = useThree(({ viewport }) => viewport);
-  const size = useThree(({ size }) => size);
-  const aspect = size.width / viewport.getCurrentViewport().width;
   const isAnimating = useRef(false);
 
   const font = useLoader(FontLoader, fredokaone);
@@ -89,7 +89,7 @@ const GameTile: React.FC<GameTileProps & GroupProps> = ({
   // TODO: animate flip when letter or activated state changes
   const prevLetter = usePrevious(letter);
   useLayoutEffect(() => {
-    if (letter && letter.length && prevLetter !== letter) {
+    if (letter?.length && prevLetter !== letter) {
       rotateSpringApi.set({
         x: Math.PI * 2,
         y: 0,
@@ -100,7 +100,14 @@ const GameTile: React.FC<GameTileProps & GroupProps> = ({
           x: 0,
           y: 0,
         });
-      }, Math.random() * 300 + 200)
+      }, Math.random() * 300 + 200);
+    }
+    if (prevLetter?.length && !letter) {
+      rotateSpringApi.start({
+        x: Math.PI * 2,
+        y: 0,
+      });
+      isAnimating.current = true;
     }
   }, [letter, prevLetter, rotateSpringApi]);
 
@@ -118,11 +125,17 @@ const GameTile: React.FC<GameTileProps & GroupProps> = ({
   });
   return (
     // @ts-ignore
-    <a.group ref={group} {...props}>
+    <a.group ref={group} position={position} onClick={onClick}>
       {/* @ts-ignore */}
       {letter && (
         <mesh ref={characterMesh} position={[0, 0, 0.2]}>
           <textGeometry args={[letter, fontConfig]} />
+          <meshStandardMaterial color={theme.colors.darkbrown} />
+        </mesh>
+      )}
+      {prevLetter && (
+        <mesh ref={characterMesh} position={[0, 0, 0.2]}>
+          <textGeometry args={[prevLetter, fontConfig]} />
           <meshStandardMaterial color={theme.colors.darkbrown} />
         </mesh>
       )}
