@@ -2,9 +2,9 @@ import React from "react";
 import { Html, useProgress } from "@react-three/drei";
 import { Link, useParams } from "react-router-dom";
 
-import Canvas from "../../Canvas";
-import { Bee } from "../../Components/three/Bee";
-import HexWord from "../../Components/three/HexWord";
+import Canvas from "../canvas/Canvas";
+import { Bee } from "../../assets/Bee";
+import HexWord from "../presentational-thereed-lettering/HexWord";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import GameTile from "../game/GameTile";

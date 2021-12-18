@@ -22,16 +22,14 @@ import {
 import { config as springConfig } from "@react-spring/core";
 import { useGesture } from "@use-gesture/react";
 
-import HexTile from "../../Components/three/HexTile";
+import HexTile from "../../assets/HexTile";
 import fredokaone from "../../../assets/Fredoka One_Regular.json?url";
-import { theme } from "../../theme";
-import { Html } from "@react-three/drei";
+import { theme } from "../../app/theme";
 import { Cell } from "../cell/cell";
 
 interface GameTileProps {
   position: V3Type;
   letter: string | null;
-  allowSpinning?: boolean;
   cell: Cell;
   color?: 'primary' | 'p1' | 'p2'
 }
@@ -40,7 +38,6 @@ interface GameTileProps {
 
 const GameTile: React.FC<GameTileProps> = ({
   letter,
-  allowSpinning,
   cell,
   color,
   ...props
@@ -88,8 +85,11 @@ const GameTile: React.FC<GameTileProps> = ({
   }, [letter]);
 
   // TODO: animate flip when letter or activated state changes
+  useLayoutEffect(() => {
+    
+
+  }, [letter])
   useEffect(() => {
-    if (allowSpinning) {
       let timer = Math.random() * 8000 + 2000;
       setTimeout(() => {
         isAnimating.current = true;
@@ -106,12 +106,11 @@ const GameTile: React.FC<GameTileProps> = ({
           y: 0,
         });
       }, timer);
-    }
-  }, [rotateSpringApi, allowSpinning]);
+  }, [rotateSpringApi]);
 
   const [v] = useState(() => new Vector3());
   useFrame(() => {
-    if (allowSpinning && group.current && isAnimating.current) {
+    if (group.current && isAnimating.current) {
       v.set(rotateSpring.y.get(), rotateSpring.x.get(), 0);
       const a = v.length();
       v.normalize();
@@ -124,7 +123,6 @@ const GameTile: React.FC<GameTileProps> = ({
   return (
     // @ts-ignore
     <a.group ref={group} {...props}>
-      <Html><span className="text-white">{cell.q},{cell.r}</span></Html>
       {/* @ts-ignore */}
       <mesh ref={characterMesh} position={[0, 0, 0.2]} >
         <textGeometry args={[letter, fontConfig]} />

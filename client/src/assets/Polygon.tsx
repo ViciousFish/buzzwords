@@ -5,7 +5,7 @@ Perhaps make a "polygonal prism" component/class?
 import React, { useRef, useState, useMemo } from "react";
 import { MeshProps, useFrame } from "@react-three/fiber";
 import { Mesh, Shape } from "three";
-import { theme } from "../../theme";
+import { theme } from "../app/theme";
 
 interface PolygonOwnprops {
   radius: number;

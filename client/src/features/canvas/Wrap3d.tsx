@@ -26,7 +26,6 @@ const Wrap3d: React.FC = ({
 
   const groupRef = useRef<Group>();
   const { width, height } = useThree((state) => state.size);
-  const set = useThree(({ set }) => set);
   const camera = useThree((state) => state.camera) as PerspectiveCamera;
   const [boundingBox] = useState(() => new Box3());
 

@@ -22,9 +22,9 @@ import {
 import { config as springConfig } from "@react-spring/core";
 import { useGesture } from "@use-gesture/react";
 
-import HexTile from "./HexTile";
+import HexTile from "../../assets/HexTile";
 import fredokaone from "../../../assets/Fredoka One_Regular.json?url";
-import { theme } from "../../theme";
+import { theme } from "../../app/theme";
 
 interface HexLetterProps {
   position: V3Type;
