@@ -16,14 +16,15 @@ export function GameList() {
   const [joinGameId, setJoinGameId] = useState('');
   return (
     <div className="mt-12">
-      <form onSubmit={(e) => {
+      {/* <form onSubmit={(e) => {
         dispatch(joinGameById(joinGameId));
         setJoinGameId('')
         e.preventDefault();
       }}>
         <input type="text" value={joinGameId} onChange={e => setJoinGameId(e.target.value)}/>
         <button type="submit">join</button>
-      </form>
+      </form> */}
+      <h3 className="text-2xl">Games</h3>
       <button
         onClick={() => {
           dispatch(createNewGame());
