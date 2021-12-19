@@ -27,6 +27,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import { GamePlayer } from "./game";
 import { Flower01 } from "../../assets/Flower01";
+import { Html } from "@react-three/drei";
 
 interface GameTileProps {
   position: V3Type;
@@ -167,6 +168,7 @@ const GameTile: React.FC<GameTileProps> = ({
       onClick={onTileClick}
       {...colorAndScaleSpring}
     >
+      {/* <Html>{coord}</Html> */}
       {letter && (
         <mesh ref={characterMesh} position={[0, 0, 0.2]}>
           <textGeometry args={[letter, fontConfig]} />
@@ -181,6 +183,7 @@ const GameTile: React.FC<GameTileProps> = ({
       )}
       {isCapital && (
         <Flower01 />
+        // <Html>capital</Html>
       )}
       <group position={[0, 0, -0.2]}>
         <HexTile orientation="flat">

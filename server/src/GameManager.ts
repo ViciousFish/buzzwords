@@ -91,7 +91,7 @@ export default class GameManager {
             valid = true;
             break;
           }
-          stack.concat(ownedNeighbors);
+          stack.push(...ownedNeighbors);
         }
       }
       const cell = this.game.grid.getCell(coord.q, coord.r);

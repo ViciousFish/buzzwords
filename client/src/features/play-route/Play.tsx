@@ -14,6 +14,7 @@ import {
 } from "../game/gameSelectors";
 import HexWord from "../thereed-lettering/HexWord";
 import { submitMove } from "../game/gameActions";
+import CameraControls from "../../utils/CameraControls";
 
 const Play: React.FC = () => {
   const dispatch = useDispatch();
@@ -51,16 +52,17 @@ const Play: React.FC = () => {
         </div>
       </div>
       <div
-        className="text-center text-7xl text-darkbrown font-fredoka"
+        className="flex justify-center items-center"
         style={{ height: "100px" }}
       >
-        {selectedWord || ""}
+        <span className="text-7xl text-darkbrown font-fredoka">{selectedWord || ""}</span>
         {selectedWord?.length ? <button onClick={() => dispatch(submitMove(id))} type="button">
           submit
         </button> : null}
       </div>
       <div className="flex-auto lg:w-[calc(100vw-300px)]">
         <Canvas key={`play-${id}`}>
+          {/* <CameraControls /> */}
           <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
             {/* <HexWord allowSpinning autoSpin={false} position={[0, 20, 0]} text={selectedWord + ' '}/> */}
             <group position={[0, 0, 0]}>
