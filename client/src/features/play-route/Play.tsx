@@ -8,6 +8,7 @@ import { RootState } from "../../app/store";
 import GameTile from "../game/GameTile";
 import { QRCoord } from "../hexGrid/hexGrid";
 import { resetGame } from "../game/gameSlice";
+import { getOrderedTileSelectionCoords, makeGetSelectedWord } from "../game/gameSelectors";
 
 const Play: React.FC = () => {
   const dispatch = useDispatch();
@@ -15,6 +16,8 @@ const Play: React.FC = () => {
   const { id } = useParams();
   const game = useSelector((state: RootState) => state.gamelist.games[id]);
   const currentUser = useSelector((state: RootState) => state.user.user);
+  const orderedSelection = useSelector(getOrderedTileSelectionCoords);
+  const selectedWord = useSelector(makeGetSelectedWord(id));
   const [revealLetters, setRevealLetters] = useState(false);
 
   const userIndex = game && currentUser ? game.users.findIndex((val) => val === currentUser.id) : null;
@@ -35,6 +38,7 @@ const Play: React.FC = () => {
         <div>you are {userIndex === 0 ? 'pink' : 'green'}</div>
         <div className="block">it is {game.turn === 0 ? 'pinks' : 'greens'} turn</div>
       </div>
+      <div className="text-center text-2xl" style={{height: '50px'}}>{selectedWord || ''}</div>
       <div className="flex-auto lg:w-[calc(100vw-300px)]">
         <Canvas key={`play-${id}`}>
           <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>

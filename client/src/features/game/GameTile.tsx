@@ -90,7 +90,7 @@ const GameTile: React.FC<GameTileProps> = ({
     // take color of current player and blend with base color?
   }
 
-  const scale = owner !== 2 || letter?.length || isSelected ? 1 : 0.9;
+  const scale = owner !== 2 || isSelected ? 1 : 0.9;
 
   const colorAndScaleSpring = useSpring({
     scale: [scale, scale, scale],

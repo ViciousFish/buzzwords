@@ -3,12 +3,14 @@ import { HexGrid, QRCoord } from "../hexGrid/hexGrid";
 
 interface GameState {
   selectedTiles: {
-    [position: QRCoord]: boolean;
+    [position: QRCoord]: number;
   };
+  selectionIndex: number;
 }
 
 const initialState: GameState = {
   selectedTiles: {},
+  selectionIndex: 0,
 };
 
 export const gameSlice = createSlice({
@@ -16,7 +18,8 @@ export const gameSlice = createSlice({
   initialState,
   reducers: {
     selectTile: (state, action: PayloadAction<QRCoord>) => {
-      state.selectedTiles[action.payload] = true;
+      state.selectedTiles[action.payload] = state.selectionIndex + 1;
+      state.selectionIndex = state.selectionIndex + 1;
     },
     unselectTile: (state, action: PayloadAction<QRCoord>) => {
       delete state.selectedTiles[action.payload];
