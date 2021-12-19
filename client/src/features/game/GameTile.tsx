@@ -182,7 +182,7 @@ const GameTile: React.FC<GameTileProps> = ({
           <meshStandardMaterial color={theme.colors.darkbrown} />
         </mesh>
       )}
-      {(isCapital || prevCapital) && (
+      {(isCapital || (prevCapital && !letter)) && (
         <Flower01 />
         // <Html>capital</Html>
       )}
