@@ -16,6 +16,14 @@ export interface Game {
   grid: HexGrid;
   gameOver: boolean;
   winner: GamePlayer | null;
+  moves: {
+    coords: {
+      q: number,
+      r: number
+    }[];
+    letters: string[];
+    player: 0 | 1
+  }[]
 }
 
 // export const getEmptyGame = (userId: string): Game => {

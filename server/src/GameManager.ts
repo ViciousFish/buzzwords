@@ -14,6 +14,7 @@ export default class GameManager {
 
   makeMove(userId: string, move: HexCoord[]): Game {
     console.log("move :", move);
+
     if (!this.game) {
       throw new Error("Game Manager has no game!");
     }
@@ -48,6 +49,12 @@ export default class GameManager {
       throw new Error("Not a valid word");
     }
 
+    const gameMove = {
+      coords: move,
+      letters: move.map((m) => this.game?.grid.getCell(m.q, m.r)?.value ?? ""),
+      player: this.game.turn,
+    };
+
     // Parsed word, checked validity of move and word etc.
     // Have to check for what's attached to current territory to see what to expand
     // Have to check from above to see what is adjacent to enemy territory to see what to remove
@@ -65,9 +72,13 @@ export default class GameManager {
     }
     for (const coord of move) {
       const stack: HexCoord[] = [coord];
+      const visited: {
+        [key: string]: boolean;
+      } = {};
       let valid = false;
       while (stack.length) {
         const current = stack.pop();
+        visited[`${current?.q},${current?.r}`] = true;
         if (current != undefined && current != null) {
           const neighbors = this.game.grid.getCellNeighbors(
             current.q,
@@ -91,7 +102,9 @@ export default class GameManager {
             valid = true;
             break;
           }
-          stack.push(...ownedNeighbors);
+          stack.push(
+            ...ownedNeighbors.filter((c) => !visited[`${c.q},${c.r}`])
+          );
         }
       }
       const cell = this.game.grid.getCell(coord.q, coord.r);
@@ -186,6 +199,7 @@ export default class GameManager {
       ? this.game.turn
       : (Number(!this.game.turn) as 0 | 1);
     this.game.turn = nextTurn;
+    this.game.moves.push(gameMove);
     return this.game;
   }
 
@@ -197,6 +211,7 @@ export default class GameManager {
       grid: new HexGrid(),
       gameOver: false,
       winner: null,
+      moves: [],
     };
     const game = new Game(gameData);
     game.grid.cellMap["-2,-1"].capital = true;

@@ -115,8 +115,9 @@ const GameTile: React.FC<GameTileProps> = ({
 
   // TODO: animate flip when letter or activated state changes
   const prevLetter = usePrevious(letter);
+  const prevCapital = usePrevious(isCapital);
   useLayoutEffect(() => {
-    if (letter?.length && prevLetter !== letter) {
+    if ((letter?.length || isCapital) && (prevLetter !== letter || isCapital !== prevCapital) ) {
       rotateSpringApi.set({
         x: Math.PI * 2,
         y: 0,
@@ -129,14 +130,14 @@ const GameTile: React.FC<GameTileProps> = ({
         });
       }, Math.random() * 300);
     }
-    if (prevLetter?.length && !letter) {
+    if ((prevLetter?.length && !letter) || (prevCapital && !isCapital)) {
       rotateSpringApi.start({
         x: Math.PI * 2,
         y: 0,
       });
       isAnimating.current = true;
     }
-  }, [letter, prevLetter, rotateSpringApi]);
+  }, [letter, prevLetter, rotateSpringApi, isCapital, prevCapital]);
 
   const [v] = useState(() => new Vector3());
   useFrame(() => {
@@ -181,7 +182,7 @@ const GameTile: React.FC<GameTileProps> = ({
           <meshStandardMaterial color={theme.colors.darkbrown} />
         </mesh>
       )}
-      {isCapital && (
+      {(isCapital || prevCapital) && (
         <Flower01 />
         // <Html>capital</Html>
       )}

@@ -11,8 +11,8 @@ const Canvas: React.FC = ({ children }) => {
   return (
     <ThreeCanvas
       camera={{
-        position: [0, 0, 10],
-        zoom: 2,
+        position: [0, 0, 20],
+        zoom: 3,
       }}
       gl={{
         powerPreference: "low-power",

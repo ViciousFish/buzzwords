@@ -22,6 +22,9 @@ const Play: React.FC = () => {
   const { progress } = useProgress();
   const { id } = useParams();
   const game = useSelector((state: RootState) => state.gamelist.games[id]);
+  const gamesLoaded = useSelector(
+    (state: RootState) => state.gamelist.gamesLoaded
+  );
   const currentUser = useSelector((state: RootState) => state.user.user);
   const selectedWord = useSelector(makeGetSelectedWord(id));
   const [revealLetters, setRevealLetters] = useState(false);
@@ -40,19 +43,24 @@ const Play: React.FC = () => {
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (!game) {
+    if (gamesLoaded && !game) {
       // @ts-ignore
       dispatch(joinGameById(id)).then((joinedGame) => {
         console.log("joinedGame :", joinedGame);
         if (!joinedGame) {
-          setFourohfour(true)
+          setFourohfour(true);
         }
       });
     }
-  }, [id, dispatch, game]);
+  }, [id, dispatch, game, gamesLoaded]);
 
   if (fourohfour) {
-    return <div className="flex h-full text-2xl justify-around items-center"><h1>404</h1></div>
+    return (
+      <div className="flex h-full text-2xl justify-around items-center">
+        <h1>404</h1>
+        <Link to="/">home</Link>
+      </div>
+    );
   }
   return game ? (
     <>
@@ -72,6 +80,16 @@ const Play: React.FC = () => {
         className="flex justify-center items-center"
         style={{ height: "100px" }}
       >
+        {selectedWord?.length ? (
+          <button
+            onClick={() => {
+              dispatch(resetGame());
+            }}
+            type="button"
+          >
+            clear
+          </button>
+        ) : null}
         <span className="text-7xl text-darkbrown font-fredoka">
           {selectedWord || ""}
         </span>
@@ -91,9 +109,9 @@ const Play: React.FC = () => {
                 const gridTile = game.grid[coord];
                 return (
                   <GameTile
-                    isCapital={gridTile.capital}
+                    isCapital={revealLetters ? gridTile.capital : false}
                     coord={coord}
-                    letter={revealLetters ? gridTile.value.toUpperCase() : null}
+                    letter={revealLetters ? gridTile.value.toUpperCase() : ""}
                     position={[
                       3.1 * (3 / 2) * gridTile.q,
                       -1 *
@@ -112,6 +130,15 @@ const Play: React.FC = () => {
             </group>
           </React.Suspense>
         </Canvas>
+      </div>
+      <div className="">
+        <ul>
+          {game.moves.map((move, i) => (
+            <li key={i}>
+              {move.player == userIndex ? "You" : "Them"}: {move.letters.join("")}
+            </li>
+          ))}
+        </ul>
       </div>
     </>
   ) : null;

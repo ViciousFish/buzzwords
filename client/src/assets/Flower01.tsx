@@ -13,7 +13,7 @@ export const Flower01 = ({ ...props }) => {
   const { nodes, materials } = useGLTF(flower01)
   return (
     <group ref={group} {...props} dispose={null}>
-      <group rotation={[Math.PI / 2, Math.PI / 4, 0]} position={[0, 0, 2]} scale={[0.53, 0.53, 0.53]}>
+      <group rotation={[Math.PI / 2, Math.PI / 4, 0]} position={[0, 0, 1.2]} scale={[0.53, 0.53, 0.53]}>
         <mesh geometry={nodes.Flower01_1.geometry} material={materials.White} />
         <mesh geometry={nodes.Flower01_2.geometry} material={materials.Brown} />
       </group>
