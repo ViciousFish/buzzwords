@@ -17,7 +17,9 @@ module.exports = {
           }
           return `rgb(250, 231, 178)`;
         },
-        darkbrown: '#59430D'
+        darkbrown: '#59430D',
+        p1: "#d788b8",
+        p2: "#709867"
       },
     },
   },

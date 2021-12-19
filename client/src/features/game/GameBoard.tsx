@@ -29,7 +29,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
     }, 500);
   });
   return (
-    <>
+    <div className="flex flex-col h-full flex-auto">
       <div
         className="flex justify-center items-center"
         style={{ height: "100px" }}
@@ -85,7 +85,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
           </React.Suspense>
         </Canvas>
       </div>
-    </>
+    </div>
   );
 };
 

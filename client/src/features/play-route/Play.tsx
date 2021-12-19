@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Html, useProgress } from "@react-three/drei";
 import { Link, useParams } from "react-router-dom";
+import classnames from "classnames";
 
 import Canvas from "../canvas/Canvas";
 import { useDispatch, useSelector } from "react-redux";
@@ -78,8 +79,14 @@ const Play: React.FC = () => {
           <ul>
             {game &&
               game.moves.map((move, i) => (
-                <li key={i}>
-                  {move.player == userIndex ? "You" : "Them"}:{" "}
+                <li
+                  key={i}
+                  className={classnames(
+                    "p-1 text-center rounded-md m-1",
+                    move.player === 0 ? "bg-p1" : "bg-p2"
+                  )}
+                >
+                  {/* {move.player == userIndex ? "You" : "Them"}:{" "} */}
                   {move.letters.join("")}
                 </li>
               ))}
