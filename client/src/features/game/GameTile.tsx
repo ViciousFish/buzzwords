@@ -4,6 +4,7 @@ import React, {
   useLayoutEffect,
   useEffect,
   useState,
+  useCallback,
 } from "react";
 import { Group, Mesh, Vector3 } from "three";
 import {
@@ -29,26 +30,34 @@ import fredokaone from "../../../assets/Fredoka One_Regular.json?url";
 import { theme } from "../../app/theme";
 import { Cell } from "../cell/cell";
 import { usePrevious } from "../../utils/usePrevious";
+import { useAppDispatch } from "../../app/hooks";
+import { selectTile } from "./gameSlice";
+import { QRCoord } from "../hexGrid/hexGrid";
+import { toggleTileSelected } from "./gameActions";
+import { useSelector } from "react-redux";
+import { RootState } from "../../app/store";
+import { Html } from "@react-three/drei";
+import { GamePlayer } from "./game";
 
 interface GameTileProps {
   position: V3Type;
   letter: string | null;
-  cell: Cell;
-  color?: "primary" | "p1" | "p2";
-  onClick?: (e: ThreeEvent<MouseEvent>) => void;
+  coord: QRCoord;
+  owner: GamePlayer;
+  currentGame: string;
 }
 
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
 
 const GameTile: React.FC<GameTileProps> = ({
   letter,
-  cell,
-  color,
+  coord,
   position,
-  onClick,
+  owner,
+  currentGame,
+  // onClick,
 }) => {
-  const isAnimating = useRef(false);
-
+  const dispatch = useAppDispatch();
   const font = useLoader(FontLoader, fredokaone);
   const fontConfig = useMemo(
     () => ({
@@ -65,6 +74,31 @@ const GameTile: React.FC<GameTileProps> = ({
     [font]
   );
 
+  const isSelected = useSelector(
+    (state: RootState) => state.game.selectedTiles[coord]
+  );
+  const currentTurn = useSelector(
+    (state: RootState) => state.gamelist.games[currentGame].turn
+  );
+  let color = theme.colors.primary;
+  if (owner === 0) {
+    color = theme.colors.p1;
+  } else if (owner === 1) {
+    color = theme.colors.p2;
+  } else if (isSelected) {
+    color = currentTurn === 0 ? theme.colors.p1 : theme.colors.p2;
+    // take color of current player and blend with base color?
+  }
+
+  const scale = owner !== 2 || letter?.length || isSelected ? 1 : 0.9;
+
+  const colorAndScaleSpring = useSpring({
+    scale: [scale, scale, scale],
+    color,
+    config: springConfig.stiff,
+  });
+
+  const isAnimating = useRef(false);
   const characterMesh = useRef<Mesh>();
   const group = useRef<Group>();
 
@@ -123,25 +157,39 @@ const GameTile: React.FC<GameTileProps> = ({
       }
     }
   });
+
+  const onTileClick = useCallback(
+    (e: ThreeEvent<MouseEvent>) => {
+      dispatch(toggleTileSelected(coord));
+      // e.stopImmediatePropagation();
+      e.stopPropagation();
+    },
+    [coord, dispatch]
+  );
   return (
     // @ts-ignore
-    <a.group ref={group} position={position} onClick={onClick}>
-      {/* @ts-ignore */}
+    <a.group
+      ref={group}
+      position={position}
+      onClick={onTileClick}
+      {...colorAndScaleSpring}
+    >
       {letter && (
         <mesh ref={characterMesh} position={[0, 0, 0.2]}>
           <textGeometry args={[letter, fontConfig]} />
           <meshStandardMaterial color={theme.colors.darkbrown} />
         </mesh>
       )}
-      {prevLetter && (
+      {prevLetter && !letter && (
         <mesh ref={characterMesh} position={[0, 0, 0.2]}>
           <textGeometry args={[prevLetter, fontConfig]} />
           <meshStandardMaterial color={theme.colors.darkbrown} />
         </mesh>
       )}
       <group position={[0, 0, -0.2]}>
-        {/* @ts-ignore */}
-        <HexTile orientation="flat" color={color} />
+        <HexTile orientation="flat">
+          <a.meshStandardMaterial color={colorAndScaleSpring.color} />
+        </HexTile>
       </group>
     </a.group>
   );

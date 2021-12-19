@@ -3,12 +3,14 @@ import { Html, useProgress } from "@react-three/drei";
 import { Link, useParams } from "react-router-dom";
 
 import Canvas from "../canvas/Canvas";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import GameTile from "../game/GameTile";
 import { QRCoord } from "../hexGrid/hexGrid";
+import { resetGame } from "../game/gameSlice";
 
 const Play: React.FC = () => {
+  const dispatch = useDispatch();
   const { progress } = useProgress();
   const { id } = useParams();
   const game = useSelector((state: RootState) => state.gamelist.games[id]);
@@ -18,17 +20,20 @@ const Play: React.FC = () => {
   const userIndex = game && currentUser ? game.users.findIndex((val) => val === currentUser.id) : null;
 
   useEffect(() => {
+    dispatch(resetGame());
     setTimeout(() => {
       setRevealLetters(true);
     }, 500)
   }, [])
   return game ? (
     <>
-      <div>
+      <div className="flex justify-around">
         <Link className="btn" to="/">
           home
         </Link>
-        <span>you are {userIndex === 0 ? 'pink' : 'green'}</span>
+        <button type="button" onClick={() => setRevealLetters(!revealLetters)}>toggle letters</button>
+        <div>you are {userIndex === 0 ? 'pink' : 'green'}</div>
+        <div className="block">it is {game.turn === 0 ? 'pinks' : 'greens'} turn</div>
       </div>
       <div className="flex-auto lg:w-[calc(100vw-300px)]">
         <Canvas key={`play-${id}`}>
@@ -38,7 +43,7 @@ const Play: React.FC = () => {
                 const gridTile = game.grid[coord];
                 return (
                   <GameTile
-                    cell={gridTile}
+                    coord={coord}
                     letter={revealLetters ? gridTile.value.toUpperCase() : null}
                     position={[
                       3.1 * (3 / 2) * gridTile.q,
@@ -48,10 +53,8 @@ const Play: React.FC = () => {
                       0,
                     ]}
                     key={coord}
-                    color={gridTile.owner == 2 ? 'primary' : (`p${gridTile.owner + 1}` as 'p1' | 'p2')}
-                    onClick={() => {
-                      setRevealLetters(!revealLetters);
-                    }}
+                    owner={gridTile.owner}
+                    currentGame={id}
                   />
                 );
               })}

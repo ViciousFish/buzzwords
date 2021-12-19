@@ -1,29 +1,32 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Game, getEmptyGame } from "./game";
-
+import { HexGrid, QRCoord } from "../hexGrid/hexGrid";
 
 interface GameState {
-  gamesById: { [id: string]: Game };
+  selectedTiles: {
+    [position: QRCoord]: boolean;
+  };
 }
 
 const initialState: GameState = {
-  gamesById: {}
-}
+  selectedTiles: {},
+};
 
 export const gameSlice = createSlice({
-  name: 'game',
+  name: "game",
   initialState,
   reducers: {
-    createEmptyGame: (state, action: PayloadAction<{userId: string}>) => {
-      const newGame = getEmptyGame(action.payload.userId)
-      state.gamesById[newGame.id] = newGame
+    selectTile: (state, action: PayloadAction<QRCoord>) => {
+      state.selectedTiles[action.payload] = true;
     },
-    addGame: (state, action: PayloadAction<Game>) => {
-      state.gamesById[action.payload.id] = action.payload
+    unselectTile: (state, action: PayloadAction<QRCoord>) => {
+      delete state.selectedTiles[action.payload];
+    },
+    resetGame: (state) => {
+      Object.assign(state, initialState)
     }
-  }
-})
+  },
+});
 
-export const { createEmptyGame, addGame } = gameSlice.actions;
+export const { selectTile, unselectTile, resetGame } = gameSlice.actions;
 
 export default gameSlice.reducer;

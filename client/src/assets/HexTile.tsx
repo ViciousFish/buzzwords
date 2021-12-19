@@ -7,10 +7,10 @@ import hextile from "../../assets/hextile.glb?url";
 
 interface HexTileProps {
   orientation?: 'flat' | 'pointy'
-  color?: 'primary' | 'p1' | 'p2'
+  color?: string;
 }
 
-const HexTile: React.FC<MeshProps & HexTileProps> = ({ position, rotation, orientation, color, ...props }) => {
+const HexTile: React.FC<MeshProps & HexTileProps> = ({ position, rotation, orientation, color, children, ...props }) => {
   const group = useRef();
   // @ts-ignore
   const { nodes, materials } = useGLTF(hextile);
@@ -32,10 +32,10 @@ const HexTile: React.FC<MeshProps & HexTileProps> = ({ position, rotation, orien
         geometry={(nodes.Circle as Mesh).geometry}
         {...props}
       >
-        <meshStandardMaterial
-          // ToneMapped={false}
+        {!children && <meshStandardMaterial
           color={theme.colors[color || 'primary']}
-        />
+        />}
+        {children}
       </mesh>
     </group>
   );
