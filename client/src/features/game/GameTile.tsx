@@ -160,11 +160,12 @@ const GameTile: React.FC<GameTileProps> = ({
 
   const onTileClick = useCallback(
     (e: ThreeEvent<MouseEvent>) => {
-      dispatch(toggleTileSelected(coord));
-      // e.stopImmediatePropagation();
+      if (letter) {
+        dispatch(toggleTileSelected(coord));
+      }
       e.stopPropagation();
     },
-    [coord, dispatch]
+    [coord, dispatch, letter]
   );
   return (
     // @ts-ignore
