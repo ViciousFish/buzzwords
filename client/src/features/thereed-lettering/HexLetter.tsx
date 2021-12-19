@@ -30,6 +30,7 @@ interface HexLetterProps {
   position: V3Type;
   letter: string;
   allowSpinning?: boolean;
+  autoSpin?: boolean;
 }
 
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
@@ -37,6 +38,7 @@ interface HexLetterProps {
 const HexLetter: React.FC<HexLetterProps> = ({
   letter,
   allowSpinning,
+  autoSpin,
   ...props
 }) => {
   const viewport = useThree(({ viewport }) => viewport);
@@ -84,7 +86,7 @@ const HexLetter: React.FC<HexLetterProps> = ({
   }, [letter]);
 
   useEffect(() => {
-    if (allowSpinning) {
+    if (allowSpinning && autoSpin) {
       let timer = Math.random() * 8000 + 2000;
       setTimeout(() => {
         isAnimating.current = true;
@@ -102,7 +104,7 @@ const HexLetter: React.FC<HexLetterProps> = ({
         });
       }, timer);
     }
-  }, [rotateSpringApi, allowSpinning]);
+  }, [rotateSpringApi, allowSpinning, autoSpin]);
 
   const bind = useGesture({
     onDrag: allowSpinning ? ({ down, movement: [mx, my] }) => {

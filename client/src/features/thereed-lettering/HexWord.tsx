@@ -6,12 +6,14 @@ interface HexWordProps {
   text: string;
   position?: [number, number, number];
   allowSpinning?: boolean;
+  autoSpin?: boolean;
 }
 
 const HexWord: React.FC<HexWordProps & GroupProps> = ({
   text,
   position,
   allowSpinning,
+  autoSpin,
   ...props
 }) => {
   const characters = text.split("");
@@ -27,6 +29,7 @@ const HexWord: React.FC<HexWordProps & GroupProps> = ({
     >
       {characters.map((character, index) => (
         <HexLetter
+          autoSpin={autoSpin}
           allowSpinning={allowSpinning}
           letter={character}
           key={index}

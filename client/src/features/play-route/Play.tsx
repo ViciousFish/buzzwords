@@ -9,6 +9,7 @@ import GameTile from "../game/GameTile";
 import { QRCoord } from "../hexGrid/hexGrid";
 import { resetGame } from "../game/gameSlice";
 import { getOrderedTileSelectionCoords, makeGetSelectedWord } from "../game/gameSelectors";
+import HexWord from "../thereed-lettering/HexWord";
 
 const Play: React.FC = () => {
   const dispatch = useDispatch();
@@ -27,7 +28,7 @@ const Play: React.FC = () => {
     setTimeout(() => {
       setRevealLetters(true);
     }, 500)
-  }, [])
+  }, [dispatch, id])
   return game ? (
     <>
       <div className="flex justify-around">
@@ -38,10 +39,11 @@ const Play: React.FC = () => {
         <div>you are {userIndex === 0 ? 'pink' : 'green'}</div>
         <div className="block">it is {game.turn === 0 ? 'pinks' : 'greens'} turn</div>
       </div>
-      <div className="text-center text-2xl" style={{height: '50px'}}>{selectedWord || ''}</div>
+      <div className="text-center text-9xl text-darkbrown font-fredoka" style={{height: '100px'}}>{selectedWord || ''}</div>
       <div className="flex-auto lg:w-[calc(100vw-300px)]">
         <Canvas key={`play-${id}`}>
           <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
+            {/* <HexWord allowSpinning autoSpin={false} position={[0, 20, 0]} text={selectedWord + ' '}/> */}
             <group position={[0, 0, 0]}>
               {Object.keys(game.grid).map((coord: QRCoord) => {
                 const gridTile = game.grid[coord];

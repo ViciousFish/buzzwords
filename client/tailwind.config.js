@@ -4,6 +4,9 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
+      fontFamily: {
+        fredoka: ['Fredoka\\ One', 'cursive']
+      },
       colors: {
         primary: ({ opacityVariable, opacityValue }) => {
           if (opacityValue !== undefined) {
@@ -14,6 +17,7 @@ module.exports = {
           }
           return `rgb(250, 231, 178)`;
         },
+        darkbrown: '#59430D'
       },
     },
   },

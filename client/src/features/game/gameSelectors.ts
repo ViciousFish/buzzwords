@@ -20,6 +20,6 @@ export const makeGetSelectedWord = (gameId: string) => createSelector(
       return null;
     }
     const letters = tileCoordinates.map(coord => grid[coord].value)
-    return letters.join('')
+    return letters.join('').toUpperCase()
   }
 )

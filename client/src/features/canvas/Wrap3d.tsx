@@ -15,7 +15,7 @@ const setZoom = (
   const hzoom = height / (boundingBox.max.y - boundingBox.min.y);
   const zoom = Math.min(wzoom, hzoom);
   const dpr = Math.max(window.devicePixelRatio, 2);
-  camera.zoom = Math.min(zoom - 2, 25 * dpr);
+  camera.zoom = Math.min(zoom - 3, 25 * dpr);
   camera.updateProjectionMatrix();
 };
 
