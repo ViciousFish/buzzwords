@@ -68,6 +68,7 @@ const Play: React.FC = () => {
                 const gridTile = game.grid[coord];
                 return (
                   <GameTile
+                    isCapital={gridTile.capital}
                     coord={coord}
                     letter={revealLetters ? gridTile.value.toUpperCase() : null}
                     position={[

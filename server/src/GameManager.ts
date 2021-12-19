@@ -68,26 +68,16 @@ export default class GameManager {
       let valid = false;
       while (stack.length) {
         const current = stack.pop();
-        if (current != undefined) {
+        if (current != undefined && current != null) {
           const neighbors = this.game.grid.getCellNeighbors(
             current.q,
             current.r
           );
-          const ownedNeighbors = neighbors.filter((cell) => {
-            // @ts-expect-error idk why it thinks this could be null
-            return cell.owner == this.game.turn;
-          });
+          const ownedNeighbors = neighbors.filter(
+            // @ts-expect-error I promise it isn't null
+            (cell) => cell.owner == this.game.turn
+          );
           const nonTurnOwnedNeighbors = ownedNeighbors.filter((cell) => {
-            let notInMove = true;
-            for (const m of move) {
-              if (m.q == cell.q && m.r == cell.r) {
-                notInMove = false;
-                break;
-              }
-            }
-            return notInMove;
-          });
-          const turnOwnedNeighbors = ownedNeighbors.filter((cell) => {
             let inMove = false;
             for (const m of move) {
               if (m.q == cell.q && m.r == cell.r) {
@@ -95,14 +85,13 @@ export default class GameManager {
                 break;
               }
             }
-            return inMove;
+            return !inMove;
           });
           if (nonTurnOwnedNeighbors.length) {
-            // For sure its valid
             valid = true;
             break;
           }
-          stack.concat(turnOwnedNeighbors);
+          stack.concat(ownedNeighbors);
         }
       }
       const cell = this.game.grid.getCell(coord.q, coord.r);

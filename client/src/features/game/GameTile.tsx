@@ -2,42 +2,31 @@ import React, {
   useMemo,
   useRef,
   useLayoutEffect,
-  useEffect,
   useState,
   useCallback,
 } from "react";
 import { Group, Mesh, Vector3 } from "three";
 import {
-  GroupProps,
   ThreeEvent,
   useFrame,
   useLoader,
-  useThree,
   Vector3 as V3Type,
 } from "@react-three/fiber";
 import { FontLoader } from "three";
-import {
-  SpringRef,
-  useSpring,
-  useSpringRef,
-  animated as a,
-} from "@react-spring/three";
+import { useSpring, useSpringRef, animated as a } from "@react-spring/three";
 import { config as springConfig } from "@react-spring/core";
-import { useGesture } from "@use-gesture/react";
 
 import HexTile from "../../assets/HexTile";
 import fredokaone from "../../../assets/Fredoka One_Regular.json?url";
 import { theme } from "../../app/theme";
-import { Cell } from "../cell/cell";
 import { usePrevious } from "../../utils/usePrevious";
 import { useAppDispatch } from "../../app/hooks";
-import { selectTile } from "./gameSlice";
 import { QRCoord } from "../hexGrid/hexGrid";
 import { toggleTileSelected } from "./gameActions";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
-import { Html } from "@react-three/drei";
 import { GamePlayer } from "./game";
+import { Flower01 } from "../../assets/Flower01";
 
 interface GameTileProps {
   position: V3Type;
@@ -46,6 +35,7 @@ interface GameTileProps {
   owner: GamePlayer;
   currentGame: string;
   userIndex: number;
+  isCapital: boolean;
 }
 
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
@@ -57,6 +47,7 @@ const GameTile: React.FC<GameTileProps> = ({
   owner,
   currentGame,
   userIndex,
+  isCapital,
 }) => {
   const dispatch = useAppDispatch();
   const font = useLoader(FontLoader, fredokaone);
@@ -187,6 +178,9 @@ const GameTile: React.FC<GameTileProps> = ({
           <textGeometry args={[prevLetter, fontConfig]} />
           <meshStandardMaterial color={theme.colors.darkbrown} />
         </mesh>
+      )}
+      {isCapital && (
+        <Flower01 />
       )}
       <group position={[0, 0, -0.2]}>
         <HexTile orientation="flat">
