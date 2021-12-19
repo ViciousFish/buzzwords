@@ -8,8 +8,12 @@ import { RootState } from "../../app/store";
 import GameTile from "../game/GameTile";
 import { QRCoord } from "../hexGrid/hexGrid";
 import { resetGame } from "../game/gameSlice";
-import { getOrderedTileSelectionCoords, makeGetSelectedWord } from "../game/gameSelectors";
+import {
+  getOrderedTileSelectionCoords,
+  makeGetSelectedWord,
+} from "../game/gameSelectors";
 import HexWord from "../thereed-lettering/HexWord";
+import { submitMove } from "../game/gameActions";
 
 const Play: React.FC = () => {
   const dispatch = useDispatch();
@@ -21,25 +25,40 @@ const Play: React.FC = () => {
   const selectedWord = useSelector(makeGetSelectedWord(id));
   const [revealLetters, setRevealLetters] = useState(false);
 
-  const userIndex = game && currentUser ? game.users.findIndex((val) => val === currentUser.id) : null;
+  const userIndex =
+    game && currentUser
+      ? game.users.findIndex((val) => val === currentUser.id)
+      : null;
 
   useEffect(() => {
     dispatch(resetGame());
     setTimeout(() => {
       setRevealLetters(true);
-    }, 500)
-  }, [dispatch, id])
+    }, 500);
+  }, [dispatch, id]);
   return game ? (
     <>
       <div className="flex justify-around">
         <Link className="btn" to="/">
           home
         </Link>
-        <button type="button" onClick={() => setRevealLetters(!revealLetters)}>toggle letters</button>
-        <div>you are {userIndex === 0 ? 'pink' : 'green'}</div>
-        <div className="block">it is {game.turn === 0 ? 'pinks' : 'greens'} turn</div>
+        <button type="button" onClick={() => setRevealLetters(!revealLetters)}>
+          toggle letters
+        </button>
+        <div>you are {userIndex === 0 ? "pink" : "green"}</div>
+        <div className="block">
+          it is {game.turn === 0 ? "pinks" : "greens"} turn
+        </div>
       </div>
-      <div className="text-center text-9xl text-darkbrown font-fredoka" style={{height: '100px'}}>{selectedWord || ''}</div>
+      <div
+        className="text-center text-7xl text-darkbrown font-fredoka"
+        style={{ height: "100px" }}
+      >
+        {selectedWord || ""}
+        {selectedWord?.length ? <button onClick={() => dispatch(submitMove(id))} type="button">
+          submit
+        </button> : null}
+      </div>
       <div className="flex-auto lg:w-[calc(100vw-300px)]">
         <Canvas key={`play-${id}`}>
           <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
@@ -53,14 +72,16 @@ const Play: React.FC = () => {
                     letter={revealLetters ? gridTile.value.toUpperCase() : null}
                     position={[
                       3.1 * (3 / 2) * gridTile.q,
-                      -1 * 3.1 *
-                        (Math.sqrt(3) / 2 * gridTile.q +
+                      -1 *
+                        3.1 *
+                        ((Math.sqrt(3) / 2) * gridTile.q +
                           Math.sqrt(3) * gridTile.r),
                       0,
                     ]}
                     key={coord}
                     owner={gridTile.owner}
                     currentGame={id}
+                    userIndex={userIndex}
                   />
                 );
               })}

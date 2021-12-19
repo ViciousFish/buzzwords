@@ -1,7 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch, AppThunk } from "../../app/store";
+import { updateGame } from "../gamelist/gamelistSlice";
 import { QRCoord } from "../hexGrid/hexGrid";
-import { selectTile, unselectTile } from "./gameSlice";
+import { Game } from "./game";
+import { getOrderedTileSelectionCoords } from "./gameSelectors";
+import { resetGame, selectTile, unselectTile } from "./gameSlice";
 // import { getEmptyGame } from "./game";
 // import { addGame } from "./gameSlice";
 
@@ -21,5 +24,46 @@ export const toggleTileSelected =
       dispatch(unselectTile(tile));
     } else {
       dispatch(selectTile(tile));
+    }
+  };
+
+export const submitMove =
+  (gameId: string): AppThunk =>
+  async (dispatch, getState) => {
+    const state = getState();
+    const move = getOrderedTileSelectionCoords(state);
+
+    const formattedCoords = move.map((coord) => {
+      const [q, r] = coord.split(",");
+      return {
+        q: Number(q),
+        r: Number(r),
+      };
+    });
+    console.log("formattedCoords :", formattedCoords);
+
+    try {
+      const res = await fetch(`/api/game/${gameId}/move`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          move: formattedCoords,
+        }),
+      }).then((res) => res.json());
+
+      const newGame: Game = {
+        ...res,
+        grid: res.grid.cellMap,
+      };
+
+      dispatch(
+        updateGame({
+          id: gameId,
+          game: newGame,
+        })
+      );
+      dispatch(resetGame());
+    } catch (e) {
+      console.log(e);
     }
   };

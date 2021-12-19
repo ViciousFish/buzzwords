@@ -21,11 +21,14 @@ export const gamelistSlice = createSlice({
     refreshReceived: (state, action: PayloadAction<GameListState["games"]>) => {
       state.games = action.payload;
     },
+    updateGame: (state, action: PayloadAction<{id: string, game: Game}>) => {
+      state.games[action.payload.id] = action.payload.game;
+    }
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { refreshReceived } = gamelistSlice.actions;
+export const { refreshReceived, updateGame } = gamelistSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (state: RootState) => state.counter.value;

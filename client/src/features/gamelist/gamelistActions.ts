@@ -6,7 +6,7 @@ import { refreshReceived } from "./gamelistSlice";
 export interface ApiGame {
   gameOver: boolean;
   grid: {
-    cellMap: HexGrid
+    cellMap: HexGrid;
   };
   id: string;
   turn: number;
@@ -15,14 +15,14 @@ export interface ApiGame {
 }
 
 export const refresh = (): AppThunk => async (dispatch) => {
+  console.log("refresh");
   const games: ApiGame[] = await fetch("/api/games").then((response) =>
     response.json()
   );
   const gamesById: { [id: string]: Game } = games.reduce((acc, game) => {
-    console.log("game", game);
     acc[game.id] = {
       ...game,
-      grid: game.grid.cellMap
+      grid: game.grid.cellMap,
     };
     return acc;
   }, {});
@@ -39,11 +39,13 @@ export const createNewGame = (): AppThunk => async (dispatch) => {
   dispatch(refresh());
 };
 
-export const joinGameById = (id: string): AppThunk => async (dispatch) => {
-  const res = await fetch(`/api/game/${id}/join`, {
-    method: "POST",
-  }).then((response) => response.json());
-  console.log('res', res);
+export const joinGameById =
+  (id: string): AppThunk =>
+  async (dispatch) => {
+    const res = await fetch(`/api/game/${id}/join`, {
+      method: "POST",
+    }).then((response) => response.json());
+    console.log("res", res);
 
-  dispatch(refresh());
-}
+    dispatch(refresh());
+  };

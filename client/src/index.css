@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-canvas {
+.no-touch canvas {
   touch-action: none;
 }
 button, .btn {

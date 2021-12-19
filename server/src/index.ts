@@ -119,11 +119,13 @@ app.post("/api/game/:id/move", async (req, res) => {
   const game = await dl.getGameById(gameId, {
     session,
   });
+  console.log("game :", game);
   if (game == null || game == undefined) {
     res.sendStatus(404);
     return;
   }
   const gm = new GameManager(game);
+  console.log("gm :", gm);
 
   let newGame;
   try {

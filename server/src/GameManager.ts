@@ -13,6 +13,7 @@ export default class GameManager {
   }
 
   makeMove(userId: string, move: HexCoord[]): Game {
+    console.log("move :", move);
     if (!this.game) {
       throw new Error("Game Manager has no game!");
     }
@@ -56,6 +57,7 @@ export default class GameManager {
       // For each coord
       // If you can make it to user territory that isn't in move, then its valid.
       const cell = this.game.grid.getCell(coord.q, coord.r);
+      console.log("cell :", cell);
       if (cell != null) {
         cell.owner = this.game.turn;
         this.game.grid.setCell(cell);
@@ -103,14 +105,18 @@ export default class GameManager {
           stack.concat(turnOwnedNeighbors);
         }
       }
+      const cell = this.game.grid.getCell(coord.q, coord.r);
       if (!valid) {
         // This cell should be set back to owner = 2
-        const cell = this.game.grid.getCell(coord.q, coord.r);
         if (cell != null) {
           cell.owner = 2;
         }
       }
+      if (cell && cell.owner == this.game.turn) {
+        cell.value = "";
+      }
     }
+
     let capitalCaptured = false;
     // Make all adjacent tiles owned by opponent owned by 2
     for (const coord of move) {
@@ -125,6 +131,8 @@ export default class GameManager {
               neighbor.capital = false;
             }
             this.game.grid.setCell(neighbor);
+          } else if (neighbor.owner == 2) {
+            this.game.activateCell(neighbor.q, neighbor.r);
           }
         }
       }
@@ -139,6 +147,21 @@ export default class GameManager {
       if (cell != null && cell.owner == 2) {
         cell.value = getRandomCharacter();
         this.game.grid.setCell(cell);
+      }
+    }
+
+    for (const cell of Object.values(this.game.grid.cellMap)) {
+      if (cell.owner == 2) {
+        const neighbors = this.game.grid.getCellNeighbors(cell.q, cell.r);
+        const playerNeighbors = neighbors.filter((c) => c.owner != 2);
+        if (playerNeighbors.length && cell.value == "") {
+          this.game.randomizeCellValue(cell.q, cell.r);
+        }
+        if (!playerNeighbors.length) {
+          cell.active = false;
+          cell.value = "";
+          this.game.grid.setCell(cell);
+        }
       }
     }
 

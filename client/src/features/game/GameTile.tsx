@@ -45,6 +45,7 @@ interface GameTileProps {
   coord: QRCoord;
   owner: GamePlayer;
   currentGame: string;
+  userIndex: number;
 }
 
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
@@ -55,14 +56,14 @@ const GameTile: React.FC<GameTileProps> = ({
   position,
   owner,
   currentGame,
-  // onClick,
+  userIndex,
 }) => {
   const dispatch = useAppDispatch();
   const font = useLoader(FontLoader, fredokaone);
   const fontConfig = useMemo(
     () => ({
       font,
-      size: 3,
+      size: 2.5,
       height: 1,
       curveSegments: 32,
       bevelEnabled: true,
@@ -134,7 +135,7 @@ const GameTile: React.FC<GameTileProps> = ({
           x: 0,
           y: 0,
         });
-      }, Math.random() * 300 + 200);
+      }, Math.random() * 300);
     }
     if (prevLetter?.length && !letter) {
       rotateSpringApi.start({
@@ -160,12 +161,12 @@ const GameTile: React.FC<GameTileProps> = ({
 
   const onTileClick = useCallback(
     (e: ThreeEvent<MouseEvent>) => {
-      if (letter) {
+      if (letter && currentTurn === userIndex) {
         dispatch(toggleTileSelected(coord));
       }
       e.stopPropagation();
     },
-    [coord, dispatch, letter]
+    [coord, dispatch, letter, currentTurn, userIndex]
   );
   return (
     // @ts-ignore

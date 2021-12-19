@@ -15,7 +15,7 @@ const setZoom = (
   const hzoom = height / (boundingBox.max.y - boundingBox.min.y);
   const zoom = Math.min(wzoom, hzoom);
   const dpr = Math.max(window.devicePixelRatio, 2);
-  camera.zoom = Math.min(zoom - 3, 25 * dpr);
+  camera.zoom = Math.min(zoom - 1, 25 * dpr);
   camera.updateProjectionMatrix();
 };
 
@@ -33,7 +33,7 @@ const Wrap3d: React.FC = ({
     if (progress === 100 && groupRef.current) {
       setTimeout(() => {
         setZoom(groupRef.current, width, height, boundingBox, camera);
-      })
+      }, 10)
     }
   }, [progress, width, height, groupRef, boundingBox, camera]);
   return (

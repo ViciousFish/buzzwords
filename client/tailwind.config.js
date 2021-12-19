@@ -5,7 +5,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        fredoka: ['Fredoka\\ One', 'cursive']
+        fredoka: ['Fredoka\\ One', 'sans']
       },
       colors: {
         primary: ({ opacityVariable, opacityValue }) => {
