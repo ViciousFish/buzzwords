@@ -42,10 +42,17 @@ export const createNewGame = (): AppThunk => async (dispatch) => {
 export const joinGameById =
   (id: string): AppThunk =>
   async (dispatch) => {
-    const res = await fetch(`/api/game/${id}/join`, {
-      method: "POST",
-    }).then((response) => response.json());
-    console.log("res", res);
-
-    dispatch(refresh());
+    try {
+      const res = await fetch(`/api/game/${id}/join`, {
+        method: "POST",
+      }).then((response) => response.text());
+      if (res === "Not Found") {
+        return false;
+      }
+      dispatch(refresh());
+      return true;
+    } catch (e) {
+      console.log("caught", e);
+      return false;
+    }
   };

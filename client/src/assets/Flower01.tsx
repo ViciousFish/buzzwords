@@ -6,7 +6,6 @@ import React, { useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 
 import flower01 from '../../assets/Flower01.gltf?url'
-console.log('flower01 :', flower01);
 
 export const Flower01 = ({ ...props }) => {
   const group = useRef()

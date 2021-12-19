@@ -15,6 +15,7 @@ import {
 import HexWord from "../thereed-lettering/HexWord";
 import { submitMove } from "../game/gameActions";
 import CameraControls from "../../utils/CameraControls";
+import { joinGameById } from "../gamelist/gamelistActions";
 
 const Play: React.FC = () => {
   const dispatch = useDispatch();
@@ -22,9 +23,9 @@ const Play: React.FC = () => {
   const { id } = useParams();
   const game = useSelector((state: RootState) => state.gamelist.games[id]);
   const currentUser = useSelector((state: RootState) => state.user.user);
-  const orderedSelection = useSelector(getOrderedTileSelectionCoords);
   const selectedWord = useSelector(makeGetSelectedWord(id));
   const [revealLetters, setRevealLetters] = useState(false);
+  const [fourohfour, setFourohfour] = useState(false);
 
   const userIndex =
     game && currentUser
@@ -37,6 +38,22 @@ const Play: React.FC = () => {
       setRevealLetters(true);
     }, 500);
   }, [dispatch, id]);
+
+  useEffect(() => {
+    if (!game) {
+      // @ts-ignore
+      dispatch(joinGameById(id)).then((joinedGame) => {
+        console.log("joinedGame :", joinedGame);
+        if (!joinedGame) {
+          setFourohfour(true)
+        }
+      });
+    }
+  }, [id, dispatch, game]);
+
+  if (fourohfour) {
+    return <div className="flex h-full text-2xl justify-around items-center"><h1>404</h1></div>
+  }
   return game ? (
     <>
       <div className="flex justify-around">
@@ -55,10 +72,14 @@ const Play: React.FC = () => {
         className="flex justify-center items-center"
         style={{ height: "100px" }}
       >
-        <span className="text-7xl text-darkbrown font-fredoka">{selectedWord || ""}</span>
-        {selectedWord?.length ? <button onClick={() => dispatch(submitMove(id))} type="button">
-          submit
-        </button> : null}
+        <span className="text-7xl text-darkbrown font-fredoka">
+          {selectedWord || ""}
+        </span>
+        {selectedWord?.length ? (
+          <button onClick={() => dispatch(submitMove(id))} type="button">
+            submit
+          </button>
+        ) : null}
       </div>
       <div className="flex-auto lg:w-[calc(100vw-300px)]">
         <Canvas key={`play-${id}`}>

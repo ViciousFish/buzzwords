@@ -7,11 +7,13 @@ interface GameListState {
   games: {
     [key: string]: Game;
   };
+  gamesLoaded: boolean;
 }
 
 // Define the initial state using that type
 const initialState: GameListState = {
   games: {},
+  gamesLoaded: false,
 };
 
 export const gamelistSlice = createSlice({
@@ -20,6 +22,7 @@ export const gamelistSlice = createSlice({
   reducers: {
     refreshReceived: (state, action: PayloadAction<GameListState["games"]>) => {
       state.games = action.payload;
+      state.gamesLoaded = true;
     },
     updateGame: (state, action: PayloadAction<{id: string, game: Game}>) => {
       state.games[action.payload.id] = action.payload.game;
