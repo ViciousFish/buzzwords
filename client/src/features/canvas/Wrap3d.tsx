@@ -1,7 +1,7 @@
-import { Stats, useProgress } from "@react-three/drei";
+import { Stats, useHelper, useProgress } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import React, { useEffect, useRef, useState } from "react";
-import { Box3, Color, Group, PerspectiveCamera } from "three";
+import { Box3, DirectionalLightHelper, Group, PerspectiveCamera } from "three";
 
 const setZoom = (
   group: Group,
@@ -29,6 +29,9 @@ const Wrap3d: React.FC = ({
   const camera = useThree((state) => state.camera) as PerspectiveCamera;
   const [boundingBox] = useState(() => new Box3());
 
+  const directionalLightRef = useRef();
+  // useHelper(directionalLightRef, DirectionalLightHelper, 1);
+
   useEffect(() => {
     if (progress === 100 && groupRef.current) {
       setTimeout(() => {
@@ -41,7 +44,7 @@ const Wrap3d: React.FC = ({
       <group position={[0, 0, 0]}>
         {!import.meta.env.PROD && <Stats />}
         <ambientLight />
-        <directionalLight position={[10, 10, 10]} />
+        <directionalLight castShadow ref={directionalLightRef} position={[2, 2, 2]} />
         {/* {!import.meta.env.PROD && (
           <box3Helper args={[boundingBox, new Color(0xff0000)]} />
         )} */}

@@ -19,6 +19,7 @@ const Canvas: React.FC = ({ children }) => {
       }}
       orthographic
       dpr={Math.max(window.devicePixelRatio, 1)}
+      shadows
       flat
     >
       <ReduxProvider>
