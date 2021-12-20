@@ -131,7 +131,7 @@ const GameTile: React.FC<GameTileProps> = ({
           x: 0,
           y: 0,
         });
-      }, Math.random() * 300);
+      }, 150 + (Number(coord.split(',')[0]) * 50) + (Math.random() * 100));
     }
     if ((prevLetter?.length && !letter) || (prevCapital && !isCapital)) {
       rotateSpringApi.start({
@@ -140,7 +140,7 @@ const GameTile: React.FC<GameTileProps> = ({
       });
       isAnimating.current = true;
     }
-  }, [letter, prevLetter, rotateSpringApi, isCapital, prevCapital]);
+  }, [letter, prevLetter, rotateSpringApi, isCapital, prevCapital, coord]);
 
   const [v] = useState(() => new Vector3());
   useFrame(() => {
