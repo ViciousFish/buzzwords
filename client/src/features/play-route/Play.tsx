@@ -60,7 +60,7 @@ const Play: React.FC = () => {
           </div>
         )}
       </div>
-      <div className="h-full flex">
+      <div className="h-full flex flex-col lg:flex-row">
         {game && <GameBoard id={id} game={game} userIndex={userIndex} />}
         <div className="w-[200px] mt-2">
           <h3 className="text-2xl">Words Played</h3>
