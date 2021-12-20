@@ -117,7 +117,10 @@ const GameTile: React.FC<GameTileProps> = ({
   const prevLetter = usePrevious(letter);
   const prevCapital = usePrevious(isCapital);
   useLayoutEffect(() => {
-    if ((letter?.length || isCapital) && (prevLetter !== letter || isCapital !== prevCapital) ) {
+    if (
+      (letter?.length || isCapital) &&
+      (prevLetter !== letter || isCapital !== prevCapital)
+    ) {
       rotateSpringApi.set({
         x: Math.PI * 2,
         y: 0,

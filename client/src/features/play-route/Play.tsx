@@ -75,7 +75,7 @@ const Play: React.FC = () => {
                   )}
                 >
                   {/* {move.player == userIndex ? "You" : "Them"}:{" "} */}
-                  {move.letters.join("")}
+                  {move.letters.join("").toUpperCase()}
                 </li>
               ))}
           </ul>

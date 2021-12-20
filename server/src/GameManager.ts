@@ -70,6 +70,7 @@ export default class GameManager {
         this.game.grid.setCell(cell);
       }
     }
+    // cq: here
     for (const coord of move) {
       const stack: HexCoord[] = [coord];
       const visited: {
@@ -133,7 +134,7 @@ export default class GameManager {
               neighbor.capital = false;
             }
             this.game.grid.setCell(neighbor);
-          } else if (neighbor.owner == 2) {
+          } else if (neighbor.owner == 2 && neighbor.value === "") {
             this.game.activateCell(neighbor.q, neighbor.r);
           }
         }
