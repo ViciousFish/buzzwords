@@ -1,27 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Html, useProgress } from "@react-three/drei";
 import { Link, useParams } from "react-router-dom";
 import classnames from "classnames";
 
-import Canvas from "../canvas/Canvas";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/store";
-import GameTile from "../game/GameTile";
-import { QRCoord } from "../hexGrid/hexGrid";
 import { resetGame } from "../game/gameSlice";
-import {
-  getOrderedTileSelectionCoords,
-  makeGetSelectedWord,
-} from "../game/gameSelectors";
-import HexWord from "../thereed-lettering/HexWord";
-import { submitMove } from "../game/gameActions";
-import CameraControls from "../../utils/CameraControls";
 import { joinGameById } from "../gamelist/gamelistActions";
 import GameBoard from "../game/GameBoard";
 
 const Play: React.FC = () => {
   const dispatch = useDispatch();
-  const { progress } = useProgress();
   const { id } = useParams();
   const game = useSelector((state: RootState) => state.gamelist.games[id]);
   const gamesLoaded = useSelector(

@@ -12,9 +12,17 @@ export const getOrderedTileSelectionCoords = createSelector(
   }
 )
 
-export const makeGetSelectedWord = (gameId: string) => createSelector(
+export const getGridByGameId = createSelector(
+  (state: RootState) => state.gamelist.games,
+  (_, gameId: string) => gameId,
+  (games, gameId) => {
+    return games[gameId].grid
+  }
+)
+
+export const getSelectedWordByGameId = createSelector(
   getOrderedTileSelectionCoords,
-  (state: RootState) => state.gamelist.games[gameId]?.grid,
+  getGridByGameId,
   (tileCoordinates, grid) => {
     if (!grid) {
       return null;

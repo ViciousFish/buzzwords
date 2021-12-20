@@ -5,7 +5,7 @@ import Canvas from "../canvas/Canvas";
 import { QRCoord } from "../hexGrid/hexGrid";
 import { Game } from "./game";
 import { submitMove } from "./gameActions";
-import { makeGetSelectedWord } from "./gameSelectors";
+import { getSelectedWordByGameId } from "./gameSelectors";
 import { resetGame } from "./gameSlice";
 import GameTile from "./GameTile";
 
@@ -19,7 +19,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   const { progress } = useProgress();
   const dispatch = useDispatch();
 
-  const selectedWord = useSelector(makeGetSelectedWord(id));
+  const selectedWord = useSelector((state) => getSelectedWordByGameId(state, id));
   
   const [revealLetters, setRevealLetters] = useState(false);
 
