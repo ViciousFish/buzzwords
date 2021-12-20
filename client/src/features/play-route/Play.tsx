@@ -60,11 +60,11 @@ const Play: React.FC = () => {
           </div>
         )}
       </div>
-      <div className="h-full flex flex-col lg:flex-row">
+      <div className="flex-auto flex flex-col lg:flex-row">
         {game && <GameBoard id={id} game={game} userIndex={userIndex} />}
-        <div className="w-[200px] mt-2">
+        <div className="flex h-[calc(100vh-60px)] flex-col w-[200px] mt-2">
           <h3 className="text-2xl">Words Played</h3>
-          <ul>
+          <ul className="flex-auto overflow-y-scroll">
             {game &&
               game.moves.map((move, i) => (
                 <li
