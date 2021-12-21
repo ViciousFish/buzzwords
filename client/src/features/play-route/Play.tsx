@@ -61,9 +61,6 @@ const Play: React.FC = () => {
   return (
     <div className="h-screen flex flex-col">
       <div className="flex justify-around">
-        <Link className="btn" to="/">
-          home
-        </Link>
         <div>you are {userIndex === 0 ? "pink" : "green"}</div>
         {game && (
           <div className="block">

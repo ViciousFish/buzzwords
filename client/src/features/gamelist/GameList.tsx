@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useMatch } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { getUser } from "../user/UserActions";
 import { refresh, createNewGame, joinGameById } from "./gamelistActions";
+import GameListItem from "./GameListItem";
 
 export function GameList() {
   const games = useAppSelector((state) => state.gamelist.games);
@@ -12,6 +13,8 @@ export function GameList() {
     dispatch(refresh());
     dispatch(getUser());
   }, [dispatch]);
+
+  const homeMatch = useMatch("/")
 
   const [joinGameId, setJoinGameId] = useState('');
   return (
@@ -39,11 +42,10 @@ export function GameList() {
       >
         refresh
       </button>
+      {!homeMatch && <Link className="underline text-blue-800" to="/">home</Link>}
       <ul>
         {Object.entries(games).map(([id, game]) => (
-          <li className="mx-2 my-1 underline text-blue-800" key={game.id}>
-            <Link to={`/play/${game.id}`}>{game.id}</Link>
-          </li>
+          <GameListItem key={id} gameId={id} />
         ))}
       </ul>
     </div>
