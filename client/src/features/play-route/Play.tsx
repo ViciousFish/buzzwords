@@ -48,7 +48,7 @@ const Play: React.FC = () => {
     );
   }
   return (
-    <>
+    <div className="h-screen flex flex-col">
       <div className="flex justify-around">
         <Link className="btn" to="/">
           home
@@ -60,7 +60,7 @@ const Play: React.FC = () => {
           </div>
         )}
       </div>
-      <div className="flex-auto flex flex-col lg:flex-row">
+      <div className="flex-auto flex flex-row">
         {game && <GameBoard id={id} game={game} userIndex={userIndex} />}
         <div className="flex h-[calc(100vh-60px)] flex-col w-[200px] mt-2">
           <h3 className="text-2xl">Words Played</h3>
@@ -81,7 +81,7 @@ const Play: React.FC = () => {
           </ul>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

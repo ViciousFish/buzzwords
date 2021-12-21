@@ -13,22 +13,21 @@ function App() {
   );
   return (
     <BrowserRouter>
-    {/* TODO: switch app main from flex to grid? */}
-      <div className="App flex flex-col lg:flex-row min-h-screen">
+      {/* TODO: switch app main from flex to grid? */}
+      <div className="App flex flex-row min-h-screen">
         <GameList />
-        <div className="flex flex-auto flex-col h-screen">
-          {/* {!import.meta.env.PROD && (
+        {/* <div className="flex flex-auto flex-col h-screen"> */}
+        {/* {!import.meta.env.PROD && (
             <div className="ml-20 flex justify-around">
               {dpr}
             </div>
           )} */}
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/play/:id" element={<Play />} />
-          </Routes>
-          
-        </div>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/play/:id" element={<Play />} />
+        </Routes>
       </div>
+      {/* </div> */}
     </BrowserRouter>
   );
 }
