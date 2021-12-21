@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import React, { useEffect, useState } from "react";
 import { Link, useMatch } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -18,34 +19,44 @@ export function GameList() {
 
   const [joinGameId, setJoinGameId] = useState("");
   return (
-    <div style={{ width: "200px" }}>
-      <div>
-        <h3 className="text-2xl">Games</h3>
+    <div style={{ width: "300px" }}>
+      <div className="bg-darkbrown text-white p-3 rounded-br-md">
+        <h3 className="text-2xl">Buzzwords</h3>
       </div>
-      <button
-        onClick={() => {
-          dispatch(createNewGame());
-        }}
-      >
-        Create new
-      </button>
-      <button
-        onClick={() => {
-          dispatch(refresh());
-        }}
-      >
-        refresh
-      </button>
-      {!homeMatch && (
-        <Link className="underline text-blue-800" to="/">
+      <div className="px-2">
+        <Link
+          className={classNames(
+            !homeMatch && "underline text-blue-800",
+            "block my-1 "
+          )}
+          to="/"
+        >
           home
         </Link>
-      )}
-      <ul>
-        {Object.entries(games).map(([id, game]) => (
-          <GameListItem key={id} gameId={id} />
-        ))}
-      </ul>
+        <div className="">
+          <span className="text-xl">Games</span>
+          <button
+            onClick={() => {
+              dispatch(createNewGame());
+            }}
+          >
+            Create new
+          </button>
+          <button
+            onClick={() => {
+              dispatch(refresh());
+            }}
+          >
+            refresh
+          </button>
+        </div>
+        <ul>
+          {Object.entries(games).map(([id, game]) => (
+            <GameListItem key={id} gameId={id} />
+          ))}
+          {Object.entries(games).length === 0 && <>No games</>}
+        </ul>
+      </div>
     </div>
   );
 }

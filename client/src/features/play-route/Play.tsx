@@ -37,6 +37,8 @@ const Play: React.FC = () => {
           setFourohfour(true);
         }
       });
+    } else {
+      setFourohfour(false);
     }
   }, [id, dispatch, game, gamesLoaded]);
 
@@ -52,7 +54,8 @@ const Play: React.FC = () => {
   if (game && game.users.length === 1) {
     return (
       <div className="flex flex-auto flex-col h-screen justify-center items-center">
-        <span className="text-2xl">Invite someone to play with you</span>
+        <span className="text-2xl">Invite an opponent to start the game</span>
+        <span>they can use this link to join you</span>
         <div><a className="underline text-blue-700" href={window.location.toString()}>{window.location.toString()}</a><CopyToClipboard text={window.location.toString()} /></div>
       </div>
     )

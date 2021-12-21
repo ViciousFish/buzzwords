@@ -11,7 +11,7 @@ const GameListItem: React.FC<GameListItemProps> = ({
   const active = useMatch(`/play/${gameId}`)
   const classes = active ? '' : 'underline text-blue-800'
   return (
-    <li className='mx-2 my-1 whitespace-nowrap'>
+    <li className='my-1 whitespace-nowrap'>
       <Link className={classes} to={`/play/${gameId}`}>{gameId}</Link>
     </li>
   )

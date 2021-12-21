@@ -95,12 +95,13 @@ const GameTile: React.FC<GameTileProps> = ({
   const characterMesh = useRef<Mesh>();
   const group = useRef<Group>();
 
-  const springRef = useSpringRef();
   const [rotateSpring, rotateSpringApi] = useSpring(() => ({
     x: 0,
     y: 0,
-    config: springConfig.molasses,
-    ref: springRef,
+    config: {
+      tension: 40,
+      friction: 10
+    },
   }));
 
   useLayoutEffect(() => {

@@ -53,7 +53,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
           </button>
         ) : null}
       </div>
-      <div className="flex-auto lg:w-[calc(100vw-400px)]">
+      <div className="flex-auto lg:w-[calc(100vw-500px)]">
         <Canvas key={`play-${id}`}>
           {/* <CameraControls /> */}
           <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
