@@ -39,7 +39,7 @@ const Wrap3d: React.FC = ({
   return (
     <group ref={groupRef}>
       <group position={[0, 0, 0]}>
-        {!import.meta.env.PROD && <Stats />}
+        {/* {!import.meta.env.PROD && <Stats />} */}
         <ambientLight />
         <directionalLight position={[10, 10, 10]} />
         {/* {!import.meta.env.PROD && (
