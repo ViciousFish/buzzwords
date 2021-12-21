@@ -24,7 +24,8 @@ function App() {
           )} */}
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/play/:id" element={<Play />} />
+          {/* CQ: TODO: key by game ID */}
+          <Route path="/play/:id" element={<Play />} /> 
         </Routes>
       </div>
       {/* </div> */}

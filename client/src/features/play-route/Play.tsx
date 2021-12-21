@@ -41,12 +41,22 @@ const Play: React.FC = () => {
 
   if (fourohfour) {
     return (
-      <div className="flex h-full text-2xl justify-around items-center">
+      <div className="flex flex-auto flex-col h-screen justify-center items-center">
         <h1>404</h1>
-        <Link to="/">home</Link>
+        <Link className="underline text-blue-700" to="/">home</Link>
       </div>
     );
   }
+
+  if (game && game.users.length === 1) {
+    return (
+      <div className="flex flex-auto flex-col h-screen justify-center items-center">
+        <span className="text-2xl">Invite someone to play with you</span>
+        <a className="underline text-blue-700" href={window.location.toString()}>{window.location.toString()}</a>
+      </div>
+    )
+  }
+
   return (
     <div className="h-screen flex flex-col">
       <div className="flex justify-around">
