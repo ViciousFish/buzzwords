@@ -7,6 +7,7 @@ import { RootState } from "../../app/store";
 import { resetGame } from "../game/gameSlice";
 import { joinGameById } from "../gamelist/gamelistActions";
 import GameBoard from "../game/GameBoard";
+import CopyToClipboard from "../../presentational/CopyToClipboard";
 
 const Play: React.FC = () => {
   const dispatch = useDispatch();
@@ -52,7 +53,7 @@ const Play: React.FC = () => {
     return (
       <div className="flex flex-auto flex-col h-screen justify-center items-center">
         <span className="text-2xl">Invite someone to play with you</span>
-        <a className="underline text-blue-700" href={window.location.toString()}>{window.location.toString()}</a>
+        <div><a className="underline text-blue-700" href={window.location.toString()}>{window.location.toString()}</a><CopyToClipboard text={window.location.toString()} /></div>
       </div>
     )
   }
