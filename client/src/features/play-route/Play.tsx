@@ -73,7 +73,7 @@ const Play: React.FC = () => {
 
   return (
     <div className="h-screen flex flex-row">
-      {game && id && userIndex && <GameBoard id={id} game={game} userIndex={userIndex} />}
+      {game && id && userIndex !== null && <GameBoard id={id} game={game} userIndex={userIndex} />}
       <div className="flex flex-col w-[200px] mt-2">
         <h3 className="text-2xl">Words Played</h3>
         <ul className="flex-auto overflow-y-scroll">
