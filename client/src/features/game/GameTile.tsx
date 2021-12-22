@@ -139,7 +139,7 @@ const GameTile: React.FC<GameTileProps> = ({
           x: 0,
           y: 0,
         });
-      }, 150 + (Number(coord.split(',')[0]) * 50) + (Math.random() * 100));
+      }, 150 + (Number(coord.split(',')[0]) * 50) + (Math.random() * 150));
     }
     if ((prevLetter?.length && !letter) || (prevCapital && !isCapital)) {
       rotateSpringApi.start({
@@ -199,6 +199,7 @@ const GameTile: React.FC<GameTileProps> = ({
       )}
       <group position={[0, 0, -0.2]}>
         <HexTile orientation="flat">
+          {/* @ts-ignore */}
           <a.meshStandardMaterial toneMapped={false} color={colorAndScaleSpring.color} />
         </HexTile>
       </group>

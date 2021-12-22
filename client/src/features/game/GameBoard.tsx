@@ -1,6 +1,7 @@
 import { Html, useProgress } from "@react-three/drei";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Button from "../../presentational/Button";
 import Canvas from "../canvas/Canvas";
 import { QRCoord } from "../hexGrid/hexGrid";
 import { Game } from "./game";
@@ -58,7 +59,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                   currentGame={id}
                 />
                 <Html position={[4, -1.5, 0]} center>
-                  {userIndex === 0 ? "You" : "Them"}
+                  <span>{userIndex === 0 ? "You" : "Them"}</span>
                 </Html>
               </group>
               <group position={[10, 0, 0]}>
@@ -81,25 +82,25 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                   // style={{ height: "100px" }}
                 >
                   {selectedWord?.length ? (
-                    <button
+                    <Button
                       onClick={() => {
                         dispatch(resetGame());
                       }}
                       type="button"
                     >
                       clear
-                    </button>
+                    </Button>
                   ) : null}
                   <span className="text-7xl text-darkbrown font-fredoka">
                     {selectedWord || ""}
                   </span>
                   {selectedWord?.length ? (
-                    <button
+                    <Button
                       onClick={() => dispatch(submitMove(id))}
                       type="button"
                     >
                       submit
-                    </button>
+                    </Button>
                   ) : null}
                 </div>
               </Html>

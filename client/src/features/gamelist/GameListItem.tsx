@@ -11,7 +11,7 @@ const GameListItem: React.FC<GameListItemProps> = ({ gameId }) => (
     <NavLink
       className={({ isActive }) =>
         classNames(
-          isActive ? "bg-primary hover:bg-opacity-100" : "underline text-blue-800",
+          isActive ? "bg-primary hover:bg-opacity-100" : "underline text-darkbrown",
           "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50"
         )
       }
