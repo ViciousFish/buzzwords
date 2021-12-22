@@ -8,7 +8,7 @@ module.exports = {
         fredoka: ['Fredoka\\ One', 'sans']
       },
       colors: {
-        primary: ({ opacityVariable, opacityValue }) => {
+        lightbg: ({ opacityVariable, opacityValue }) => {
           if (opacityValue !== undefined) {
             return `rgba(250, 231, 178, ${opacityValue})`;
           }
@@ -17,9 +17,10 @@ module.exports = {
           }
           return `rgb(250, 231, 178)`;
         },
+        primary: '#F6C54B', // theme.primary on lit tiles
         darkbrown: '#59430D',
-        p1: "#d788b8",
-        p2: "#709867"
+        p1: "#F3ADDF", // theme.p1 on lit tiles
+        p2: "#96BB87" // theme.p2 on lit tiles
       },
     },
   },

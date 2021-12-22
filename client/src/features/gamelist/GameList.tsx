@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React, { useEffect, useState } from "react";
-import { Link, useMatch } from "react-router-dom";
+import { Link, NavLink, useMatch } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { getUser } from "../user/userActions";
 import { refresh, createNewGame, joinGameById } from "./gamelistActions";
@@ -24,15 +24,19 @@ export function GameList() {
         <h3 className="text-2xl">Buzzwords</h3>
       </div>
       <div className="px-2">
-        <Link
-          className={classNames(
-            !homeMatch && "underline text-blue-800",
-            "block my-1 "
-          )}
+        <NavLink
+          className={({ isActive }) =>
+            classNames(
+              isActive
+                ? "bg-primary hover:bg-opacity-100"
+                : "underline text-blue-800",
+              "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50 my-1"
+            )
+          }
           to="/"
         >
           home
-        </Link>
+        </NavLink>
         <div className="">
           <span className="text-xl">Games</span>
           <button

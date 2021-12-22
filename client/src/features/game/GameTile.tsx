@@ -192,7 +192,7 @@ const GameTile: React.FC<GameTileProps> = ({
       )}
       <group position={[0, 0, -0.2]}>
         <HexTile orientation="flat">
-          <a.meshStandardMaterial color={colorAndScaleSpring.color} />
+          <a.meshStandardMaterial toneMapped={false} color={colorAndScaleSpring.color} />
         </HexTile>
       </group>
     </a.group>

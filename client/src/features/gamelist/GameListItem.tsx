@@ -1,20 +1,25 @@
-import React from 'react';
-import { Link, useMatch } from 'react-router-dom';
+import classNames from "classnames";
+import React from "react";
+import { Link, NavLink, useMatch } from "react-router-dom";
 
 interface GameListItemProps {
   gameId: string;
 }
 
-const GameListItem: React.FC<GameListItemProps> = ({
-  gameId
-}) => {
-  const active = useMatch(`/play/${gameId}`)
-  const classes = active ? '' : 'underline text-blue-800'
-  return (
-    <li className='my-1 whitespace-nowrap'>
-      <Link className={classes} to={`/play/${gameId}`}>{gameId}</Link>
-    </li>
-  )
-}
+const GameListItem: React.FC<GameListItemProps> = ({ gameId }) => (
+  <li className="my-1 whitespace-nowrap">
+    <NavLink
+      className={({ isActive }) =>
+        classNames(
+          isActive ? "bg-primary hover:bg-opacity-100" : "underline text-blue-800",
+          "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50"
+        )
+      }
+      to={`/play/${gameId}`}
+    >
+      {gameId}
+    </NavLink>
+  </li>
+);
 
-export default GameListItem
+export default GameListItem;
