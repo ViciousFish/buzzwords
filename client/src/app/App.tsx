@@ -16,7 +16,6 @@ function App() {
       {/* TODO: switch app main from flex to grid? */}
       <div className="App flex flex-row min-h-screen">
         <GameList />
-        {/* <div className="flex flex-auto flex-col h-screen"> */}
         {/* {!import.meta.env.PROD && (
             <div className="ml-20 flex justify-around">
               {dpr}
@@ -27,7 +26,6 @@ function App() {
           <Route path="/play/:id" element={<Play />} /> 
         </Routes>
       </div>
-      {/* </div> */}
     </BrowserRouter>
   );
 }

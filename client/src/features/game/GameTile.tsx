@@ -31,12 +31,13 @@ import { Html } from "@react-three/drei";
 
 interface GameTileProps {
   position: V3Type;
-  letter: string | null;
-  coord: QRCoord;
+  letter?: string | null;
+  coord?: QRCoord;
   owner: GamePlayer;
   currentGame: string;
-  userIndex: number;
-  isCapital: boolean;
+  userIndex?: number;
+  isCapital?: boolean;
+  isPlayerIdentity?: boolean;
 }
 
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
@@ -49,6 +50,7 @@ const GameTile: React.FC<GameTileProps> = ({
   currentGame,
   userIndex,
   isCapital,
+  isPlayerIdentity,
 }) => {
   const dispatch = useAppDispatch();
   const font = useLoader(FontLoader, fredokaone);
@@ -68,7 +70,7 @@ const GameTile: React.FC<GameTileProps> = ({
   );
 
   const isSelected = useSelector(
-    (state: RootState) => state.game.selectedTiles[coord]
+    (state: RootState) => coord ? state.game.selectedTiles[coord] : null
   );
   const currentTurn = useSelector(
     (state: RootState) => state.gamelist.games[currentGame].turn
@@ -83,7 +85,11 @@ const GameTile: React.FC<GameTileProps> = ({
     // take color of current player and blend with base color?
   }
 
-  const scale = owner !== 2 || isSelected ? 1 : 0.9;
+  let scale = owner !== 2 || isSelected ? 1 : 0.9;
+
+  if (isPlayerIdentity && currentTurn === owner) {
+    scale = 1.3;
+  }
 
   const colorAndScaleSpring = useSpring({
     scale: [scale, scale, scale],
@@ -120,7 +126,8 @@ const GameTile: React.FC<GameTileProps> = ({
   useLayoutEffect(() => {
     if (
       (letter?.length || isCapital) &&
-      (prevLetter !== letter || isCapital !== prevCapital)
+      (prevLetter !== letter || isCapital !== prevCapital) &&
+      coord
     ) {
       rotateSpringApi.set({
         x: Math.PI * 2,
@@ -158,7 +165,7 @@ const GameTile: React.FC<GameTileProps> = ({
 
   const onTileClick = useCallback(
     (e: ThreeEvent<MouseEvent>) => {
-      if (letter && currentTurn === userIndex) {
+      if (coord && letter && currentTurn === userIndex) {
         dispatch(toggleTileSelected(coord));
       }
       e.stopPropagation();
@@ -186,7 +193,7 @@ const GameTile: React.FC<GameTileProps> = ({
           <meshStandardMaterial color={theme.colors.darkbrown} />
         </mesh>
       )}
-      {(isCapital || (prevCapital && !letter)) && (
+      {(isCapital || (prevCapital && !letter) || isPlayerIdentity) && (
         <Flower01 />
         // <Html>capital</Html>
       )}

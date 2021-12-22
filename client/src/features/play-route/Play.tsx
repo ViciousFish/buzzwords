@@ -12,7 +12,7 @@ import CopyToClipboard from "../../presentational/CopyToClipboard";
 const Play: React.FC = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
-  const game = useSelector((state: RootState) => state.gamelist.games[id]);
+  const game = useSelector((state: RootState) => id ? state.gamelist.games[id] : null);
   const gamesLoaded = useSelector(
     (state: RootState) => state.gamelist.gamesLoaded
   );
@@ -73,7 +73,7 @@ const Play: React.FC = () => {
 
   return (
     <div className="h-screen flex flex-row">
-      {game && <GameBoard id={id} game={game} userIndex={userIndex} />}
+      {game && id && userIndex && <GameBoard id={id} game={game} userIndex={userIndex} />}
       <div className="flex flex-col w-[200px] mt-2">
         <h3 className="text-2xl">Words Played</h3>
         <ul className="flex-auto overflow-y-scroll">

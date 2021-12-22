@@ -16,7 +16,8 @@
     "jsx": "react",
     "types": [
       "vite/client"
-    ]
+    ],
+    "strictNullChecks": true
   },
   "include": ["./src"]
 }
