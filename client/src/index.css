@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -9,11 +9,12 @@
 }
 @layer utilities {
   .inset-shadow {
-    box-shadow: rgba(0, 0, 0, 0.1) 0px -1px 0px inset, rgba(255, 255, 255, .1) 0px 1px 0px inset;
+    box-shadow: rgba(0, 0, 0, 0.2) 2px -2px 2px inset,
+      rgba(255, 255, 255, 0.3) -2px 2px 2px inset;
   }
 }
 button {
-  @apply rounded-md p-1 m-1 bg-primary inset-shadow;
+  @apply rounded-md p-2 m-1 bg-primary inset-shadow cursor-default;
 }
 button:hover {
   @apply bg-primary bg-opacity-50;
