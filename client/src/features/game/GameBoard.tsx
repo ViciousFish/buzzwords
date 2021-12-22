@@ -30,6 +30,17 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   });
   return (
     <div className="flex flex-col h-full flex-auto">
+      <div className="flex justify-around">
+        <div>you are {userIndex === 0 ? "pink" : "green"}</div>
+        {game && !game.gameOver && (
+          <div className="block">
+            it is {game?.turn === 0 ? "pinks" : "greens"} turn
+          </div>
+        )}
+        {game && game.gameOver && (
+          <div>{game.winner === 0 ? "pink" : "green"} won</div>
+        )}
+      </div>
       <div
         className="flex justify-center items-center"
         style={{ height: "100px" }}

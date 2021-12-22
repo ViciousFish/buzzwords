@@ -46,7 +46,9 @@ const Play: React.FC = () => {
     return (
       <div className="flex flex-auto flex-col h-screen justify-center items-center">
         <h1>404</h1>
-        <Link className="underline text-blue-700" to="/">home</Link>
+        <Link className="underline text-blue-700" to="/">
+          home
+        </Link>
       </div>
     );
   }
@@ -56,41 +58,39 @@ const Play: React.FC = () => {
       <div className="flex flex-auto flex-col h-screen justify-center items-center">
         <span className="text-2xl">Invite an opponent to start the game</span>
         <span>they can use this link to join you</span>
-        <div><a className="underline text-blue-700" href={window.location.toString()}>{window.location.toString()}</a><CopyToClipboard text={window.location.toString()} /></div>
+        <div>
+          <a
+            className="underline text-blue-700"
+            href={window.location.toString()}
+          >
+            {window.location.toString()}
+          </a>
+          <CopyToClipboard text={window.location.toString()} />
+        </div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="h-screen flex flex-col">
-      <div className="flex justify-around">
-        <div>you are {userIndex === 0 ? "pink" : "green"}</div>
-        {game && (
-          <div className="block">
-            it is {game?.turn === 0 ? "pinks" : "greens"} turn
-          </div>
-        )}
-      </div>
-      <div className="flex-auto flex flex-row">
-        {game && <GameBoard id={id} game={game} userIndex={userIndex} />}
-        <div className="flex h-[calc(100vh-60px)] flex-col w-[200px] mt-2">
-          <h3 className="text-2xl">Words Played</h3>
-          <ul className="flex-auto overflow-y-scroll">
-            {game &&
-              game.moves.map((move, i) => (
-                <li
-                  key={i}
-                  className={classnames(
-                    "p-1 text-center rounded-md m-1",
-                    move.player === 0 ? "bg-p1" : "bg-p2"
-                  )}
-                >
-                  {/* {move.player == userIndex ? "You" : "Them"}:{" "} */}
-                  {move.letters.join("").toUpperCase()}
-                </li>
-              ))}
-          </ul>
-        </div>
+    <div className="h-screen flex flex-row">
+      {game && <GameBoard id={id} game={game} userIndex={userIndex} />}
+      <div className="flex flex-col w-[200px] mt-2">
+        <h3 className="text-2xl">Words Played</h3>
+        <ul className="flex-auto overflow-y-scroll">
+          {game &&
+            game.moves.map((move, i) => (
+              <li
+                key={i}
+                className={classnames(
+                  "p-1 text-center rounded-md m-1",
+                  move.player === 0 ? "bg-p1" : "bg-p2"
+                )}
+              >
+                {/* {move.player == userIndex ? "You" : "Them"}:{" "} */}
+                {move.letters.join("").toUpperCase()}
+              </li>
+            ))}
+        </ul>
       </div>
     </div>
   );
