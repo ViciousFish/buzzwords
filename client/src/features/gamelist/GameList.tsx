@@ -23,12 +23,16 @@ export function GameList() {
   }, [dispatch]);
 
   const containerSpring = useSpring({
-    marginLeft: isOpen ? "0" : "-260px",
+    marginLeft: isOpen ? "0" : "-300px",
     background: isOpen ? theme.colors.darkbg : theme.colors.lightbg,
   });
 
   const innerSpring = useSpring({
     opacity: isOpen ? 1 : 0,
+  });
+
+  const hamburgerSpring = useSpring({
+    marginRight: isOpen ? "0" : "-45px",
   });
 
   return (
@@ -53,12 +57,14 @@ export function GameList() {
               Buzzwords
             </NavLink>
           </a.div>
-          <button
-            onClick={() => dispatch(toggleIsOpen())}
-            className="p-2 hover:bg-primary hover:bg-opacity-50 rounded-md"
-          >
-            <FontAwesomeIcon icon={faBars} />
-          </button>
+          <a.div style={hamburgerSpring}>
+            <button
+              onClick={() => dispatch(toggleIsOpen())}
+              className="p-2 hover:bg-primary hover:bg-opacity-50 rounded-md"
+            >
+              <FontAwesomeIcon icon={faBars} />
+            </button>
+          </a.div>
         </div>
         <a.div style={innerSpring}>
           <span className="text-xl">Games</span>
