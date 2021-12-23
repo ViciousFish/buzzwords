@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { animated as a, useSpring, useTransition } from "@react-spring/web";
+import { animated as a, config as springConfig, useSpring, useTransition } from "@react-spring/web";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
