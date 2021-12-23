@@ -29,16 +29,12 @@ import { theme } from "../../app/theme";
 interface HexLetterProps {
   position: V3Type;
   letter: string;
-  allowSpinning?: boolean;
-  autoSpin?: boolean;
 }
 
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
 
 const HexLetter: React.FC<HexLetterProps> = ({
   letter,
-  allowSpinning,
-  autoSpin,
   ...props
 }) => {
   const viewport = useThree(({ viewport }) => viewport);
@@ -86,7 +82,6 @@ const HexLetter: React.FC<HexLetterProps> = ({
   }, [letter]);
 
   useEffect(() => {
-    if (allowSpinning && autoSpin) {
       let timer = Math.random() * 8000 + 2000;
       setTimeout(() => {
         isAnimating.current = true;
@@ -103,11 +98,10 @@ const HexLetter: React.FC<HexLetterProps> = ({
           y: 0,
         });
       }, timer);
-    }
-  }, [rotateSpringApi, allowSpinning, autoSpin]);
+  }, [rotateSpringApi]);
 
   const bind = useGesture({
-    onDrag: allowSpinning ? ({ down, movement: [mx, my] }) => {
+    onDrag: ({ down, movement: [mx, my] }) => {
       isAnimating.current = true;
       if (down) {
         rotateSpringApi.set({
@@ -120,11 +114,11 @@ const HexLetter: React.FC<HexLetterProps> = ({
           y: 0,
         });
       }
-    } : null,
+    }
   });
   const [v] = useState(() => new Vector3());
   useFrame(() => {
-    if (allowSpinning && group.current && isAnimating.current) {
+    if (group.current && isAnimating.current) {
       v.set(rotateSpring.y.get(), rotateSpring.x.get(), 0);
       const a = v.length();
       v.normalize();

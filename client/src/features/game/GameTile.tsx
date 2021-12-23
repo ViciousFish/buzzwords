@@ -20,15 +20,14 @@ import HexTile from "../../assets/HexTile";
 import fredokaone from "../../../assets/Fredoka One_Regular.json?url";
 import { theme } from "../../app/theme";
 import { usePrevious } from "../../utils/usePrevious";
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { QRCoord } from "../hexGrid/hexGrid";
 import { toggleTileSelected } from "./gameActions";
-import { useSelector } from "react-redux";
-import { RootState } from "../../app/store";
 import { GamePlayer } from "./game";
 import { Flower01 } from "../../assets/Flower01";
-import { Html } from "@react-three/drei";
+import { getOrderedTileSelectionCoords } from "./gameSelectors";
 
+import { willConnectToTerritory } from "../../../../shared/gridHelpers";
 interface GameTileProps {
   position: V3Type;
   letter?: string | null;
@@ -69,18 +68,28 @@ const GameTile: React.FC<GameTileProps> = ({
     [font]
   );
 
-  const isSelected = useSelector(
-    (state: RootState) => coord ? state.game.selectedTiles[coord] : null
+  const isSelected = useAppSelector((state) =>
+    coord ? state.game.selectedTiles[coord] : null
   );
-  const currentTurn = useSelector(
-    (state: RootState) => state.gamelist.games[currentGame].turn
+  const currentTurn = useAppSelector(
+    (state) => state.gamelist.games[currentGame].turn
+  );
+  const currentMove = useAppSelector(getOrderedTileSelectionCoords);
+  const grid = useAppSelector((state) =>
+    currentGame ? state.gamelist.games[currentGame].grid : null
   );
   let color = theme.colors.primary;
   if (owner === 0) {
     color = theme.colors.p1;
   } else if (owner === 1) {
     color = theme.colors.p2;
-  } else if (isSelected) {
+  } else if (isSelected && grid && coord) {
+    // const willConnect = willConnectToTerritory(
+    //   grid,
+    //   currentMove,
+    //   coord,
+    //   currentTurn
+    // );
     color = currentTurn === 0 ? theme.colors.p1 : theme.colors.p2;
     // take color of current player and blend with base color?
   }
@@ -106,7 +115,7 @@ const GameTile: React.FC<GameTileProps> = ({
     y: 0,
     config: {
       tension: 40,
-      friction: 10
+      friction: 10,
     },
   }));
 
@@ -139,7 +148,7 @@ const GameTile: React.FC<GameTileProps> = ({
           x: 0,
           y: 0,
         });
-      }, 150 + (Number(coord.split(',')[0]) * 50) + (Math.random() * 150));
+      }, 150 + Number(coord.split(",")[0]) * 50 + Math.random() * 150);
     }
     if ((prevLetter?.length && !letter) || (prevCapital && !isCapital)) {
       rotateSpringApi.start({
@@ -200,7 +209,10 @@ const GameTile: React.FC<GameTileProps> = ({
       <group position={[0, 0, -0.2]}>
         <HexTile orientation="flat">
           {/* @ts-ignore */}
-          <a.meshStandardMaterial toneMapped={false} color={colorAndScaleSpring.color} />
+          <a.meshStandardMaterial
+            toneMapped={false}
+            color={colorAndScaleSpring.color}
+          />
         </HexTile>
       </group>
     </a.group>

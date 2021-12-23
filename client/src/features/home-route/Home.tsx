@@ -12,8 +12,8 @@ const Home: React.FC = () => {
         <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
           <Bee position={[0, 5, 0]} scale={1.7} />
           <group position={[0, 4, 0]}>
-            <HexWord allowSpinning position={[0, -4.8, 0]} text="COMING" />
-            <HexWord allowSpinning position={[0, -9.6, 0]} text="SOON!" />
+            <HexWord position={[0, -4.8, 0]} text="COMING" />
+            <HexWord position={[0, -9.6, 0]} text="SOON!" />
           </group>
         </React.Suspense>
       </Canvas>

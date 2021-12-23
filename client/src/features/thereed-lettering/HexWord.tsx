@@ -5,14 +5,12 @@ import HexLetter from "./HexLetter";
 interface HexWordProps {
   text: string;
   position?: [number, number, number];
-  allowSpinning?: boolean;
   autoSpin?: boolean;
 }
 
 const HexWord: React.FC<HexWordProps & GroupProps> = ({
   text,
   position,
-  allowSpinning,
   autoSpin,
   ...props
 }) => {
@@ -30,7 +28,6 @@ const HexWord: React.FC<HexWordProps & GroupProps> = ({
       {characters.map((character, index) => (
         <HexLetter
           autoSpin={autoSpin}
-          allowSpinning={allowSpinning}
           letter={character}
           key={index}
           position={[index * 5.5, 0, 0]}
