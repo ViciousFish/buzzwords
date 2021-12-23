@@ -5,6 +5,12 @@ import { GameList } from "../features/gamelist/GameList";
 import Home from "../features/home-route/Home";
 import Play from "../features/play-route/Play";
 
+import { Globals } from "@react-spring/shared";
+
+Globals.assign({
+  frameLoop: "always",
+});
+
 function App() {
   const dpr = (
     <>

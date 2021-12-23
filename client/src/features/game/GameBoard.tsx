@@ -32,7 +32,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
     }, 500);
   });
   return (
-      <div className="flex-auto overflow-hidden shrinkable">
+      <div className="flex-auto overflow-hidden">
         <Canvas key={`play-${id}`}>
           {/* <CameraControls /> */}
           <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
