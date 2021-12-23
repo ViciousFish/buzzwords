@@ -12,7 +12,9 @@ import CopyToClipboard from "../../presentational/CopyToClipboard";
 const Play: React.FC = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
-  const game = useSelector((state: RootState) => id ? state.gamelist.games[id] : null);
+  const game = useSelector((state: RootState) =>
+    id ? state.gamelist.games[id] : null
+  );
   const gamesLoaded = useSelector(
     (state: RootState) => state.gamelist.gamesLoaded
   );
@@ -58,36 +60,40 @@ const Play: React.FC = () => {
       <div className="flex-shrink-0 lg:flex-shrink flex flex-auto flex-col h-screen justify-center items-center">
         <span className="text-2xl">Invite an opponent to start the game</span>
         <span>they can use this link to join you</span>
-          <a
-            className="underline text-blue-700"
-            href={window.location.toString()}
-          >
-            {window.location.toString()}
-          </a>
-          <CopyToClipboard label="Copy link" text={window.location.toString()} />
+        <a
+          className="underline text-blue-700"
+          href={window.location.toString()}
+        >
+          {window.location.toString()}
+        </a>
+        <CopyToClipboard label="Copy link" text={window.location.toString()} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-auto flex-col lg:flex-row">
-      {game && id && userIndex !== null && <GameBoard id={id} game={game} userIndex={userIndex} />}
-      <div className="m-auto flex flex-shrink-0 flex-col w-[200px] mt-2">
-        <h3 className="text-2xl text-center">Words Played</h3>
-        <ul className="flex-auto overflow-y-scroll">
-          {game &&
-            game.moves.map((move, i) => (
-              <li
-                key={i}
-                className={classnames(
-                  "p-1 text-center rounded-md m-1",
-                  move.player === 0 ? "bg-p1" : "bg-p2"
-                )}
-              >
-                {move.letters.join("").toUpperCase()}
-              </li>
-            ))}
-        </ul>
+    <div className="flex-auto overflow-scroll h-screen">
+      <div className="min-h-screen flex flex-auto flex-col lg:flex-row">
+        {game && id && userIndex !== null && (
+          <GameBoard id={id} game={game} userIndex={userIndex} />
+        )}
+        <div className="m-auto flex flex-shrink-0 flex-col w-[200px] mt-2">
+          <h3 className="text-2xl text-center">Words Played</h3>
+          <ul className="flex-auto overflow-y-scroll">
+            {game &&
+              game.moves.map((move, i) => (
+                <li
+                  key={i}
+                  className={classnames(
+                    "p-1 text-center rounded-md m-1",
+                    move.player === 0 ? "bg-p1" : "bg-p2"
+                  )}
+                >
+                  {move.letters.join("").toUpperCase()}
+                </li>
+              ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
