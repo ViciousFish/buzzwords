@@ -26,7 +26,7 @@ const Home: React.FC = () => {
             <HexWord position={[0, -4.8, 0]} text="BUZZWORDS" />
             <HexWord position={[0, -9.6, 0]} text="WELCOME!" />
           </group>
-          <Html position={[0, -12, 0]} center><Button onClick={onPlayClick}>Play</Button></Html>
+          <Html distanceFactor={.1} position={[0, -12, 0]} center><Button onClick={onPlayClick}>Play</Button></Html>
         </React.Suspense>
       </Canvas>
     </div>

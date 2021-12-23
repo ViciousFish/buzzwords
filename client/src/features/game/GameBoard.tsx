@@ -63,7 +63,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
             </group>
           </group>
           <group position={[0, 16, 0]}>
-            <Html center>
+            <Html distanceFactor={.08} center>
               <div className="flex justify-center items-center">
                 {selectedWord?.length ? (
                   <Button
@@ -75,7 +75,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                     clear
                   </Button>
                 ) : null}
-                <div className="text-[calc(4vh+4vw)] text-darkbrown font-fredoka">
+                <div className="text-6xl text-darkbrown font-fredoka">
                   {selectedWord || ""}
                 </div>
                 {selectedWord?.length ? (
