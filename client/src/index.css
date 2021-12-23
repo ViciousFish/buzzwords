@@ -25,7 +25,7 @@ body {
 *  https://stackoverflow.com/a/59698584
 *  https://stackoverflow.com/a/36247448
 */
-/* .flex {
+.flex {
   min-width: 0;
   min-height: 0;
-} */
+}
