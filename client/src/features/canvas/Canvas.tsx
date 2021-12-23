@@ -10,6 +10,7 @@ const Canvas: React.FC = ({ children }) => {
 
   return (
     <ThreeCanvas
+      className="shrinkable"
       camera={{
         position: [0, 0, 20],
         zoom: 3,

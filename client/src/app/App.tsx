@@ -14,7 +14,7 @@ function App() {
   return (
     <BrowserRouter>
       {/* TODO: switch app main from flex to grid? */}
-      <div className="App flex flex-row min-h-screen">
+      <div className="App flex overflow-hidden max-w-[100vw] flex-row min-h-screen">
         <GameList />
         {/* {!import.meta.env.PROD && (
             <div className="ml-20 flex justify-around">

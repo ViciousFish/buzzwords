@@ -8,12 +8,14 @@ interface GameListState {
     [key: string]: Game;
   };
   gamesLoaded: boolean;
+  isOpen: boolean;
 }
 
 // Define the initial state using that type
 const initialState: GameListState = {
   games: {},
   gamesLoaded: false,
+  isOpen: true,
 };
 
 export const gamelistSlice = createSlice({
@@ -24,14 +26,17 @@ export const gamelistSlice = createSlice({
       state.games = action.payload;
       state.gamesLoaded = true;
     },
-    updateGame: (state, action: PayloadAction<{id: string, game: Game}>) => {
+    updateGame: (state, action: PayloadAction<{ id: string; game: Game }>) => {
       state.games[action.payload.id] = action.payload.game;
-    }
+    },
+    toggleIsOpen: (state) => {
+      state.isOpen = !state.isOpen;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { refreshReceived, updateGame } = gamelistSlice.actions;
+export const { refreshReceived, updateGame, toggleIsOpen } = gamelistSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (state: RootState) => state.counter.value;

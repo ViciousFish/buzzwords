@@ -7,7 +7,7 @@ import HexWord from "../thereed-lettering/HexWord";
 const Home: React.FC = () => {
   const { progress } = useProgress();
   return (
-    <div className="flex-auto no-touch lg:w-[calc(100vw-300px)]">
+    <div className="flex flex-auto no-touch h-screen p-12">
       <Canvas key='home'>
         <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
           <Bee position={[0, 5, 0]} scale={1.7} />
