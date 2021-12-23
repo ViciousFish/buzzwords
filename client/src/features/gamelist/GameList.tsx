@@ -7,19 +7,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import {
-  animated as a,
-  config as springConfig,
-  useSpring,
-  useTransition,
-} from "@react-spring/web";
+// import {
+//   animated as a,
+//   config as springConfig,
+//   useSpring,
+//   useTransition,
+// } from "@react-spring/web";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import { getUser } from "../user/userActions";
 import { refresh, createNewGame } from "./gamelistActions";
 import { toggleIsOpen } from "./gamelistSlice";
-import { theme } from "../../app/theme";
+// import { theme } from "../../app/theme";
 
 export function GameList() {
   const games = useAppSelector((state) => Object.keys(state.gamelist.games));
@@ -30,22 +30,21 @@ export function GameList() {
     dispatch(refresh());
     dispatch(getUser());
   }, [dispatch]);
-  const config = {
-    tension: 200,
-    clamp: true,
-  };
-  const containerSpring = useSpring({
-    marginLeft: isOpen ? "0" : "-300px",
-    config,
-  });
 
-  const hamburgerSpring = useSpring({
+  // const config = {
+  //   tension: 200,
+  //   clamp: true,
+  // };
+  const containerSpring = {
+    marginLeft: isOpen ? "0" : "-300px",
+  };
+
+  const hamburgerSpring = {
     marginRight: isOpen ? "0" : "-45px",
-    config,
-  });
+  };
 
   return (
-    <a.div
+    <div
       className="w-[300px] flex-shrink-0 z-10 h-screen bg-darkbg"
       style={containerSpring}
     >
@@ -66,14 +65,14 @@ export function GameList() {
               Buzzwords
             </NavLink>
           </div>
-          <a.div style={hamburgerSpring}>
+          <div style={hamburgerSpring}>
             <button
               onClick={() => dispatch(toggleIsOpen())}
               className="p-2 hover:bg-primary hover:bg-opacity-50 rounded-md"
             >
               <FontAwesomeIcon icon={faBars} />
             </button>
-          </a.div>
+          </div>
         </div>
         <div className="px-2">
           <span className="text-xl">Games</span>
@@ -114,6 +113,6 @@ export function GameList() {
           {games.length === 0 && <>No games</>}
         </ul>
       </div>
-    </a.div>
+    </div>
   );
 }
