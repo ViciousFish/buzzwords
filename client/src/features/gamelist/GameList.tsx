@@ -1,9 +1,18 @@
-import { faArrowsRotate, faBars, faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowsRotate,
+  faBars,
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { animated as a, config as springConfig, useSpring, useTransition } from "@react-spring/web";
+import {
+  animated as a,
+  config as springConfig,
+  useSpring,
+  useTransition,
+} from "@react-spring/web";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
@@ -21,28 +30,28 @@ export function GameList() {
     dispatch(refresh());
     dispatch(getUser());
   }, [dispatch]);
-
+  const config = {
+    tension: 200,
+    clamp: true,
+  };
   const containerSpring = useSpring({
     marginLeft: isOpen ? "0" : "-300px",
-    background: isOpen ? theme.colors.darkbg : theme.colors.lightbg,
-  });
-
-  const innerSpring = useSpring({
-    opacity: isOpen ? 1 : 0,
+    config,
   });
 
   const hamburgerSpring = useSpring({
     marginRight: isOpen ? "0" : "-45px",
+    config,
   });
 
   return (
     <a.div
-      className="w-[300px] flex-shrink-0 z-10 h-screen"
+      className="w-[300px] flex-shrink-0 z-10 h-screen bg-darkbg"
       style={containerSpring}
     >
       <div className="px-2">
         <div className="flex py-2 space-x-2">
-          <a.div className="flex-auto" style={innerSpring}>
+          <div className="flex-auto">
             <NavLink
               className={({ isActive }) =>
                 classNames(
@@ -56,7 +65,7 @@ export function GameList() {
             >
               Buzzwords
             </NavLink>
-          </a.div>
+          </div>
           <a.div style={hamburgerSpring}>
             <button
               onClick={() => dispatch(toggleIsOpen())}
@@ -66,7 +75,7 @@ export function GameList() {
             </button>
           </a.div>
         </div>
-        <a.div className="px-2" style={innerSpring}>
+        <div className="px-2">
           <span className="text-xl">Games</span>
           <Button
             onClick={() => {
@@ -75,16 +84,16 @@ export function GameList() {
           >
             <FontAwesomeIcon className="mx-1" icon={faPlus} />
           </Button>
-            <Button
-              onClick={() => {
-                dispatch(refresh());
-              }}
-            >
-              <FontAwesomeIcon className="mx-1" icon={faArrowsRotate} />
-            </Button>
-        </a.div>
+          <Button
+            onClick={() => {
+              dispatch(refresh());
+            }}
+          >
+            <FontAwesomeIcon className="mx-1" icon={faArrowsRotate} />
+          </Button>
+        </div>
         {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
-        <a.ul className="px-2" style={innerSpring}>
+        <ul className="px-2">
           {games.map((id) => (
             <li key={id} className="my-1 whitespace-nowrap">
               <NavLink
@@ -103,7 +112,7 @@ export function GameList() {
             </li>
           ))}
           {games.length === 0 && <>No games</>}
-        </a.ul>
+        </ul>
       </div>
     </a.div>
   );

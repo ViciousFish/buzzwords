@@ -7,8 +7,10 @@ const Button: React.FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({
 }) => (
   <button
     className={classNames(
-      `rounded-full p-2 m-1 bg-primary inset-shadow active:inset-shadow-reverse cursor-default 
-      hover:bg-primary hover:bg-opacity-50 active:bg-opacity-100`,
+      `rounded-full p-2 m-1 bg-primary inset-shadow cursor-default
+      transition-all
+      active:transform active:scale-90 active:bg-opacity-100
+      hover:bg-primary hover:bg-opacity-50 `,
       className
     )}
     {...props}
