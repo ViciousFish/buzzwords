@@ -34,9 +34,9 @@ export const createNewGame = (): AppThunk => async (dispatch) => {
   const res = await fetch("/api/game", {
     method: "POST",
   }).then((response) => response.text());
-  console.log(res);
 
-  dispatch(refresh());
+  await dispatch(refresh());
+  return res;
 };
 
 export const joinGameById =
