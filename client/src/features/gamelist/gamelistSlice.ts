@@ -15,7 +15,7 @@ interface GameListState {
 const initialState: GameListState = {
   games: {},
   gamesLoaded: false,
-  isOpen: true,
+  isOpen: window.innerWidth >= 1024,
 };
 
 export const gamelistSlice = createSlice({
