@@ -1,5 +1,5 @@
 import { GamePlayer } from "../game/game";
-import {getRandomCharacter} from "../../../../shared/alphaHelpers";
+// import {getRandomCharacter} from "../../../../shared/alphaHelpers";
 export interface Cell {
   q: number;
   r: number;
@@ -21,5 +21,6 @@ export const getEmptyCell = (q, r): Cell => ({
 export const getActivatedCell = (cell: Cell): Cell => ({
   ...cell,
   active: true,
-  value: getRandomCharacter()
+  // value: getRandomCharacter()
+  value: 'f'
 })

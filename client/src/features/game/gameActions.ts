@@ -1,5 +1,4 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { AppDispatch, AppThunk } from "../../app/store";
+import { AppThunk } from "../../app/store";
 import { updateGame } from "../gamelist/gamelistSlice";
 import { QRCoord } from "../hexGrid/hexGrid";
 import { Game } from "./game";
@@ -33,7 +32,7 @@ export const submitMove =
     const state = getState();
     const move = getOrderedTileSelectionCoords(state);
 
-    const formattedCoords = move.map((coord) => {
+    const formattedCoords = move.map((coord: QRCoord) => {
       const [q, r] = coord.split(",");
       return {
         q: Number(q),

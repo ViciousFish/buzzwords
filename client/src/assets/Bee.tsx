@@ -49,15 +49,17 @@ export const Bee = (props: GroupProps) => {
 
   const [v] = useState(() => new Vector3());
   useFrame(({ clock }) => {
-    if (group.current && !isDragging.current) {
-      rotateSpringApi.set({
-        x: rotateSpring.x.get() + .03,
-      });
+    if (group.current) {
+      if (!isDragging.current) {
+        rotateSpringApi.set({
+          x: rotateSpring.x.get() + .03,
+        });
+      }
+      v.set(rotateSpring.y.get(), rotateSpring.x.get(), 0);
+      const a = v.length();
+      v.normalize();
+      group.current.setRotationFromAxisAngle(v, a / 2);
     }
-    v.set(rotateSpring.y.get(), rotateSpring.x.get(), 0);
-    const a = v.length();
-    v.normalize();
-    group.current.setRotationFromAxisAngle(v, a / 2);
   });
   return (
     <group ref={group} {...props} dispose={null}>

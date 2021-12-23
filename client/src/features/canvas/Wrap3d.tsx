@@ -19,9 +19,7 @@ const setZoom = (
   camera.updateProjectionMatrix();
 };
 
-const Wrap3d: React.FC = ({
-  children
-}) => {
+const Wrap3d: React.FC = ({ children }) => {
   const { progress } = useProgress();
 
   const groupRef = useRef<Group>();
@@ -32,8 +30,10 @@ const Wrap3d: React.FC = ({
   useEffect(() => {
     if (progress === 100 && groupRef.current) {
       setTimeout(() => {
-        setZoom(groupRef.current, width, height, boundingBox, camera);
-      }, 10)
+        if (groupRef.current) {
+          setZoom(groupRef.current, width, height, boundingBox, camera);
+        }
+      }, 10);
     }
   }, [progress, width, height, groupRef, boundingBox, camera]);
   return (
