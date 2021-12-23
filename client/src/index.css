@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -13,9 +13,13 @@
     box-shadow: rgba(0, 0, 0, 0.2) 2px -2px 2px inset,
       rgba(255, 255, 255, 0.3) -2px 2px 2px inset;
   }
+  .inset-shadow-reverse {
+    box-shadow: rgba(255, 255, 255, 0.3) 2px -2px 2px inset,
+      rgba(0, 0, 0, 0.2) -2px 2px 2px inset;
+  }
 }
 .inset-right {
-  box-shadow: rgba(0, 0, 0, .4) -3px 0px 10px
+  box-shadow: rgba(0, 0, 0, 0.4) -3px 0px 10px;
 }
 body {
   @apply bg-lightbg;

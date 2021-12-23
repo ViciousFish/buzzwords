@@ -1,4 +1,4 @@
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faArrowsRotate, faBars, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import React, { useEffect } from "react";
@@ -46,9 +46,9 @@ export function GameList() {
             <NavLink
               className={({ isActive }) =>
                 classNames(
-                  isActive
-                    ? "bg-primary hover:bg-opacity-100"
-                    : "underline text-darkbrown",
+                  // isActive
+                  //   ? "bg-primary hover:bg-opacity-100"
+                  //   : "underline text-darkbrown",
                   "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50 text-2xl"
                 )
               }
@@ -66,27 +66,25 @@ export function GameList() {
             </button>
           </a.div>
         </div>
-        <a.div style={innerSpring}>
+        <a.div className="px-2" style={innerSpring}>
           <span className="text-xl">Games</span>
           <Button
             onClick={() => {
               dispatch(createNewGame());
             }}
           >
-            Create new
+            <FontAwesomeIcon className="mx-1" icon={faPlus} />
           </Button>
-          {isOpen && (
             <Button
               onClick={() => {
                 dispatch(refresh());
               }}
             >
-              refresh
+              <FontAwesomeIcon className="mx-1" icon={faArrowsRotate} />
             </Button>
-          )}
         </a.div>
         {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
-        <a.ul style={innerSpring}>
+        <a.ul className="px-2" style={innerSpring}>
           {games.map((id) => (
             <li key={id} className="my-1 whitespace-nowrap">
               <NavLink
@@ -95,7 +93,7 @@ export function GameList() {
                     isActive
                       ? "bg-primary hover:bg-opacity-100"
                       : "underline text-darkbrown",
-                    "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50"
+                    "p-2 rounded-xl block hover:bg-primary hover:bg-opacity-50"
                   )
                 }
                 to={`/play/${id}`}

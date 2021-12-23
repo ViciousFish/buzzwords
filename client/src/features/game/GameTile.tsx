@@ -13,8 +13,10 @@ import {
   Vector3 as V3Type,
 } from "@react-three/fiber";
 import { FontLoader } from "three";
-import { useSpring, useSpringRef, animated as a } from "@react-spring/three";
+import { useSpring, animated as a } from "@react-spring/three";
 import { config as springConfig } from "@react-spring/core";
+import { EffectComposer, Outline } from '@react-three/postprocessing'
+
 
 import HexTile from "../../assets/HexTile";
 import fredokaone from "../../../assets/Fredoka One_Regular.json?url";
@@ -27,7 +29,7 @@ import { GamePlayer } from "./game";
 import { Flower01 } from "../../assets/Flower01";
 import { getOrderedTileSelectionCoords } from "./gameSelectors";
 
-import { willConnectToTerritory } from "../../../../shared/gridHelpers";
+// import { willConnectToTerritory } from "../../../../shared/gridHelpers";
 interface GameTileProps {
   position: V3Type;
   letter?: string | null;
@@ -99,6 +101,9 @@ const GameTile: React.FC<GameTileProps> = ({
   if (isPlayerIdentity && currentTurn === owner) {
     scale = 1.3;
   }
+
+  const hexRef = useRef();
+  const selectionRef = isPlayerIdentity && currentTurn === owner ? hexRef : {current: null};
 
   const colorAndScaleSpring = useSpring({
     scale: [scale, scale, scale],
@@ -206,7 +211,7 @@ const GameTile: React.FC<GameTileProps> = ({
         <Flower01 />
         // <Html>capital</Html>
       )}
-      <group position={[0, 0, -0.2]}>
+      <group position={[0, 0, -0.2]} ref={hexRef}>
         <HexTile orientation="flat">
           {/* @ts-ignore */}
           <a.meshStandardMaterial
@@ -215,6 +220,9 @@ const GameTile: React.FC<GameTileProps> = ({
           />
         </HexTile>
       </group>
+      {/* <EffectComposer> */}
+        {/* <Outline selection={hexRef} visibleEdgeColor="white" edgeStrength={1000} width={5000} /> */}
+      {/* </EffectComposer> */}
     </a.group>
   );
 };
