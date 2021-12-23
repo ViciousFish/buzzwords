@@ -8,6 +8,7 @@ import { resetGame } from "../game/gameSlice";
 import { joinGameById } from "../gamelist/gamelistActions";
 import GameBoard from "../game/GameBoard";
 import CopyToClipboard from "../../presentational/CopyToClipboard";
+import { useAppSelector } from "../../app/hooks";
 
 const Play: React.FC = () => {
   const dispatch = useDispatch();
@@ -19,6 +20,7 @@ const Play: React.FC = () => {
     (state: RootState) => state.gamelist.gamesLoaded
   );
   const currentUser = useSelector((state: RootState) => state.user.user);
+  const sidebarOpen = useAppSelector(state => state.gamelist.isOpen);
   const [fourohfour, setFourohfour] = useState(false);
 
   const userIndex =
@@ -72,7 +74,7 @@ const Play: React.FC = () => {
   }
 
   return (
-    <div className="flex-auto overflow-scroll h-screen">
+    <div className={classnames("flex-auto overflow-scroll h-screen", sidebarOpen && 'flex-shrink-0 md:flex-shrink')}>
       <div className="min-h-screen flex flex-auto flex-col lg:flex-row">
         {game && id && userIndex !== null && (
           <GameBoard id={id} game={game} userIndex={userIndex} />
