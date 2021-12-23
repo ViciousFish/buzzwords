@@ -1,10 +1,5 @@
 import Game from "./Game";
 
-export interface HexCoord {
-  q: number;
-  r: number;
-}
-
 export interface DataLayer {
   getGamesByUserId(
     id: string,

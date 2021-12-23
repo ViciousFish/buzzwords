@@ -1,6 +1,6 @@
 import { getRandomCharacter } from "../../shared/alphaHelpers";
-import HexGrid from "./hexgrid";
-import { HexCoord } from "./types";
+import HexGrid from "../../shared/hexgrid";
+import { HexCoord } from "../../shared/types";
 
 interface Move {
   coords: HexCoord[];
@@ -31,15 +31,6 @@ export default class Game {
     this.gameOver = state.gameOver;
     this.winner = state.winner;
     this.moves = state.moves;
-  }
-
-  activateCell(q: number, r: number) {
-    const cell = this.grid.getCell(q, r);
-    if (cell) {
-      cell.active = true;
-      this.grid.setCell(cell);
-      this.randomizeCellValue(q, r);
-    }
   }
 
   randomizeCellValue(q: number, r: number) {

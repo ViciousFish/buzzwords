@@ -1,8 +1,13 @@
 import Game from "./Game";
-import { HexCoord } from "./types";
+import { HexCoord } from "../../shared/types";
+import {
+  getCellsToBeReset,
+  willBecomeOwned,
+  willConnectToTerritory,
+} from "../../shared/gridHelpers";
 import { isValidWord, getRandomCharacter } from "../../shared/alphaHelpers";
 import { nanoid } from "nanoid";
-import HexGrid from "./hexgrid";
+import HexGrid from "../../shared/hexgrid";
 
 export const errors = {};
 
@@ -36,7 +41,7 @@ export default class GameManager {
     for (const coord of move) {
       try {
         const cell = this.game.grid.getCell(coord.q, coord.r);
-        if (cell && cell.owner == 2 && cell.active) {
+        if (cell && cell.owner == 2 && cell.value) {
           word += cell.value;
         } else {
           throw new Error("Cell in use or inactive");
@@ -55,113 +60,41 @@ export default class GameManager {
       player: this.game.turn,
     };
 
+    let capitalCaptured = false;
+
+    // Make all tiles adjacent to move neutral and active
+    const resetTiles = getCellsToBeReset(this.game.grid, move, this.game.turn);
+
     // Parsed word, checked validity of move and word etc.
     // Have to check for what's attached to current territory to see what to expand
     // Have to check from above to see what is adjacent to enemy territory to see what to remove
     // change whose turn it is
-    for (const coord of move) {
-      // Assume all coords in move ARE attached
-      // For each coord
-      // If you can make it to user territory that isn't in move, then its valid.
-      const cell = this.game.grid.getCell(coord.q, coord.r);
-      console.log("cell :", cell);
-      if (cell != null) {
-        cell.owner = this.game.turn;
-        this.game.grid.setCell(cell);
+    const toBecomeOwned = willBecomeOwned(this.game.grid, move, this.game.turn);
+
+    for (const tile of resetTiles) {
+      tile.owner = 2;
+      if (tile.capital) {
+        capitalCaptured = true;
+        tile.capital = false;
       }
+      this.game.randomizeCellValue(tile.q, tile.r);
+      this.game.grid.setCell(tile);
     }
-    // cq: here
-    for (const coord of move) {
-      const stack: HexCoord[] = [coord];
-      const visited: {
-        [key: string]: boolean;
-      } = {};
-      let valid = false;
-      while (stack.length) {
-        const current = stack.pop();
-        visited[`${current?.q},${current?.r}`] = true;
-        if (current != undefined && current != null) {
-          const neighbors = this.game.grid.getCellNeighbors(
-            current.q,
-            current.r
-          );
-          const ownedNeighbors = neighbors.filter(
-            // @ts-expect-error I promise it isn't null
-            (cell) => cell.owner == this.game.turn
-          );
-          const nonTurnOwnedNeighbors = ownedNeighbors.filter((cell) => {
-            let inMove = false;
-            for (const m of move) {
-              if (m.q == cell.q && m.r == cell.r) {
-                inMove = true;
-                break;
-              }
-            }
-            return !inMove;
-          });
-          if (nonTurnOwnedNeighbors.length) {
-            valid = true;
-            break;
-          }
-          stack.push(
-            ...ownedNeighbors.filter((c) => !visited[`${c.q},${c.r}`])
-          );
-        }
-      }
-      const cell = this.game.grid.getCell(coord.q, coord.r);
-      if (!valid) {
-        // This cell should be set back to owner = 2
-        if (cell != null) {
-          cell.owner = 2;
-        }
-      }
-      if (cell && cell.owner == this.game.turn) {
+
+    for (const cell of toBecomeOwned) {
+      cell.owner = this.game.turn;
+      if (cell.owner == this.game.turn) {
         cell.value = "";
       }
-    }
 
-    let capitalCaptured = false;
-    // Make all adjacent tiles owned by opponent owned by 2
-    for (const coord of move) {
-      const cell = this.game.grid.getCell(coord.q, coord.r);
-      if (cell != null && cell.owner == this.game.turn) {
-        const neighbors = this.game.grid.getCellNeighbors(cell.q, cell.r);
-        for (const neighbor of neighbors) {
-          if (neighbor.owner == (Number(!this.game.turn) as 0 | 1)) {
-            neighbor.owner = 2;
-            if (neighbor.capital) {
-              capitalCaptured = true;
-              neighbor.capital = false;
-            }
-            this.game.grid.setCell(neighbor);
-          } else if (neighbor.owner == 2 && neighbor.value === "") {
-            this.game.activateCell(neighbor.q, neighbor.r);
-          }
-        }
-      }
-      if (cell != null && !cell.active) {
-        this.game.activateCell(cell.q, cell.r);
-      }
-    }
-
-    // Change value of all cells used but not owned
-    for (const coord of move) {
-      const cell = this.game.grid.getCell(coord.q, coord.r);
-      if (cell != null && cell.owner == 2) {
-        cell.value = getRandomCharacter();
-        this.game.grid.setCell(cell);
-      }
+      this.game.grid.setCell(cell);
     }
 
     for (const cell of Object.values(this.game.grid.cellMap)) {
       if (cell.owner == 2) {
         const neighbors = this.game.grid.getCellNeighbors(cell.q, cell.r);
         const playerNeighbors = neighbors.filter((c) => c.owner != 2);
-        if (playerNeighbors.length && cell.value == "") {
-          this.game.randomizeCellValue(cell.q, cell.r);
-        }
         if (!playerNeighbors.length) {
-          cell.active = false;
           cell.value = "";
           this.game.grid.setCell(cell);
         }
@@ -217,18 +150,16 @@ export default class GameManager {
     const game = new Game(gameData);
     game.grid.cellMap["-2,-1"].capital = true;
     game.grid.cellMap["-2,-1"].owner = 0;
-    game.grid.cellMap["-2,-1"].active = true;
     let neighbors = game.grid.getCellNeighbors(-2, -1);
     for (const cell of neighbors) {
-      game.activateCell(cell.q, cell.r);
+      game.randomizeCellValue(cell.q, cell.r);
     }
 
     game.grid.cellMap["2,1"].capital = true;
     game.grid.cellMap["2,1"].owner = 1;
-    game.grid.cellMap["2,1"].active = true;
     neighbors = game.grid.getCellNeighbors(2, 1);
     for (const cell of neighbors) {
-      game.activateCell(cell.q, cell.r);
+      game.randomizeCellValue(cell.q, cell.r);
     }
     this.game = game;
     return game;

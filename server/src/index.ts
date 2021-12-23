@@ -5,7 +5,9 @@ import morgan from "morgan";
 
 import getConfig from "./config";
 import DL from "./datalayer";
-import { DataLayer, HexCoord } from "./types";
+import Game from "./Game";
+import { DataLayer } from "./types";
+import { HexCoord } from "../../shared/types";
 import GameManager from "./GameManager";
 
 const config = getConfig();
