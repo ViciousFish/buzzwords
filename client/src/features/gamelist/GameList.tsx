@@ -10,6 +10,7 @@ import Button from "../../presentational/Button";
 import { getUser } from "../user/userActions";
 import { refresh, createNewGame } from "./gamelistActions";
 import { toggleIsOpen } from "./gamelistSlice";
+import { theme } from "../../app/theme";
 
 export function GameList() {
   const games = useAppSelector((state) => Object.keys(state.gamelist.games));
@@ -21,37 +22,37 @@ export function GameList() {
     dispatch(getUser());
   }, [dispatch]);
 
-  const transitions = useTransition(isOpen ? games : [], {
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 },
+  const containerSpring = useSpring({
+    marginLeft: isOpen ? "0" : "-260px",
+    background: isOpen ? theme.colors.darkbg : theme.colors.lightbg,
   });
 
-  const marginSpring = useSpring({ marginLeft: isOpen ? "0" : "-250px" });
+  const innerSpring = useSpring({
+    opacity: isOpen ? 1 : 0,
+  });
+
   return (
     <a.div
-      className="bg-darkbg inset-right w-[300px] flex-shrink-0"
-      style={marginSpring}
+      className="w-[300px] flex-shrink-0 z-10 h-screen"
+      style={containerSpring}
     >
       <div className="px-2">
         <div className="flex py-2 space-x-2">
-          {isOpen ? (
+          <a.div className="flex-auto" style={innerSpring}>
             <NavLink
               className={({ isActive }) =>
                 classNames(
                   isActive
                     ? "bg-primary hover:bg-opacity-100"
                     : "underline text-darkbrown",
-                  "p-2 rounded-md flex-auto hover:bg-primary hover:bg-opacity-50 text-2xl"
+                  "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50 text-2xl"
                 )
               }
               to="/"
             >
               Buzzwords
             </NavLink>
-          ) : (
-            <div className="p-2 flex-auto text-2xl">Buzzwords</div>
-          )}
+          </a.div>
           <button
             onClick={() => dispatch(toggleIsOpen())}
             className="p-2 hover:bg-primary hover:bg-opacity-50 rounded-md"
@@ -59,7 +60,7 @@ export function GameList() {
             <FontAwesomeIcon icon={faBars} />
           </button>
         </div>
-        <div>
+        <a.div style={innerSpring}>
           <span className="text-xl">Games</span>
           <Button
             onClick={() => {
@@ -77,10 +78,11 @@ export function GameList() {
               refresh
             </Button>
           )}
-        </div>
-        <ul>
-          {transitions((styles, id) => (
-            <a.li style={styles} className="my-1 whitespace-nowrap">
+        </a.div>
+        {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
+        <a.ul style={innerSpring}>
+          {games.map((id) => (
+            <li key={id} className="my-1 whitespace-nowrap">
               <NavLink
                 className={({ isActive }) =>
                   classNames(
@@ -94,10 +96,10 @@ export function GameList() {
               >
                 {id}
               </NavLink>
-            </a.li>
+            </li>
           ))}
           {games.length === 0 && <>No games</>}
-        </ul>
+        </a.ul>
       </div>
     </a.div>
   );
