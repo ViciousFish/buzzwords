@@ -1,12 +1,10 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import { nanoid } from "nanoid";
-import { ulid } from "ulid";
 import morgan from "morgan";
 
 import getConfig from "./config";
 import DL from "./datalayer";
-import Game from "./Game";
 import { DataLayer, HexCoord } from "./types";
 import GameManager from "./GameManager";
 
@@ -38,7 +36,11 @@ app.use((req, res, next) => {
   const cookies = req.cookies || {};
   const session = cookies.session || null;
   if (!session) {
-    res.cookie("session", nanoid());
+    const session = nanoid();
+    res.cookie("session", session);
+    req.cookies = {
+      session,
+    };
   }
   next();
 });
