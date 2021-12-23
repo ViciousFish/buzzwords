@@ -44,7 +44,7 @@ const Play: React.FC = () => {
 
   if (fourohfour) {
     return (
-      <div className="flex flex-auto flex-col h-screen justify-center items-center">
+      <div className="flex-shrink-0 md:flex-shrink flex flex-auto flex-col h-screen justify-center items-center">
         <h1>404</h1>
         <Link className="underline text-blue-700" to="/">
           home
@@ -55,24 +55,22 @@ const Play: React.FC = () => {
 
   if (game && game.users.length === 1) {
     return (
-      <div className="flex flex-auto flex-col h-screen justify-center items-center">
+      <div className="flex-shrink-0 md:flex-shrink flex flex-auto flex-col h-screen justify-center items-center">
         <span className="text-2xl">Invite an opponent to start the game</span>
         <span>they can use this link to join you</span>
-        <div>
           <a
             className="underline text-blue-700"
             href={window.location.toString()}
           >
             {window.location.toString()}
           </a>
-          <CopyToClipboard text={window.location.toString()} />
-        </div>
+          <CopyToClipboard label="Copy link" text={window.location.toString()} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-auto flex-col md:flex-row">
+    <div className="min-h-screen flex flex-auto flex-shrink-0 md:flex-shrink flex-col md:flex-row">
       {game && id && userIndex !== null && <GameBoard id={id} game={game} userIndex={userIndex} />}
       <div className="m-auto flex flex-shrink-0 flex-col w-[200px] mt-2">
         <h3 className="text-2xl text-center">Words Played</h3>
