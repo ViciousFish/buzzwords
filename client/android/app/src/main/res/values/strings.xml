@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Buzzwords</string>
+    <string name="title_activity_main">Buzzwords</string>
+    <string name="package_name">com.chuckdries.buzzwords</string>
+    <string name="custom_url_scheme">com.chuckdries.buzzwords</string>
+</resources>
