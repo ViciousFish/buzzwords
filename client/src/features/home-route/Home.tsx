@@ -23,8 +23,8 @@ const Home: React.FC = () => {
         <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
           <Bee position={[0, 5, 0]} scale={1.7} />
           <group position={[0, 4, 0]}>
-            <HexWord position={[0, -4.8, 0]} text="BUZZWORDS" />
-            <HexWord position={[0, -9.6, 0]} text="WELCOME!" />
+            <HexWord position={[0, -4.8, 0]} text="BUZZ" />
+            <HexWord position={[0, -9.6, 0]} text="WORDS" />
           </group>
           <Html position={[0, -12, 0]} center><Button onClick={onPlayClick}>Play</Button></Html>
         </React.Suspense>
