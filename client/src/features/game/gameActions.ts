@@ -1,5 +1,4 @@
 import { AppThunk } from "../../app/store";
-import { updateGame } from "../gamelist/gamelistSlice";
 import { QRCoord } from "../hexGrid/hexGrid";
 import { Game } from "./game";
 import { getOrderedTileSelectionCoords } from "./gameSelectors";
@@ -50,10 +49,10 @@ export const submitMove =
         }),
       }).then((res) => res.json());
 
-      const newGame: Game = {
-        ...res,
-        grid: res.grid.cellMap,
-      };
+      // const newGame: Game = {
+      //   ...res,
+      //   grid: res.grid.cellMap,
+      // };
 
       // dispatch(updateGame(newGame));
       dispatch(resetGame());
