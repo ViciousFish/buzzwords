@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import cookieParser from "cookie-parser";
 import { nanoid } from "nanoid";
 import morgan from "morgan";
+import cookie from "cookie";
 
 import getConfig from "./config";
 import DL from "./datalayer";
@@ -98,7 +99,15 @@ app.post("/api/game/:id/join", async (req, res) => {
   const user = req.cookies.session;
   const gameId = req.params.id;
   const success = await dl.joinGame(user, gameId);
-  res.sendStatus(success ? 201 : 404);
+  const game = await dl.getGameById(gameId);
+  if (game && success) {
+    game.users.forEach((user) => {
+      io.to(user).emit("game updated", game);
+    });
+    res.sendStatus(201);
+  } else {
+    res.sendStatus(404);
+  }
 });
 
 app.post("/api/game/join", async (req, res) => {
@@ -135,7 +144,7 @@ app.post("/api/game/:id/move", async (req, res) => {
   const gm = new GameManager(game);
   console.log("gm :", gm);
 
-  let newGame;
+  let newGame: Game;
   try {
     newGame = gm.makeMove(user, move);
   } catch (e: any) {
@@ -155,10 +164,15 @@ app.post("/api/game/:id/move", async (req, res) => {
 
   res.status(201);
   res.send(newGame);
+  newGame.users.forEach((user) => {
+    io.to(user).emit("game updated", newGame);
+  });
 });
 
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  const cookies = cookie.parse(socket.request.headers.cookie || "");
+  socket.join(cookies.session);
+  console.log("a user connected", cookies.session);
 });
 
 server.listen(config.port, () => {

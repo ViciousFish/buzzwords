@@ -55,12 +55,7 @@ export const submitMove =
         grid: res.grid.cellMap,
       };
 
-      dispatch(
-        updateGame({
-          id: gameId,
-          game: newGame,
-        })
-      );
+      // dispatch(updateGame(newGame));
       dispatch(resetGame());
     } catch (e) {
       console.log(e);

@@ -1,5 +1,5 @@
 import { AppDispatch, AppThunk } from "../../app/store";
-import { Game } from "../game/game";
+import { Game, GamePlayer } from "../game/game";
 import { HexGrid } from "../hexGrid/hexGrid";
 import { refreshReceived } from "./gamelistSlice";
 
@@ -11,7 +11,15 @@ export interface ApiGame {
   id: string;
   turn: number;
   users: string[];
-  winner: unknown; // todo: fix
+  winner: GamePlayer | null;
+  moves: {
+    coords: {
+      q: number;
+      r: number;
+    }[];
+    letters: string[];
+    player: 0 | 1;
+  }[];
 }
 
 export const refresh = (): AppThunk => async (dispatch) => {

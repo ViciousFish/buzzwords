@@ -26,8 +26,8 @@ export const gamelistSlice = createSlice({
       state.games = action.payload;
       state.gamesLoaded = true;
     },
-    updateGame: (state, action: PayloadAction<{ id: string; game: Game }>) => {
-      state.games[action.payload.id] = action.payload.game;
+    updateGame: (state, action: PayloadAction<Game>) => {
+      state.games[action.payload.id] = action.payload;
     },
     toggleIsOpen: (state) => {
       state.isOpen = !state.isOpen;
