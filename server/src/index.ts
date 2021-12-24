@@ -82,12 +82,10 @@ app.get("/api/game/:id", async (req, res) => {
 app.post("/api/game", async (req, res) => {
   console.log("HERE");
   const user = req.cookies.session;
-  console.log("🚀 ~ file: index.ts ~ line 68 ~ app.post ~ user", user);
   const gm = new GameManager(null);
   const game = gm.createGame(user);
   try {
     await dl.saveGame(game.id, game);
-    console.log("🚀 ~ file: index.ts ~ line 73 ~ app.post ~ game.id", game.id);
     res.send(game.id);
   } catch (e) {
     console.log(e);
@@ -136,13 +134,11 @@ app.post("/api/game/:id/move", async (req, res) => {
   const game = await dl.getGameById(gameId, {
     session,
   });
-  console.log("game :", game);
   if (game == null || game == undefined) {
     res.sendStatus(404);
     return;
   }
   const gm = new GameManager(game);
-  console.log("gm :", gm);
 
   let newGame: Game;
   try {
@@ -169,10 +165,27 @@ app.post("/api/game/:id/move", async (req, res) => {
   });
 });
 
+interface SelectionEventProps {
+  gameId: string;
+  selection: { [position: string]: number };
+}
+
 io.on("connection", (socket) => {
   const cookies = cookie.parse(socket.request.headers.cookie || "");
   socket.join(cookies.session);
   console.log("a user connected", cookies.session);
+  socket.on("selection", async ({ selection, gameId }: SelectionEventProps) => {
+    console.log("selection", selection);
+    const game = await dl.getGameById(gameId);
+    if (!game) {
+      console.log("no game", gameId);
+      return;
+    }
+    game.users.forEach((user) => {
+      console.log("sending selection to user");
+      io.to(user).emit("selection", { selection, gameId });
+    });
+  });
 });
 
 server.listen(config.port, () => {

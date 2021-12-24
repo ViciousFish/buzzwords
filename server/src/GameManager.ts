@@ -50,7 +50,9 @@ export default class GameManager {
         throw new Error("Invalid coords");
       }
     }
+    console.log("move received word", word);
     if (!isValidWord(word)) {
+      console.log("word invalid", word);
       throw new Error("Not a valid word");
     }
 

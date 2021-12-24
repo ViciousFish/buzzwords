@@ -1,8 +1,14 @@
+import { emitSelection } from "../../app/socket";
 import { AppThunk } from "../../app/store";
 import { QRCoord } from "../hexGrid/hexGrid";
 import { Game } from "./game";
 import { getOrderedTileSelectionCoords } from "./gameSelectors";
-import { resetGame, selectTile, unselectTile } from "./gameSlice";
+import {
+  resetSelection,
+  selectTile,
+  setSelection,
+  unselectTile,
+} from "./gameSlice";
 // import { getEmptyGame } from "./game";
 // import { addGame } from "./gameSlice";
 
@@ -16,14 +22,21 @@ import { resetGame, selectTile, unselectTile } from "./gameSlice";
 export const toggleTileSelected =
   (tile: QRCoord): AppThunk =>
   (dispatch, getState) => {
-    const state = getState();
-    const selected = state.game.selectedTiles[tile] || false;
+    const selected = getState().game.selectedTiles[tile] || false;
     if (selected) {
       dispatch(unselectTile(tile));
     } else {
       dispatch(selectTile(tile));
     }
+    const state = getState();
+    emitSelection(state.game.selectedTiles, state.game.currentGame);
   };
+
+export const clearTileSelection = (): AppThunk => (dispatch, getState) => {
+  dispatch(resetSelection());
+  const { currentGame } = getState().game;
+  emitSelection({}, currentGame);
+};
 
 export const submitMove =
   (gameId: string): AppThunk =>
@@ -55,8 +68,22 @@ export const submitMove =
       // };
 
       // dispatch(updateGame(newGame));
-      dispatch(resetGame());
+      dispatch(resetSelection());
     } catch (e) {
       console.log(e);
     }
+  };
+
+export const receiveSelectionSocket =
+  (selection: { [position: QRCoord]: number }, gameId: string): AppThunk =>
+  (dispatch, getState) => {
+    const state = getState();
+    const { currentGame } = state.game;
+    if (!currentGame || currentGame !== gameId) {
+      console.log("bailed early", gameId);
+      console.log("current game", currentGame);
+      return;
+      // TODO: show typing indicator in sidebar
+    }
+    if (currentGame === gameId) dispatch(setSelection(selection));
   };

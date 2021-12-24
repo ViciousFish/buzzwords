@@ -5,9 +5,8 @@ import Button from "../../presentational/Button";
 import Canvas from "../canvas/Canvas";
 import { QRCoord } from "../hexGrid/hexGrid";
 import { Game } from "./game";
-import { submitMove } from "./gameActions";
+import { clearTileSelection, submitMove } from "./gameActions";
 import { getSelectedWordByGameId } from "./gameSelectors";
-import { resetGame } from "./gameSlice";
 import GameTile from "./GameTile";
 
 interface GameBoardProps {
@@ -68,7 +67,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 {selectedWord?.length ? (
                   <Button
                     onClick={() => {
-                      dispatch(resetGame());
+                      dispatch(clearTileSelection());
                     }}
                     type="button"
                   >

@@ -4,7 +4,7 @@ import classnames from "classnames";
 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/store";
-import { resetGame } from "../game/gameSlice";
+import { resetSelection, setCurrentGame } from "../game/gameSlice";
 import { joinGameById } from "../gamelist/gamelistActions";
 import GameBoard from "../game/GameBoard";
 import CopyToClipboard from "../../presentational/CopyToClipboard";
@@ -20,7 +20,7 @@ const Play: React.FC = () => {
     (state: RootState) => state.gamelist.gamesLoaded
   );
   const currentUser = useSelector((state: RootState) => state.user.user);
-  const sidebarOpen = useAppSelector(state => state.gamelist.isOpen);
+  const sidebarOpen = useAppSelector((state) => state.gamelist.isOpen);
   const [fourohfour, setFourohfour] = useState(false);
 
   const userIndex =
@@ -29,7 +29,14 @@ const Play: React.FC = () => {
       : null;
 
   useEffect(() => {
-    dispatch(resetGame());
+    dispatch(resetSelection());
+    if (id) {
+      console.log("set current game", id);
+      dispatch(setCurrentGame(id));
+    }
+    return () => {
+      dispatch(setCurrentGame(null));
+    };
   }, [dispatch, id]);
 
   useEffect(() => {
@@ -75,28 +82,28 @@ const Play: React.FC = () => {
 
   return (
     // <div className={classnames("flex-auto overflow-scroll h-screen", sidebarOpen && 'flex-shrink-0 md:flex-shrink')}>
-      <div className="min-h-screen flex flex-auto flex-col lg:flex-row">
-        {game && id && userIndex !== null && (
-          <GameBoard id={id} game={game} userIndex={userIndex} />
-        )}
-        <div className="m-auto flex flex-shrink-0 flex-col w-[200px] mt-2">
-          <h3 className="text-2xl text-center">Words Played</h3>
-          <ul className="flex-auto overflow-y-scroll">
-            {game &&
-              game.moves.map((move, i) => (
-                <li
-                  key={i}
-                  className={classnames(
-                    "p-1 text-center rounded-md m-1",
-                    move.player === 0 ? "bg-p1" : "bg-p2"
-                  )}
-                >
-                  {move.letters.join("").toUpperCase()}
-                </li>
-              ))}
-          </ul>
-        </div>
+    <div className="min-h-screen flex flex-auto flex-col lg:flex-row">
+      {game && id && userIndex !== null && (
+        <GameBoard id={id} game={game} userIndex={userIndex} />
+      )}
+      <div className="m-auto flex flex-shrink-0 flex-col w-[200px] mt-2">
+        <h3 className="text-2xl text-center">Words Played</h3>
+        <ul className="flex-auto overflow-y-scroll">
+          {game &&
+            game.moves.map((move, i) => (
+              <li
+                key={i}
+                className={classnames(
+                  "p-1 text-center rounded-md m-1",
+                  move.player === 0 ? "bg-p1" : "bg-p2"
+                )}
+              >
+                {move.letters.join("").toUpperCase()}
+              </li>
+            ))}
+        </ul>
       </div>
+    </div>
     // </div>
   );
 };
