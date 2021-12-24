@@ -175,14 +175,12 @@ io.on("connection", (socket) => {
   socket.join(cookies.session);
   console.log("a user connected", cookies.session);
   socket.on("selection", async ({ selection, gameId }: SelectionEventProps) => {
-    console.log("selection", selection);
     const game = await dl.getGameById(gameId);
     if (!game) {
       console.log("no game", gameId);
       return;
     }
     game.users.forEach((user) => {
-      console.log("sending selection to user");
       io.to(user).emit("selection", { selection, gameId });
     });
   });
