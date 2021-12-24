@@ -1,11 +1,7 @@
 import Game from "./Game";
 import { HexCoord } from "../../shared/types";
-import {
-  getCellsToBeReset,
-  willBecomeOwned,
-  willConnectToTerritory,
-} from "../../shared/gridHelpers";
-import { isValidWord, getRandomCharacter } from "../../shared/alphaHelpers";
+import { getCellsToBeReset, willBecomeOwned } from "../../shared/gridHelpers";
+import { isValidWord } from "../../shared/alphaHelpers";
 import { nanoid } from "nanoid";
 import HexGrid from "../../shared/hexgrid";
 

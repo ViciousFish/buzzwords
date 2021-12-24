@@ -143,9 +143,13 @@ app.post("/api/game/:id/move", async (req, res) => {
   let newGame: Game;
   try {
     newGame = gm.makeMove(user, move);
-  } catch (e: any) {
+  } catch (e: unknown) {
     res.status(400);
-    res.send(e.message);
+    if (e instanceof Error) {
+      res.send(e.message);
+    } else {
+      res.send();
+    }
     return;
   }
   try {
