@@ -1,3 +1,5 @@
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Html, useProgress } from "@react-three/drei";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -48,6 +50,13 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 <span>{userIndex === 0 ? "You" : "Them"}</span>
               </Html>
             </group>
+            <Html center>
+              <div className="flex items-center justify-center">
+                {game.turn === 0 && <FontAwesomeIcon className="mr-2" size='lg' icon={faArrowLeft} />}
+                <span className="text-2xl font-bold">TURN</span>
+                {game.turn === 1 && <FontAwesomeIcon className="ml-2" size='lg' icon={faArrowRight} />}
+              </div>
+            </Html>
             <group position={[10, 0, 0]}>
               <GameTile
                 owner={1}
@@ -64,7 +73,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
           <group position={[0, 16, 0]}>
             <Html center>
               <div className="flex justify-center items-center">
-                {selectedWord?.length && game.turn === userIndex? (
+                {selectedWord?.length && game.turn === userIndex ? (
                   <Button
                     onClick={() => {
                       dispatch(clearTileSelection());

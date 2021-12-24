@@ -16,17 +16,23 @@ const Home: React.FC = () => {
   const onPlayClick = useCallback(async () => {
     const game = await dispatch(createNewGame());
     navigate(`/play/${game}`);
-  }, [navigate, dispatch])
+  }, [navigate, dispatch]);
   return (
     <div className="flex flex-auto no-touch h-screen p-12">
-      <Canvas key='home'>
+      <Canvas key="home">
         <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
-          <Bee position={[0, 5, 0]} scale={1.7} />
-          <group position={[0, 4, 0]}>
-            <HexWord position={[0, -4.8, 0]} text="BUZZ" />
-            <HexWord position={[0, -9.6, 0]} text="WORDS" />
+          <Bee position={[0, 6.5, 0]} scale={1.7} />
+          <group position={[0, 5, 0]}>
+            <HexWord position={[0, -4.8, 0]} text="WELCOME" />
+            {/* <HexWord position={[0, -9.6, 0]} text="WORDS" /> */}
           </group>
-          <Html position={[0, -12, 0]} center><Button onClick={onPlayClick}>Play</Button></Html>
+          <group position={[0, -4, 0]}>
+            <Html center>
+              <Button className="p-4 text-2xl" onClick={onPlayClick}>
+                Play
+              </Button>
+            </Html>
+          </group>
         </React.Suspense>
       </Canvas>
     </div>

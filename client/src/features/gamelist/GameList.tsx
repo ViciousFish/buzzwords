@@ -7,16 +7,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import {
-  animated as a,
-  useSpring,
-} from "@react-spring/web";
+import { animated as a, useSpring } from "@react-spring/web";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import { getUser } from "../user/userActions";
 import { refresh, createNewGame } from "./gamelistActions";
 import { toggleIsOpen } from "./gamelistSlice";
+import Canvas from "../canvas/Canvas";
+import { Bee } from "../../assets/Bee";
+import HexWord from "../thereed-lettering/HexWord";
 // import { theme } from "../../app/theme";
 
 export function GameList() {
@@ -48,7 +48,7 @@ export function GameList() {
       className="w-[300px] flex-shrink-0 z-10 h-screen bg-darkbg"
       style={containerSpring}
     >
-      <div className="px-2">
+      <div className="px-2 h-full flex flex-col">
         <div className="flex py-2 space-x-2">
           <div className="flex-auto">
             <NavLink
@@ -85,7 +85,7 @@ export function GameList() {
           </Button>
         </div>
         {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
-        <ul className="px-2">
+        <ul className="px-2 flex-auto">
           {games.map((id) => (
             <li key={id} className="my-1 whitespace-nowrap">
               <NavLink
@@ -105,6 +105,14 @@ export function GameList() {
           ))}
           {games.length === 0 && <>No games</>}
         </ul>
+        <div className="">
+          <Canvas>
+            <React.Suspense fallback={<></>}>
+              <Bee position={[0, 7, 0]} scale={4}/>
+              <HexWord position={[0, -5, 0]} text="BUZZWORDS" />
+            </React.Suspense>
+          </Canvas>
+        </div>
       </div>
     </a.div>
   );
