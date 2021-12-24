@@ -7,12 +7,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
-// import {
-//   animated as a,
-//   config as springConfig,
-//   useSpring,
-//   useTransition,
-// } from "@react-spring/web";
+import {
+  animated as a,
+  useSpring,
+} from "@react-spring/web";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
@@ -31,20 +29,22 @@ export function GameList() {
     dispatch(getUser());
   }, [dispatch]);
 
-  // const config = {
-  //   tension: 200,
-  //   clamp: true,
-  // };
-  const containerSpring = {
+  const config = {
+    tension: 200,
+    clamp: true,
+  };
+  const containerSpring = useSpring({
     marginLeft: isOpen ? "0" : "-300px",
-  };
+    config,
+  });
 
-  const hamburgerSpring = {
+  const hamburgerSpring = useSpring({
     marginRight: isOpen ? "0" : "-45px",
-  };
+    config,
+  });
 
   return (
-    <div
+    <a.div
       className="w-[300px] flex-shrink-0 z-10 h-screen bg-darkbg"
       style={containerSpring}
     >
@@ -52,27 +52,20 @@ export function GameList() {
         <div className="flex py-2 space-x-2">
           <div className="flex-auto">
             <NavLink
-              className={({ isActive }) =>
-                classNames(
-                  // isActive
-                  //   ? "bg-primary hover:bg-opacity-100"
-                  //   : "underline text-darkbrown",
-                  "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50 text-2xl"
-                )
-              }
+              className="p-2 rounded-md block hover:bg-primary hover:bg-opacity-50 text-2xl"
               to="/"
             >
               Buzzwords
             </NavLink>
           </div>
-          <div style={hamburgerSpring}>
+          <a.div style={hamburgerSpring}>
             <button
               onClick={() => dispatch(toggleIsOpen())}
               className="p-2 hover:bg-primary hover:bg-opacity-50 rounded-md"
             >
               <FontAwesomeIcon icon={faBars} />
             </button>
-          </div>
+          </a.div>
         </div>
         <div className="px-2">
           <span className="text-xl">Games</span>
@@ -113,6 +106,6 @@ export function GameList() {
           {games.length === 0 && <>No games</>}
         </ul>
       </div>
-    </div>
+    </a.div>
   );
 }

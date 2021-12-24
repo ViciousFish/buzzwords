@@ -16,6 +16,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.0.0-beta3",
     "@fortawesome/react-fontawesome": "^0.1.16",
     "@react-spring/three": "^9.2.3",
+    "@react-spring/web": "^9.3.2",
     "@react-three/drei": "^7.0.2",
     "@react-three/fiber": "^7.0.1",
     "@react-three/postprocessing": "^2.1.2",
