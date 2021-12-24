@@ -74,7 +74,7 @@ const Play: React.FC = () => {
   }
 
   return (
-    <div className={classnames("flex-auto overflow-scroll h-screen", sidebarOpen && 'flex-shrink-0 md:flex-shrink')}>
+    // <div className={classnames("flex-auto overflow-scroll h-screen", sidebarOpen && 'flex-shrink-0 md:flex-shrink')}>
       <div className="min-h-screen flex flex-auto flex-col lg:flex-row">
         {game && id && userIndex !== null && (
           <GameBoard id={id} game={game} userIndex={userIndex} />
@@ -97,7 +97,7 @@ const Play: React.FC = () => {
           </ul>
         </div>
       </div>
-    </div>
+    // </div>
   );
 };
 
