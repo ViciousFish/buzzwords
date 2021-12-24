@@ -67,8 +67,9 @@ export const submitMove =
       //   grid: res.grid.cellMap,
       // };
 
+      // handled by socket msg now
       // dispatch(updateGame(newGame));
-      dispatch(resetSelection());
+      // dispatch(resetSelection());
     } catch (e) {
       console.log(e);
     }
@@ -85,5 +86,12 @@ export const receiveSelectionSocket =
       return;
       // TODO: show typing indicator in sidebar
     }
-    if (currentGame === gameId) dispatch(setSelection(selection));
+    const { user } = state.user;
+    const { users, turn } = state.gamelist.games[currentGame];
+    const currentUserIndex = user
+      ? users.findIndex((val) => val === user.id)
+      : null;
+    if (currentGame === gameId && currentUserIndex !== turn) {
+      dispatch(setSelection(selection));
+    }
   };
