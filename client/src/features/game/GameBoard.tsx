@@ -64,7 +64,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
           <group position={[0, 16, 0]}>
             <Html center>
               <div className="flex justify-center items-center">
-                {selectedWord?.length ? (
+                {selectedWord?.length && game.turn === userIndex? (
                   <Button
                     onClick={() => {
                       dispatch(clearTileSelection());
@@ -77,7 +77,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 <div className="text-[calc(4vh+4vw)] text-darkbrown font-fredoka">
                   {selectedWord || ""}
                 </div>
-                {selectedWord?.length ? (
+                {selectedWord?.length && game.turn === userIndex ? (
                   <Button
                     onClick={() => dispatch(submitMove(id))}
                     type="button"
