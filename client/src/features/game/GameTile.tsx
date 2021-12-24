@@ -15,7 +15,6 @@ import {
 import { FontLoader } from "three";
 import { useSpring, animated as a } from "@react-spring/three";
 import { config as springConfig } from "@react-spring/core";
-import { EffectComposer, Outline } from '@react-three/postprocessing'
 
 
 import HexTile from "../../assets/HexTile";
@@ -28,6 +27,7 @@ import { toggleTileSelected } from "./gameActions";
 import { GamePlayer } from "./game";
 import { Flower01 } from "../../assets/Flower01";
 import { getOrderedTileSelectionCoords } from "./gameSelectors";
+import { Sakura } from "../../assets/Sakura";
 
 // import { willConnectToTerritory } from "../../../../shared/gridHelpers";
 interface GameTileProps {
@@ -207,10 +207,10 @@ const GameTile: React.FC<GameTileProps> = ({
           <meshStandardMaterial color={theme.colors.darkbrown} />
         </mesh>
       )}
-      {(isCapital || (prevCapital && !letter) || isPlayerIdentity) && (
-        <Flower01 />
-        // <Html>capital</Html>
-      )}
+      {(isCapital || (prevCapital && !letter) || isPlayerIdentity) && {
+        0: <Flower01 />,
+        1: <Sakura />
+      }[owner]}
       <group position={[0, 0, -0.2]} ref={hexRef}>
         <HexTile orientation="flat">
           {/* @ts-ignore */}
