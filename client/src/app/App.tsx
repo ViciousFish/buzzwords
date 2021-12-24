@@ -8,7 +8,7 @@ import Play from "../features/play-route/Play";
 import { Globals } from "@react-spring/shared";
 
 Globals.assign({
-  frameLoop: "demand", // no clue why this is necessary
+  frameLoop: "always", // no clue why this is necessary
 });
 
 
