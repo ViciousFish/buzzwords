@@ -1,4 +1,6 @@
 import express from "express";
+import { createServer } from "http";
+import { Server } from "socket.io";
 import cookieParser from "cookie-parser";
 import { nanoid } from "nanoid";
 import morgan from "morgan";
@@ -28,6 +30,8 @@ switch (config.dbType) {
 }
 
 const app = express();
+const server = createServer(app);
+const io = new Server(server);
 
 app.use(morgan("dev"));
 
@@ -153,6 +157,10 @@ app.post("/api/game/:id/move", async (req, res) => {
   res.send(newGame);
 });
 
-app.listen(config.port, () => {
+io.on("connection", (socket) => {
+  console.log("a user connected");
+});
+
+server.listen(config.port, () => {
   console.log("Server listening on port", config.port);
 });

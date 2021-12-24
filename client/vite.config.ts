@@ -10,6 +10,9 @@ export default ({ command, mode }) => {
         "/api": {
           target: "http://localhost:8080",
         },
+        "/socket.io": {
+          target: "http://localhost:8080",
+        },
       },
       hmr: {
         clientPort: 443
