@@ -13,11 +13,11 @@ socket.on('foo', () => {
   console.log('foo')
 })
 
-// import { Globals } from "@react-spring/shared";
+import { Globals } from "@react-spring/shared";
 
-// Globals.assign({
-//   frameLoop: "always",
-// });
+Globals.assign({
+  frameLoop: "demand", // no clue why this is necessary
+});
 
 
 function App() {
