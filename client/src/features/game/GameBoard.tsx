@@ -4,6 +4,7 @@ import { Html, useProgress } from "@react-three/drei";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "../../presentational/Button";
+// import CameraControls from "../../utils/CameraControls";
 import Canvas from "../canvas/Canvas";
 import { QRCoord } from "../hexGrid/hexGrid";
 import { Game } from "./game";
@@ -46,7 +47,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 isPlayerIdentity
                 currentGame={id}
               />
-              <Html position={[4, -1.5, 0]} center>
+              <Html position={[game.turn === 0 ? 5.1 : 4.1, -1.5, 0]} center>
                 <span>{userIndex === 0 ? "You" : "Them"}</span>
               </Html>
             </group>
@@ -65,7 +66,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 isPlayerIdentity
                 currentGame={id}
               />
-              <Html position={[4, -1.5, 0]} center>
+              <Html position={[game.turn === 1 ? 5.1 : 4.1, -1.5, 0]} center>
                 {userIndex === 1 ? "You" : "Them"}
               </Html>
             </group>

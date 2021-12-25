@@ -16,7 +16,6 @@ import { FontLoader } from "three";
 import { useSpring, animated as a } from "@react-spring/three";
 import { config as springConfig } from "@react-spring/core";
 
-
 import HexTile from "../../assets/HexTile";
 import fredokaone from "../../../assets/Fredoka One_Regular.json?url";
 import { theme } from "../../app/theme";
@@ -28,6 +27,7 @@ import { GamePlayer } from "./game";
 import { Flower01 } from "../../assets/Flower01";
 import { getOrderedTileSelectionCoords } from "./gameSelectors";
 import { Sakura } from "../../assets/Sakura";
+import { HexOutline } from "../../assets/Hexoutline";
 
 // import { willConnectToTerritory } from "../../../../shared/gridHelpers";
 interface GameTileProps {
@@ -99,16 +99,22 @@ const GameTile: React.FC<GameTileProps> = ({
   let scale = owner !== 2 || isSelected ? 1 : 0.9;
 
   if (isPlayerIdentity && currentTurn === owner) {
-    scale = 1.3;
+    scale = 1.2;
   }
 
-  const hexRef = useRef();
-  const selectionRef = isPlayerIdentity && currentTurn === owner ? hexRef : {current: null};
+  // const hexRef = useRef();
+  // const selectionRef = isPlayerIdentity && currentTurn === owner ? hexRef : {current: null};
 
   const colorAndScaleSpring = useSpring({
     scale: [scale, scale, scale],
     color,
     config: springConfig.stiff,
+  });
+
+  const outline = isPlayerIdentity && currentTurn === owner;
+
+  const outlineScaleSpring = useSpring({
+    scale: outline ? [1, 1, 1] : [0.5, 0.5, 0.5],
   });
 
   const isAnimating = useRef(false);
@@ -207,11 +213,12 @@ const GameTile: React.FC<GameTileProps> = ({
           <meshStandardMaterial color={theme.colors.darkbrown} />
         </mesh>
       )}
-      {(isCapital || (prevCapital && !letter) || isPlayerIdentity) && {
-        0: <Flower01 />,
-        1: <Sakura />
-      }[owner]}
-      <group position={[0, 0, -0.2]} ref={hexRef}>
+      {(isCapital || (prevCapital && !letter) || isPlayerIdentity) &&
+        {
+          0: <Flower01 />,
+          1: <Sakura />,
+        }[owner]}
+      <group position={[0, 0, -0.2]}>
         <HexTile orientation="flat">
           {/* @ts-ignore */}
           <a.meshStandardMaterial
@@ -220,9 +227,10 @@ const GameTile: React.FC<GameTileProps> = ({
           />
         </HexTile>
       </group>
-      {/* <EffectComposer> */}
-        {/* <Outline selection={hexRef} visibleEdgeColor="white" edgeStrength={1000} width={5000} /> */}
-      {/* </EffectComposer> */}
+      {/* @ts-ignore */}
+      <a.group {...outlineScaleSpring}>
+        <HexOutline />
+      </a.group>
     </a.group>
   );
 };
