@@ -24,9 +24,8 @@ const Home: React.FC = () => {
           <Bee position={[0, 6.5, 0]} scale={1.7} />
           <group position={[0, 5, 0]}>
             <HexWord position={[0, -4.8, 0]} text="WELCOME" />
-            {/* <HexWord position={[0, -9.6, 0]} text="WORDS" /> */}
           </group>
-          <group position={[0, -4, 0]}>
+          <group position={[0, -7, 0]}>
             <Html center>
               <Button className="p-4 text-2xl" onClick={onPlayClick}>
                 Play
