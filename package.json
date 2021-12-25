@@ -17,5 +17,11 @@
   "homepage": "https://github.com/chuckdries/buzzwords#readme",
   "dependencies": {
     "typescript": "^4.4.2"
-  }
+  },
+  "private": "true",
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ]
 }

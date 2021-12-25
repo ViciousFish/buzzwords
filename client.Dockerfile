@@ -6,7 +6,6 @@ RUN yarn
 COPY . ./
 RUN yarn build
 
-
 FROM nginx:1.21
 
 COPY --from=build /buzzwords/dist /usr/share/nginx/html

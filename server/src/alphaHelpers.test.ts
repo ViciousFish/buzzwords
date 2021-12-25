@@ -1,4 +1,4 @@
-import { getRandomCharacter, isValidWord } from "./alphaHelpers";
+import { getRandomCharacter, isValidWord } from "../../shared/alphaHelpers";
 
 test("should return a random character", () => {
   const char = getRandomCharacter();
