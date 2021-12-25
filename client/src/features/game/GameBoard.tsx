@@ -39,7 +39,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
         {/* <CameraControls /> */}
         <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
           {/* <HexWord allowSpinning autoSpin={false} position={[0, 20, 0]} text={selectedWord + ' '}/> */}
-          <group position={[0, 22, 0]}>
+          <group position={[0, 21, 0]}>
             <group position={[-10, 0, 0]}>
               <GameTile
                 owner={0}
@@ -47,17 +47,17 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 isPlayerIdentity
                 currentGame={id}
               />
-              <Html position={[game.turn === 0 ? 5.1 : 4.1, -1.5, 0]} center>
+              <Html position={[0, game.turn === 0 ? 5 : 4, 0]} center>
                 <span>{userIndex === 0 ? "You" : "Them"}</span>
               </Html>
             </group>
-            <Html center>
+            {/* <Html center>
               <div className="flex items-center justify-center">
                 {game.turn === 0 && <FontAwesomeIcon className="mr-2" size='lg' icon={faArrowLeft} />}
                 <span className="text-2xl font-bold">TURN</span>
                 {game.turn === 1 && <FontAwesomeIcon className="ml-2" size='lg' icon={faArrowRight} />}
               </div>
-            </Html>
+            </Html> */}
             <group position={[10, 0, 0]}>
               <GameTile
                 owner={1}
@@ -66,12 +66,12 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 isPlayerIdentity
                 currentGame={id}
               />
-              <Html position={[game.turn === 1 ? 5.1 : 4.1, -1.5, 0]} center>
+              <Html position={[0, game.turn === 1 ? 5 : 4, 0]} center>
                 {userIndex === 1 ? "You" : "Them"}
               </Html>
             </group>
           </group>
-          <group position={[0, 16, 0]}>
+          <group position={[0, 13.5, 0]}>
             <Html center>
               <div className="flex justify-center items-center">
                 {selectedWord?.length && game.turn === userIndex ? (
@@ -98,7 +98,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
               </div>
             </Html>
           </group>
-          <group position={[0, -6, 0]}>
+          <group position={[0, -8, 0]}>
             {Object.keys(game.grid).map((coord: QRCoord) => {
               const gridTile = game.grid[coord];
               return (

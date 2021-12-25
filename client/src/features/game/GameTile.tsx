@@ -27,7 +27,7 @@ import { GamePlayer } from "./game";
 import { Flower01 } from "../../assets/Flower01";
 import { getOrderedTileSelectionCoords } from "./gameSelectors";
 import { Sakura } from "../../assets/Sakura";
-import { HexOutline } from "../../assets/Hexoutline";
+import { HexOutlineSolid } from "../../assets/Hexoutlinesolid";
 
 // import { willConnectToTerritory } from "../../../../shared/gridHelpers";
 interface GameTileProps {
@@ -99,7 +99,7 @@ const GameTile: React.FC<GameTileProps> = ({
   let scale = owner !== 2 || isSelected ? 1 : 0.9;
 
   if (isPlayerIdentity && currentTurn === owner) {
-    scale = 1.2;
+    scale = 1;
   }
 
   // const hexRef = useRef();
@@ -114,7 +114,7 @@ const GameTile: React.FC<GameTileProps> = ({
   const outline = isPlayerIdentity && currentTurn === owner;
 
   const outlineScaleSpring = useSpring({
-    scale: outline ? [1, 1, 1] : [0.5, 0.5, 0.5],
+    scale: outline ? [1, 1, 1] : [0, 0, 0],
   });
 
   const isAnimating = useRef(false);
@@ -222,14 +222,18 @@ const GameTile: React.FC<GameTileProps> = ({
         <HexTile orientation="flat">
           {/* @ts-ignore */}
           <a.meshStandardMaterial
-            toneMapped={false}
             color={colorAndScaleSpring.color}
           />
         </HexTile>
       </group>
       {/* @ts-ignore */}
       <a.group {...outlineScaleSpring}>
-        <HexOutline />
+        {/* <HexOutline /> */}
+        <HexOutlineSolid>
+          <a.meshStandardMaterial
+            color={colorAndScaleSpring.color}
+          />
+        </HexOutlineSolid>
       </a.group>
     </a.group>
   );

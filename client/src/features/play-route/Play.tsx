@@ -94,7 +94,7 @@ const Play: React.FC = () => {
               <li
                 key={i}
                 className={classnames(
-                  "p-1 text-center rounded-md m-1",
+                  "p-1 font-bold text-center rounded-md m-1",
                   move.player === 0 ? "bg-p1" : "bg-p2"
                 )}
               >

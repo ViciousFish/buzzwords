@@ -19,7 +19,7 @@ export const Flower01 = ({ ...props }) => {
         scale={[0.53, 0.53, 0.53]}
       >
         <mesh geometry={nodes.Flower01_1.geometry}>
-          <meshStandardMaterial color="lightblue" />
+          <meshStandardMaterial color="white" />
         </mesh>
         <mesh geometry={nodes.Flower01_2.geometry} material={materials.Brown} />
       </group>
