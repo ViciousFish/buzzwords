@@ -6,6 +6,12 @@ services:
   #     - 5432:5432
   #   environment:
   #     POSTGRES_PASSWORD: postgres
+  buzzwords-web:
+    build: 
+      context: .
+      dockerfile: client.Dockerfile
+    ports:
+      - 3000:80
   mongo:
     image: mongo
     ports:
