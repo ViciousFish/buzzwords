@@ -1,11 +1,11 @@
 import { nanoid } from "nanoid";
-import { getRandomCharacter, isValidWord } from "../../../shared/alphaHelpers";
+import { getRandomCharacter, isValidWord } from "buzzwords-shared/alphaHelpers";
 // import { Game,  } from "../types";
 import Game from "../Game";
 import GameManager from "../GameManager";
-import HexGrid from "../../../shared/hexgrid";
+import HexGrid from "buzzwords-shared/hexgrid";
 import { DataLayer } from "../types";
-import { HexCoord } from "../../../shared/types";
+import { HexCoord } from "buzzwords-shared/types";
 
 export default class Memory implements DataLayer {
   games: {

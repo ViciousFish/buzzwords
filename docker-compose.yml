@@ -12,7 +12,11 @@ services:
       dockerfile: client.Dockerfile
     ports:
       - 3000:80
-  mongo:
-    image: mongo
-    ports:
-      - 27017:27017
+  buzzwords-server:
+    build:
+      context: .
+      dockerfile: server.Dockerfile
+  # mongo:
+  #   image: mongo
+  #   ports:
+  #     - 27017:27017
