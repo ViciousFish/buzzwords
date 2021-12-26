@@ -7,12 +7,17 @@ services:
   #   environment:
   #     POSTGRES_PASSWORD: postgres
   buzzwords-web:
-    build: 
+    image: chuckdries/buzzwords-web
+    build:
       context: .
       dockerfile: client.Dockerfile
     ports:
       - 3000:80
+    networks:
+      - default
+      - services
   buzzwords-server:
+    image: chuckdries/buzzwords-server
     build:
       context: .
       dockerfile: server.Dockerfile
@@ -20,3 +25,6 @@ services:
   #   image: mongo
   #   ports:
   #     - 27017:27017
+networks:
+  services:
+    external: true

@@ -13,7 +13,7 @@ WORKDIR /buzzwords/server
 COPY server ./
 RUN yarn build
 
-FROM node:16
+FROM node:16-alpine
 
 WORKDIR /buzzwords
 COPY package.json ./
