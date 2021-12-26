@@ -14,4 +14,4 @@ WORKDIR /buzzwords/server
 COPY server ./
 RUN yarn build
 
-CMD ["node" "/buzzwords/server/dist/server/src/index.js"]
+CMD ["node", "/buzzwords/server/dist/server/src/index.js"]
