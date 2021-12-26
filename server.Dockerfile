@@ -22,5 +22,7 @@ COPY shared/package.json ./shared/
 RUN yarn install --production
 
 COPY --from=build /buzzwords/server/dist ./server/dist/
+RUN ls -l
+RUN ls server -l
 
-CMD ["node", "/buzzwords/server/dist/server/src/index.js"]
+CMD ["node", "/buzzwords/server/dist/index.js"]
