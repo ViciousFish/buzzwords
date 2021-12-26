@@ -19,7 +19,7 @@ import { Bee } from "../../assets/Bee";
 import HexWord from "../thereed-lettering/HexWord";
 // import { theme } from "../../app/theme";
 
-export function GameList() {
+const GameList: React.FC = () => {
   const games = useAppSelector((state) => Object.keys(state.gamelist.games));
   const isOpen = useAppSelector((state) => state.gamelist.isOpen);
   const dispatch = useAppDispatch();
@@ -117,3 +117,5 @@ export function GameList() {
     </a.div>
   );
 }
+
+export default GameList;

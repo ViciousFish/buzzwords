@@ -56,7 +56,7 @@ export default class Mongo implements DataLayer {
       throw new Error("Db not connected");
     }
     try {
-      const res = await Models.Game.find(
+      const res: any = await Models.Game.find(
         {
           users: id,
         },
@@ -73,7 +73,7 @@ export default class Mongo implements DataLayer {
           for (const cell of gameDoc.grid) {
             cellMap[`${cell.q},${cell.r}`] = cell;
           }
-          const game = (res as unknown) as Game;
+          const game = res as unknown as Game;
           game.grid = new HexGrid(cellMap);
           games.push(game);
         }
@@ -89,7 +89,7 @@ export default class Mongo implements DataLayer {
       throw new Error("Db not connected");
     }
     try {
-      const res = await Models.Game.findOne(
+      const res: any = await Models.Game.findOne(
         {
           ulid: id,
         },
@@ -105,7 +105,7 @@ export default class Mongo implements DataLayer {
         for (const cell of res.grid) {
           cellMap[`${cell.q},${cell.r}`] = cell;
         }
-        const game = (res as unknown) as Game;
+        const game = res as unknown as Game;
         game.grid = new HexGrid(cellMap);
         return game;
       }
@@ -124,7 +124,7 @@ export default class Mongo implements DataLayer {
       throw new Error("Db not connected");
     }
     try {
-      const res = await Models.Game.updateOne(
+      const res: any = await Models.Game.updateOne(
         {
           ulid: gameId,
           users: {
@@ -150,7 +150,7 @@ export default class Mongo implements DataLayer {
       throw new Error("Db not connected");
     }
     try {
-      const res = await Models.Game.updateOne(
+      const res: any = await Models.Game.updateOne(
         {
           users: {
             $size: 1,

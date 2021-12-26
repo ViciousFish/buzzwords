@@ -1,29 +1,31 @@
-import React from "react";
+import React, { lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import { GameList } from "../features/gamelist/GameList";
-import Home from "../features/home-route/Home";
-import Play from "../features/play-route/Play";
-
 import { Globals } from "@react-spring/shared";
-import { useAppSelector } from "./hooks";
 import SidebarRightSide from "./SidebarRightSide";
 
 Globals.assign({
   frameLoop: "always",
 });
 
+const GameListLazy = lazy(() => import("../features/gamelist/GameList"));
+const HomeLazy = lazy(() => import("../features/home-route/Home"));
+const PlayLazy = lazy(() => import("../features/play-route/Play"));
+
 function App() {
-  const isSidebarOpen = useAppSelector((state) => state.gamelist.isOpen);
   return (
     <BrowserRouter>
       <div className="App flex overflow-hidden max-w-[100vw] flex-row min-h-screen">
-        <GameList />
+        <React.Suspense fallback={<></>}>
+          <GameListLazy />
+        </React.Suspense>
         <SidebarRightSide>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/play/:id" element={<Play />} />
-          </Routes>
+          <React.Suspense fallback={<></>}>
+            <Routes>
+              <Route path="/" element={<HomeLazy />} />
+              <Route path="/play/:id" element={<PlayLazy />} />
+            </Routes>
+          </React.Suspense>
         </SidebarRightSide>
       </div>
     </BrowserRouter>
