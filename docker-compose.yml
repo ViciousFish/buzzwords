@@ -1,0 +1,22 @@
+version: '3'
+services:
+  # postgres:
+  #   image: postgres
+  #   ports:
+  #     - 5432:5432
+  #   environment:
+  #     POSTGRES_PASSWORD: postgres
+  buzzwords-web:
+    build: 
+      context: .
+      dockerfile: client.Dockerfile
+    ports:
+      - 3000:80
+  buzzwords-server:
+    build:
+      context: .
+      dockerfile: server.Dockerfile
+  # mongo:
+  #   image: mongo
+  #   ports:
+  #     - 27017:27017

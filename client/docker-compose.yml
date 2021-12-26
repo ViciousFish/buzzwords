@@ -1,6 +1,0 @@
-version: "3.9"
-services:
-  buzzwords-web:
-    build: .
-    ports:
-      - 3000:80

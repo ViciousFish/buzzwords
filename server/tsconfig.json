@@ -5,6 +5,6 @@
     "outDir": "dist",
     "resolveJsonModule": true
   },
-  "include": ["src/**/*", "../shared/**/*"],
+  "include": ["src/**/*", "buzzwords-shared/**/*"],
   "exclude": ["node_modules"]
 }

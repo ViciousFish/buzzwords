@@ -6,8 +6,8 @@ import { DataLayer } from "../../types";
 import { sleep, withRetry } from "../../util";
 import Game from "../../Game";
 import Models from "./models";
-import Cell from "../../../../shared/cell";
-import HexGrid from "../../../../shared/hexgrid";
+import Cell from "buzzwords-shared/cell";
+import HexGrid from "buzzwords-shared/hexgrid";
 
 interface Options extends Record<string, unknown> {
   session?: ClientSession;

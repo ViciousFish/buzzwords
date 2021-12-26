@@ -1,5 +1,5 @@
 import { GamePlayer } from "../game/game";
-// import {getRandomCharacter} from "../../../../shared/alphaHelpers";
+// import {getRandomCharacter} from "buzzwords-shared/alphaHelpers";
 export interface Cell {
   q: number;
   r: number;

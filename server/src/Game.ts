@@ -1,6 +1,6 @@
-import { getRandomCharacter } from "../../shared/alphaHelpers";
-import HexGrid from "../../shared/hexgrid";
-import { HexCoord } from "../../shared/types";
+import { getRandomCharacter } from "buzzwords-shared/alphaHelpers";
+import HexGrid from "buzzwords-shared/hexgrid";
+import { HexCoord } from "buzzwords-shared/types";
 
 interface Move {
   coords: HexCoord[];

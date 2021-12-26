@@ -1,6 +1,6 @@
 import { model, Schema, Model, Document } from "mongoose";
 
-import Cell from "../../../../shared/cell";
+import Cell from "buzzwords-shared/cell";
 
 interface UserDocument extends Document {
   ulid: string;

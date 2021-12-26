@@ -10,7 +10,7 @@ import getConfig from "./config";
 import DL from "./datalayer";
 import Game from "./Game";
 import { DataLayer } from "./types";
-import { HexCoord } from "../../shared/types";
+import { HexCoord } from "buzzwords-shared/types";
 import GameManager from "./GameManager";
 
 const config = getConfig();

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-client": "cd client && yarn build"
   },
   "repository": {
     "type": "git",
@@ -17,5 +17,11 @@
   "homepage": "https://github.com/chuckdries/buzzwords#readme",
   "dependencies": {
     "typescript": "^4.4.2"
-  }
+  },
+  "private": "true",
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ]
 }
