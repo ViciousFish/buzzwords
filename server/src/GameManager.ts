@@ -1,9 +1,15 @@
-import Game from "./Game";
+import Game from "../../shared/Game";
 import { HexCoord } from "../../shared/types";
 import { getCellsToBeReset, willBecomeOwned } from "../../shared/gridHelpers";
 import { isValidWord } from "../../shared/alphaHelpers";
 import { nanoid } from "nanoid";
-import HexGrid from "../../shared/hexgrid";
+import HexGrid, {
+  makeHexGrid,
+  getCell,
+  getCellNeighbors,
+  setCell,
+  randomizeCellValue,
+} from "../../shared/hexgrid";
 
 export const errors = {};
 
@@ -36,7 +42,7 @@ export default class GameManager {
     let word = "";
     for (const coord of move) {
       try {
-        const cell = this.game.grid.getCell(coord.q, coord.r);
+        const cell = getCell(this.game.grid, coord.q, coord.r);
         if (cell && cell.owner == 2 && cell.value) {
           word += cell.value;
         } else {
@@ -54,7 +60,9 @@ export default class GameManager {
 
     const gameMove = {
       coords: move,
-      letters: move.map((m) => this.game?.grid.getCell(m.q, m.r)?.value ?? ""),
+      letters: move.map(
+        (m) => getCell(this.game?.grid as HexGrid, m.q, m.r)?.value ?? ""
+      ),
       player: this.game.turn,
     };
 
@@ -75,8 +83,8 @@ export default class GameManager {
         capitalCaptured = true;
         tile.capital = false;
       }
-      this.game.randomizeCellValue(tile.q, tile.r);
-      this.game.grid.setCell(tile);
+      this.game.grid = randomizeCellValue(this.game.grid, tile.q, tile.r);
+      setCell(this.game.grid, tile);
     }
 
     for (const cell of toBecomeOwned) {
@@ -85,21 +93,21 @@ export default class GameManager {
         cell.value = "";
       }
 
-      this.game.grid.setCell(cell);
+      setCell(this.game.grid, cell);
     }
 
-    for (const cell of Object.values(this.game.grid.cellMap)) {
+    for (const cell of Object.values(this.game.grid)) {
       if (cell.owner == 2) {
-        const neighbors = this.game.grid.getCellNeighbors(cell.q, cell.r);
+        const neighbors = getCellNeighbors(this.game.grid, cell.q, cell.r);
         const playerNeighbors = neighbors.filter((c) => c.owner != 2);
         if (!playerNeighbors.length) {
           cell.value = "";
-          this.game.grid.setCell(cell);
+          setCell(this.game.grid, cell);
         }
       }
     }
 
-    const cells = this.game.grid.cellMap;
+    const cells = this.game.grid;
     const opponentCells = [];
     let opponentHasCapital = false;
     for (const cell of Object.values(cells)) {
@@ -124,7 +132,7 @@ export default class GameManager {
       const newCapital =
         opponentCells[Math.floor(Math.random() * opponentCells.length)];
       newCapital.capital = true;
-      this.game.grid.setCell(newCapital);
+      setCell(this.game.grid, newCapital);
     }
 
     const nextTurn = capitalCaptured
@@ -136,28 +144,27 @@ export default class GameManager {
   }
 
   createGame(userId: string): Game {
-    const gameData = {
+    const game: Game = {
       id: nanoid(),
       turn: 0 as 0 | 1,
       users: [userId],
-      grid: new HexGrid(),
+      grid: makeHexGrid(),
       gameOver: false,
       winner: null,
       moves: [],
     };
-    const game = new Game(gameData);
-    game.grid.cellMap["-2,-1"].capital = true;
-    game.grid.cellMap["-2,-1"].owner = 0;
-    let neighbors = game.grid.getCellNeighbors(-2, -1);
+    game.grid["-2,-1"].capital = true;
+    game.grid["-2,-1"].owner = 0;
+    let neighbors = getCellNeighbors(game.grid, -2, -1);
     for (const cell of neighbors) {
-      game.randomizeCellValue(cell.q, cell.r);
+      game.grid = randomizeCellValue(game.grid, cell.q, cell.r);
     }
 
-    game.grid.cellMap["2,1"].capital = true;
-    game.grid.cellMap["2,1"].owner = 1;
-    neighbors = game.grid.getCellNeighbors(2, 1);
+    game.grid["2,1"].capital = true;
+    game.grid["2,1"].owner = 1;
+    neighbors = getCellNeighbors(game.grid, 2, 1);
     for (const cell of neighbors) {
-      game.randomizeCellValue(cell.q, cell.r);
+      game.grid = randomizeCellValue(game.grid, cell.q, cell.r);
     }
     this.game = game;
     return game;

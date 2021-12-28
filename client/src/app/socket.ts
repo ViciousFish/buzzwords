@@ -2,7 +2,7 @@ import { io } from "socket.io-client";
 
 import { receiveSelectionSocket } from "../features/game/gameActions";
 import { resetSelection } from "../features/game/gameSlice";
-import { ApiGame } from "../features/gamelist/gamelistActions";
+import Game from "../../../shared/Game";
 import { updateGame } from "../features/gamelist/gamelistSlice";
 import { QRCoord } from "../features/hexGrid/hexGrid";
 import { AppDispatch } from "./store";
@@ -14,11 +14,11 @@ interface SelectionEventProps {
 }
 
 export const subscribeSocket = (dispatch: AppDispatch) => {
-  socket.on("game updated", (game: ApiGame) => {
+  socket.on("game updated", (game: Game) => {
     dispatch(
       updateGame({
         ...game,
-        grid: game.grid.cellMap,
+        grid: game.grid,
       })
     );
     dispatch(resetSelection()); // clear selection

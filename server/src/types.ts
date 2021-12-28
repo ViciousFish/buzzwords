@@ -1,4 +1,4 @@
-import Game from "./Game";
+import Game from "../../shared/Game";
 
 export interface DataLayer {
   getGamesByUserId(

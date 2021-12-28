@@ -1,36 +1,16 @@
-import { AppDispatch, AppThunk } from "../../app/store";
-import { Game, GamePlayer } from "../game/game";
-import { HexGrid } from "../hexGrid/hexGrid";
+import { AppThunk } from "../../app/store";
 import { refreshReceived } from "./gamelistSlice";
-
-export interface ApiGame {
-  gameOver: boolean;
-  grid: {
-    cellMap: HexGrid;
-  };
-  id: string;
-  turn: number;
-  users: string[];
-  winner: GamePlayer | null;
-  moves: {
-    coords: {
-      q: number;
-      r: number;
-    }[];
-    letters: string[];
-    player: 0 | 1;
-  }[];
-}
+import Game from "../../../../shared/Game";
 
 export const refresh = (): AppThunk => async (dispatch) => {
   console.log("refresh");
-  const games: ApiGame[] = await fetch("/api/games").then((response) =>
+  const games: Game[] = await fetch("/api/games").then((response) =>
     response.json()
   );
   const gamesById: { [id: string]: Game } = games.reduce((acc, game) => {
     acc[game.id] = {
       ...game,
-      grid: game.grid.cellMap,
+      grid: game.grid,
     };
     return acc;
   }, {});

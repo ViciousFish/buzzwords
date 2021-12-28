@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 import { getRandomCharacter, isValidWord } from "../../../shared/alphaHelpers";
 // import { Game,  } from "../types";
-import Game from "../Game";
+import Game from "../../../shared/Game";
 import GameManager from "../GameManager";
 import HexGrid from "../../../shared/hexgrid";
 import { DataLayer } from "../types";

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Game } from "../game/game";
+import Game from "../../../../shared/Game";
 
 // Define a type for the slice state
 interface GameListState {
@@ -35,7 +35,8 @@ export const gamelistSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { refreshReceived, updateGame, toggleIsOpen } = gamelistSlice.actions;
+export const { refreshReceived, updateGame, toggleIsOpen } =
+  gamelistSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (state: RootState) => state.counter.value;

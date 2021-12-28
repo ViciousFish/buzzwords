@@ -1,6 +1,6 @@
 import { HexCoord } from "./types";
 
-import HexGrid from "./hexgrid";
+import HexGrid, { getCell, getCellNeighbors } from "./hexgrid";
 import Cell from "./cell";
 
 // If you can make it to user territory that isn't in move, then its valid.
@@ -16,13 +16,13 @@ export const willConnectToTerritory = (
   } = {};
   // @ts-ignore I'm explicitly filtering out null, so idk why it thinks it can be null
   const moveCells: Cell[] = move
-    .map((coord) => grid.getCell(coord.q, coord.r))
+    .map((coord) => getCell(grid, coord.q, coord.r))
     .filter(Boolean);
   while (stack.length) {
     const current = stack.pop();
     visited[`${current?.q},${current?.r}`] = true;
     if (current != undefined && current != null) {
-      const neighbors = grid.getCellNeighbors(current.q, current.r);
+      const neighbors = getCellNeighbors(grid, current.q, current.r);
       const ownedNeighbors = neighbors.filter((cell) => cell.owner == turn);
       if (ownedNeighbors.length) {
         return true;
@@ -44,11 +44,11 @@ export const getCellsToBeReset = (
 ): Cell[] => {
   const reset = [];
   for (const coord of move) {
-    const cell = grid.getCell(coord.q, coord.r);
+    const cell = getCell(grid, coord.q, coord.r);
     if (cell != null) {
       reset.push(cell);
       if (willConnectToTerritory(grid, move, coord, turn)) {
-        const neighbors = grid.getCellNeighbors(cell.q, cell.r);
+        const neighbors = getCellNeighbors(grid, cell.q, cell.r);
         for (const neighbor of neighbors) {
           if (
             neighbor.owner == (Number(!turn) as 0 | 1) ||
@@ -70,7 +70,7 @@ export const willBecomeOwned = (
 ): Cell[] => {
   const toBecomeOwned = [];
   for (const coord of move) {
-    const cell = grid.getCell(coord.q, coord.r);
+    const cell = getCell(grid, coord.q, coord.r);
     if (cell == null) {
       throw new Error("Invalid coords");
     }

@@ -4,10 +4,15 @@ import getConfig from "../../config";
 
 import { DataLayer } from "../../types";
 import { sleep, withRetry } from "../../util";
-import Game from "../../Game";
+import Game from "../../../../shared/Game";
 import Models from "./models";
 import Cell from "../../../../shared/cell";
-import HexGrid from "../../../../shared/hexgrid";
+import HexGrid, {
+  makeHexGrid,
+  getCellNeighbors,
+  getCell,
+  setCell,
+} from "../../../../shared/hexgrid";
 
 interface Options extends Record<string, unknown> {
   session?: ClientSession;
@@ -73,8 +78,8 @@ export default class Mongo implements DataLayer {
           for (const cell of gameDoc.grid) {
             cellMap[`${cell.q},${cell.r}`] = cell;
           }
-          const game = res as unknown as Game;
-          game.grid = new HexGrid(cellMap);
+          const game = (res as unknown) as Game;
+          game.grid = makeHexGrid(cellMap);
           games.push(game);
         }
       }
@@ -105,8 +110,8 @@ export default class Mongo implements DataLayer {
         for (const cell of res.grid) {
           cellMap[`${cell.q},${cell.r}`] = cell;
         }
-        const game = res as unknown as Game;
-        game.grid = new HexGrid(cellMap);
+        const game = (res as unknown) as Game;
+        game.grid = makeHexGrid(cellMap);
         return game;
       }
       return null;
@@ -180,7 +185,7 @@ export default class Mongo implements DataLayer {
     }
     try {
       const dbGame: any = game;
-      dbGame.grid = Object.values(game.grid.cellMap);
+      dbGame.grid = Object.values(game.grid);
       const res = await Models.Game.updateOne({ ulid: gameId }, dbGame, {
         upsert: true,
         session: options?.session,
