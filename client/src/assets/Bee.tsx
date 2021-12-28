@@ -19,7 +19,7 @@ import bee from "../../assets/bee.gltf?url";
 import { theme } from "../app/theme";
 
 // TODO: remove materials from model so we don't load unnecessary data
-export const Bee = (props: GroupProps) => {
+const Bee = (props: GroupProps) => {
   const viewport = useThree(({ viewport }) => viewport);
   const size = useThree(({ size }) => size);
 
@@ -80,5 +80,7 @@ export const Bee = (props: GroupProps) => {
     </group>
   );
 };
+
+export default Bee;
 
 useGLTF.preload(bee);

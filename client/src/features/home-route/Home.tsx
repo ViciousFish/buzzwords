@@ -1,7 +1,7 @@
 import { Html, useProgress } from "@react-three/drei";
 import React, { useCallback } from "react";
 import Canvas from "../canvas/Canvas";
-import { Bee } from "../../assets/Bee";
+import Bee from "../../assets/Bee";
 import HexWord from "../thereed-lettering/HexWord";
 import Button from "../../presentational/Button";
 import { useAppDispatch } from "../../app/hooks";
@@ -20,7 +20,7 @@ const Home: React.FC = () => {
   return (
     <div className="flex flex-auto no-touch h-screen p-12">
       <Canvas key="home">
-        <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
+        <React.Suspense fallback={<Html center>{progress.toFixed(0)} % loaded</Html>}>
           <Bee position={[0, 6.5, 0]} scale={1.7} />
           <group position={[0, 5, 0]}>
             <HexWord position={[0, -4.8, 0]} text="WELCOME" />

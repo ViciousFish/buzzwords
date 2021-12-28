@@ -3,12 +3,12 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { Globals } from "@react-spring/shared";
 import SidebarRightSide from "./SidebarRightSide";
+import GameList from "../features/gamelist/GameList";
 
 Globals.assign({
   frameLoop: "always",
 });
 
-const GameListLazy = lazy(() => import("../features/gamelist/GameList"));
 const HomeLazy = lazy(() => import("../features/home-route/Home"));
 const PlayLazy = lazy(() => import("../features/play-route/Play"));
 
@@ -16,9 +16,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="App flex overflow-hidden max-w-[100vw] flex-row min-h-screen">
-        <React.Suspense fallback={<></>}>
-          <GameListLazy />
-        </React.Suspense>
+        <GameList />
         <SidebarRightSide>
           <React.Suspense fallback={<></>}>
             <Routes>

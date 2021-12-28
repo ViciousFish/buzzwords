@@ -14,10 +14,10 @@ import Button from "../../presentational/Button";
 import { getUser } from "../user/userActions";
 import { refresh, createNewGame } from "./gamelistActions";
 import { toggleIsOpen } from "./gamelistSlice";
-import Canvas from "../canvas/Canvas";
-import { Bee } from "../../assets/Bee";
-import HexWord from "../thereed-lettering/HexWord";
-// import { theme } from "../../app/theme";
+
+const CanvasLazy = React.lazy(() => import('../canvas/Canvas'));
+const BeeLazy = React.lazy(() => import('../../assets/Bee'));
+const HexWordLazy = React.lazy(() => import('../thereed-lettering/HexWord'));
 
 const GameList: React.FC = () => {
   const games = useAppSelector((state) => Object.keys(state.gamelist.games));
@@ -106,16 +106,16 @@ const GameList: React.FC = () => {
           {games.length === 0 && <>No games</>}
         </ul>
         <div className="">
-          <Canvas>
-            <React.Suspense fallback={<></>}>
-              <Bee position={[0, 7, 0]} scale={4}/>
-              <HexWord position={[0, -5, 0]} text="BUZZWORDS" />
-            </React.Suspense>
-          </Canvas>
+          <React.Suspense fallback={<></>}>
+            <CanvasLazy>
+              <BeeLazy position={[0, 7, 0]} scale={4} />
+              <HexWordLazy position={[0, -5, 0]} text="BUZZWORDS" />
+            </CanvasLazy>
+          </React.Suspense>
         </div>
       </div>
     </a.div>
   );
-}
+};
 
 export default GameList;
