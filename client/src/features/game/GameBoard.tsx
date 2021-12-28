@@ -3,14 +3,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Html, useProgress } from "@react-three/drei";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { A11y } from "@react-three/a11y";
+
 import Button from "../../presentational/Button";
 // import CameraControls from "../../utils/CameraControls";
 import Canvas from "../canvas/Canvas";
 import { QRCoord } from "../hexGrid/hexGrid";
 import { Game } from "./game";
-import { clearTileSelection, submitMove } from "./gameActions";
+import { clearTileSelection, submitMove, toggleTileSelected } from "./gameActions";
 import { getSelectedWordByGameId } from "./gameSelectors";
 import GameTile from "./GameTile";
+import { useAppSelector } from "../../app/hooks";
 
 interface GameBoardProps {
   id: string;
@@ -33,6 +36,10 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
       setRevealLetters(true);
     }, 500);
   });
+
+  const currentTurn = useAppSelector(
+    (state) => state.gamelist.games[id].turn
+  );
   return (
     <div className="h-[80vh] lg:h-screen flex-auto overflow-hidden">
       <Canvas key={`play-${id}`}>
@@ -99,26 +106,40 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
             </Html>
           </group>
           <group position={[0, -8, 0]}>
-            {Object.keys(game.grid).map((coord: QRCoord) => {
+            {Object.keys(game.grid).map((coord: QRCoord, index) => {
               const gridTile = game.grid[coord];
               return (
-                <GameTile
-                  isCapital={revealLetters ? gridTile.capital : false}
-                  coord={coord}
-                  letter={revealLetters ? gridTile.value.toUpperCase() : ""}
-                  position={[
-                    3.1 * (3 / 2) * gridTile.q,
-                    -1 *
-                      3.1 *
-                      ((Math.sqrt(3) / 2) * gridTile.q +
-                        Math.sqrt(3) * gridTile.r),
-                    0,
-                  ]}
+                <A11y
+                  tabIndex={0}
+                  role="button"
+                  description={`game tile at coordinate ${coord}`}
+                  actionCall={() => {
+                    console.log('currentTurn :', currentTurn);
+                    console.log('userIndex :', userIndex);
+                    if (currentTurn === userIndex) {
+                      console.log('action', coord);
+                      dispatch(toggleTileSelected(coord));
+                    }
+                  }}
                   key={coord}
-                  owner={gridTile.owner}
-                  currentGame={id}
-                  userIndex={userIndex}
-                />
+                >
+                  <GameTile
+                    isCapital={revealLetters ? gridTile.capital : false}
+                    coord={coord}
+                    letter={revealLetters ? gridTile.value.toUpperCase() : ""}
+                    position={[
+                      3.1 * (3 / 2) * gridTile.q,
+                      -1 *
+                        3.1 *
+                        ((Math.sqrt(3) / 2) * gridTile.q +
+                          Math.sqrt(3) * gridTile.r),
+                      0,
+                    ]}
+                    owner={gridTile.owner}
+                    currentGame={id}
+                    userIndex={userIndex}
+                  />
+                </A11y>
               );
             })}
           </group>

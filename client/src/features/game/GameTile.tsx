@@ -28,6 +28,7 @@ import { Flower01 } from "../../assets/Flower01";
 import { getOrderedTileSelectionCoords } from "./gameSelectors";
 import { Sakura } from "../../assets/Sakura";
 import { HexOutlineSolid } from "../../assets/Hexoutlinesolid";
+import { useA11y } from "@react-three/a11y";
 
 // import { willConnectToTerritory } from "../../../../shared/gridHelpers";
 interface GameTileProps {
@@ -54,6 +55,7 @@ const GameTile: React.FC<GameTileProps> = ({
   isPlayerIdentity,
 }) => {
   const dispatch = useAppDispatch();
+  const a11y = useA11y();
   const font = useLoader(FontLoader, fredokaone);
   const fontConfig = useMemo(
     () => ({
@@ -76,7 +78,7 @@ const GameTile: React.FC<GameTileProps> = ({
   const currentTurn = useAppSelector(
     (state) => state.gamelist.games[currentGame].turn
   );
-  const currentMove = useAppSelector(getOrderedTileSelectionCoords);
+  // const currentMove = useAppSelector(getOrderedTileSelectionCoords);
   const grid = useAppSelector((state) =>
     currentGame ? state.gamelist.games[currentGame].grid : null
   );
@@ -111,7 +113,7 @@ const GameTile: React.FC<GameTileProps> = ({
     config: springConfig.stiff,
   });
 
-  const outline = isPlayerIdentity && currentTurn === owner;
+  const outline = (isPlayerIdentity && currentTurn === owner) || a11y.focus;
 
   const outlineScaleSpring = useSpring({
     scale: outline ? [1, 1, 1] : [0, 0, 0],
@@ -183,15 +185,13 @@ const GameTile: React.FC<GameTileProps> = ({
     }
   });
 
-  const onTileClick = useCallback(
-    (e: ThreeEvent<MouseEvent>) => {
-      if (coord && letter && currentTurn === userIndex) {
-        dispatch(toggleTileSelected(coord));
-      }
-      e.stopPropagation();
-    },
-    [coord, dispatch, letter, currentTurn, userIndex]
-  );
+  const onTileClick = useCallback((e) => {
+    if (coord && letter && currentTurn === userIndex) {
+      dispatch(toggleTileSelected(coord));
+    }
+    e.stopPropagation();
+  }, [coord, dispatch, letter, currentTurn, userIndex]);
+
   return (
     // @ts-ignore
     <a.group
@@ -221,18 +221,14 @@ const GameTile: React.FC<GameTileProps> = ({
       <group position={[0, 0, -0.2]}>
         <HexTile orientation="flat">
           {/* @ts-ignore */}
-          <a.meshStandardMaterial
-            color={colorAndScaleSpring.color}
-          />
+          <a.meshStandardMaterial color={colorAndScaleSpring.color} />
         </HexTile>
       </group>
       {/* @ts-ignore */}
       <a.group {...outlineScaleSpring}>
         {/* <HexOutline /> */}
         <HexOutlineSolid>
-          <a.meshStandardMaterial
-            color={colorAndScaleSpring.color}
-          />
+          <a.meshStandardMaterial color={colorAndScaleSpring.color} />
         </HexOutlineSolid>
       </a.group>
     </a.group>

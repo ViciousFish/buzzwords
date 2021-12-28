@@ -483,6 +483,14 @@
     "@react-spring/shared" "~9.3.0"
     "@react-spring/types" "~9.3.0"
 
+"@react-three/a11y@^2.2.3":
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/@react-three/a11y/-/a11y-2.2.3.tgz#aedfe0b4cf125c833ab46e831d19d0ac2b7954ba"
+  integrity sha512-hcPbGOLfYnBzv0EgBMWfq9upQL4EBSVjb20AUH5t5nZ6qoY/2II0yWHM3xFVzk8ZdZBDTHMe9tpoI0aQ0u82hQ==
+  dependencies:
+    utility-types "^3.10.0"
+    zustand "^3.2.0"
+
 "@react-three/drei@^7.0.2":
   version "7.27.5"
   resolved "https://registry.yarnpkg.com/@react-three/drei/-/drei-7.27.5.tgz#8559b8c6e4b1363ee93cfc1d51d936726bf1bb16"
@@ -3096,6 +3104,11 @@ zstddec@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/zstddec/-/zstddec-0.0.2.tgz#57e2f28dd1ff56b750e07d158a43f0611ad9eeb4"
   integrity sha512-DCo0oxvcvOTGP/f5FA6tz2Z6wF+FIcEApSTu0zV5sQgn9hoT5lZ9YRAKUraxt9oP7l4e8TnNdi8IZTCX6WCkwA==
+
+zustand@^3.2.0:
+  version "3.6.8"
+  resolved "https://registry.yarnpkg.com/zustand/-/zustand-3.6.8.tgz#17f24351aa9e1fbf46f3addb0bcb81b05940d79f"
+  integrity sha512-8dqxig1l/o/N4M3DGxhweLVyCvNsd40oU3fXuY4MfqX1notavmjljCnSeTN3FGfYzbo963w4un2ChYsPB/0gKA==
 
 zustand@^3.5.1, zustand@^3.5.13:
   version "3.6.7"
