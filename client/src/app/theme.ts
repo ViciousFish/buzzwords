@@ -4,8 +4,8 @@ export const theme = {
     darkbrown: "#59430D",
     lightbg: "#fae7b2",
     darkbg: "#f2dc9d",
-    p1: '#d788b8',
-    p2: '#709867',
-    grey: '#999999'
+    tile_p1: '#d788b8',
+    tile_p2: '#709867',
+    tile_selected: '#f57600'
   },
 };

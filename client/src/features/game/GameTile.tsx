@@ -82,9 +82,9 @@ const GameTile: React.FC<GameTileProps> = ({
   );
   let color = theme.colors.primary;
   if (owner === 0) {
-    color = theme.colors.p1;
+    color = theme.colors.tile_p1;
   } else if (owner === 1) {
-    color = theme.colors.p2;
+    color = theme.colors.tile_p2;
   } else if (isSelected && grid && coord) {
     const [q, r] = coord.split(',');
     const parsedCoord = {
@@ -97,11 +97,11 @@ const GameTile: React.FC<GameTileProps> = ({
       parsedCoord,
       currentTurn
     );
-    const turnColor = currentTurn === 0 ? theme.colors.p1 : theme.colors.p2;
+    const turnColor = currentTurn === 0 ? theme.colors.tile_p1 : theme.colors.tile_p2;
     if (willConnect) {
       color = turnColor
     } else {
-      color = theme.colors.grey
+      color = theme.colors.tile_selected
     }
     // take color of current player and blend with base color?
   }
@@ -118,7 +118,10 @@ const GameTile: React.FC<GameTileProps> = ({
   const colorAndScaleSpring = useSpring({
     scale: [scale, scale, scale],
     color,
-    config: springConfig.stiff,
+    config: {
+      ...springConfig.stiff,
+      clamp: true
+    },
   });
 
   const outline = isPlayerIdentity && currentTurn === owner;
