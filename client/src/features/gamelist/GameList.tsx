@@ -52,7 +52,7 @@ const GameList: React.FC = () => {
     >
       <div className="flex flex-shrink-0 py-2 px-2 space-x-1 z-10">
         <a
-          className="p-2 rounded-md block hover:bg-primary hover:bg-opacity-50"
+          className="p-2 rounded-md block hover:bg-primary hover:bg-opacity-50 text-darkbrown"
           href="https://github.com/chuckdries/buzzwords"
           target="_blank"
           rel="noreferrer"
@@ -60,7 +60,7 @@ const GameList: React.FC = () => {
           <FontAwesomeIcon icon={faGithub} />
         </a>
         <a
-          className="p-2 rounded-md block hover:bg-primary hover:bg-opacity-50"
+          className="p-2 rounded-md block hover:bg-primary hover:bg-opacity-50 text-darkbrown"
           href="https://twitter.com/BuzzwordsGG"
           target="_blank"
           rel="noreferrer"
@@ -84,7 +84,7 @@ const GameList: React.FC = () => {
         <a.div style={hamburgerSpring}>
           <button
             onClick={() => dispatch(toggleIsOpen())}
-            className=" p-2 hover:bg-primary hover:bg-opacity-50 rounded-md"
+            className="text-darkbrown p-2 hover:bg-primary hover:bg-opacity-50 rounded-md"
           >
             <FontAwesomeIcon icon={faBars} />
           </button>
