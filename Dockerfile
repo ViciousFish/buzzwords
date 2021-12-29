@@ -11,7 +11,6 @@
 # COPY ./client ./
 # RUN yarn build
 
-
 FROM nginx:1.21
 
 COPY ./client/dist /usr/share/nginx/html

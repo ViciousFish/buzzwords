@@ -2,5 +2,7 @@ version: "3.9"
 services:
   buzzwords-web:
     build: .
+    volumes:
+      - ./client/dist:/usr/share/nginx/html
     ports:
       - 3000:80
