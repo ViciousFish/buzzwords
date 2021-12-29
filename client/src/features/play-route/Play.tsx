@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import * as R from 'ramda'
 import { Link, useParams } from "react-router-dom";
 import classnames from "classnames";
 
@@ -90,7 +91,7 @@ const Play: React.FC = () => {
         <h3 className="text-2xl text-center">Words Played</h3>
         <ul className="flex-auto overflow-y-scroll">
           {game &&
-            game.moves.map((move, i) => (
+            R.reverse(game.moves).map((move, i) => (
               <li
                 key={i}
                 className={classnames(
