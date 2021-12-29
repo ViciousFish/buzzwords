@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  buzzwords-web:
+    image: chuckdries/buzzwords-web
+    build: ./client
+    ports:
+      - 3000:80
+  buzzwords-server:
+    image: chuckdries/buzzwords-server
+    build: ./server
+  mongo:
+    image: mongo:4
+    ports:
+      - 27017:27017
+
