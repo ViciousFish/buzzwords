@@ -1,6 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 import * as R from "ramda";
-import { HexCoord } from "../../../../shared/types";
+import { HexCoord } from "buzzwords-shared/types";
 
 import { RootState } from "../../app/store";
 import { QRCoord } from "../hexGrid/hexGrid";

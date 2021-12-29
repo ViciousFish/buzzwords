@@ -2,7 +2,7 @@ import { io } from "socket.io-client";
 
 import { receiveSelectionSocket } from "../features/game/gameActions";
 import { resetSelection } from "../features/game/gameSlice";
-import Game from "../../../shared/Game";
+import Game from "buzzwords-shared/Game";
 import { updateGame } from "../features/gamelist/gamelistSlice";
 import { QRCoord } from "../features/hexGrid/hexGrid";
 import { AppDispatch } from "./store";

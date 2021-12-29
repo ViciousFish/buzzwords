@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  buzzwords-web:
+    image: chuckdries/buzzwords-web
+    build: ./client
+    ports:
+      - 3000:80
+  buzzwords-server:
+    image: chuckdries/buzzwords-server
+    build: ./server
+    environment:
+      - DB_TYPE=mongo
+      # set MONGO_URL in server/.env
+    ports:
+      - 8080:8080
+

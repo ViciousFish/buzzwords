@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import Game from "../../../../shared/Game";
+import Game from "buzzwords-shared/Game";
 
 // Define a type for the slice state
 interface GameListState {

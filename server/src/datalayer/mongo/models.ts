@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 
-import Game from "../../../../shared/Game";
+import Game from "buzzwords-shared/Game";
 
 const gameSchema = new Schema<Game>({
   id: {

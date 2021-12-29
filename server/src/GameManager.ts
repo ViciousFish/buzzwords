@@ -1,7 +1,7 @@
-import Game from "../../shared/Game";
-import { HexCoord } from "../../shared/types";
-import { getCellsToBeReset, willBecomeOwned } from "../../shared/gridHelpers";
-import { isValidWord } from "../../shared/alphaHelpers";
+import Game from "buzzwords-shared/Game";
+import { HexCoord } from "buzzwords-shared/types";
+import { getCellsToBeReset, willBecomeOwned } from "buzzwords-shared/gridHelpers";
+import { isValidWord } from "buzzwords-shared/alphaHelpers";
 import { nanoid } from "nanoid";
 import HexGrid, {
   makeHexGrid,
@@ -9,7 +9,7 @@ import HexGrid, {
   getCellNeighbors,
   setCell,
   randomizeCellValue,
-} from "../../shared/hexgrid";
+} from "buzzwords-shared/hexgrid";
 
 export const errors = {};
 
