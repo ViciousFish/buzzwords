@@ -23,5 +23,11 @@
     "client",
     "server",
     "shared"
-  ]
+  ],
+  "devDependencies": {
+    "@nrwl/workspace": "latest",
+    "@nrwl/cli": "latest",
+    "@nrwl/tao": "latest",
+    "@nrwl/nx-cloud": "latest"
+  }
 }
