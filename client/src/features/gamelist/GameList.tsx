@@ -1,10 +1,10 @@
 import {
-  faArrowsRotate,
   faBars,
   faHome,
   faPlus,
+  faSync,
 } from "@fortawesome/free-solid-svg-icons";
-import { faTwitter } from "@fortawesome/free-brands-svg-icons";
+import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import React, { useEffect } from "react";
@@ -47,11 +47,18 @@ const GameList: React.FC = () => {
 
   return (
     <a.div
-      className="w-[300px] flex-shrink-0 z-10 h-screen bg-darkbg flex flex-col"
+      className="w-[300px] flex-shrink-0 z-10 h-screen bg-darkbg flex flex-col overflow-scroll"
       style={containerSpring}
     >
-      <div className="flex py-2 px-2 space-x-2 z-10">
-        <div className="flex-auto">
+      <div className="flex flex-shrink-0 py-2 px-2 space-x-1 z-10">
+        <a
+          className="p-2 rounded-md block hover:bg-primary hover:bg-opacity-50"
+          href="https://github.com/chuckdries/buzzwords"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <FontAwesomeIcon icon={faGithub} />
+        </a>
           <a
             className="p-2 rounded-md block hover:bg-primary hover:bg-opacity-50"
             href="https://twitter.com/BuzzwordsGG"
@@ -60,7 +67,7 @@ const GameList: React.FC = () => {
           >
             <FontAwesomeIcon icon={faTwitter} /> BuzzwordsGG
           </a>
-        </div>
+        <div className="flex-auto" />
         <NavLink
           className={({ isActive }) =>
             classNames(
@@ -105,7 +112,7 @@ const GameList: React.FC = () => {
             dispatch(refresh());
           }}
         >
-          <FontAwesomeIcon className="mx-1" icon={faArrowsRotate} />
+          <FontAwesomeIcon className="mx-1" icon={faSync} />
         </Button>
       </div>
       {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
