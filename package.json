@@ -10,12 +10,18 @@
     "url": "git+https://github.com/chuckdries/buzzwords.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/chuckdries/buzzwords/issues"
   },
   "homepage": "https://github.com/chuckdries/buzzwords#readme",
   "dependencies": {
     "typescript": "^4.4.2"
-  }
+  },
+  "private": "true",
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ]
 }

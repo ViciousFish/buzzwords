@@ -1,5 +1,7 @@
 {
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "name": "buzzwords-client",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -35,7 +37,8 @@
     "throttle-debounce": "^3.0.1",
     "use-breakpoint": "^3.0.0",
     "zdog": "^1.1.2",
-    "zfont": "^1.2.8"
+    "zfont": "^1.2.8",
+    "buzzwords-shared": "1.0.0"
   },
   "devDependencies": {
     "@types/ramda": "^0.27.60",
