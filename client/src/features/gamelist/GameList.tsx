@@ -35,92 +35,90 @@ const GameList: React.FC = () => {
     clamp: true,
   };
   const containerSpring = useSpring({
-    marginLeft: isOpen ? "0" : "-300px",
+    marginLeft: isOpen ? "0px" : "-300px",
     config,
   });
 
   const hamburgerSpring = useSpring({
-    marginRight: isOpen ? "0" : "-45px",
+    transform: isOpen ? "translateX(0px)" : "translateX(45px)",
     config,
   });
 
   return (
     <a.div
-      className="w-[300px] flex-shrink-0 z-10 h-screen bg-darkbg"
+      className="w-[300px] flex-shrink-0 z-10 h-screen bg-darkbg flex flex-col"
       style={containerSpring}
     >
-      <div className="px-2 h-full flex flex-col">
-        <div className="flex py-2 space-x-2 z-10">
-          <div className="flex-auto"></div>
-          <NavLink
-            className={({ isActive }) =>
-              classNames(
-                isActive
-                  ? "bg-primary hover:bg-opacity-100"
-                  : "underline text-darkbrown",
-                "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50"
-              )
-            }
-            to="/"
+      <div className="flex py-2 px-2 space-x-2 z-10">
+        <div className="flex-auto"></div>
+        <NavLink
+          className={({ isActive }) =>
+            classNames(
+              isActive
+                ? "bg-primary hover:bg-opacity-100"
+                : "underline text-darkbrown",
+              "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50"
+            )
+          }
+          to="/"
+        >
+          <FontAwesomeIcon icon={faHome} />
+        </NavLink>
+        <a.div style={hamburgerSpring}>
+          <button
+            onClick={() => dispatch(toggleIsOpen())}
+            className=" p-2 hover:bg-primary hover:bg-opacity-50 rounded-md"
           >
-            <FontAwesomeIcon icon={faHome} />
-          </NavLink>
-          <a.div style={hamburgerSpring}>
-            <button
-              onClick={() => dispatch(toggleIsOpen())}
-              className=" p-2 hover:bg-primary hover:bg-opacity-50 rounded-md"
-            >
-              <FontAwesomeIcon icon={faBars} />
-            </button>
-          </a.div>
-        </div>
-        <div className="mt-[-2em] h-[150px]">
-          <React.Suspense fallback={<></>}>
-            <CanvasLazy>
-              <BeeLazy position={[0, 7, 0]} scale={4} />
-              <HexWordLazy position={[0, -5, 0]} text="BUZZWORDS" />
-            </CanvasLazy>
-          </React.Suspense>
-        </div>
-        <div className="px-2 mt-[-2em] z-10">
-          <span className="text-xl">Games</span>
-          <Button
-            onClick={() => {
-              dispatch(createNewGame());
-            }}
-          >
-            <FontAwesomeIcon className="mx-1" icon={faPlus} />
-          </Button>
-          <Button
-            onClick={() => {
-              dispatch(refresh());
-            }}
-          >
-            <FontAwesomeIcon className="mx-1" icon={faArrowsRotate} />
-          </Button>
-        </div>
-        {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
-        <ul className="px-2 flex-auto">
-          {games.map((id) => (
-            <li key={id} className="my-1 whitespace-nowrap">
-              <NavLink
-                className={({ isActive }) =>
-                  classNames(
-                    isActive
-                      ? "bg-primary hover:bg-opacity-100"
-                      : "underline text-darkbrown",
-                    "p-2 rounded-xl block hover:bg-primary hover:bg-opacity-50"
-                  )
-                }
-                to={`/play/${id}`}
-              >
-                {id}
-              </NavLink>
-            </li>
-          ))}
-          {games.length === 0 && <>No games</>}
-        </ul>
+            <FontAwesomeIcon icon={faBars} />
+          </button>
+        </a.div>
       </div>
+      <div className="mt-[-2em] h-[150px]">
+        <React.Suspense fallback={<></>}>
+          <CanvasLazy>
+            <BeeLazy position={[0, 6, 0]} scale={4} />
+            <HexWordLazy position={[0, -5, 0]} text="BUZZWORDS" />
+          </CanvasLazy>
+        </React.Suspense>
+      </div>
+      <div className="px-2 mt-[-2em] z-10">
+        <span className="text-xl">Games</span>
+        <Button
+          onClick={() => {
+            dispatch(createNewGame());
+          }}
+        >
+          <FontAwesomeIcon className="mx-1" icon={faPlus} />
+        </Button>
+        <Button
+          onClick={() => {
+            dispatch(refresh());
+          }}
+        >
+          <FontAwesomeIcon className="mx-1" icon={faArrowsRotate} />
+        </Button>
+      </div>
+      {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
+      <ul className="px-2 flex-auto">
+        {games.map((id) => (
+          <li key={id} className="my-1 whitespace-nowrap">
+            <NavLink
+              className={({ isActive }) =>
+                classNames(
+                  isActive
+                    ? "bg-primary hover:bg-opacity-100"
+                    : "underline text-darkbrown",
+                  "p-2 rounded-xl block hover:bg-primary hover:bg-opacity-50"
+                )
+              }
+              to={`/play/${id}`}
+            >
+              {id}
+            </NavLink>
+          </li>
+        ))}
+        {games.length === 0 && <>No games</>}
+      </ul>
     </a.div>
   );
 };
