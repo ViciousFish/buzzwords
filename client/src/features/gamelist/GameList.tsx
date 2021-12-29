@@ -4,6 +4,7 @@ import {
   faHome,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import React, { useEffect } from "react";
@@ -50,7 +51,16 @@ const GameList: React.FC = () => {
       style={containerSpring}
     >
       <div className="flex py-2 px-2 space-x-2 z-10">
-        <div className="flex-auto"></div>
+        <div className="flex-auto">
+          <a
+            className="p-2 rounded-md block hover:bg-primary hover:bg-opacity-50"
+            href="https://twitter.com/BuzzwordsGG"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <FontAwesomeIcon icon={faTwitter} /> BuzzwordsGG
+          </a>
+        </div>
         <NavLink
           className={({ isActive }) =>
             classNames(
@@ -73,15 +83,15 @@ const GameList: React.FC = () => {
           </button>
         </a.div>
       </div>
-      <div className="mt-[-2em] h-[150px]">
+      <div className="h-[150px]">
         <React.Suspense fallback={<></>}>
           <CanvasLazy>
-            <BeeLazy position={[0, 6, 0]} scale={4} />
-            <HexWordLazy position={[0, -5, 0]} text="BUZZWORDS" />
+            <BeeLazy position={[0, 5, 0]} scale={4} />
+            <HexWordLazy position={[0, -6, 0]} text="BUZZWORDS" />
           </CanvasLazy>
         </React.Suspense>
       </div>
-      <div className="px-2 mt-[-2em] z-10">
+      <div className="px-2 mt-[-1em] z-10">
         <span className="text-xl">Games</span>
         <Button
           onClick={() => {
