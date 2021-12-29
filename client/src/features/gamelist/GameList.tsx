@@ -74,7 +74,7 @@ const GameList: React.FC = () => {
             </button>
           </a.div>
         </div>
-        <div className="mt-[-2em]">
+        <div className="mt-[-2em] h-[150px]">
           <React.Suspense fallback={<></>}>
             <CanvasLazy>
               <BeeLazy position={[0, 7, 0]} scale={4} />
