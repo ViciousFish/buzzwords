@@ -1,6 +1,7 @@
 import {
   faArrowsRotate,
   faBars,
+  faHome,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,9 +16,9 @@ import { getUser } from "../user/userActions";
 import { refresh, createNewGame } from "./gamelistActions";
 import { toggleIsOpen } from "./gamelistSlice";
 
-const CanvasLazy = React.lazy(() => import('../canvas/Canvas'));
-const BeeLazy = React.lazy(() => import('../../assets/Bee'));
-const HexWordLazy = React.lazy(() => import('../thereed-lettering/HexWord'));
+const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
+const BeeLazy = React.lazy(() => import("../../assets/Bee"));
+const HexWordLazy = React.lazy(() => import("../thereed-lettering/HexWord"));
 
 const GameList: React.FC = () => {
   const games = useAppSelector((state) => Object.keys(state.gamelist.games));
@@ -49,25 +50,39 @@ const GameList: React.FC = () => {
       style={containerSpring}
     >
       <div className="px-2 h-full flex flex-col">
-        <div className="flex py-2 space-x-2">
-          <div className="flex-auto">
-            <NavLink
-              className="p-2 rounded-md block hover:bg-primary hover:bg-opacity-50 text-2xl"
-              to="/"
-            >
-              Buzzwords
-            </NavLink>
-          </div>
+        <div className="flex py-2 space-x-2 z-10">
+          <div className="flex-auto"></div>
+          <NavLink
+            className={({ isActive }) =>
+              classNames(
+                isActive
+                  ? "bg-primary hover:bg-opacity-100"
+                  : "underline text-darkbrown",
+                "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50"
+              )
+            }
+            to="/"
+          >
+            <FontAwesomeIcon icon={faHome} />
+          </NavLink>
           <a.div style={hamburgerSpring}>
             <button
               onClick={() => dispatch(toggleIsOpen())}
-              className="p-2 hover:bg-primary hover:bg-opacity-50 rounded-md"
+              className=" p-2 hover:bg-primary hover:bg-opacity-50 rounded-md"
             >
               <FontAwesomeIcon icon={faBars} />
             </button>
           </a.div>
         </div>
-        <div className="px-2">
+        <div className="mt-[-2em]">
+          <React.Suspense fallback={<></>}>
+            <CanvasLazy>
+              <BeeLazy position={[0, 7, 0]} scale={4} />
+              <HexWordLazy position={[0, -5, 0]} text="BUZZWORDS" />
+            </CanvasLazy>
+          </React.Suspense>
+        </div>
+        <div className="px-2 mt-[-2em] z-10">
           <span className="text-xl">Games</span>
           <Button
             onClick={() => {
@@ -105,14 +120,6 @@ const GameList: React.FC = () => {
           ))}
           {games.length === 0 && <>No games</>}
         </ul>
-        <div className="">
-          <React.Suspense fallback={<></>}>
-            <CanvasLazy>
-              <BeeLazy position={[0, 7, 0]} scale={4} />
-              <HexWordLazy position={[0, -5, 0]} text="BUZZWORDS" />
-            </CanvasLazy>
-          </React.Suspense>
-        </div>
       </div>
     </a.div>
   );
