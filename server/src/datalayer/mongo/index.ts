@@ -3,7 +3,7 @@ import getConfig from "../../config";
 
 import { DataLayer } from "../../types";
 import { withRetry } from "../../util";
-import Game from "../../../../shared/Game";
+import Game from "buzzwords-shared/Game";
 import Models from "./models";
 
 interface Options extends Record<string, unknown> {

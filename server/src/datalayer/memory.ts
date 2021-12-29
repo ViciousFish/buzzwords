@@ -1,4 +1,4 @@
-import Game from "../../../shared/Game";
+import Game from "buzzwords-shared/Game";
 import { DataLayer } from "../types";
 
 export default class Memory implements DataLayer {

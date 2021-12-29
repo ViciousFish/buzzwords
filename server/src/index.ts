@@ -8,9 +8,9 @@ import cookie from "cookie";
 
 import getConfig from "./config";
 import DL from "./datalayer";
-import Game from "../../shared/Game";
+import Game from "buzzwords-shared/Game";
 import { DataLayer } from "./types";
-import { HexCoord } from "../../shared/types";
+import { HexCoord } from "buzzwords-shared/types";
 import GameManager from "./GameManager";
 
 const config = getConfig();
