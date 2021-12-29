@@ -25,7 +25,7 @@ import { QRCoord } from "../hexGrid/hexGrid";
 import { toggleTileSelected } from "./gameActions";
 import { GamePlayer } from "./game";
 import { Flower01 } from "../../assets/Flower01";
-import { getOrderedTileSelectionCoords, getTileSelectionInParsedHexCoords } from "./gameSelectors";
+import { getTileSelectionInParsedHexCoords } from "./gameSelectors";
 import { Sakura } from "../../assets/Sakura";
 import { HexOutlineSolid } from "../../assets/Hexoutlinesolid";
 
