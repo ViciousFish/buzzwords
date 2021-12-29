@@ -18,23 +18,29 @@ const Home: React.FC = () => {
     navigate(`/play/${game}`);
   }, [navigate, dispatch]);
   return (
-    <div className="flex flex-auto no-touch h-screen p-12">
-      <Canvas key="home">
-        <React.Suspense fallback={<Html center>{progress.toFixed(0)} % loaded</Html>}>
-          <Bee position={[0, 6.5, 0]} scale={1.7} />
-          <group position={[0, 5, 0]}>
-            <HexWord position={[0, -4.8, 0]} text="WELCOME" />
-          </group>
-          <group position={[0, -7, 0]}>
-            <Html center>
-              <Button className="p-4 text-2xl" onClick={onPlayClick}>
-                Play
-              </Button>
-            </Html>
-          </group>
-        </React.Suspense>
-      </Canvas>
-    </div>
+    <>
+      <div className="flex flex-auto no-touch h-1/2 mt-[20vh] p-12 ">
+        <Canvas key="home">
+          <React.Suspense
+            fallback={<Html center>{progress.toFixed(0)} % loaded</Html>}
+          >
+            <Bee position={[0, 3, 0]} scale={1.7} />
+            <group position={[0, -3, 0]}>
+              <HexWord position={[0, 0, 0]} text="WELCOME" />
+            </group>
+            <group position={[0, 0, 0]}></group>
+          </React.Suspense>
+        </Canvas>
+      </div>
+      <div className="h-1/2 flex justify-center items-start">
+        <Button
+          className="p-4 text-2xl relative mt-[0vw]"
+          onClick={onPlayClick}
+        >
+          Play
+        </Button>
+      </div>
+    </>
   );
 };
 

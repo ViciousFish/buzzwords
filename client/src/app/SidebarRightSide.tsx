@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from "./hooks";
 
 // default tailwind breakpoints
 const BREAKPOINTS = {
+  xs: 0,
   sm: 640,
   md: 768,
   lg: 1024,
@@ -24,7 +25,7 @@ const SidebarRightSide: React.FC = ({ children }) => {
 
   const onClick = useCallback(() => dispatch(toggleIsOpen()), [dispatch]);
 
-  const condition = isSidebarOpen && breakpoint === "sm";
+  const condition = isSidebarOpen && (breakpoint === "xs" || breakpoint === 'sm');
   console.log("condition :", condition);
 
   const transitions = useTransition(condition, {
