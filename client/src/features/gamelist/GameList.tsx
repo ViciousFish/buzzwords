@@ -47,7 +47,7 @@ const GameList: React.FC = () => {
 
   return (
     <a.div
-      className="w-[300px] flex-shrink-0 z-10 h-screen bg-darkbg flex flex-col overflow-scroll"
+      className="w-[300px] flex-shrink-0 z-10 h-screen bg-darkbg flex flex-col overflow-x-visible"
       style={containerSpring}
     >
       <div className="flex flex-shrink-0 py-2 px-2 space-x-1 z-10">
@@ -59,14 +59,14 @@ const GameList: React.FC = () => {
         >
           <FontAwesomeIcon icon={faGithub} />
         </a>
-          <a
-            className="p-2 rounded-md block hover:bg-primary hover:bg-opacity-50"
-            href="https://twitter.com/BuzzwordsGG"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <FontAwesomeIcon icon={faTwitter} /> BuzzwordsGG
-          </a>
+        <a
+          className="p-2 rounded-md block hover:bg-primary hover:bg-opacity-50"
+          href="https://twitter.com/BuzzwordsGG"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <FontAwesomeIcon icon={faTwitter} /> BuzzwordsGG
+        </a>
         <div className="flex-auto" />
         <NavLink
           className={({ isActive }) =>
@@ -116,7 +116,7 @@ const GameList: React.FC = () => {
         </Button>
       </div>
       {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
-      <ul className="px-2 flex-auto">
+      <ul className="px-2 flex-auto overflow-y-scroll">
         {games.map((id) => (
           <li key={id} className="my-1 whitespace-nowrap">
             <NavLink
