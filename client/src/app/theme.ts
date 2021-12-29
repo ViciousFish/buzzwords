@@ -6,6 +6,6 @@ export const theme = {
     darkbg: "#f2dc9d",
     tile_p1: '#d788b8',
     tile_p2: '#709867',
-    tile_selected: '#f57600'
+    tile_selected: '#9a9a9a'
   },
 };
