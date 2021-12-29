@@ -129,6 +129,9 @@ const GameList: React.FC = () => {
         ))}
         {games.length === 0 && <>No games</>}
       </ul>
+      <div className="p-2 text-center text-gray-800 text-sm">
+        by Chuck Dries and James Quigley
+      </div>
     </a.div>
   );
 };
