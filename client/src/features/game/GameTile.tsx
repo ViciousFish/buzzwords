@@ -25,11 +25,11 @@ import { QRCoord } from "../hexGrid/hexGrid";
 import { toggleTileSelected } from "./gameActions";
 import { GamePlayer } from "./game";
 import { Flower01 } from "../../assets/Flower01";
-import { getOrderedTileSelectionCoords } from "./gameSelectors";
+import { getOrderedTileSelectionCoords, getTileSelectionInParsedHexCoords } from "./gameSelectors";
 import { Sakura } from "../../assets/Sakura";
 import { HexOutlineSolid } from "../../assets/Hexoutlinesolid";
 
-// import { willConnectToTerritory } from "../../../../shared/gridHelpers";
+import { willConnectToTerritory } from "../../../../shared/gridHelpers";
 interface GameTileProps {
   position: V3Type;
   letter?: string | null;
@@ -76,7 +76,7 @@ const GameTile: React.FC<GameTileProps> = ({
   const currentTurn = useAppSelector(
     (state) => state.gamelist.games[currentGame].turn
   );
-  const currentMove = useAppSelector(getOrderedTileSelectionCoords);
+  const currentMove = useAppSelector(getTileSelectionInParsedHexCoords);
   const grid = useAppSelector((state) =>
     currentGame ? state.gamelist.games[currentGame].grid : null
   );
@@ -86,13 +86,23 @@ const GameTile: React.FC<GameTileProps> = ({
   } else if (owner === 1) {
     color = theme.colors.p2;
   } else if (isSelected && grid && coord) {
-    // const willConnect = willConnectToTerritory(
-    //   grid,
-    //   currentMove,
-    //   coord,
-    //   currentTurn
-    // );
-    color = currentTurn === 0 ? theme.colors.p1 : theme.colors.p2;
+    const [q, r] = coord.split(',');
+    const parsedCoord = {
+      q: Number(q),
+      r: Number(r)
+    };
+    const willConnect = willConnectToTerritory(
+      grid,
+      currentMove,
+      parsedCoord,
+      currentTurn
+    );
+    const turnColor = currentTurn === 0 ? theme.colors.p1 : theme.colors.p2;
+    if (willConnect) {
+      color = turnColor
+    } else {
+      color = theme.colors.grey
+    }
     // take color of current player and blend with base color?
   }
 

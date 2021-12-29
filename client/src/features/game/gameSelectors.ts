@@ -1,5 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 import * as R from "ramda";
+import { HexCoord } from "../../../../shared/types";
 
 import { RootState } from "../../app/store";
 import { QRCoord } from "../hexGrid/hexGrid";
@@ -12,6 +13,19 @@ export const getOrderedTileSelectionCoords = createSelector(
     return sortedPairs.map((pair) => pair[0]);
   }
 );
+
+export const getTileSelectionInParsedHexCoords = createSelector(
+  getOrderedTileSelectionCoords,
+  (selectedTiles) => {
+    return selectedTiles.map(qr => {
+      const [q, r] = qr.split(',')
+      return {
+        q: Number(q),
+        r: Number(r)
+      } as HexCoord
+    })
+  }
+)
 
 export const getGridByGameId = createSelector(
   (state: RootState) => state.gamelist.games,

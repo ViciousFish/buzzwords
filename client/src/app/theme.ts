@@ -4,8 +4,8 @@ export const theme = {
     darkbrown: "#59430D",
     lightbg: "#fae7b2",
     darkbg: "#f2dc9d",
-    // darkbg: "#9e926f",
     p1: '#d788b8',
     p2: '#709867',
+    grey: '#999999'
   },
 };
