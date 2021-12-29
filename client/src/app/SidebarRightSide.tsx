@@ -25,8 +25,8 @@ const SidebarRightSide: React.FC = ({ children }) => {
 
   const onClick = useCallback(() => dispatch(toggleIsOpen()), [dispatch]);
 
-  const condition = isSidebarOpen && (breakpoint === "xs" || breakpoint === 'sm');
-  console.log("condition :", condition);
+  const breakcond = (breakpoint === "xs" || breakpoint === 'sm');
+  const condition = isSidebarOpen && breakcond;
 
   const transitions = useTransition(condition, {
     from: { opacity: 0 },
@@ -38,7 +38,7 @@ const SidebarRightSide: React.FC = ({ children }) => {
     <div
       className={classNames(
         "flex-auto overflow-scroll h-screen",
-        isSidebarOpen && "flex-shrink-0 md:flex-shrink"
+        breakcond && "min-w-[100vw]"
       )}
     >
       {children}
