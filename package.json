@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-client": "cd client && yarn build",
+    "build-server": "cd client && yarn build",
+    "build": "concurrently \"yarn build-client\" \"yarn build-server\""
   },
   "repository": {
     "type": "git",
@@ -23,5 +25,8 @@
     "client",
     "server",
     "shared"
-  ]
+  ],
+  "devDependencies": {
+    "concurrently": "^6.5.1"
+  }
 }
