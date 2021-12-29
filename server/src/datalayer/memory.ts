@@ -1,11 +1,5 @@
-import { nanoid } from "nanoid";
-import { getRandomCharacter, isValidWord } from "../../../shared/alphaHelpers";
-// import { Game,  } from "../types";
 import Game from "../../../shared/Game";
-import GameManager from "../GameManager";
-import HexGrid from "../../../shared/hexgrid";
 import { DataLayer } from "../types";
-import { HexCoord } from "../../../shared/types";
 
 export default class Memory implements DataLayer {
   games: {

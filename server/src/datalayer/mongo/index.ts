@@ -1,18 +1,10 @@
-// import { Sequelize } from "sequelize";
-import mongoose, { ClientSession, Model, mongo } from "mongoose";
+import mongoose, { ClientSession } from "mongoose";
 import getConfig from "../../config";
 
 import { DataLayer } from "../../types";
-import { sleep, withRetry } from "../../util";
+import { withRetry } from "../../util";
 import Game from "../../../../shared/Game";
 import Models from "./models";
-import Cell from "../../../../shared/cell";
-import HexGrid, {
-  makeHexGrid,
-  getCellNeighbors,
-  getCell,
-  setCell,
-} from "../../../../shared/hexgrid";
 
 interface Options extends Record<string, unknown> {
   session?: ClientSession;
@@ -29,12 +21,9 @@ export default class Mongo implements DataLayer {
     try {
       const config = getConfig();
       const retryConnect = withRetry(mongoose.connect, 0);
-      retryConnect(config.mongoUrl, {
-        autoReconnect: true,
-      });
+      retryConnect(config.mongoUrl, {});
       const db = mongoose.connection;
       db.on("error", () => {
-        // console.error.bind(console, "connection error:");
         this.connected = false;
         console.log("DB error! Not connected");
       });
@@ -56,12 +45,11 @@ export default class Mongo implements DataLayer {
   }
 
   async getGamesByUserId(id: string, options: Options): Promise<Game[]> {
-    const games = [];
     if (!this.connected) {
       throw new Error("Db not connected");
     }
     try {
-      const res: any = await Models.Game.find(
+      const res = await Models.Game.find(
         {
           users: id,
         },
@@ -70,20 +58,16 @@ export default class Mongo implements DataLayer {
           session: options?.session,
         }
       );
-      if (res && res.length) {
-        for (const gameDoc of res) {
-          const cellMap: {
-            [key: string]: Cell;
-          } = {};
-          for (const cell of gameDoc.grid) {
-            cellMap[`${cell.q},${cell.r}`] = cell;
-          }
-          const game = (res as unknown) as Game;
-          game.grid = makeHexGrid(cellMap);
-          games.push(game);
-        }
-      }
-      return games;
+      return res.map((d) => {
+        const game = d?.toObject();
+        // @ts-expect-error I promise this works
+        game.grid = Object.fromEntries(game.grid);
+        game.grid = Object.fromEntries(
+          // @ts-expect-error This also works
+          Object.entries(game.grid).map(([k, v]) => [k, v.toObject()])
+        );
+        return game;
+      });
     } catch (e) {
       console.log(e);
       throw e;
@@ -96,25 +80,23 @@ export default class Mongo implements DataLayer {
     try {
       const res: any = await Models.Game.findOne(
         {
-          ulid: id,
+          id,
         },
         null,
         {
           session: options?.session,
         }
       );
-      if (res) {
-        const cellMap: {
-          [key: string]: Cell;
-        } = {};
-        for (const cell of res.grid) {
-          cellMap[`${cell.q},${cell.r}`] = cell;
-        }
-        const game = (res as unknown) as Game;
-        game.grid = makeHexGrid(cellMap);
-        return game;
+      if (!res) {
+        return null;
       }
-      return null;
+      const game = res.toObject();
+      game.grid = Object.fromEntries(game.grid);
+      game.grid = Object.fromEntries(
+        // @ts-expect-error This also works
+        Object.entries(game.grid).map(([k, v]) => [k, v.toObject()])
+      );
+      return game;
     } catch (e) {
       console.log(e);
       throw e;
@@ -129,9 +111,9 @@ export default class Mongo implements DataLayer {
       throw new Error("Db not connected");
     }
     try {
-      const res: any = await Models.Game.updateOne(
+      const res = await Models.Game.updateOne(
         {
-          ulid: gameId,
+          id: gameId,
           users: {
             $size: 1,
             $nin: [userId],
@@ -144,7 +126,7 @@ export default class Mongo implements DataLayer {
           session: options?.session,
         }
       );
-      return res.nModified == 1;
+      return res.modifiedCount == 1;
     } catch (e) {
       console.log(e);
       return false;
@@ -155,7 +137,7 @@ export default class Mongo implements DataLayer {
       throw new Error("Db not connected");
     }
     try {
-      const res: any = await Models.Game.updateOne(
+      const res = await Models.Game.updateOne(
         {
           users: {
             $size: 1,
@@ -169,7 +151,7 @@ export default class Mongo implements DataLayer {
           session: options?.session,
         }
       );
-      return res.nModified == 1;
+      return res.modifiedCount == 1;
     } catch (e) {
       console.log(e);
       return false;
@@ -184,9 +166,7 @@ export default class Mongo implements DataLayer {
       return false;
     }
     try {
-      const dbGame: any = game;
-      dbGame.grid = Object.values(game.grid);
-      const res = await Models.Game.updateOne({ ulid: gameId }, dbGame, {
+      const res = await Models.Game.updateOne({ id: gameId }, game, {
         upsert: true,
         session: options?.session,
       });

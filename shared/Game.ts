@@ -1,5 +1,4 @@
-import { getRandomCharacter } from "./alphaHelpers";
-import HexGrid, { getCell, setCell } from "./hexgrid";
+import HexGrid from "./hexgrid";
 import { HexCoord } from "./types";
 
 interface Move {

@@ -80,7 +80,6 @@ app.get("/api/game/:id", async (req, res) => {
 });
 
 app.post("/api/game", async (req, res) => {
-  console.log("HERE");
   const user = req.cookies.session;
   const gm = new GameManager(null);
   const game = gm.createGame(user);
