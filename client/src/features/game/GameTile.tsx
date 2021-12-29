@@ -29,7 +29,8 @@ import { getOrderedTileSelectionCoords, getTileSelectionInParsedHexCoords } from
 import { Sakura } from "../../assets/Sakura";
 import { HexOutlineSolid } from "../../assets/Hexoutlinesolid";
 
-import { willConnectToTerritory } from "../../../../shared/gridHelpers";
+import { willConnectToTerritory } from "buzzwords-shared/gridHelpers";
+
 interface GameTileProps {
   position: V3Type;
   letter?: string | null;

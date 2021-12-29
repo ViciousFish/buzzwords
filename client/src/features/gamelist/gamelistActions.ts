@@ -1,6 +1,6 @@
 import { AppThunk } from "../../app/store";
 import { refreshReceived } from "./gamelistSlice";
-import Game from "../../../../shared/Game";
+import Game from "buzzwords-shared/Game";
 
 export const refresh = (): AppThunk => async (dispatch) => {
   console.log("refresh");
