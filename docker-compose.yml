@@ -3,8 +3,11 @@ services:
   buzzwords-web:
     image: chuckdries/buzzwords-web
     build: ./client
-    ports:
-      - 3000:80
+    # ports:
+    #   - 3000:80
+    networks:
+      - default
+      - services
   buzzwords-server:
     image: chuckdries/buzzwords-server
     build: ./server
@@ -12,6 +15,9 @@ services:
       - DB_TYPE=mongo
       - MONGO_URL # do not set in this file! put a .env file in the root of the repo* or set an actual env var
       # *will be read & interpreted by docker-compose. You may also want an identical .env file in ./server for running locally
-    ports:
-      - 8080:8080
+    # ports:
+    #   - 8080:8080
+networks:
+  services:
+    external: true
 
