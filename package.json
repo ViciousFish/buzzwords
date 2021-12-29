@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "build-client": "cd client && yarn build",
-    "build-server": "cd client && yarn build",
+    "build-server": "cd server && yarn build",
     "build": "concurrently \"yarn build-client\" \"yarn build-server\" && docker-compose build"
   },
   "repository": {

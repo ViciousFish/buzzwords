@@ -8,8 +8,9 @@ services:
   buzzwords-server:
     image: chuckdries/buzzwords-server
     build: ./server
-  mongo:
-    image: mongo:4
+    environment:
+      - DB_TYPE=mongo
+      # set MONGO_URL in server/.env
     ports:
-      - 27017:27017
+      - 8080:8080
 
