@@ -1,7 +1,7 @@
+import { getApiUrl } from "../../app/apiPrefix";
 import { emitSelection } from "../../app/socket";
 import { AppThunk } from "../../app/store";
 import { QRCoord } from "../hexGrid/hexGrid";
-import { Game } from "./game";
 import { getOrderedTileSelectionCoords } from "./gameSelectors";
 import {
   resetSelection,
@@ -54,7 +54,7 @@ export const submitMove =
     console.log("formattedCoords :", formattedCoords);
 
     try {
-      const res = await fetch(`/api/game/${gameId}/move`, {
+      const res = await fetch(getApiUrl('game', gameId, 'move'), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

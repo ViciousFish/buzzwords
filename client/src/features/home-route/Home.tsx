@@ -7,6 +7,7 @@ import Button from "../../presentational/Button";
 import { useAppDispatch } from "../../app/hooks";
 import { createNewGame } from "../gamelist/gamelistActions";
 import { useNavigate } from "react-router-dom";
+import { apiPrefix } from "../../app/apiPrefix";
 
 const Home: React.FC = () => {
   const { progress } = useProgress();
@@ -33,6 +34,8 @@ const Home: React.FC = () => {
         </Canvas>
       </div>
       <div className="flex justify-center items-start">
+        {apiPrefix}
+        {import.meta.env.API_PREFIX}
         <Button
           className="p-4 text-2xl relative mt-[0vw]"
           onClick={onPlayClick}

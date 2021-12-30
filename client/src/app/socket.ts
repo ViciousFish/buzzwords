@@ -6,6 +6,7 @@ import Game from "buzzwords-shared/Game";
 import { updateGame } from "../features/gamelist/gamelistSlice";
 import { QRCoord } from "../features/hexGrid/hexGrid";
 import { AppDispatch } from "./store";
+import { socketUrl } from "./apiPrefix";
 
 let socket: Socket | null = null;
 
@@ -16,7 +17,7 @@ interface SelectionEventProps {
 
 // called by getUser
 export const subscribeSocket = (dispatch: AppDispatch) => {
-  socket = io();
+  socket = io(socketUrl);
   socket.on("game updated", (game: Game) => {
     dispatch(
       updateGame({

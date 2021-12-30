@@ -1,10 +1,11 @@
 import { AppThunk } from "../../app/store";
 import { refreshReceived } from "./gamelistSlice";
 import Game from "buzzwords-shared/Game";
+import { getApiUrl } from "../../app/apiPrefix";
 
 export const refresh = (): AppThunk => async (dispatch) => {
   console.log("refresh");
-  const games: Game[] = await fetch("/api/games").then((response) =>
+  const games: Game[] = await fetch(getApiUrl("games")).then((response) =>
     response.json()
   );
   const gamesById: { [id: string]: Game } = games.reduce((acc, game) => {
@@ -19,7 +20,7 @@ export const refresh = (): AppThunk => async (dispatch) => {
 };
 
 export const createNewGame = (): AppThunk => async (dispatch) => {
-  const res = await fetch("/api/game", {
+  const res = await fetch(getApiUrl("/game"), {
     method: "POST",
   }).then((response) => response.text());
 
@@ -31,7 +32,7 @@ export const joinGameById =
   (id: string): AppThunk =>
   async (dispatch) => {
     try {
-      const res = await fetch(`/api/game/${id}/join`, {
+      const res = await fetch(getApiUrl('game', id, 'join'), {
         method: "POST",
       }).then((response) => response.text());
       if (res === "Not Found") {

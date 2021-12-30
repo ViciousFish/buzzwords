@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "watch": "vite build --watch",
     "typecheck": "tsc",
     "serve": "vite preview",
     "lint": "eslint src --ext .js,.ts,.tsx,.jsx",
@@ -26,7 +27,7 @@
     "@react-three/fiber": "^7.0.1",
     "@react-three/postprocessing": "^2.1.2",
     "@reduxjs/toolkit": "^1.6.0",
-    "@use-gesture/react": "^10.0.0-beta.14",
+    "@use-gesture/react": "^10.2.4",
     "buzzwords-shared": "1.0.0",
     "classnames": "^2.3.1",
     "copy-to-clipboard": "^3.3.1",
@@ -40,6 +41,7 @@
     "socket.io-client": "^4.4.0",
     "three": "^0.129.0",
     "throttle-debounce": "^3.0.1",
+    "url-join": "^4.0.1",
     "use-breakpoint": "^3.0.0",
     "zdog": "^1.1.2",
     "zfont": "^1.2.8"
@@ -50,6 +52,7 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/three": "^0.129.1",
+    "@types/url-join": "^4.0.1",
     "@types/zdog": "^1.1.1",
     "@types/zfont": "^1.2.0",
     "@typescript-eslint/eslint-plugin": "^4.28.0",
