@@ -17,9 +17,12 @@
     box-shadow: rgba(255, 255, 255, 0.3) 2px -2px 2px inset,
       rgba(0, 0, 0, 0.2) -2px 2px 2px inset;
   }
-}
-.inset-right {
-  box-shadow: rgba(0, 0, 0, 0.4) -3px 0px 10px;
+  .safe-area-pad {
+    padding-top: env(safe-area-inset-top);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+  }
 }
 body {
   @apply bg-lightbg;
@@ -32,4 +35,11 @@ body {
 .flex {
   min-width: 0;
   min-height: 0;
+}
+
+:root {
+  --sat: env(safe-area-inset-top);
+  --sar: env(safe-area-inset-right);
+  --sab: env(safe-area-inset-bottom);
+  --sal: env(safe-area-inset-left);
 }

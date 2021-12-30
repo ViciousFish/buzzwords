@@ -32,17 +32,25 @@ const GameList: React.FC = () => {
     dispatch(getUser());
   }, [dispatch]);
 
+  const safeAreaLeft = Number(
+    getComputedStyle(document.documentElement)
+      .getPropertyValue("--sal")
+      .replace(/\D/g, "")
+  );
+
   const config = {
     tension: 200,
     clamp: true,
   };
   const containerSpring = useSpring({
-    marginLeft: isOpen ? "0px" : "-300px",
+    marginLeft: isOpen ? "0px" : `-${300 + safeAreaLeft}px`,
     config,
   });
 
   const hamburgerSpring = useSpring({
-    transform: isOpen ? "translateX(0px)" : "translateX(45px)",
+    transform: isOpen
+      ? "translateX(0px)"
+      : `translateX(${45 + safeAreaLeft}px)`,
     config,
   });
 

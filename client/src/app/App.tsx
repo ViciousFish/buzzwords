@@ -15,7 +15,7 @@ const PlayLazy = lazy(() => import("../features/play-route/Play"));
 function App() {
   return (
     <BrowserRouter>
-      <div className="App flex overflow-hidden max-w-[100vw] flex-row">
+      <div className="App flex overflow-hidden max-w-[100vw] flex-row safe-area-pad">
         <GameList />
         <SidebarRightSide>
           <React.Suspense fallback={<></>}>
