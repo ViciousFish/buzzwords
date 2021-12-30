@@ -16,7 +16,7 @@ import Button from "../../presentational/Button";
 import { getUser } from "../user/userActions";
 import { refresh, createNewGame } from "./gamelistActions";
 import { toggleIsOpen } from "./gamelistSlice";
-import Div100vh from "react-div-100vh";
+import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
 
 const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
 const BeeLazy = React.lazy(() => import("../../assets/Bee"));
@@ -59,7 +59,7 @@ const GameList: React.FC = () => {
       className="w-[300px] flex-shrink-0 z-10 bg-darkbg"
       style={containerSpring}
     >
-      <Div100vh className="flex flex-col">
+      <ScreenHeightWraper className="flex flex-col">
         <div className="flex flex-shrink-0 py-2 px-2 space-x-1 z-10">
           <a
             className="p-2 rounded-md block hover:bg-primary hover:bg-opacity-50 text-darkbrown"
@@ -151,7 +151,7 @@ const GameList: React.FC = () => {
             by Chuck Dries and James Quigley
           </div>
         </div>
-      </Div100vh>
+      </ScreenHeightWraper>
     </a.div>
   );
 };
