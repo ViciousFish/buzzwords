@@ -3,7 +3,6 @@ import { configureStore } from "@reduxjs/toolkit";
 import gameReducer from "../features/game/gameSlice";
 import gamelistReducer from "../features/gamelist/gamelistSlice";
 import userReducer from "../features/user/userSlice";
-import { subscribeSocket } from "./socket";
 
 export const store = configureStore({
   reducer: {
@@ -12,8 +11,6 @@ export const store = configureStore({
     user: userReducer
   },
 });
-
-subscribeSocket(store.dispatch);
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
