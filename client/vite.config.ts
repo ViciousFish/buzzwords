@@ -14,9 +14,6 @@ export default ({ command, mode }) => {
           target: "http://localhost:8080",
         },
       },
-      hmr: {
-        clientPort: 443
-      }
     },
     plugins: [
       {

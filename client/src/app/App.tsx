@@ -5,9 +5,9 @@ import { Globals } from "@react-spring/shared";
 import SidebarRightSide from "./SidebarRightSide";
 import GameList from "../features/gamelist/GameList";
 
-Globals.assign({
-  frameLoop: "always",
-});
+// Globals.assign({
+//   frameLoop: "always",
+// });
 
 const HomeLazy = lazy(() => import("../features/home-route/Home"));
 const PlayLazy = lazy(() => import("../features/play-route/Play"));

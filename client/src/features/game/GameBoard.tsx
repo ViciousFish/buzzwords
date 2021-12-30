@@ -1,13 +1,11 @@
-import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Html, useProgress } from "@react-three/drei";
+import Game from "buzzwords-shared/Game";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
-// import CameraControls from "../../utils/CameraControls";
 import Canvas from "../canvas/Canvas";
 import { QRCoord } from "../hexGrid/hexGrid";
-import { Game } from "./game";
 import { clearTileSelection, submitMove } from "./gameActions";
 import { getSelectedWordByGameId } from "./gameSelectors";
 import GameTile from "./GameTile";
@@ -22,7 +20,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   const { progress } = useProgress();
   const dispatch = useDispatch();
 
-  const selectedWord = useSelector((state) =>
+  const selectedWord = useAppSelector((state) =>
     getSelectedWordByGameId(state, id)
   );
 
@@ -37,7 +35,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
     <div className="h-[80vh] lg:h-screen flex-auto overflow-hidden">
       <Canvas key={`play-${id}`}>
         {/* <CameraControls /> */}
-        <React.Suspense fallback={<Html center>{progress} % loaded</Html>}>
+        <React.Suspense fallback={<Html center>{progress.toFixed(0)} % loaded</Html>}>
           {/* <HexWord allowSpinning autoSpin={false} position={[0, 20, 0]} text={selectedWord + ' '}/> */}
           <group position={[0, 21, 0]}>
             <group position={[-10, 0, 0]}>
