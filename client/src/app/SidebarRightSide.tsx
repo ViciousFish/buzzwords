@@ -3,10 +3,10 @@ import classNames from "classnames";
 import React, { useCallback } from "react";
 import useBreakpoint from "use-breakpoint";
 import { animated as a } from "@react-spring/web";
-import Div100vh from "react-div-100vh";
 
 import { toggleIsOpen } from "../features/gamelist/gamelistSlice";
 import { useAppDispatch, useAppSelector } from "./hooks";
+import ScreenHeightWraper from "../presentational/ScreenHeightWrapper";
 
 // default tailwind breakpoints
 const BREAKPOINTS = {
@@ -36,7 +36,7 @@ const SidebarRightSide: React.FC = ({ children }) => {
   });
 
   return (
-    <Div100vh className="w-full">
+    <ScreenHeightWraper className="w-full">
       <div
         className={classNames(
           "flex-auto overflow-auto h-full",
@@ -56,7 +56,7 @@ const SidebarRightSide: React.FC = ({ children }) => {
             )
         )}
       </div>
-    </Div100vh>
+    </ScreenHeightWraper>
   );
 };
 
