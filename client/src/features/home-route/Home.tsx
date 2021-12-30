@@ -32,7 +32,7 @@ const Home: React.FC = () => {
           </React.Suspense>
         </Canvas>
       </div>
-      <div className="h-1/2 flex justify-center items-start">
+      <div className="flex justify-center items-start">
         <Button
           className="p-4 text-2xl relative mt-[0vw]"
           onClick={onPlayClick}

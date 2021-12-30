@@ -3,6 +3,7 @@ import classNames from "classnames";
 import React, { useCallback } from "react";
 import useBreakpoint from "use-breakpoint";
 import { animated as a } from "@react-spring/web";
+import Div100vh from "react-div-100vh";
 
 import { toggleIsOpen } from "../features/gamelist/gamelistSlice";
 import { useAppDispatch, useAppSelector } from "./hooks";
@@ -25,7 +26,7 @@ const SidebarRightSide: React.FC = ({ children }) => {
 
   const onClick = useCallback(() => dispatch(toggleIsOpen()), [dispatch]);
 
-  const breakcond = (breakpoint === "xs" || breakpoint === 'sm');
+  const breakcond = breakpoint === "xs" || breakpoint === "sm";
   const condition = isSidebarOpen && breakcond;
 
   const transitions = useTransition(condition, {
@@ -35,25 +36,27 @@ const SidebarRightSide: React.FC = ({ children }) => {
   });
 
   return (
-    <div
-      className={classNames(
-        "flex-auto overflow-scroll h-screen",
-        breakcond && "min-w-[100vw]"
-      )}
-    >
-      {children}
-      {transitions(
-        (styles, value) =>
-          value && (
-            <a.div
-              className="absolute top-0 right-0 bottom-0 left-0 bg-black"
-              onClick={onClick}
-              // @ts-ignore
-              style={styles}
-            ></a.div>
-          )
-      )}
-    </div>
+    <Div100vh className="w-full">
+      <div
+        className={classNames(
+          "flex-auto overflow-auto h-full",
+          breakcond && "min-w-[100vw]"
+        )}
+      >
+        {children}
+        {transitions(
+          (styles, value) =>
+            value && (
+              <a.div
+                className="absolute top-0 right-0 bottom-0 left-0 bg-black"
+                onClick={onClick}
+                // @ts-ignore
+                style={styles}
+              ></a.div>
+            )
+        )}
+      </div>
+    </Div100vh>
   );
 };
 

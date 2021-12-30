@@ -90,7 +90,7 @@ const GameList: React.FC = () => {
           </button>
         </a.div>
       </div>
-      <div className="flex-auto flex flex-col overflow-y-scroll">
+      <div className="flex-auto flex flex-col overflow-y-auto">
         <div className="h-[150px]">
           <React.Suspense fallback={<></>}>
             <CanvasLazy>

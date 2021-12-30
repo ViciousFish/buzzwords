@@ -89,7 +89,7 @@ const Play: React.FC = () => {
       )}
       <div className="m-auto flex flex-shrink-0 flex-col w-[200px] mt-2">
         <h3 className="text-2xl text-center">Words Played</h3>
-        <ul className="flex-auto overflow-y-scroll">
+        <ul className="flex-auto overflow-y-auto">
           {game &&
             R.reverse(game.moves).map((move, i) => (
               <li
