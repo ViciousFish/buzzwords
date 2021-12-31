@@ -1,6 +1,10 @@
 import WordsJSON from "./words.json";
+import * as R from "ramda";
 
 const words = Object.keys(WordsJSON);
+const WordsObject: {
+  [key: string]: number;
+} = WordsJSON as unknown as { [key: string]: number };
 const letters = [
   "a",
   "b",
@@ -47,7 +51,7 @@ for (let p of probabilities) {
 cdfArray = cdfArray.map((p) => Math.round(p * 100000) / 100000);
 
 export const isValidWord = (word: string): boolean => {
-  if (word.length < 3 || !words.includes(word.toLowerCase())) {
+  if (word.length < 3 || !Boolean(WordsObject[word.toLowerCase()])) {
     return false;
   }
 
@@ -65,4 +69,64 @@ export const getRandomCharacter = (): string => {
     }
   }
   return letters[letters.length - 1];
+};
+
+const vowels = ["a", "e", "i", "o", "u", "y"];
+
+const combinations = <T>(a: T[], min?: number, max?: number): T[][] => {
+  min = min ?? 0;
+  max = max ?? a.length;
+  min = min || 1;
+  max = max < a.length ? max : a.length;
+  var fn = function (n: number, src: any[], got: any[], all: any[]) {
+    if (n == 0) {
+      if (got.length > 0) {
+        all[all.length] = got;
+      }
+      return;
+    }
+    for (var j = 0; j < src.length; j++) {
+      fn(n - 1, src.slice(j + 1), got.concat([src[j]]), all);
+    }
+    return;
+  };
+  var all: T[][] = [];
+  for (var i = min; i < a.length; i++) {
+    fn(i, a, [], all);
+  }
+  if (a.length == max) all.push(a);
+  return all;
+};
+
+export const hasAVowel = (letters: string[]): boolean =>
+  Boolean(letters.map((l) => vowels.includes(l)).filter(Boolean).length);
+
+export const hasTwoConsonants = (letters: string[]): boolean =>
+  letters.map((l) => !vowels.includes(l)).filter(Boolean).length >= 2;
+
+export const getMaxRepeatedLetter = (letters: string[]): number => {
+  // @ts-expect-error don't really know but it works
+  return R.pipe(R.countBy(R.identity), R.values, R.apply(Math.max))(letters);
+};
+
+const uniqSortedLetters = R.pipe(
+  R.map(R.pipe(R.split(""), R.sort(R.descend(R.identity)), R.join(""))),
+  R.uniq
+)(words);
+const wordsBySortedLetters = R.zipObj(
+  uniqSortedLetters,
+  R.repeat(1, uniqSortedLetters.length)
+);
+
+export const canMakeAValidWord = (letters: string[]): boolean => {
+  for (let i = 3; i <= letters.length; i++) {
+    const combos = combinations(letters, i, i);
+    for (let c of combos) {
+      const sorted = R.sort(R.descend(R.identity), c);
+      if (wordsBySortedLetters[sorted.join("")]) {
+        return true;
+      }
+    }
+  }
+  return false;
 };

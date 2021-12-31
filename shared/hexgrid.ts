@@ -1,4 +1,10 @@
-import { getRandomCharacter } from "./alphaHelpers";
+import {
+  getRandomCharacter,
+  canMakeAValidWord,
+  hasTwoConsonants,
+  hasAVowel,
+  getMaxRepeatedLetter,
+} from "./alphaHelpers";
 import Cell, { makeCell } from "./cell";
 
 const QRLookup = (q: number): number => {
@@ -68,14 +74,40 @@ export const getCellNeighbors = (
   return potentialNeighbors.filter((cell) => Boolean(cell));
 };
 
+const MAX_ITERATIONS = 1000;
+const MAX_REPEATED_LETTER = 4;
+
 export const randomizeCellValue = (
   grid: HexGrid,
   q: number,
   r: number
 ): HexGrid => {
   const cell = getCell(grid, q, r);
+  const letters = Object.values(grid)
+    .filter((c) => !(c.q == q && c.r == r))
+    .map((c) => c.value)
+    .filter(Boolean);
+
   if (cell) {
-    cell.value = getRandomCharacter();
+    let newValue = getRandomCharacter();
+    let iterations = 0;
+    while (
+      !hasAVowel([...letters, newValue]) ||
+      !hasTwoConsonants([...letters, newValue]) ||
+      getMaxRepeatedLetter([...letters, newValue]) > MAX_REPEATED_LETTER
+      // This is way too slow to use in its current implementation
+      // Gotta find a way to make it way faster
+      // !canMakeAValidWord([...letters, newValue])
+    ) {
+      console.log("Invalid combo! Gotta run again");
+      iterations++;
+      newValue = getRandomCharacter();
+      if (iterations > MAX_ITERATIONS) {
+        console.error("UNABLE TO FIND VALID LETTER CONFIGURATION");
+        break;
+      }
+    }
+    cell.value = newValue;
     grid = setCell(grid, cell);
   }
   return grid;
