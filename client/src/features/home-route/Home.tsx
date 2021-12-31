@@ -34,8 +34,6 @@ const Home: React.FC = () => {
         </Canvas>
       </div>
       <div className="flex justify-center items-start">
-        {apiPrefix}
-        {import.meta.env.API_PREFIX}
         <Button
           className="p-4 text-2xl relative mt-[0vw]"
           onClick={onPlayClick}

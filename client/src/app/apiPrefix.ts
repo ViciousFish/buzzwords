@@ -12,11 +12,11 @@ export const SOCKET_URLS = {
 };
 
 export const apiPrefix =
-  import.meta.env.API_PREFIX
+  import.meta.env.VITE_API_PREFIX
   // DEFAULT_API_PREFIXES[Capacitor.isNativePlatform() ? "mobile" : "web"];
 
 export const socketUrl =
-  import.meta.env.SOCKET_URL ||
+  import.meta.env.VITE_SOCKET_URL ||
   SOCKET_URLS[Capacitor.isNativePlatform() ? "mobile" : "web"];
 
 export const getApiUrl = (...path: string[]) =>
