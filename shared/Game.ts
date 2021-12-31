@@ -2,6 +2,7 @@ import HexGrid from "./hexgrid";
 import { HexCoord } from "./types";
 
 interface Move {
+  grid: HexGrid;
   coords: HexCoord[];
   letters: string[];
   player: 0 | 1;

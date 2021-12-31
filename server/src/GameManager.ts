@@ -1,6 +1,9 @@
 import Game from "buzzwords-shared/Game";
 import { HexCoord } from "buzzwords-shared/types";
-import { getCellsToBeReset, willBecomeOwned } from "buzzwords-shared/gridHelpers";
+import {
+  getCellsToBeReset,
+  willBecomeOwned,
+} from "buzzwords-shared/gridHelpers";
 import { isValidWord } from "buzzwords-shared/alphaHelpers";
 import { nanoid } from "nanoid";
 import HexGrid, {
@@ -59,6 +62,7 @@ export default class GameManager {
     }
 
     const gameMove = {
+      grid: this.game.grid,
       coords: move,
       letters: move.map(
         (m) => getCell(this.game?.grid as HexGrid, m.q, m.r)?.value ?? ""
