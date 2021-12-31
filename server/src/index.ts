@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import { nanoid } from "nanoid";
 import morgan from "morgan";
 import cookie from "cookie";
+import cors from "cors";
 
 import getConfig from "./config";
 import DL from "./datalayer";
@@ -32,9 +33,18 @@ switch (config.dbType) {
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: true,
+  },
+});
 
 app.use(morgan("dev"));
+app.use(
+  cors({
+    origin: true,
+  })
+);
 
 app.use(express.json());
 app.use(cookieParser());

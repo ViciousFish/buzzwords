@@ -7,7 +7,6 @@ import Button from "../../presentational/Button";
 import { useAppDispatch } from "../../app/hooks";
 import { createNewGame } from "../gamelist/gamelistActions";
 import { useNavigate } from "react-router-dom";
-import { apiPrefix } from "../../app/apiPrefix";
 
 const Home: React.FC = () => {
   const { progress } = useProgress();
