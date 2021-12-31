@@ -63,6 +63,24 @@ app.get("/api/user", async (req, res) => {
   });
 });
 
+app.post("/api/user/nickname", async (req, res) => {
+  const user = req.cookies.session;
+  const nickname = (req.body || {})?.nickname;
+  const success = await dl.setNickName(user, nickname);
+  if (success) {
+    res.sendStatus(201);
+  } else {
+    res.sendStatus(404);
+  }
+});
+
+app.get("/api/user/:id/nickname", async (req, res) => {
+  const nickname = await dl.getNickName(req.params.id);
+  res.send({
+    nickname,
+  });
+});
+
 app.get("/api/games", async (req, res) => {
   const user = req.cookies.session;
   const games = await dl.getGamesByUserId(user);

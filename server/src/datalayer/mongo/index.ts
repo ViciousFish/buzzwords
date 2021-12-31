@@ -44,6 +44,57 @@ export default class Mongo implements DataLayer {
     }
   }
 
+  async setNickName(
+    id: string,
+    nickname: string,
+    options: Options
+  ): Promise<boolean> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res: any = await Models.User.updateOne(
+        {
+          id,
+        },
+        {
+          nickname,
+        },
+        {
+          session: options?.session,
+        }
+      );
+      return res.modifiedCount == 1;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async getNickName(id: string, options: Options): Promise<string | null> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res: any = await Models.User.findOne(
+        {
+          id,
+        },
+        null,
+        {
+          session: options?.session,
+        }
+      );
+      if (!res) {
+        return null;
+      }
+      return res.toObject();
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
   async getGamesByUserId(id: string, options: Options): Promise<Game[]> {
     if (!this.connected) {
       throw new Error("Db not connected");

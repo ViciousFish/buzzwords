@@ -5,8 +5,26 @@ export default class Memory implements DataLayer {
   games: {
     [key: string]: Game;
   };
+  users: {
+    [key: string]: {
+      nickname: string;
+    };
+  };
   constructor() {
     this.games = {};
+    this.users = {};
+  }
+
+  async setNickName(id: string, nickname: string): Promise<boolean> {
+    this.users[id] = {
+      ...this.users[id],
+      nickname,
+    };
+    return true;
+  }
+
+  async getNickName(id: string): Promise<string | null> {
+    return this.users[id]?.nickname;
   }
 
   async getGamesByUserId(id: string): Promise<Game[]> {

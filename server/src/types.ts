@@ -1,6 +1,15 @@
 import Game from "buzzwords-shared/Game";
 
 export interface DataLayer {
+  setNickName(
+    id: string,
+    nickname: string,
+    options?: Record<string, unknown>
+  ): Promise<boolean>;
+  getNickName(
+    id: string,
+    options?: Record<string, unknown>
+  ): Promise<string | null>;
   getGamesByUserId(
     id: string,
     options?: Record<string, unknown>
