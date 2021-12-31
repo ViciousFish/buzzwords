@@ -55,6 +55,7 @@ export const submitMove =
 
     try {
       const res = await fetch(getApiUrl('game', gameId, 'move'), {
+        credentials: "include",
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

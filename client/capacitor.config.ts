@@ -5,10 +5,10 @@ const config: CapacitorConfig = {
   appName: "Buzzwords",
   webDir: "dist",
   bundledWebRuntime: false,
-  server: {
-    hostname: "buzzwords.gg",
-    androidScheme: "https",
-  },
+  // server: {
+  //   hostname: "buzzwords.gg",
+  //   androidScheme: "https",
+  // },
 };
 
 export default config;

@@ -36,6 +36,7 @@ const server = createServer(app);
 const io = new Server(server, {
   cors: {
     origin: true,
+    credentials: true,
   },
 });
 
@@ -43,6 +44,7 @@ app.use(morgan("dev"));
 app.use(
   cors({
     origin: true,
+    credentials: true,
   })
 );
 

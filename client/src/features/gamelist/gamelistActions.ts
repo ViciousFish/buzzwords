@@ -5,9 +5,9 @@ import { getApiUrl } from "../../app/apiPrefix";
 
 export const refresh = (): AppThunk => async (dispatch) => {
   console.log("refresh");
-  const games: Game[] = await fetch(getApiUrl("games")).then((response) =>
-    response.json()
-  );
+  const games: Game[] = await fetch(getApiUrl("games"), {
+    credentials: "include",
+  }).then((response) => response.json());
   const gamesById: { [id: string]: Game } = games.reduce((acc, game) => {
     acc[game.id] = {
       ...game,
@@ -21,6 +21,7 @@ export const refresh = (): AppThunk => async (dispatch) => {
 
 export const createNewGame = (): AppThunk => async (dispatch) => {
   const res = await fetch(getApiUrl("/game"), {
+    credentials: "include",
     method: "POST",
   }).then((response) => response.text());
 
@@ -32,7 +33,8 @@ export const joinGameById =
   (id: string): AppThunk =>
   async (dispatch) => {
     try {
-      const res = await fetch(getApiUrl('game', id, 'join'), {
+      const res = await fetch(getApiUrl("game", id, "join"), {
+        credentials: "include",
         method: "POST",
       }).then((response) => response.text());
       if (res === "Not Found") {

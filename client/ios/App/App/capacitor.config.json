@@ -2,9 +2,5 @@
 	"appId": "com.chuckdries.buzzwords",
 	"appName": "Buzzwords",
 	"webDir": "dist",
-	"bundledWebRuntime": false,
-	"server": {
-		"hostname": "buzzwords.gg",
-		"androidScheme": "https"
-	}
+	"bundledWebRuntime": false
 }
