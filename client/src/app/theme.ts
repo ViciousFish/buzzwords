@@ -5,7 +5,8 @@ export const theme = {
     lightbg: "#fae7b2",
     darkbg: "#f2dc9d",
     tile_p1: '#d788b8',
-    tile_p2: '#709867',
+    // tile_p2: '#709867',
+    tile_p2: "hsla(200, 45%, 59%, 1)",
     tile_selected: '#9a9a9a'
   },
 };

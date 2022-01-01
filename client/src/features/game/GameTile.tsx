@@ -40,6 +40,7 @@ interface GameTileProps {
   userIndex?: number;
   isCapital?: boolean;
   isPlayerIdentity?: boolean;
+  gameOver: boolean;
 }
 
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
@@ -53,6 +54,7 @@ const GameTile: React.FC<GameTileProps> = ({
   userIndex,
   isCapital,
   isPlayerIdentity,
+  gameOver,
 }) => {
   const dispatch = useAppDispatch();
   const font = useLoader(FontLoader, fredokaone);
@@ -199,12 +201,12 @@ const GameTile: React.FC<GameTileProps> = ({
 
   const onTileClick = useCallback(
     (e: ThreeEvent<MouseEvent>) => {
-      if (coord && letter && currentTurn === userIndex) {
+      if (!gameOver && coord && letter && currentTurn === userIndex) {
         dispatch(toggleTileSelected(coord));
       }
       e.stopPropagation();
     },
-    [coord, dispatch, letter, currentTurn, userIndex]
+    [coord, dispatch, letter, currentTurn, userIndex, gameOver]
   );
   return (
     // @ts-ignore
@@ -245,6 +247,7 @@ const GameTile: React.FC<GameTileProps> = ({
         {/* <HexOutline /> */}
         <HexOutlineSolid>
           <a.meshStandardMaterial
+            toneMapped={false}
             color={colorAndScaleSpring.color}
           />
         </HexOutlineSolid>

@@ -44,6 +44,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 position={[0, 0, 0]}
                 isPlayerIdentity
                 currentGame={id}
+                gameOver={game.gameOver}
               />
               <Html position={[0, game.turn === 0 ? 5 : 4, 0]} center>
                 <span>{userIndex === 0 ? "You" : "Them"}</span>
@@ -63,6 +64,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 position={[0, 0, 0]}
                 isPlayerIdentity
                 currentGame={id}
+                gameOver={game.gameOver}
               />
               <Html position={[0, game.turn === 1 ? 5 : 4, 0]} center>
                 {userIndex === 1 ? "You" : "Them"}
@@ -116,6 +118,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                   owner={gridTile.owner}
                   currentGame={id}
                   userIndex={userIndex}
+                  gameOver={game.gameOver}
                 />
               );
             })}

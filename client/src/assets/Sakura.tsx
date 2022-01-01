@@ -18,9 +18,7 @@ export const Sakura = ({ ...props }) => {
         position={[0, 0, 1.2]}
         scale={[0.41, 0.41, 0.41]}
       >
-        <mesh geometry={nodes.Sakura_1.geometry}>
-          <meshStandardMaterial color="pink" />
-        </mesh>
+        <mesh geometry={nodes.Sakura_1.geometry} material={materials.White} />
         <mesh geometry={nodes.Sakura_2.geometry} material={materials.Brown} />
       </group>
     </group>
