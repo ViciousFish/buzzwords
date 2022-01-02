@@ -5,7 +5,8 @@
   "scripts": {
     "build-client": "cd client && yarn build",
     "build-server": "cd server && yarn build",
-    "build": "concurrently \"yarn build-client\" \"yarn build-server\" && docker-compose build"
+    "docker-server": "docker buildx build ./server --platform linux/amd64,linux/arm64 --push -t chuckdries/buzzwords-server",
+    "docker-client": "docker buildx build ./client --platform linux/amd64,linux/arm64 --push -t chuckdries/buzzwords-web"
   },
   "repository": {
     "type": "git",
