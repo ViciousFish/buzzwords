@@ -44,7 +44,9 @@ app.use((req, res, next) => {
   const session = cookies.session || null;
   if (!session) {
     const session = nanoid();
-    res.cookie("session", session);
+    res.cookie("session", session, {
+      expires: new Date(253402300000000), // Approximately Friday, 31 Dec 9999 23:59:59 GMT
+    });
     req.cookies = {
       session,
     };
