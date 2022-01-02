@@ -2,6 +2,8 @@
 
 "Scrabble meets Go" - a hexagonal word game about strategically taking territory
 
+### [gameplay demo](https://twitter.com/BuzzwordsGG/status/1476286068898996225?s=20)
+
 ## Follow our twitter for updates
 
 https://twitter.com/BuzzwordsGG
