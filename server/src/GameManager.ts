@@ -134,6 +134,9 @@ export default class GameManager {
         }
       }
     }
+
+    this.game.moves.push(gameMove);
+
     // GAME OVER
     if (opponentCells.length == 0) {
       this.game.gameOver = true;
@@ -155,7 +158,6 @@ export default class GameManager {
       ? this.game.turn
       : (Number(!this.game.turn) as 0 | 1);
     this.game.turn = nextTurn;
-    this.game.moves.push(gameMove);
     return this.game;
   }
 
