@@ -1,3 +1,4 @@
+import * as R from "ramda";
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
@@ -12,6 +13,7 @@ import Game from "buzzwords-shared/Game";
 import { DataLayer } from "./types";
 import { HexCoord } from "buzzwords-shared/types";
 import GameManager from "./GameManager";
+import BannedWords from "./banned_words.json";
 
 const config = getConfig();
 
@@ -69,12 +71,24 @@ app.get("/api/user", async (req, res) => {
 
 app.post("/api/user/nickname", async (req, res) => {
   const user = req.cookies.session;
-  const nickname = (req.body || {})?.nickname;
+  const nickname = (req.body || {})?.nickname as string | null;
+  if (!nickname) {
+    res.status(400).json({
+      message: "Missing nickname in request body",
+    });
+    return;
+  }
+  if (R.any((word) => nickname.toLowerCase().includes(word), BannedWords)) {
+    res.status(400).json({
+      message: "Nickname contains banned text",
+    });
+    return;
+  }
   const success = await dl.setNickName(user, nickname);
   if (success) {
     res.sendStatus(201);
   } else {
-    res.sendStatus(404);
+    res.sendStatus(500);
   }
 });
 
