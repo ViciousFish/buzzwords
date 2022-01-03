@@ -9,7 +9,7 @@ import { resetSelection, setCurrentGame } from "../game/gameSlice";
 import { joinGameById } from "../gamelist/gamelistActions";
 import GameBoard from "../game/GameBoard";
 import CopyToClipboard from "../../presentational/CopyToClipboard";
-import { useAppSelector } from "../../app/hooks";
+import NicknameModal from "../user/NicknameModal";
 
 const Play: React.FC = () => {
   const dispatch = useDispatch();
@@ -21,7 +21,6 @@ const Play: React.FC = () => {
     (state: RootState) => state.gamelist.gamesLoaded
   );
   const currentUser = useSelector((state: RootState) => state.user.user);
-  const sidebarOpen = useAppSelector((state) => state.gamelist.isOpen);
   const [fourohfour, setFourohfour] = useState(false);
 
   const userIndex =
@@ -41,7 +40,7 @@ const Play: React.FC = () => {
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (gamesLoaded && !game) {
+    if (gamesLoaded && !game && id) {
       // @ts-ignore
       dispatch(joinGameById(id)).then((joinedGame) => {
         console.log("joinedGame :", joinedGame);
@@ -53,6 +52,8 @@ const Play: React.FC = () => {
       setFourohfour(false);
     }
   }, [id, dispatch, game, gamesLoaded]);
+
+  const nickModal = currentUser?.nickname ? null : <NicknameModal />;
 
   if (fourohfour) {
     return (
@@ -77,12 +78,12 @@ const Play: React.FC = () => {
           {window.location.toString()}
         </a>
         <CopyToClipboard label="Copy link" text={window.location.toString()} />
+        {nickModal}
       </div>
     );
   }
 
   return (
-    // <div className={classnames("flex-auto overflow-scroll h-screen", sidebarOpen && 'flex-shrink-0 md:flex-shrink')}>
     <div className="min-h-screen flex flex-auto flex-col lg:flex-row">
       {game && id && userIndex !== null && (
         <GameBoard id={id} game={game} userIndex={userIndex} />
@@ -104,6 +105,7 @@ const Play: React.FC = () => {
             ))}
         </ul>
       </div>
+      {nickModal}
     </div>
     // </div>
   );

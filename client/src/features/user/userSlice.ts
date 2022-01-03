@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface User {
   id: string;
+  nickname?: string;
 }
 
 // Define a type for the slice state

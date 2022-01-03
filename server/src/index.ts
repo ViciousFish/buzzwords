@@ -79,6 +79,7 @@ app.post("/api/user/nickname", async (req, res) => {
 app.get("/api/user/:id/nickname", async (req, res) => {
   const nickname = await dl.getNickName(req.params.id);
   res.send({
+    id: req.params.id,
     nickname,
   });
 });
