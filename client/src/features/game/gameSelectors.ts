@@ -40,11 +40,11 @@ export interface willTileTouchTerritoryParams {
   gameId: string;
 }
 
-export const willTileTouchTerritory = createSelector(
-  getOrderedTileSelectionCoords,
-  (_, touchParams: willTileTouchTerritoryParams) => touchParams,
-  () => {}
-)
+// export const willTileTouchTerritory = createSelector(
+//   getOrderedTileSelectionCoords,
+//   (_, touchParams: willTileTouchTerritoryParams) => touchParams,
+//   () => {}
+// )
 
 export const getSelectedWordByGameId = createSelector(
   getOrderedTileSelectionCoords,

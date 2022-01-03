@@ -1,7 +1,6 @@
 import { emitSelection } from "../../app/socket";
 import { AppThunk } from "../../app/store";
 import { QRCoord } from "../hexGrid/hexGrid";
-import { Game } from "./game";
 import { getOrderedTileSelectionCoords } from "./gameSelectors";
 import {
   resetSelection,

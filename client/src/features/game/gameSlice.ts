@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { HexGrid, QRCoord } from "../hexGrid/hexGrid";
+import { QRCoord } from "../hexGrid/hexGrid";
 
 interface GameState {
   selectedTiles: {

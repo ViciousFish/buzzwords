@@ -42,7 +42,7 @@ export const getCellsToBeReset = (
   move: HexCoord[],
   turn: 0 | 1
 ): Cell[] => {
-  const reset = [];
+  const reset: Cell[] = [];
   for (const coord of move) {
     const cell = getCell(grid, coord.q, coord.r);
     if (cell != null) {
@@ -68,7 +68,7 @@ export const willBecomeOwned = (
   move: HexCoord[],
   turn: 0 | 1
 ): Cell[] => {
-  const toBecomeOwned = [];
+  const toBecomeOwned: Cell[] = [];
   for (const coord of move) {
     const cell = getCell(grid, coord.q, coord.r);
     if (cell == null) {
