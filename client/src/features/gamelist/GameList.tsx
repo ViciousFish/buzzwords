@@ -17,15 +17,25 @@ import { getUser } from "../user/userActions";
 import { refresh, createNewGame } from "./gamelistActions";
 import { toggleIsOpen } from "./gamelistSlice";
 import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
+import { User } from "../user/userSlice";
 
 const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
 const BeeLazy = React.lazy(() => import("../../assets/Bee"));
 const HexWordLazy = React.lazy(() => import("../thereed-lettering/HexWord"));
 
 const GameList: React.FC = () => {
-  const games = useAppSelector((state) => Object.keys(state.gamelist.games));
+  const games = useAppSelector((state) => state.gamelist.games);
   const isOpen = useAppSelector((state) => state.gamelist.isOpen);
+  const selfUser = useAppSelector((state) => state.user.user);
+  const opponents = useAppSelector((state) => state.user.opponents);
   const dispatch = useAppDispatch();
+
+  const allUsers: { [id: string]: User } = {
+    ...opponents,
+  };
+  if (selfUser) {
+    allUsers[selfUser.id] = selfUser;
+  }
 
   const safeAreaLeft = Number(
     getComputedStyle(document.documentElement)
@@ -123,24 +133,29 @@ const GameList: React.FC = () => {
           </div>
           {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
           <ul className="px-2 flex-auto">
-            {games.map((id) => (
-              <li key={id} className="my-1 whitespace-nowrap">
-                <NavLink
-                  className={({ isActive }) =>
-                    classNames(
-                      isActive
-                        ? "bg-primary hover:bg-opacity-100"
-                        : "underline text-darkbrown",
-                      "p-2 rounded-xl block hover:bg-primary hover:bg-opacity-50"
-                    )
-                  }
-                  to={`/play/${id}`}
-                >
-                  {id}
-                </NavLink>
-              </li>
-            ))}
-            {games.length === 0 && <>No games</>}
+            {Object.keys(games).map((id) => {
+              const users = games[id].users;
+              const nick1 = allUsers[users[0]]?.nickname ?? "???";
+              const nick2 = allUsers[users[1]]?.nickname ?? "???";
+              return (
+                <li key={id} className="my-1 whitespace-nowrap">
+                  <NavLink
+                    className={({ isActive }) =>
+                      classNames(
+                        isActive
+                          ? "bg-primary hover:bg-opacity-100"
+                          : "underline text-darkbrown",
+                        "p-2 rounded-xl block hover:bg-primary hover:bg-opacity-50"
+                      )
+                    }
+                    to={`/play/${id}`}
+                  >
+                    {nick1} vs {nick2}
+                  </NavLink>
+                </li>
+              );
+            })}
+            {Object.keys(games).length === 0 && <>No games</>}
           </ul>
           <div className="p-2 text-center text-gray-800 text-sm">
             by Chuck Dries and James Quigley
