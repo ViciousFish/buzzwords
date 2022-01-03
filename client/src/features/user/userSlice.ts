@@ -22,11 +22,18 @@ export const gamelistSlice = createSlice({
     userReceived: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
     },
+    nicknameSet: (state, action: PayloadAction<string>) => {
+      if (state.user) {
+        state.user.nickname = action.payload;
+      } else {
+        console.error("cannot set nickname on non-existent user");
+      }
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { userReceived } = gamelistSlice.actions;
+export const { userReceived, nicknameSet } = gamelistSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (state: RootState) => state.counter.value;

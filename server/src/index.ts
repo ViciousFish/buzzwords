@@ -60,8 +60,10 @@ app.get("/healthz", (req, res) => {
 
 app.get("/api/user", async (req, res) => {
   const user = req.cookies.session;
+  const nickname = await dl.getNickName(user);
   res.send({
     id: user,
+    nickname,
   });
 });
 
@@ -79,7 +81,6 @@ app.post("/api/user/nickname", async (req, res) => {
 app.get("/api/user/:id/nickname", async (req, res) => {
   const nickname = await dl.getNickName(req.params.id);
   res.send({
-    id: req.params.id,
     nickname,
   });
 });

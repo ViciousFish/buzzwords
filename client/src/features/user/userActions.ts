@@ -1,5 +1,5 @@
 import { AppThunk } from "../../app/store";
-import { User, userReceived } from "./userSlice";
+import { nicknameSet, User, userReceived } from "./userSlice";
 
 export const getUser = (): AppThunk => async (dispatch) => {
   const user: User = await fetch("/api/user").then((res) => res.json());
@@ -16,13 +16,13 @@ export const setNickname =
       console.error("couldn't set nickname on user without ID");
       return;
     }
-    const user: User = await fetch(`/api/user/${id}/nickname`, {
+    await fetch(`/api/user/nickname`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         nickname,
       }),
-    }).then((res) => res.json());
+    }).then((res) => res.text());
 
-    dispatch(userReceived(user));
+    dispatch(nicknameSet(nickname));
   };
