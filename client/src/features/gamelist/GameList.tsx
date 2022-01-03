@@ -27,11 +27,6 @@ const GameList: React.FC = () => {
   const isOpen = useAppSelector((state) => state.gamelist.isOpen);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(refresh());
-    dispatch(getUser());
-  }, [dispatch]);
-
   const safeAreaLeft = Number(
     getComputedStyle(document.documentElement)
       .getPropertyValue("--sal")
