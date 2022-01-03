@@ -90,7 +90,7 @@ export default class Mongo implements DataLayer {
       if (!res) {
         return null;
       }
-      return res.toObject();
+      return res.toObject().nickname;
     } catch (e) {
       console.log(e);
       throw e;
