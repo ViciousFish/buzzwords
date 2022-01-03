@@ -46,7 +46,7 @@ const NicknameModal: React.FC = () => {
           <div className="p-8 bg-lightbg rounded-xl text-darkbrown">
             <h1 className="text-2xl">Pick a nickname</h1>
             <p>
-              It doesn&apos;t have to be unique, but you can&apos;t change it (yet). Your opponent will see it.
+              It doesn&apos;t have to be unique, but you can&apos;t change it (yet). Your opponents will see it.
             </p>
             <form
               onSubmit={handleSubmit}
