@@ -39,17 +39,18 @@ const io = new Server(server);
 app.use(morgan("dev"));
 
 app.use(express.json());
-app.use(cookieParser());
+app.use(cookieParser(config.cookieSecret));
 
 app.use((req, res, next) => {
-  const cookies = req.cookies || {};
+  const cookies = req.signedCookies || {};
   const session = cookies.session || null;
   if (!session) {
     const session = nanoid();
     res.cookie("session", session, {
       expires: new Date(253402300000000), // Approximately Friday, 31 Dec 9999 23:59:59 GMT
+      signed: true,
     });
-    req.cookies = {
+    req.signedCookies = {
       session,
     };
   }
@@ -61,7 +62,7 @@ app.get("/healthz", (req, res) => {
 });
 
 app.get("/api/user", async (req, res) => {
-  const user = req.cookies.session;
+  const user = req.signedCookies.session;
   const nickname = await dl.getNickName(user);
   res.send({
     id: user,
@@ -70,7 +71,7 @@ app.get("/api/user", async (req, res) => {
 });
 
 app.post("/api/user/nickname", async (req, res) => {
-  const user = req.cookies.session;
+  const user = req.signedCookies.session;
   const nickname = (req.body || {})?.nickname as string | null;
   if (!nickname) {
     res.status(400).json({
@@ -105,7 +106,7 @@ app.get("/api/user/:id", async (req, res) => {
 });
 
 app.get("/api/games", async (req, res) => {
-  const user = req.cookies.session;
+  const user = req.signedCookies.session;
   const games = await dl.getGamesByUserId(user);
   res.send(games);
 });
@@ -121,7 +122,7 @@ app.get("/api/game/:id", async (req, res) => {
 });
 
 app.post("/api/game", async (req, res) => {
-  const user = req.cookies.session;
+  const user = req.signedCookies.session;
   const gm = new GameManager(null);
   const game = gm.createGame(user);
   try {
@@ -134,7 +135,7 @@ app.post("/api/game", async (req, res) => {
 });
 
 app.post("/api/game/:id/join", async (req, res) => {
-  const user = req.cookies.session;
+  const user = req.signedCookies.session;
   const gameId = req.params.id;
   const success = await dl.joinGame(user, gameId);
   const game = await dl.getGameById(gameId);
@@ -149,13 +150,13 @@ app.post("/api/game/:id/join", async (req, res) => {
 });
 
 app.post("/api/game/join", async (req, res) => {
-  const user = req.cookies.session;
+  const user = req.signedCookies.session;
   const success = await dl.joinRandomGame(user);
   res.sendStatus(success ? 201 : 404);
 });
 
 app.post("/api/game/:id/move", async (req, res) => {
-  const user = req.cookies.session;
+  const user = req.signedCookies.session;
   const gameId = req.params.id;
   const parsedMove: HexCoord[] = [];
   const move = req.body.move || [];

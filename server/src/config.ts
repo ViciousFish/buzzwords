@@ -3,6 +3,7 @@ interface Config {
   port: string;
   dbType: string;
   mongoUrl: string;
+  cookieSecret: string;
 }
 
 export const getConfig = (): Config => {
@@ -11,6 +12,7 @@ export const getConfig = (): Config => {
     port: process.env.PORT || "8080",
     dbType: process.env.DB_TYPE || "memory",
     mongoUrl: process.env.MONGO_URL || "mongodb://localhost/dev",
+    cookieSecret: process.env.COOKIE_SECRET || "CHANGE_ME_IN_PRODUCTION",
   };
 };
 
