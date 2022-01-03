@@ -120,9 +120,9 @@ const wordsBySortedLetters = R.zipObj(
 
 export const canMakeAValidWord = (letters: string[]): boolean => {
   for (let i = 3; i <= letters.length; i++) {
-    const combos = combinations(letters, i, i);
+    const combos = R.uniq(combinations(letters, i, i).map((c) => c.join("")));
     for (let c of combos) {
-      const sorted = R.sort(R.descend(R.identity), c);
+      const sorted = R.sort(R.descend(R.identity), c.split(""));
       if (wordsBySortedLetters[sorted.join("")]) {
         return true;
       }

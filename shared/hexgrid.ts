@@ -1,3 +1,5 @@
+import * as R from "ramda";
+
 import {
   getRandomCharacter,
   canMakeAValidWord,
@@ -75,40 +77,40 @@ export const getCellNeighbors = (
 };
 
 const MAX_ITERATIONS = 1000;
-const MAX_REPEATED_LETTER = 4;
+const MAX_REPEATED_LETTER = 3;
 
-export const randomizeCellValue = (
+export const getNewCellValues = (
   grid: HexGrid,
-  q: number,
-  r: number
-): HexGrid => {
-  const cell = getCell(grid, q, r);
-  const letters = Object.values(grid)
-    .filter((c) => !(c.q == q && c.r == r))
-    .map((c) => c.value)
-    .filter(Boolean);
-
-  if (cell) {
-    let newValue = getRandomCharacter();
-    let iterations = 0;
-    while (
-      !hasAVowel([...letters, newValue]) ||
-      !hasTwoConsonants([...letters, newValue]) ||
-      getMaxRepeatedLetter([...letters, newValue]) > MAX_REPEATED_LETTER
-      // This is way too slow to use in its current implementation
-      // Gotta find a way to make it way faster
-      // !canMakeAValidWord([...letters, newValue])
-    ) {
-      console.log("Invalid combo! Gotta run again");
-      iterations++;
-      newValue = getRandomCharacter();
-      if (iterations > MAX_ITERATIONS) {
-        console.error("UNABLE TO FIND VALID LETTER CONFIGURATION");
-        break;
-      }
+  toBeReset: Cell[],
+  toBeOwned: Cell[]
+): string[] => {
+  const keys = R.difference(
+    R.difference(
+      Object.keys(grid),
+      toBeReset.map((cell) => `${cell.q},${cell.r}`)
+    ),
+    toBeOwned.map((cell) => `${cell.q},${cell.r}`)
+  );
+  const letters = keys.map((k) => grid[k].value).filter(Boolean);
+  let iterations = 0;
+  let newValues = R.repeat("", toBeReset.length).map(() =>
+    getRandomCharacter()
+  );
+  while (
+    !hasAVowel([...letters, ...newValues]) ||
+    !hasTwoConsonants([...letters, ...newValues]) ||
+    getMaxRepeatedLetter([...letters, ...newValues]) > MAX_REPEATED_LETTER ||
+    // This is way too slow to use in its current implementation
+    // Gotta find a way to make it way faster
+    !canMakeAValidWord([...letters, ...newValues])
+  ) {
+    console.log("Invalid combo! Gotta run again");
+    iterations++;
+    newValues = R.repeat("", toBeReset.length).map(() => getRandomCharacter());
+    if (iterations > MAX_ITERATIONS) {
+      console.error("UNABLE TO FIND VALID LETTER CONFIGURATION");
+      break;
     }
-    cell.value = newValue;
-    grid = setCell(grid, cell);
   }
-  return grid;
+  return newValues;
 };
