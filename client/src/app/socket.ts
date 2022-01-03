@@ -6,6 +6,7 @@ import Game from "buzzwords-shared/Game";
 import { updateGame } from "../features/gamelist/gamelistSlice";
 import { QRCoord } from "../features/hexGrid/hexGrid";
 import { AppDispatch } from "./store";
+import { maybeOpponentNicknameUpdated } from "../features/user/userSlice";
 
 let socket: Socket | null = null;
 
@@ -30,6 +31,12 @@ export const subscribeSocket = (dispatch: AppDispatch) => {
     console.log("selection", selection);
     dispatch(receiveSelectionSocket(selection, gameId));
   });
+  socket.on(
+    "nickname updated",
+    (data: { id: string; nickname: string }) => {
+      dispatch(maybeOpponentNicknameUpdated(data))
+    }
+  );
 };
 
 export const emitSelection = (
@@ -37,7 +44,7 @@ export const emitSelection = (
   gameId
 ) => {
   if (!socket) {
-    console.error('cannot emit: no socket!');
+    console.error("cannot emit: no socket!");
     return;
   }
   console.log("emitting selection on game", gameId);

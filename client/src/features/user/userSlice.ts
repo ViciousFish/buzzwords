@@ -9,14 +9,14 @@ export interface User {
 interface UserState {
   user: User | null;
   opponents: {
-    [id: string]: User
-  }
+    [id: string]: User;
+  };
 }
 
 // Define the initial state using that type
 const initialState: UserState = {
   user: null,
-  opponents: {}
+  opponents: {},
 };
 
 export const gamelistSlice = createSlice({
@@ -35,12 +35,25 @@ export const gamelistSlice = createSlice({
     },
     opponentReceived: (state, action: PayloadAction<User>) => {
       state.opponents[action.payload.id] = action.payload;
-    }
+    },
+    maybeOpponentNicknameUpdated: (
+      state,
+      action: PayloadAction<{ id: string; nickname: string }>
+    ) => {
+      if (state.opponents[action.payload.id]) {
+        state.opponents[action.payload.id].nickname = action.payload.nickname;
+      }
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { userReceived, nicknameSet, opponentReceived } = gamelistSlice.actions;
+export const {
+  userReceived,
+  nicknameSet,
+  opponentReceived,
+  maybeOpponentNicknameUpdated,
+} = gamelistSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (state: RootState) => state.counter.value;

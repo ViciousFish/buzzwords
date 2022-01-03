@@ -85,6 +85,10 @@ app.post("/api/user/nickname", async (req, res) => {
     return;
   }
   const success = await dl.setNickName(user, nickname);
+  io.emit("nickname updated", {
+    id: user,
+    nickname,
+  });
   if (success) {
     res.sendStatus(201);
   } else {
