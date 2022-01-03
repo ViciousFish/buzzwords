@@ -12,6 +12,7 @@
     "upload-staging": "rsync -rz --delete dist/ ci@droplet.chuckdries.com:www/buzzwords-staging",
     "upload": "rsync -rz --delete dist/ ci@droplet.chuckdries.com:www/buzzwords"
   },
+  "browser": "src/main.tsx",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-brands-svg-icons": "^5.15.4",
@@ -57,10 +58,14 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "file-loader": "^6.2.0",
     "postcss": "^8.3.5",
     "prettier": "2.3.2",
     "tailwindcss": "^2.2.4",
+    "ts-loader": "^9.2.6",
     "typescript": "^4.3.4",
-    "vite": "^2.3.8"
+    "vite": "^2.3.8",
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1"
   }
 }

@@ -12,12 +12,13 @@
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    // "noEmit": true,
     "jsx": "react",
     "types": [
       "vite/client"
     ],
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "outDir": "./dist"
   },
-  "include": ["./src"]
+  "include": ["./src", "buzzwords-shared"]
 }

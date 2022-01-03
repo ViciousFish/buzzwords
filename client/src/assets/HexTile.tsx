@@ -3,7 +3,7 @@ import { MeshProps, useLoader } from "@react-three/fiber";
 import { theme } from "../app/theme";
 import { useGLTF, PerspectiveCamera } from "@react-three/drei";
 import { Mesh } from "three";
-import hextile from "../../assets/hextile.glb?url";
+import hextile from "../../assets/hextile.glb";
 
 interface HexTileProps {
   orientation?: 'flat' | 'pointy'

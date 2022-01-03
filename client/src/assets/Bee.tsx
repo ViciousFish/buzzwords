@@ -15,7 +15,7 @@ import {
 import { animated } from "@react-spring/three";
 import { useGesture } from "@use-gesture/react";
 
-import bee from "../../assets/bee.gltf?url";
+import bee from "../../assets/bee.gltf";
 import { theme } from "../app/theme";
 
 // TODO: remove materials from model so we don't load unnecessary data

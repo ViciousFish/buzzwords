@@ -6,7 +6,7 @@ import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import { GroupProps } from "@react-three/fiber";
 
-import hexoutlinesolid from "../../assets/hexoutlinesolid.glb?url";
+import hexoutlinesolid from "../../assets/hexoutlinesolid.glb";
 import { theme } from "../app/theme";
 
 export const HexOutlineSolid: React.FC<GroupProps> = ({
