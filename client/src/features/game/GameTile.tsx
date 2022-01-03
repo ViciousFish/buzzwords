@@ -25,11 +25,11 @@ import { QRCoord } from "../hexGrid/hexGrid";
 import { toggleTileSelected } from "./gameActions";
 import { GamePlayer } from "./game";
 import { Flower01 } from "../../assets/Flower01";
-import { getOrderedTileSelectionCoords, getTileSelectionInParsedHexCoords } from "./gameSelectors";
+import { getTileSelectionInParsedHexCoords } from "./gameSelectors";
 import { Sakura } from "../../assets/Sakura";
 import { HexOutlineSolid } from "../../assets/Hexoutlinesolid";
 
-import { willConnectToTerritory } from "buzzwords-shared/gridHelpers";
+// import { willConnectToTerritory } from "buzzwords-shared/gridHelpers";
 
 interface GameTileProps {
   position: V3Type;
@@ -94,12 +94,13 @@ const GameTile: React.FC<GameTileProps> = ({
       q: Number(q),
       r: Number(r)
     };
-    const willConnect = willConnectToTerritory(
-      grid,
-      currentMove,
-      parsedCoord,
-      currentTurn
-    );
+    // const willConnect = willConnectToTerritory(
+    //   grid,
+    //   currentMove,
+    //   parsedCoord,
+    //   currentTurn
+    // );
+    const willConnect = true;
     const turnColor = currentTurn === 0 ? theme.colors.tile_p1 : theme.colors.tile_p2;
     if (willConnect) {
       color = turnColor
