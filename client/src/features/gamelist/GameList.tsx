@@ -17,10 +17,13 @@ import { getUser } from "../user/userActions";
 import { refresh, createNewGame } from "./gamelistActions";
 import { toggleIsOpen } from "./gamelistSlice";
 import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
+import Canvas from "../canvas/Canvas";
+import Bee from "../../assets/Bee";
+import HexWord from "../thereed-lettering/HexWord";
 
-const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
-const BeeLazy = React.lazy(() => import("../../assets/Bee"));
-const HexWordLazy = React.lazy(() => import("../thereed-lettering/HexWord"));
+// const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
+// const BeeLazy = React.lazy(() => import("../../assets/Bee"));
+// const HexWordLazy = React.lazy(() => import("../thereed-lettering/HexWord"));
 
 const GameList: React.FC = () => {
   const games = useAppSelector((state) => Object.keys(state.gamelist.games));
@@ -102,12 +105,10 @@ const GameList: React.FC = () => {
         </div>
         <div className="flex-auto flex flex-col overflow-y-auto">
           <div className="h-[150px]">
-            <React.Suspense fallback={<></>}>
-              <CanvasLazy>
-                <BeeLazy position={[0, 5, 0]} scale={4} />
-                <HexWordLazy position={[0, -6, 0]} text="BUZZWORDS" />
-              </CanvasLazy>
-            </React.Suspense>
+            <Canvas>
+              <Bee position={[0, 5, 0]} scale={4} />
+              <HexWord position={[0, -6, 0]} text="BUZZWORDS" />
+            </Canvas>
           </div>
           <div className="px-2 mt-[-1em] z-10">
             <span className="text-xl">Games</span>
