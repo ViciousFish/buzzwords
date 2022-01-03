@@ -16,6 +16,8 @@ import HexGrid, {
   getNewCellValues,
 } from "buzzwords-shared/hexgrid";
 
+import { WordsObject, wordsBySortedLetters } from "./words";
+
 export default class GameManager {
   game: Game | null;
   constructor(game: Game | null) {
@@ -56,7 +58,7 @@ export default class GameManager {
       }
     }
     console.log("move received word", word);
-    if (!isValidWord(word)) {
+    if (!isValidWord(word, WordsObject)) {
       console.log("word invalid", word);
       throw new Error("Not a valid word");
     }
@@ -86,7 +88,8 @@ export default class GameManager {
     const newCellValues = getNewCellValues(
       this.game.grid,
       toBeReset,
-      toBecomeOwned
+      toBecomeOwned,
+      wordsBySortedLetters
     );
 
     for (let i = 0; i < toBeReset.length; i++) {
@@ -170,7 +173,12 @@ export default class GameManager {
       ...getCellNeighbors(game.grid, -2, -1),
       ...getCellNeighbors(game.grid, 2, 1),
     ];
-    const newValues = getNewCellValues(game.grid, neighbors, []);
+    const newValues = getNewCellValues(
+      game.grid,
+      neighbors,
+      [],
+      wordsBySortedLetters
+    );
     let i = 0;
     for (const cell of neighbors) {
       cell.value = newValues[i];

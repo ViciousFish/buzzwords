@@ -82,7 +82,10 @@ const MAX_REPEATED_LETTER = 3;
 export const getNewCellValues = (
   grid: HexGrid,
   toBeReset: Cell[],
-  toBeOwned: Cell[]
+  toBeOwned: Cell[],
+  wordsBySortedLetters: {
+    [key: string]: number;
+  }
 ): string[] => {
   const keys = R.difference(
     R.difference(
@@ -102,7 +105,7 @@ export const getNewCellValues = (
     getMaxRepeatedLetter([...letters, ...newValues]) > MAX_REPEATED_LETTER ||
     // This is way too slow to use in its current implementation
     // Gotta find a way to make it way faster
-    !canMakeAValidWord([...letters, ...newValues])
+    !canMakeAValidWord([...letters, ...newValues], wordsBySortedLetters)
   ) {
     console.log("Invalid combo! Gotta run again");
     iterations++;

@@ -1,10 +1,5 @@
-import WordsJSON from "./words.json";
 import * as R from "ramda";
 
-const words = Object.keys(WordsJSON);
-const WordsObject: {
-  [key: string]: number;
-} = WordsJSON as unknown as { [key: string]: number };
 const letters = [
   "a",
   "b",
@@ -50,8 +45,13 @@ for (let p of probabilities) {
 
 cdfArray = cdfArray.map((p) => Math.round(p * 100000) / 100000);
 
-export const isValidWord = (word: string): boolean => {
-  if (word.length < 3 || !Boolean(WordsObject[word.toLowerCase()])) {
+export const isValidWord = (
+  word: string,
+  words: {
+    [key: string]: number;
+  }
+): boolean => {
+  if (word.length < 3 || !Boolean(words[word.toLowerCase()])) {
     return false;
   }
 
@@ -109,16 +109,12 @@ export const getMaxRepeatedLetter = (letters: string[]): number => {
   return R.pipe(R.countBy(R.identity), R.values, R.apply(Math.max))(letters);
 };
 
-const uniqSortedLetters = R.pipe(
-  R.map(R.pipe(R.split(""), R.sort(R.descend(R.identity)), R.join(""))),
-  R.uniq
-)(words);
-const wordsBySortedLetters = R.zipObj(
-  uniqSortedLetters,
-  R.repeat(1, uniqSortedLetters.length)
-);
-
-export const canMakeAValidWord = (letters: string[]): boolean => {
+export const canMakeAValidWord = (
+  letters: string[],
+  wordsBySortedLetters: {
+    [key: string]: number;
+  }
+): boolean => {
   for (let i = 3; i <= letters.length; i++) {
     const combos = R.uniq(combinations(letters, i, i).map((c) => c.join("")));
     for (let c of combos) {
