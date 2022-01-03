@@ -8,11 +8,15 @@ export interface User {
 // Define a type for the slice state
 interface UserState {
   user: User | null;
+  opponents: {
+    [id: string]: User
+  }
 }
 
 // Define the initial state using that type
 const initialState: UserState = {
   user: null,
+  opponents: {}
 };
 
 export const gamelistSlice = createSlice({
@@ -29,11 +33,14 @@ export const gamelistSlice = createSlice({
         console.error("cannot set nickname on non-existent user");
       }
     },
+    opponentReceived: (state, action: PayloadAction<User>) => {
+      state.opponents[action.payload.id] = action.payload;
+    }
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { userReceived, nicknameSet } = gamelistSlice.actions;
+export const { userReceived, nicknameSet, opponentReceived } = gamelistSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (state: RootState) => state.counter.value;

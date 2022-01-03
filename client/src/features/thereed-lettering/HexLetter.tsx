@@ -77,7 +77,6 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, index, ...props }) => {
 
   useEffect(() => {
     if (index !== undefined) {
-      console.log("here", index);
       rotateSpringApi.set({
         x: Math.PI * 2,
         y: 0,

@@ -1,5 +1,5 @@
 import { AppThunk } from "../../app/store";
-import { nicknameSet, User, userReceived } from "./userSlice";
+import { nicknameSet, opponentReceived, User, userReceived } from "./userSlice";
 
 export const getUser = (): AppThunk => async (dispatch) => {
   const user: User = await fetch("/api/user").then((res) => res.json());
@@ -22,7 +22,17 @@ export const setNickname =
       body: JSON.stringify({
         nickname,
       }),
-    }).then((res) => res.text());
+    });
 
     dispatch(nicknameSet(nickname));
+  };
+
+export const fetchOpponent =
+  (id: string): AppThunk =>
+  async (dispatch) => {
+    const opponent: User = await fetch(`/api/user/${id}`).then((res) =>
+      res.json()
+    );
+    console.log('opponent', opponent)
+    dispatch(opponentReceived(opponent))
   };

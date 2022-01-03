@@ -6,6 +6,7 @@ import { useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import Canvas from "../canvas/Canvas";
 import { QRCoord } from "../hexGrid/hexGrid";
+import { User } from "../user/userSlice";
 import { clearTileSelection, submitMove } from "./gameActions";
 import { getSelectedWordByGameId } from "./gameSelectors";
 import GameTile from "./GameTile";
@@ -19,6 +20,9 @@ interface GameBoardProps {
 const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   const { progress } = useProgress();
   const dispatch = useDispatch();
+
+  const nickname = useAppSelector(state => state.user.user?.nickname);
+  const opponent: User | undefined = useAppSelector(state => state.user.opponents[game.users[1 - userIndex]])
 
   const selectedWord = useAppSelector((state) =>
     getSelectedWordByGameId(state, id)
@@ -47,7 +51,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 gameOver={game.gameOver}
               />
               <Html position={[0, game.turn === 0 ? 5 : 4, 0]} center>
-                <span>{userIndex === 0 ? "You" : "Them"}</span>
+                <span>{userIndex === 0 ? nickname ?? "You" : opponent?.nickname ?? "Them"}</span>
               </Html>
             </group>
             {/* <Html center>
@@ -67,7 +71,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 gameOver={game.gameOver}
               />
               <Html position={[0, game.turn === 1 ? 5 : 4, 0]} center>
-                {userIndex === 1 ? "You" : "Them"}
+                {userIndex === 1 ? nickname ?? "You" : opponent?.nickname ?? "Them"}
               </Html>
             </group>
           </group>

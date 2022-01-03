@@ -10,6 +10,8 @@ import { joinGameById } from "../gamelist/gamelistActions";
 import GameBoard from "../game/GameBoard";
 import CopyToClipboard from "../../presentational/CopyToClipboard";
 import NicknameModal from "../user/NicknameModal";
+import { useAppSelector } from "../../app/hooks";
+import { fetchOpponent } from "../user/userActions";
 
 const Play: React.FC = () => {
   const dispatch = useDispatch();
@@ -27,6 +29,15 @@ const Play: React.FC = () => {
     game && currentUser
       ? game.users.findIndex((val) => val === currentUser.id)
       : null;
+
+  const otherUser =
+    game &&
+    currentUser &&
+    game.users.filter((user) => user !== currentUser.id)[0];
+
+  const opponent = useAppSelector((state) =>
+    otherUser ? state.user.opponents[otherUser] : null
+  );
 
   useEffect(() => {
     dispatch(resetSelection());
@@ -52,6 +63,12 @@ const Play: React.FC = () => {
       setFourohfour(false);
     }
   }, [id, dispatch, game, gamesLoaded]);
+
+  useEffect(() => {
+    if (game && otherUser && !opponent) {
+      dispatch(fetchOpponent(otherUser));
+    }
+  }, [dispatch, game, otherUser, opponent]);
 
   const nickModal = currentUser?.nickname ? null : <NicknameModal />;
 
