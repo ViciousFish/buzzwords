@@ -58,13 +58,15 @@ export default class Mongo implements DataLayer {
           id,
         },
         {
+          id,
           nickname,
         },
         {
           session: options?.session,
+          upsert: true,
         }
       );
-      return res.modifiedCount == 1;
+      return res.modifiedCount == 1 || res.upsertedCount == 1;
     } catch (e) {
       console.log(e);
       throw e;
