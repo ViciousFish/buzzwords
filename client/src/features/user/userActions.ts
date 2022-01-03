@@ -1,3 +1,4 @@
+import axios from "axios";
 import { AppThunk } from "../../app/store";
 import { nicknameSet, opponentReceived, User, userReceived } from "./userSlice";
 
@@ -16,23 +17,20 @@ export const setNickname =
       console.error("couldn't set nickname on user without ID");
       return;
     }
-    await fetch(`/api/user/nickname`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    try {
+      await axios.post(`/api/user/nickname`, {
         nickname,
-      }),
-    });
-
+      });
+    } catch (e) {
+      throw e.response.data.message;
+    }
     dispatch(nicknameSet(nickname));
   };
 
 export const fetchOpponent =
   (id: string): AppThunk =>
   async (dispatch) => {
-    const opponent: User = await fetch(`/api/user/${id}`).then((res) =>
-      res.json()
-    );
-    console.log('opponent', opponent)
-    dispatch(opponentReceived(opponent))
+    const opponent = await axios.get<User>(`/api/user/${id}`)
+    console.log("opponent", opponent.data);
+    dispatch(opponentReceived(opponent.data));
   };
