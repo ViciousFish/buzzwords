@@ -5,7 +5,7 @@ import classnames from "classnames";
 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/store";
-import { resetSelection, setCurrentGame } from "../game/gameSlice";
+import { setCurrentGame } from "../game/gameSlice";
 import { joinGameById } from "../gamelist/gamelistActions";
 import GameBoard from "../game/GameBoard";
 import CopyToClipboard from "../../presentational/CopyToClipboard";
@@ -148,7 +148,7 @@ const Play: React.FC = () => {
                     replayState && currentReplayIndex === index && 'bg-blue-400 text-white'
                   )}
                   onClick={() => {
-                    dispatch(initiateReplay(index, id));
+                    dispatch(initiateReplay(index));
                   }}
                 >
                   {replayState && currentReplayIndex === index && (
