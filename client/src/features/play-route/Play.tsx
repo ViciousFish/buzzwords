@@ -143,7 +143,7 @@ const Play: React.FC = () => {
                 <button
                   type="button"
                   className={classnames(
-                    "flex-auto p-1 font-bold text-center rounded-md m-1 inset-shadow",
+                    "flex-auto p-1 font-bold text-center rounded-md m-1 inset-shadow hover:bg-opacity-70",
                     move.player === 0 ? "bg-p1" : "bg-p2",
                     replayState && currentReplayIndex === index && 'bg-blue-400 text-white'
                   )}

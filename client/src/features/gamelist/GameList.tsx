@@ -113,8 +113,8 @@ const GameList: React.FC = () => {
               </CanvasLazy>
             </React.Suspense>
           </div>
-          <div className="px-2 mt-[-1em] z-10">
-            <span className="text-xl">Games</span>
+          <div className="px-2 mt-0 z-10">
+            <h2 className="inline text-2xl font-bold text-darkbrown">Games</h2>
             <Button
               onClick={() => {
                 dispatch(createNewGame());
