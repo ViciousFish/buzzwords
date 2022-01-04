@@ -70,7 +70,7 @@ const Play: React.FC = () => {
     }
   }, [dispatch, game, otherUser, opponent]);
 
-  const nickModal = currentUser?.nickname ? null : <NicknameModal />;
+  const nickModal = currentUser && !currentUser.nickname ? <NicknameModal /> : null;
 
   if (fourohfour) {
     return (
