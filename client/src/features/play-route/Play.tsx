@@ -16,6 +16,7 @@ import { initiateReplay } from "../game/gameActions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faDotCircle,
+  faHistory,
   faPlay,
   faPlayCircle,
 } from "@fortawesome/free-solid-svg-icons";
@@ -122,17 +123,16 @@ const Play: React.FC = () => {
       )}
       {game && id && (
         <div className="m-auto flex flex-shrink-0 flex-col w-[200px] mt-2">
-          <div className="flex items-center">
+          <div className="flex items-center text-darkbrown">
             <FontAwesomeIcon
               className={classNames(
-                "mr-1 text-red-500 text-2xl",
+                "mr-1 text-xl",
                 replayState && "text-blue-500"
               )}
-              icon={replayState ? faPlayCircle : faDotCircle}
+              icon={replayState ? faPlayCircle : faHistory}
             />
             <h3 className="flex-auto">
-              <span className="block m-0 mb-[-10px]">instant</span>
-              <span className="text-2xl font-bold m-0 italic">REPLAY</span>
+              <span className="text-2xl font-bold m-0">Turns</span>
             </h3>
           </div>
           <ul className="flex-auto overflow-y-auto">
