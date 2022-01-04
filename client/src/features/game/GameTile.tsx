@@ -5,6 +5,7 @@ import React, {
   useState,
   useCallback,
 } from "react";
+import * as R from "ramda";
 import { Group, Mesh, Vector3 } from "three";
 import {
   ThreeEvent,
@@ -88,38 +89,42 @@ const GameTile: React.FC<GameTileProps> = ({
     currentGame ? state.gamelist.games[currentGame].grid : null
   );
   const replayMove = useAppSelector((state) => state.game.replay.move);
-  const replayTiles = useAppSelector(getHightlightedCoordsForCurrentReplayState)
+  const replayProgress = useAppSelector(
+    (state) => state.game.replay.playbackState
+  );
+  const replayTiles = useAppSelector(
+    getHightlightedCoordsForCurrentReplayState
+  );
 
   const letter =
-    (replayMove && coord) ? replayMove.grid[coord]?.value :letterProp;
+    replayMove && coord ? replayMove.grid[coord]?.value : letterProp;
   const owner =
     (replayMove && coord && replayMove.grid[coord].owner) ?? ownerProp;
   const isCapital =
     (replayMove && coord && replayMove.grid[coord].capital) ?? isCapitalProp;
-  const selected = (replayMove && coord) ? Boolean(replayTiles[coord]) : isSelectedState;
+  const selected =
+    replayMove && coord ? Boolean(replayTiles[coord]) : isSelectedState;
 
   let color = theme.colors.primary;
   if (owner === 0) {
     color = theme.colors.tile_p1;
   } else if (owner === 1) {
     color = theme.colors.tile_p2;
-  } else
-  if (selected && grid && coord) {
+  } else if (selected && grid && coord) {
     const [q, r] = coord.split(",");
     const parsedCoord = {
       q: Number(q),
       r: Number(r),
     };
 
-    const turn = replayMove?.player ?? currentTurn
+    const turn = replayMove?.player ?? currentTurn;
     const willConnect = willConnectToTerritory(
-      grid,
-      currentMove,
+      replayMove?.grid ?? grid,
+      replayMove ? R.take(replayProgress, replayMove.coords) : currentMove,
       parsedCoord,
       turn
     );
-    const turnColor =
-      turn === 0 ? theme.colors.tile_p1 : theme.colors.tile_p2;
+    const turnColor = turn === 0 ? theme.colors.tile_p1 : theme.colors.tile_p2;
     if (willConnect) {
       color = turnColor;
     } else {
