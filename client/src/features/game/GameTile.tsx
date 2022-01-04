@@ -85,7 +85,7 @@ const GameTile: React.FC<GameTileProps> = ({
     (state) => state.gamelist.games[currentGame].turn
   );
   const currentMove = useAppSelector(getTileSelectionInParsedHexCoords);
-  const grid = useAppSelector((state) =>
+  const gridState = useAppSelector((state) =>
     currentGame ? state.gamelist.games[currentGame].grid : null
   );
   const replayMove = useAppSelector((state) => state.game.replay.move);
@@ -104,6 +104,8 @@ const GameTile: React.FC<GameTileProps> = ({
     (replayMove && coord && replayMove.grid[coord].capital) ?? isCapitalProp;
   const selected =
     replayMove && coord ? Boolean(replayTiles[coord]) : isSelectedState;
+  const turn = replayMove?.player ?? currentTurn;
+  const grid = replayMove?.grid ?? gridState;
 
   let color = theme.colors.primary;
   if (owner === 0) {
@@ -117,9 +119,8 @@ const GameTile: React.FC<GameTileProps> = ({
       r: Number(r),
     };
 
-    const turn = replayMove?.player ?? currentTurn;
     const willConnect = willConnectToTerritory(
-      replayMove?.grid ?? grid,
+      grid,
       replayMove ? R.take(replayProgress, replayMove.coords) : currentMove,
       parsedCoord,
       turn
