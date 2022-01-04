@@ -17,6 +17,7 @@ import HexGrid, {
 } from "buzzwords-shared/hexgrid";
 
 import { WordsObject, wordsBySortedLetters } from "./words";
+import Cell from "buzzwords-shared/cell";
 
 export default class GameManager {
   game: Game | null;
@@ -63,8 +64,16 @@ export default class GameManager {
       throw new Error("Not a valid word");
     }
 
+    const gridCopy: { [coord: string]: Cell } = {};
+    Object.keys(this.game.grid).forEach((key) => {
+      const cell = this.game && this.game.grid[key];
+      if (cell) {
+        gridCopy[key] = R.omit(["_id"], cell);
+      }
+    });
+
     const gameMove = {
-      grid: this.game.grid,
+      grid: gridCopy,
       coords: move,
       letters: move.map(
         (m) => getCell(this.game?.grid as HexGrid, m.q, m.r)?.value ?? ""

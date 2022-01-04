@@ -110,20 +110,21 @@ const GameTile: React.FC<GameTileProps> = ({
       q: Number(q),
       r: Number(r),
     };
+
+    const turn = replayMove?.player ?? currentTurn
     const willConnect = willConnectToTerritory(
       grid,
       currentMove,
       parsedCoord,
-      currentTurn
+      turn
     );
     const turnColor =
-      currentTurn === 0 ? theme.colors.tile_p1 : theme.colors.tile_p2;
+      turn === 0 ? theme.colors.tile_p1 : theme.colors.tile_p2;
     if (willConnect) {
       color = turnColor;
     } else {
       color = theme.colors.tile_selected;
     }
-    // take color of current player and blend with base color?
   }
 
   let scale = owner !== 2 || selected ? 1 : 0.9;

@@ -199,12 +199,7 @@ export default class Mongo implements DataLayer {
       if (!res) {
         return null;
       }
-      const game = res.toObject();
-      game.grid = Object.fromEntries(game.grid);
-      game.grid = Object.fromEntries(
-        // @ts-expect-error This also works
-        Object.entries(game.grid).map(([k, v]) => [k, v.toObject()])
-      );
+      const game = res.toObject({ flattenMaps: true });
       return game;
     } catch (e) {
       console.log(e);

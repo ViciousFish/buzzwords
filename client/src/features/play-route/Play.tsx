@@ -137,26 +137,29 @@ const Play: React.FC = () => {
             </h3>
           </div>
           <ul className="flex-auto overflow-y-auto">
-            {R.reverse(game.moves).map((move, i) => (
-              <li key={i} className="flex">
+            {R.reverse(game.moves).map((move, i) => {
+              const index = game.moves.length - i - 1;
+              return (
+              <li key={index} className="flex">
                 <button
                   type="button"
                   className={classnames(
                     "flex-auto p-1 font-bold text-center rounded-md m-1 inset-shadow",
                     move.player === 0 ? "bg-p1" : "bg-p2",
-                    replayState && currentReplayIndex === i && 'bg-blue-400 text-white'
+                    replayState && currentReplayIndex === index && 'bg-blue-400 text-white'
                   )}
                   onClick={() => {
-                    dispatch(initiateReplay(i, id));
+                    dispatch(initiateReplay(index, id));
                   }}
                 >
-                  {replayState && currentReplayIndex === i && (
+                  {replayState && currentReplayIndex === index && (
                     <FontAwesomeIcon className="mr-2" icon={faPlay} />
                   )}
                   {move.letters.join("").toUpperCase()}
                 </button>
               </li>
-            ))}
+              )}
+            )}
           </ul>
         </div>
       )}

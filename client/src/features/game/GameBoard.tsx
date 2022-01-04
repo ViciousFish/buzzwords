@@ -1,7 +1,9 @@
 import { Html, useProgress } from "@react-three/drei";
+import * as R from 'ramda';
 import Game from "buzzwords-shared/Game";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+
 import { useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import Canvas from "../canvas/Canvas";
@@ -21,11 +23,19 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   const { progress } = useProgress();
   const dispatch = useDispatch();
 
-  const nickname = useAppSelector(state => state.user.user?.nickname);
-  const opponent: User | undefined = useAppSelector(state => state.user.opponents[game.users[1 - userIndex]])
+  const nickname = useAppSelector((state) => state.user.user?.nickname);
+  const opponent: User | undefined = useAppSelector(
+    (state) => state.user.opponents[game.users[1 - userIndex]]
+  );
 
   const selectedWord = useAppSelector((state) =>
     getSelectedWordByGameId(state, id)
+  );
+  const replayLetters = useAppSelector(
+    (state) => state.game.replay.move?.letters
+  );
+  const replayProgress = useAppSelector(
+    (state) => state.game.replay.playbackState
   );
 
   const [revealLetters, setRevealLetters] = useState(false);
@@ -39,8 +49,9 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
     <div className="h-[80vh] lg:h-screen flex-auto overflow-hidden">
       <Canvas key={`play-${id}`}>
         {/* <CameraControls /> */}
-        <React.Suspense fallback={<Html center>{progress.toFixed(0)} % loaded</Html>}>
-          {/* <HexWord allowSpinning autoSpin={false} position={[0, 20, 0]} text={selectedWord + ' '}/> */}
+        <React.Suspense
+          fallback={<Html center>{progress.toFixed(0)} % loaded</Html>}
+        >
           <group position={[0, 21, 0]}>
             <group position={[-10, 0, 0]}>
               <GameTile
@@ -51,7 +62,11 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 gameOver={game.gameOver}
               />
               <Html position={[0, game.turn === 0 ? 5 : 4, 0]} center>
-                <span>{userIndex === 0 ? nickname ?? "You" : opponent?.nickname ?? "Them"}</span>
+                <span>
+                  {userIndex === 0
+                    ? nickname ?? "You"
+                    : opponent?.nickname ?? "Them"}
+                </span>
               </Html>
             </group>
             {/* <Html center>
@@ -71,7 +86,9 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 gameOver={game.gameOver}
               />
               <Html position={[0, game.turn === 1 ? 5 : 4, 0]} center>
-                {userIndex === 1 ? nickname ?? "You" : opponent?.nickname ?? "Them"}
+                {userIndex === 1
+                  ? nickname ?? "You"
+                  : opponent?.nickname ?? "Them"}
               </Html>
             </group>
           </group>
@@ -89,7 +106,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                   </Button>
                 ) : null}
                 <div className="text-[calc(4vh+4vw)] text-darkbrown font-fredoka">
-                  {selectedWord || ""}
+                  {replayLetters ? R.take(replayProgress, replayLetters).join("").toUpperCase() : selectedWord ?? ""}
                 </div>
                 {selectedWord?.length && game.turn === userIndex ? (
                   <Button
