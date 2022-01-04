@@ -99,11 +99,11 @@ const GameTile: React.FC<GameTileProps> = ({
   const selected = (replayMove && coord) ? Boolean(replayTiles[coord]) : isSelectedState;
 
   let color = theme.colors.primary;
-  // if (owner === 0) { // CQ uncomment this
-  //   color = theme.colors.tile_p1;
-  // } else if (owner === 1) {
-  //   color = theme.colors.tile_p2;
-  // } else
+  if (owner === 0) {
+    color = theme.colors.tile_p1;
+  } else if (owner === 1) {
+    color = theme.colors.tile_p2;
+  } else
   if (selected && grid && coord) {
     const [q, r] = coord.split(",");
     const parsedCoord = {
