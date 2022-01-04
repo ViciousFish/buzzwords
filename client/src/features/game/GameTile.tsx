@@ -91,7 +91,7 @@ const GameTile: React.FC<GameTileProps> = ({
   const replayTiles = useAppSelector(getHightlightedCoordsForCurrentReplayState)
 
   const letter =
-    (replayMove && coord && replayMove.grid[coord].value) ?? letterProp;
+    (replayMove && coord) ? replayMove.grid[coord]?.value :letterProp;
   const owner =
     (replayMove && coord && replayMove.grid[coord].owner) ?? ownerProp;
   const isCapital =

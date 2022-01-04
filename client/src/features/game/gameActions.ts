@@ -1,3 +1,4 @@
+import { nanoid } from "@reduxjs/toolkit";
 import { Move } from "buzzwords-shared/Game";
 import { emitSelection } from "../../app/socket";
 import { AppThunk } from "../../app/store";
@@ -101,18 +102,33 @@ export const receiveSelectionSocket =
 
 const REPLAY_DELAY = 2000;
 const REPLAY_SPEED = 500;
+const REPLAY_HANG = 2000;
 
 export const initiateReplay =
-  (move: Move): AppThunk =>
+  (moveIndex: number, gameId: string): AppThunk =>
   async (dispatch, getState) => {
-    dispatch(newReplay(move));
+    const move = getState().gamelist.games[gameId].moves[moveIndex];
+    const poison = nanoid();
+    dispatch(newReplay({ move, poison, index: moveIndex }));
     const ticks = move.letters.length;
     for (let tick = 0; tick < ticks; tick++) {
       window.setTimeout(() => {
-        dispatch(advanceReplayPlaybackState());
-      }, REPLAY_DELAY + (tick * REPLAY_SPEED));
+        if (getState().game.replay.poisonToken === poison) {
+          dispatch(advanceReplayPlaybackState());
+        }
+      }, REPLAY_DELAY + tick * REPLAY_SPEED);
     }
     setTimeout(() => {
-      dispatch(clearReplay());
-    }, REPLAY_DELAY + (ticks * REPLAY_SPEED) + REPLAY_SPEED);
+      if (getState().game.replay.poisonToken === poison) {
+        const nextMove = getState().gamelist.games[gameId].moves[moveIndex + 1];
+        if (nextMove) {
+          dispatch(newReplay({ move: nextMove, poison, index: moveIndex }));
+          setTimeout(() => {
+            dispatch(clearReplay());
+          }, REPLAY_HANG);
+        } else {
+          dispatch(clearReplay());
+        }
+      }
+    }, REPLAY_DELAY + ticks * REPLAY_SPEED + REPLAY_SPEED);
   };

@@ -14,7 +14,11 @@ import { useAppSelector } from "../../app/hooks";
 import { fetchOpponent } from "../user/userActions";
 import { initiateReplay } from "../game/gameActions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDotCircle, faPlayCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faDotCircle,
+  faPlay,
+  faPlayCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 
 const Play: React.FC = () => {
@@ -29,6 +33,9 @@ const Play: React.FC = () => {
   const currentUser = useSelector((state: RootState) => state.user.user);
   const replayState = useAppSelector((state) =>
     Boolean(state.game.replay.move)
+  );
+  const currentReplayIndex = useAppSelector(
+    (state) => state.game.replay.moveListIndex
   );
 
   const [fourohfour, setFourohfour] = useState(false);
@@ -114,37 +121,45 @@ const Play: React.FC = () => {
       {game && id && userIndex !== null && (
         <GameBoard id={id} game={game} userIndex={userIndex} />
       )}
-      <div className="m-auto flex flex-shrink-0 flex-col w-[200px] mt-2">
-        <div className="flex items-center">
-          <FontAwesomeIcon
-            className={classNames("mr-1 text-red-500 text-2xl", replayState && "text-blue-500")}
-            icon={replayState ? faPlayCircle : faDotCircle}
-          />
-          <h3 className="flex-auto">
-            <span className="block m-0 mb-[-10px]">instant</span>
-            <span className="text-2xl font-bold m-0 italic">REPLAY</span>
-          </h3>
-        </div>
-        <ul className="flex-auto overflow-y-auto">
-          {game &&
-            R.reverse(game.moves).map((move, i) => (
+      {game && id && (
+        <div className="m-auto flex flex-shrink-0 flex-col w-[200px] mt-2">
+          <div className="flex items-center">
+            <FontAwesomeIcon
+              className={classNames(
+                "mr-1 text-red-500 text-2xl",
+                replayState && "text-blue-500"
+              )}
+              icon={replayState ? faPlayCircle : faDotCircle}
+            />
+            <h3 className="flex-auto">
+              <span className="block m-0 mb-[-10px]">instant</span>
+              <span className="text-2xl font-bold m-0 italic">REPLAY</span>
+            </h3>
+          </div>
+          <ul className="flex-auto overflow-y-auto">
+            {R.reverse(game.moves).map((move, i) => (
               <li key={i} className="flex">
                 <button
                   type="button"
                   className={classnames(
                     "flex-auto p-1 font-bold text-center rounded-md m-1 inset-shadow",
-                    move.player === 0 ? "bg-p1" : "bg-p2"
+                    move.player === 0 ? "bg-p1" : "bg-p2",
+                    replayState && currentReplayIndex === i && 'bg-blue-400 text-white'
                   )}
                   onClick={() => {
-                    dispatch(initiateReplay(move));
+                    dispatch(initiateReplay(i, id));
                   }}
                 >
+                  {replayState && currentReplayIndex === i && (
+                    <FontAwesomeIcon className="mr-2" icon={faPlay} />
+                  )}
                   {move.letters.join("").toUpperCase()}
                 </button>
               </li>
             ))}
-        </ul>
-      </div>
+          </ul>
+        </div>
+      )}
       {nickModal}
     </div>
     // </div>
