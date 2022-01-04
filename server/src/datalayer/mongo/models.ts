@@ -48,6 +48,16 @@ const gameSchema = new Schema<Game>({
       player: Number,
       letters: [String],
       coords: [{ q: Number, r: Number }],
+      grid: {
+        type: Map,
+        of: {
+          q: Number,
+          r: Number,
+          value: String,
+          capital: Boolean,
+          owner: Number,
+        },
+      },
     },
   ],
 });
