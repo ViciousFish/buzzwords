@@ -41,18 +41,24 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookieParser(config.cookieSecret));
 
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   const cookies = req.signedCookies || {};
-  const session = cookies.session || null;
-  if (!session) {
-    const session = nanoid();
-    res.cookie("session", session, {
+  let authToken: string | null = cookies.authToken || null;
+  if (!authToken) {
+    const userId = nanoid();
+    authToken = nanoid(40);
+    await dl.createAuthToken(authToken, userId);
+    res.cookie("authToken", authToken, {
       expires: new Date(253402300000000), // Approximately Friday, 31 Dec 9999 23:59:59 GMT
       signed: true,
     });
     req.signedCookies = {
-      session,
+      authToken,
     };
+    res.locals.userId = userId;
+  } else {
+    const userId = await dl.getUserIdByAuthToken(authToken);
+    res.locals.userId = userId;
   }
   next();
 });
@@ -62,7 +68,7 @@ app.get("/healthz", (req, res) => {
 });
 
 app.get("/api/user", async (req, res) => {
-  const user = req.signedCookies.session;
+  const user = res.locals.userId as string;
   const nickname = await dl.getNickName(user);
   res.send({
     id: user,
@@ -71,7 +77,7 @@ app.get("/api/user", async (req, res) => {
 });
 
 app.post("/api/user/nickname", async (req, res) => {
-  const user = req.signedCookies.session;
+  const user = res.locals.userId as string;
   const nickname = (req.body || {})?.nickname as string | null;
   if (!nickname) {
     res.status(400).json({
@@ -106,7 +112,7 @@ app.get("/api/user/:id", async (req, res) => {
 });
 
 app.get("/api/games", async (req, res) => {
-  const user = req.signedCookies.session;
+  const user = res.locals.userId as string;
   const games = await dl.getGamesByUserId(user);
   res.send(games);
 });
@@ -122,7 +128,7 @@ app.get("/api/game/:id", async (req, res) => {
 });
 
 app.post("/api/game", async (req, res) => {
-  const user = req.signedCookies.session;
+  const user = res.locals.userId as string;
   const gm = new GameManager(null);
   const game = gm.createGame(user);
   try {
@@ -135,7 +141,7 @@ app.post("/api/game", async (req, res) => {
 });
 
 app.post("/api/game/:id/join", async (req, res) => {
-  const user = req.signedCookies.session;
+  const user = res.locals.userId as string;
   const gameId = req.params.id;
   const success = await dl.joinGame(user, gameId);
   const game = await dl.getGameById(gameId);
@@ -150,13 +156,13 @@ app.post("/api/game/:id/join", async (req, res) => {
 });
 
 app.post("/api/game/join", async (req, res) => {
-  const user = req.signedCookies.session;
+  const user = res.locals.userId as string;
   const success = await dl.joinRandomGame(user);
   res.sendStatus(success ? 201 : 404);
 });
 
 app.post("/api/game/:id/move", async (req, res) => {
-  const user = req.signedCookies.session;
+  const user = res.locals.userId as string;
   const gameId = req.params.id;
   const parsedMove: HexCoord[] = [];
   const move = req.body.move || [];
@@ -215,10 +221,17 @@ interface SelectionEventProps {
   selection: { [position: string]: number };
 }
 
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
   const cookies = cookie.parse(socket.request.headers.cookie || "");
-  socket.join(cookies.session);
-  console.log("a user connected", cookies.session);
+  const userId = await dl.getUserIdByAuthToken(
+    cookies.authToken.split(".")[0].substring(2)
+  );
+
+  if (!userId) {
+    return;
+  }
+  socket.join(userId);
+  console.log("a user connected", userId);
   socket.on("selection", async ({ selection, gameId }: SelectionEventProps) => {
     const game = await dl.getGameById(gameId);
     if (!game) {

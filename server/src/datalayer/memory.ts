@@ -10,9 +10,28 @@ export default class Memory implements DataLayer {
       nickname: string;
     };
   };
+  authTokens: {
+    [key: string]: string;
+  } = {};
   constructor() {
     this.games = {};
     this.users = {};
+  }
+
+  async createAuthToken(
+    token: string,
+    userId: string,
+    options?: Record<string, unknown>
+  ): Promise<boolean> {
+    this.authTokens[token] = userId;
+    return true;
+  }
+
+  async getUserIdByAuthToken(
+    token: string,
+    options?: Record<string, unknown>
+  ): Promise<string | null> {
+    return this.authTokens[token];
   }
 
   async setNickName(id: string, nickname: string): Promise<boolean> {

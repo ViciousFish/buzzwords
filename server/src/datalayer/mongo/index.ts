@@ -44,6 +44,54 @@ export default class Mongo implements DataLayer {
     }
   }
 
+  async createAuthToken(
+    token: string,
+    userId: string,
+    options?: Options
+  ): Promise<boolean> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res = await Models.AuthToken.create({
+        token,
+        userId,
+      });
+      return true;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async getUserIdByAuthToken(
+    token: string,
+    options?: Options
+  ): Promise<string | null> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res = await Models.AuthToken.findOne(
+        {
+          token,
+        },
+        null,
+        {
+          session: options?.session,
+        }
+      );
+      if (!res) {
+        return null;
+      }
+
+      return res?.toObject()?.userId;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
   async setNickName(
     id: string,
     nickname: string,

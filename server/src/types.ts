@@ -1,6 +1,15 @@
 import Game from "buzzwords-shared/Game";
 
 export interface DataLayer {
+  createAuthToken(
+    token: string,
+    userId: string,
+    options?: Record<string, unknown>
+  ): Promise<boolean>;
+  getUserIdByAuthToken(
+    token: string,
+    options?: Record<string, unknown>
+  ): Promise<string | null>;
   setNickName(
     id: string,
     nickname: string,

@@ -1,10 +1,15 @@
 import { model, Schema } from "mongoose";
 
 import Game from "buzzwords-shared/Game";
-
 interface User {
   id: string;
   nickname: string;
+}
+
+interface AuthToken {
+  token: string;
+  userId: string;
+  createdDate: Date;
 }
 
 const gameSchema = new Schema<Game>({
@@ -62,7 +67,27 @@ const userSchema = new Schema<User>({
 
 const UserModel = model<User>("User", userSchema);
 
+const authTokenSchema = new Schema<AuthToken>({
+  token: {
+    type: String,
+    required: true,
+    index: true,
+  },
+  userId: {
+    type: String,
+    required: true,
+  },
+  createdDate: {
+    type: Date,
+    required: true,
+    default: () => new Date(),
+  },
+});
+
+const AuthTokenModel = model<AuthToken>("AuthToken", authTokenSchema);
+
 export default {
   Game: GameModel,
   User: UserModel,
+  AuthToken: AuthTokenModel,
 };
