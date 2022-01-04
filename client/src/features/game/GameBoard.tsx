@@ -1,7 +1,7 @@
 import { Html, useProgress } from "@react-three/drei";
-import * as R from 'ramda';
+import * as R from "ramda";
 import Game from "buzzwords-shared/Game";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { useAppSelector } from "../../app/hooks";
@@ -39,7 +39,18 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   );
 
   const [revealLetters, setRevealLetters] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
+  const onSubmit = useCallback(async () => {
+    try {
+      setSubmitting(true);
+      await dispatch(submitMove(id));
+      setSubmitting(false);
+    } catch (e) {
+      setSubmitting(false);
+      // toast?
+    }
+  }, [dispatch, id]);
   useEffect(() => {
     setTimeout(() => {
       setRevealLetters(true);
@@ -106,11 +117,16 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                   </Button>
                 ) : null}
                 <div className="text-[calc(4vh+4vw)] text-darkbrown font-fredoka">
-                  {replayLetters ? R.take(replayProgress, replayLetters).join("").toUpperCase() : selectedWord ?? ""}
+                  {replayLetters
+                    ? R.take(replayProgress, replayLetters)
+                        .join("")
+                        .toUpperCase()
+                    : selectedWord ?? ""}
                 </div>
                 {selectedWord?.length && game.turn === userIndex ? (
                   <Button
-                    onClick={() => dispatch(submitMove(id))}
+                    onClick={onSubmit}
+                    disabled={submitting}
                     type="button"
                   >
                     submit

@@ -1,4 +1,5 @@
 import { nanoid } from "@reduxjs/toolkit";
+import axios from "axios";
 import { Move } from "buzzwords-shared/Game";
 import { emitSelection } from "../../app/socket";
 import { AppThunk } from "../../app/store";
@@ -55,28 +56,18 @@ export const submitMove =
         r: Number(r),
       };
     });
-    console.log("formattedCoords :", formattedCoords);
 
     try {
-      const res = await fetch(`/api/game/${gameId}/move`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          move: formattedCoords,
-        }),
-      }).then((res) => res.json());
-
-      // const newGame: Game = {
-      //   ...res,
-      //   grid: res.grid.cellMap,
-      // };
-
-      // handled by socket msg now
-      // dispatch(updateGame(newGame));
-      // dispatch(resetSelection());
+      await axios.post(`/api/game/${gameId}/move`, {
+        move: formattedCoords,
+      });
     } catch (e) {
-      console.log(e);
+      throw e.response?.data?.message ?? e.toString();
     }
+
+    // handled by socket msg now
+    // dispatch(updateGame(newGame));
+    // dispatch(resetSelection());
   };
 
 export const receiveSelectionSocket =

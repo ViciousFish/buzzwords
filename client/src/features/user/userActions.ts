@@ -22,7 +22,7 @@ export const setNickname =
         nickname,
       });
     } catch (e) {
-      throw e.response.data.message;
+      throw e.response?.data?.message ?? e.toString();
     }
     dispatch(nicknameSet(nickname));
   };
