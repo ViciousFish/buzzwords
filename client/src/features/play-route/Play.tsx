@@ -12,6 +12,10 @@ import CopyToClipboard from "../../presentational/CopyToClipboard";
 import NicknameModal from "../user/NicknameModal";
 import { useAppSelector } from "../../app/hooks";
 import { fetchOpponent } from "../user/userActions";
+import { initiateReplay } from "../game/gameActions";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDotCircle, faPlayCircle } from "@fortawesome/free-solid-svg-icons";
+import classNames from "classnames";
 
 const Play: React.FC = () => {
   const dispatch = useDispatch();
@@ -23,6 +27,10 @@ const Play: React.FC = () => {
     (state: RootState) => state.gamelist.gamesLoaded
   );
   const currentUser = useSelector((state: RootState) => state.user.user);
+  const replayState = useAppSelector((state) =>
+    Boolean(state.game.replay.move)
+  );
+
   const [fourohfour, setFourohfour] = useState(false);
 
   const userIndex =
@@ -70,7 +78,8 @@ const Play: React.FC = () => {
     }
   }, [dispatch, game, otherUser, opponent]);
 
-  const nickModal = currentUser && !currentUser.nickname ? <NicknameModal /> : null;
+  const nickModal =
+    currentUser && !currentUser.nickname ? <NicknameModal /> : null;
 
   if (fourohfour) {
     return (
@@ -106,18 +115,32 @@ const Play: React.FC = () => {
         <GameBoard id={id} game={game} userIndex={userIndex} />
       )}
       <div className="m-auto flex flex-shrink-0 flex-col w-[200px] mt-2">
-        <h3 className="text-2xl text-center">Words Played</h3>
+        <div className="flex items-center">
+          <FontAwesomeIcon
+            className={classNames("mr-1 text-red-500 text-2xl", replayState && "text-blue-500")}
+            icon={replayState ? faPlayCircle : faDotCircle}
+          />
+          <h3 className="flex-auto">
+            <span className="block m-0 mb-[-10px]">instant</span>
+            <span className="text-2xl font-bold m-0 italic">REPLAY</span>
+          </h3>
+        </div>
         <ul className="flex-auto overflow-y-auto">
           {game &&
             R.reverse(game.moves).map((move, i) => (
-              <li
-                key={i}
-                className={classnames(
-                  "p-1 font-bold text-center rounded-md m-1",
-                  move.player === 0 ? "bg-p1" : "bg-p2"
-                )}
-              >
-                {move.letters.join("").toUpperCase()}
+              <li key={i} className="flex">
+                <button
+                  type="button"
+                  className={classnames(
+                    "flex-auto p-1 font-bold text-center rounded-md m-1 inset-shadow",
+                    move.player === 0 ? "bg-p1" : "bg-p2"
+                  )}
+                  onClick={() => {
+                    dispatch(initiateReplay(move));
+                  }}
+                >
+                  {move.letters.join("").toUpperCase()}
+                </button>
               </li>
             ))}
         </ul>

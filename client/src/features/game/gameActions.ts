@@ -1,8 +1,12 @@
+import { Move } from "buzzwords-shared/Game";
 import { emitSelection } from "../../app/socket";
 import { AppThunk } from "../../app/store";
 import { QRCoord } from "../hexGrid/hexGrid";
 import { getOrderedTileSelectionCoords } from "./gameSelectors";
 import {
+  advanceReplayPlaybackState,
+  clearReplay,
+  newReplay,
   resetSelection,
   selectTile,
   setSelection,
@@ -93,4 +97,22 @@ export const receiveSelectionSocket =
     if (currentGame === gameId && currentUserIndex !== turn) {
       dispatch(setSelection(selection));
     }
+  };
+
+const REPLAY_DELAY = 2000;
+const REPLAY_SPEED = 500;
+
+export const initiateReplay =
+  (move: Move): AppThunk =>
+  async (dispatch, getState) => {
+    dispatch(newReplay(move));
+    const ticks = move.letters.length;
+    for (let tick = 0; tick < ticks; tick++) {
+      window.setTimeout(() => {
+        dispatch(advanceReplayPlaybackState());
+      }, REPLAY_DELAY + (tick * REPLAY_SPEED));
+    }
+    setTimeout(() => {
+      dispatch(clearReplay());
+    }, REPLAY_DELAY + (ticks * REPLAY_SPEED) + REPLAY_SPEED);
   };

@@ -25,7 +25,11 @@ import { QRCoord } from "../hexGrid/hexGrid";
 import { toggleTileSelected } from "./gameActions";
 import { GamePlayer } from "./game";
 import { Flower01 } from "../../assets/Flower01";
-import { getOrderedTileSelectionCoords, getTileSelectionInParsedHexCoords } from "./gameSelectors";
+import {
+  getHightlightedCoordsForCurrentReplayState,
+  getOrderedTileSelectionCoords,
+  getTileSelectionInParsedHexCoords,
+} from "./gameSelectors";
 import { Sakura } from "../../assets/Sakura";
 import { HexOutlineSolid } from "../../assets/Hexoutlinesolid";
 
@@ -46,13 +50,13 @@ interface GameTileProps {
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
 
 const GameTile: React.FC<GameTileProps> = ({
-  letter,
+  letter: letterProp,
   coord,
   position,
-  owner,
+  owner: ownerProp,
   currentGame,
   userIndex,
-  isCapital,
+  isCapital: isCapitalProp,
   isPlayerIdentity,
   gameOver,
 }) => {
@@ -73,7 +77,7 @@ const GameTile: React.FC<GameTileProps> = ({
     [font]
   );
 
-  const isSelected = useAppSelector((state) =>
+  const isSelectedState = useAppSelector((state) =>
     coord ? state.game.selectedTiles[coord] : null
   );
   const currentTurn = useAppSelector(
@@ -83,16 +87,28 @@ const GameTile: React.FC<GameTileProps> = ({
   const grid = useAppSelector((state) =>
     currentGame ? state.gamelist.games[currentGame].grid : null
   );
+  const replayMove = useAppSelector((state) => state.game.replay.move);
+  const replayTiles = useAppSelector(getHightlightedCoordsForCurrentReplayState)
+
+  const letter =
+    (replayMove && coord && replayMove.grid[coord].value) ?? letterProp;
+  const owner =
+    (replayMove && coord && replayMove.grid[coord].owner) ?? ownerProp;
+  const isCapital =
+    (replayMove && coord && replayMove.grid[coord].capital) ?? isCapitalProp;
+  const selected = (replayMove && coord) ? Boolean(replayTiles[coord]) : isSelectedState;
+
   let color = theme.colors.primary;
-  if (owner === 0) {
-    color = theme.colors.tile_p1;
-  } else if (owner === 1) {
-    color = theme.colors.tile_p2;
-  } else if (isSelected && grid && coord) {
-    const [q, r] = coord.split(',');
+  // if (owner === 0) { // CQ uncomment this
+  //   color = theme.colors.tile_p1;
+  // } else if (owner === 1) {
+  //   color = theme.colors.tile_p2;
+  // } else
+  if (selected && grid && coord) {
+    const [q, r] = coord.split(",");
     const parsedCoord = {
       q: Number(q),
-      r: Number(r)
+      r: Number(r),
     };
     const willConnect = willConnectToTerritory(
       grid,
@@ -100,16 +116,17 @@ const GameTile: React.FC<GameTileProps> = ({
       parsedCoord,
       currentTurn
     );
-    const turnColor = currentTurn === 0 ? theme.colors.tile_p1 : theme.colors.tile_p2;
+    const turnColor =
+      currentTurn === 0 ? theme.colors.tile_p1 : theme.colors.tile_p2;
     if (willConnect) {
-      color = turnColor
+      color = turnColor;
     } else {
-      color = theme.colors.tile_selected
+      color = theme.colors.tile_selected;
     }
     // take color of current player and blend with base color?
   }
 
-  let scale = owner !== 2 || isSelected ? 1 : 0.9;
+  let scale = owner !== 2 || selected ? 1 : 0.9;
 
   if (isPlayerIdentity && currentTurn === owner) {
     scale = 1;
@@ -123,7 +140,7 @@ const GameTile: React.FC<GameTileProps> = ({
     color,
     config: {
       ...springConfig.stiff,
-      clamp: true
+      clamp: true,
     },
   });
 
@@ -219,13 +236,13 @@ const GameTile: React.FC<GameTileProps> = ({
       {/* <Html>{coord}</Html> */}
       {letter && (
         <mesh ref={characterMesh} position={[0, 0, 0.2]}>
-          <textGeometry args={[letter, fontConfig]} />
+          <textGeometry args={[letter.toUpperCase(), fontConfig]} />
           <meshStandardMaterial color={theme.colors.darkbrown} />
         </mesh>
       )}
       {prevLetter && !letter && (
         <mesh ref={characterMesh} position={[0, 0, 0.2]}>
-          <textGeometry args={[prevLetter, fontConfig]} />
+          <textGeometry args={[prevLetter.toUpperCase(), fontConfig]} />
           <meshStandardMaterial color={theme.colors.darkbrown} />
         </mesh>
       )}
@@ -237,9 +254,7 @@ const GameTile: React.FC<GameTileProps> = ({
       <group position={[0, 0, -0.2]}>
         <HexTile orientation="flat">
           {/* @ts-ignore */}
-          <a.meshStandardMaterial
-            color={colorAndScaleSpring.color}
-          />
+          <a.meshStandardMaterial color={colorAndScaleSpring.color} />
         </HexTile>
       </group>
       {/* @ts-ignore */}

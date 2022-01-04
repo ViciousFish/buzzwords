@@ -1,4 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Move } from "buzzwords-shared/Game";
+import HexGrid from "buzzwords-shared/hexgrid";
 import { QRCoord } from "../hexGrid/hexGrid";
 
 interface GameState {
@@ -7,12 +9,20 @@ interface GameState {
   };
   selectionIndex: number;
   currentGame: string | null;
+  replay: {
+    move: Move | null;
+    playbackState: number;
+  };
 }
 
 const initialState: GameState = {
   selectedTiles: {},
   selectionIndex: 0,
   currentGame: null,
+  replay: {
+    move: null,
+    playbackState: 0,
+  },
 };
 
 export const gameSlice = createSlice({
@@ -34,12 +44,23 @@ export const gameSlice = createSlice({
       delete state.selectedTiles[action.payload];
     },
     resetSelection: (state) => {
-      state.selectionIndex = 0
+      state.selectionIndex = 0;
       state.selectedTiles = {};
     },
     setCurrentGame: (state, action: PayloadAction<string | null>) => {
       state.currentGame = action.payload;
     },
+    newReplay: (state, action: PayloadAction<Move>) => {
+      state.replay.move = action.payload;
+      state.replay.playbackState = 0;
+    },
+    advanceReplayPlaybackState: (state) => {
+      state.replay.playbackState = state.replay.playbackState + 1;
+    },
+    clearReplay: (state) => {
+      state.replay.move = null;
+      state.replay.playbackState = 0;
+    }
   },
 });
 
@@ -49,6 +70,9 @@ export const {
   resetSelection,
   setCurrentGame,
   setSelection,
+  newReplay,
+  advanceReplayPlaybackState,
+  clearReplay,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

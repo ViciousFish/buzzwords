@@ -109,7 +109,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 <GameTile
                   isCapital={revealLetters ? gridTile.capital : false}
                   coord={coord}
-                  letter={revealLetters ? gridTile.value.toUpperCase() : ""}
+                  letter={revealLetters ? gridTile.value : ""}
                   position={[
                     3.1 * (3 / 2) * gridTile.q,
                     -1 *

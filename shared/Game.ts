@@ -1,7 +1,7 @@
 import HexGrid from "./hexgrid";
 import { HexCoord } from "./types";
 
-interface Move {
+export interface Move {
   grid: HexGrid;
   coords: HexCoord[];
   letters: string[];

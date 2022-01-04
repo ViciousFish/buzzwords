@@ -225,6 +225,7 @@ io.on("connection", async (socket) => {
   const cookies = cookie.parse(socket.request.headers.cookie || "");
 
   if (!cookies.authToken) {
+    console.log("rejected socket connection for lack of token");
     return;
   }
 
@@ -233,6 +234,7 @@ io.on("connection", async (socket) => {
   );
 
   if (!userId) {
+    console.log("rejected socket connection for lack of token");
     return;
   }
   socket.join(userId);
