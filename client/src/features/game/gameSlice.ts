@@ -53,6 +53,9 @@ export const gameSlice = createSlice({
     },
     setCurrentGame: (state, action: PayloadAction<string | null>) => {
       state.currentGame = action.payload;
+      state.replay = initialState.replay;
+      state.selectedTiles = {};
+      state.selectionINdex = 0;
     },
     newReplay: (state, action: PayloadAction<{ move: Move, poison: string, index: number}>) => {
       state.replay.move = action.payload.move;

@@ -55,7 +55,6 @@ const Play: React.FC = () => {
   );
 
   useEffect(() => {
-    dispatch(resetSelection());
     if (id) {
       console.log("set current game", id);
       dispatch(setCurrentGame(id));
