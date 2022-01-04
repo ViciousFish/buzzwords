@@ -76,7 +76,7 @@ export const getCellNeighbors = (
   return potentialNeighbors.filter((cell) => Boolean(cell));
 };
 
-const MAX_ITERATIONS = 1000;
+const MAX_ITERATIONS = 100;
 const MAX_REPEATED_LETTER = 3;
 
 export const getNewCellValues = (
