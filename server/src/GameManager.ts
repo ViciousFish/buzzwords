@@ -18,6 +18,7 @@ import HexGrid, {
 
 import { WordsObject, wordsBySortedLetters } from "./words";
 import Cell from "buzzwords-shared/cell";
+import { performance } from "perf_hooks";
 
 export default class GameManager {
   game: Game | null;
@@ -94,11 +95,16 @@ export default class GameManager {
 
     const toBeReset = R.difference(resetTiles, toBecomeOwned);
 
+    const getNewCellValuesTimestamp = performance.now();
     const newCellValues = getNewCellValues(
       this.game.grid,
       toBeReset,
       toBecomeOwned,
       wordsBySortedLetters
+    );
+    console.log(
+      "getNewCellValues completed in ms",
+      performance.now() - getNewCellValuesTimestamp
     );
 
     for (let i = 0; i < toBeReset.length; i++) {
