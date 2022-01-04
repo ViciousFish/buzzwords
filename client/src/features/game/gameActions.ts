@@ -105,22 +105,34 @@ const REPLAY_SPEED = 500;
 const REPLAY_HANG = 2000;
 
 export const initiateReplay =
-  (moveIndex: number, gameId: string): AppThunk =>
+  (moveIndex: number): AppThunk =>
   async (dispatch, getState) => {
-    const move = getState().gamelist.games[gameId].moves[moveIndex];
+    const currentGame = getState().game.currentGame;
+    if (!currentGame) {
+      console.error("can't init replay on null game");
+      return;
+    }
+    const move = getState().gamelist.games[currentGame].moves[moveIndex];
     const poison = nanoid();
     dispatch(newReplay({ move, poison, index: moveIndex }));
     const ticks = move.letters.length;
     for (let tick = 0; tick < ticks; tick++) {
       window.setTimeout(() => {
-        if (getState().game.replay.poisonToken === poison) {
+        if (
+          getState().game.replay.poisonToken === poison &&
+          getState().game.currentGame === currentGame
+        ) {
           dispatch(advanceReplayPlaybackState());
         }
       }, REPLAY_DELAY + tick * REPLAY_SPEED);
     }
     setTimeout(() => {
-      if (getState().game.replay.poisonToken === poison) {
-        const nextMove = getState().gamelist.games[gameId].moves[moveIndex + 1];
+      if (
+        getState().game.replay.poisonToken === poison &&
+        getState().game.currentGame === currentGame
+      ) {
+        const nextMove =
+          getState().gamelist.games[currentGame].moves[moveIndex + 1];
         if (nextMove) {
           dispatch(newReplay({ move: nextMove, poison, index: moveIndex }));
           setTimeout(() => {
