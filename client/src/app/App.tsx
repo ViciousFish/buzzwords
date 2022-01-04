@@ -6,10 +6,11 @@ import SidebarRightSide from "./SidebarRightSide";
 import GameList from "../features/gamelist/GameList";
 import { useAppDispatch } from "./hooks";
 import { initAction } from "./appActions";
+import { ToastContainer } from "react-toastify";
 
-Globals.assign({
-  frameLoop: "always",
-});
+// Globals.assign({
+//   frameLoop: "always",
+// });
 
 const HomeLazy = lazy(() => import("../features/home-route/Home"));
 const PlayLazy = lazy(() => import("../features/play-route/Play"));
@@ -33,6 +34,7 @@ function App() {
           </React.Suspense>
         </SidebarRightSide>
       </div>
+      <ToastContainer toastClassName='bg-primary text-darkbrown rounded-lg' />
     </BrowserRouter>
   );
 }

@@ -62,7 +62,7 @@ export const submitMove =
         move: formattedCoords,
       });
     } catch (e) {
-      throw e.response?.data?.message ?? e.toString();
+      throw e.response?.data ?? e.toString();
     }
 
     // handled by socket msg now

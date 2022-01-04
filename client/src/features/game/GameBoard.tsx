@@ -12,6 +12,7 @@ import { User } from "../user/userSlice";
 import { clearTileSelection, submitMove } from "./gameActions";
 import { getSelectedWordByGameId } from "./gameSelectors";
 import GameTile from "./GameTile";
+import { toast } from "react-toastify";
 
 interface GameBoardProps {
   id: string;
@@ -48,7 +49,9 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
       setSubmitting(false);
     } catch (e) {
       setSubmitting(false);
-      // toast?
+      toast(e, {
+        type: 'error',
+      })
     }
   }, [dispatch, id]);
   useEffect(() => {
