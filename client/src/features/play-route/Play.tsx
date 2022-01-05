@@ -122,8 +122,8 @@ const Play: React.FC = () => {
         <GameBoard id={id} game={game} userIndex={userIndex} />
       )}
       {game && id && (
-        <div className="m-auto flex flex-shrink-0 flex-col w-[200px] mt-2">
-          <div className="flex items-center text-darkbrown">
+        <div className="m-auto lg:m-0 flex-shrink-0 w-[200px] pt-2 lg:max-h-screen overflow-y-auto">
+          <div className="flex flex-shrink-0 items-center text-darkbrown">
             <FontAwesomeIcon
               className={classNames(
                 "mr-1 text-xl",
@@ -135,30 +135,32 @@ const Play: React.FC = () => {
               <span className="text-2xl font-bold m-0">Turns</span>
             </h3>
           </div>
-          <ul className="flex-auto overflow-y-auto">
+          <ul className="">
             {R.reverse(game.moves).map((move, i) => {
               const index = game.moves.length - i - 1;
               return (
-              <li key={index} className="flex">
-                <button
-                  type="button"
-                  className={classnames(
-                    "flex-auto p-1 font-bold text-center rounded-md m-1 inset-shadow hover:bg-opacity-70",
-                    move.player === 0 ? "bg-p1" : "bg-p2",
-                    replayState && currentReplayIndex === index && 'bg-blue-400 text-white'
-                  )}
-                  onClick={() => {
-                    dispatch(initiateReplay(index));
-                  }}
-                >
-                  {replayState && currentReplayIndex === index && (
-                    <FontAwesomeIcon className="mr-2" icon={faPlay} />
-                  )}
-                  {move.letters.join("").toUpperCase()}
-                </button>
-              </li>
-              )}
-            )}
+                <li key={index} className="flex">
+                  <button
+                    type="button"
+                    className={classnames(
+                      "flex-auto p-1 font-bold text-center rounded-md m-1 inset-shadow hover:bg-opacity-70",
+                      move.player === 0 ? "bg-p1" : "bg-p2",
+                      replayState &&
+                        currentReplayIndex === index &&
+                        "bg-blue-400 text-white"
+                    )}
+                    onClick={() => {
+                      dispatch(initiateReplay(index));
+                    }}
+                  >
+                    {replayState && currentReplayIndex === index && (
+                      <FontAwesomeIcon className="mr-2" icon={faPlay} />
+                    )}
+                    {move.letters.join("").toUpperCase()}
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         </div>
       )}
