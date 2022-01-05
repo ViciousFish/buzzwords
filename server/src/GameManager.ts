@@ -1,5 +1,4 @@
 import * as R from "ramda";
-
 import Game from "buzzwords-shared/Game";
 import { HexCoord } from "buzzwords-shared/types";
 import {
@@ -13,12 +12,14 @@ import HexGrid, {
   getCell,
   getCellNeighbors,
   setCell,
-  getNewCellValues,
+  randomizeCellValue,
 } from "buzzwords-shared/hexgrid";
 
 import { WordsObject, wordsBySortedLetters } from "./words";
 import Cell from "buzzwords-shared/cell";
 import { performance } from "perf_hooks";
+
+export const errors = {};
 
 export default class GameManager {
   game: Game | null;
@@ -93,28 +94,13 @@ export default class GameManager {
     // change whose turn it is
     const toBecomeOwned = willBecomeOwned(this.game.grid, move, this.game.turn);
 
-    const toBeReset = R.difference(resetTiles, toBecomeOwned);
-
-    const getNewCellValuesTimestamp = performance.now();
-    const newCellValues = getNewCellValues(
-      this.game.grid,
-      toBeReset,
-      toBecomeOwned,
-      wordsBySortedLetters
-    );
-    console.log(
-      "getNewCellValues completed in ms",
-      performance.now() - getNewCellValuesTimestamp
-    );
-
-    for (let i = 0; i < toBeReset.length; i++) {
-      const tile = toBeReset[i];
+    for (const tile of resetTiles) {
       tile.owner = 2;
       if (tile.capital) {
         capitalCaptured = true;
         tile.capital = false;
       }
-      tile.value = newCellValues[i];
+      this.game.grid = randomizeCellValue(this.game.grid, tile.q, tile.r);
       setCell(this.game.grid, tile);
     }
 
@@ -186,27 +172,19 @@ export default class GameManager {
       winner: null,
       moves: [],
     };
-    const neighbors = [
-      ...getCellNeighbors(game.grid, -2, -1),
-      ...getCellNeighbors(game.grid, 2, 1),
-    ];
-    const newValues = getNewCellValues(
-      game.grid,
-      neighbors,
-      [],
-      wordsBySortedLetters
-    );
-    let i = 0;
-    for (const cell of neighbors) {
-      cell.value = newValues[i];
-      i++;
-      game.grid = setCell(game.grid, cell);
-    }
     game.grid["-2,-1"].capital = true;
     game.grid["-2,-1"].owner = 0;
+    let neighbors = getCellNeighbors(game.grid, -2, -1);
+    for (const cell of neighbors) {
+      game.grid = randomizeCellValue(game.grid, cell.q, cell.r);
+    }
+
     game.grid["2,1"].capital = true;
     game.grid["2,1"].owner = 1;
-
+    neighbors = getCellNeighbors(game.grid, 2, 1);
+    for (const cell of neighbors) {
+      game.grid = randomizeCellValue(game.grid, cell.q, cell.r);
+    }
     this.game = game;
     return game;
   }

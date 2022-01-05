@@ -116,9 +116,9 @@ export const canMakeAValidWord = (
   }
 ): boolean => {
   for (let i = 3; i <= letters.length; i++) {
-    const combos = R.uniq(combinations(letters, i, i).map((c) => c.join("")));
+    const combos = combinations(letters, i, i);
     for (let c of combos) {
-      const sorted = R.sort(R.descend(R.identity), c.split(""));
+      const sorted = R.sort(R.descend(R.identity), c);
       if (wordsBySortedLetters[sorted.join("")]) {
         return true;
       }
