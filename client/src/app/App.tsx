@@ -8,9 +8,9 @@ import { useAppDispatch } from "./hooks";
 import { initAction } from "./appActions";
 import { ToastContainer } from "react-toastify";
 
-// Globals.assign({
-//   frameLoop: "always",
-// });
+import.meta.env.PROD && Globals.assign({
+  frameLoop: "always",
+});
 
 const HomeLazy = lazy(() => import("../features/home-route/Home"));
 const PlayLazy = lazy(() => import("../features/play-route/Play"));
