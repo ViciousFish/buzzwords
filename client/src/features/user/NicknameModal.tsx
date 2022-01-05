@@ -1,17 +1,16 @@
 import { Formik } from "formik";
 import * as yup from "yup";
 import React from "react";
-import Modal from "react-modal";
 
 import { useAppDispatch } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import { setNickname } from "./userActions";
+import Modal from "../../presentational/Modal";
 
 const NicknameValidationSchema = yup.object().shape({
   nickname: yup.string().required(),
 });
 
-Modal.setAppElement('#root');
 
 const NicknameModal: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -40,11 +39,7 @@ const NicknameModal: React.FC = () => {
         isSubmitting,
         status,
       }) => (
-        <Modal
-          isOpen
-          className="z-10 shadow-lg"
-          overlayClassName="z-20 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-50 flex items-center justify-center"
-        >
+        <Modal>
           <div className="p-8 bg-lightbg rounded-xl text-darkbrown">
             <h1 className="text-2xl">Pick a nickname</h1>
             <p>
