@@ -11,6 +11,8 @@ const NicknameValidationSchema = yup.object().shape({
   nickname: yup.string().required(),
 });
 
+Modal.setAppElement('#root');
+
 const NicknameModal: React.FC = () => {
   const dispatch = useAppDispatch();
   return (
