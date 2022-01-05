@@ -36,7 +36,7 @@ const SidebarRightSide: React.FC = ({ children }) => {
   });
 
   return (
-    <ScreenHeightWraper className="w-full">
+    <ScreenHeightWraper className="w-full min-w-0">
       <div
         className={classNames(
           "flex-auto overflow-auto h-full",
