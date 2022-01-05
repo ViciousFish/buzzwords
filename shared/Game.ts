@@ -16,4 +16,6 @@ export default interface Game {
   gameOver: boolean;
   winner: 0 | 1 | null;
   moves: Move[];
+  createdDate?: Date;
+  updatedDate?: Date;
 }

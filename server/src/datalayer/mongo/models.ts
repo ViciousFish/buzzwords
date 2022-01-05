@@ -60,6 +60,16 @@ const gameSchema = new Schema<Game>({
       },
     },
   ],
+  createdDate: {
+    type: Date,
+    required: true,
+    default: () => new Date(),
+  },
+  updatedDate: {
+    type: Date,
+    required: true,
+    default: () => new Date(),
+  },
 });
 
 const GameModel = model<Game>("Game", gameSchema);
