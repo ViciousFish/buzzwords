@@ -46,6 +46,8 @@ interface GameTileProps {
   isCapital?: boolean;
   isPlayerIdentity?: boolean;
   gameOver: boolean;
+  /** disable selection while submission in progress */
+  isSubmitting?: boolean;
 }
 
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
@@ -60,6 +62,7 @@ const GameTile: React.FC<GameTileProps> = ({
   isCapital: isCapitalProp,
   isPlayerIdentity,
   gameOver,
+  isSubmitting,
 }) => {
   const dispatch = useAppDispatch();
   const font = useLoader(FontLoader, fredokaone);
@@ -225,12 +228,12 @@ const GameTile: React.FC<GameTileProps> = ({
 
   const onTileClick = useCallback(
     (e: ThreeEvent<MouseEvent>) => {
-      if (!gameOver && coord && letter && currentTurn === userIndex) {
+      if (!gameOver && coord && letter && currentTurn === userIndex && !isSubmitting) {
         dispatch(toggleTileSelected(coord));
       }
       e.stopPropagation();
     },
-    [coord, dispatch, letter, currentTurn, userIndex, gameOver]
+    [coord, dispatch, letter, currentTurn, userIndex, gameOver, isSubmitting]
   );
   return (
     // @ts-ignore

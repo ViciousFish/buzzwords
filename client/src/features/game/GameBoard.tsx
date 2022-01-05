@@ -114,6 +114,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                     onClick={() => {
                       dispatch(clearTileSelection());
                     }}
+                    disabled={submitting}
                     type="button"
                   >
                     clear
@@ -143,6 +144,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
               const gridTile = game.grid[coord];
               return (
                 <GameTile
+                  isSubmitting={submitting}
                   isCapital={revealLetters ? gridTile.capital : false}
                   coord={coord}
                   letter={revealLetters ? gridTile.value : ""}
