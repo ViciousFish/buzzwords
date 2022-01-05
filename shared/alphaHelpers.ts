@@ -73,30 +73,20 @@ export const getRandomCharacter = (): string => {
 
 const vowels = ["a", "e", "i", "o", "u", "y"];
 
-const combinations = <T>(a: T[], min?: number, max?: number): T[][] => {
-  min = min ?? 0;
-  max = max ?? a.length;
-  min = min || 1;
-  max = max < a.length ? max : a.length;
-  var fn = function (n: number, src: any[], got: any[], all: any[]) {
-    if (n == 0) {
-      if (got.length > 0) {
-        all[all.length] = got;
-      }
-      return;
-    }
-    for (var j = 0; j < src.length; j++) {
-      fn(n - 1, src.slice(j + 1), got.concat([src[j]]), all);
+function* combinationN<T>(array: T[], n: number): Iterable<T[]> {
+  if (n === 1) {
+    for (const a of array) {
+      yield [a];
     }
     return;
-  };
-  var all: T[][] = [];
-  for (var i = min; i < a.length; i++) {
-    fn(i, a, [], all);
   }
-  if (a.length == max) all.push(a);
-  return all;
-};
+
+  for (let i = 0; i <= array.length - n; i++) {
+    for (const c of combinationN(array.slice(i + 1), n - 1)) {
+      yield [array[i], ...c];
+    }
+  }
+}
 
 export const hasAVowel = (letters: string[]): boolean =>
   Boolean(letters.map((l) => vowels.includes(l)).filter(Boolean).length);
@@ -116,8 +106,7 @@ export const canMakeAValidWord = (
   }
 ): boolean => {
   for (let i = 3; i <= letters.length; i++) {
-    const combos = combinations(letters, i, i);
-    for (let c of combos) {
+    for (let c of combinationN(letters, i)) {
       const sorted = R.sort(R.descend(R.identity), c);
       if (wordsBySortedLetters[sorted.join("")]) {
         return true;
