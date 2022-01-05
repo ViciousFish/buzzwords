@@ -225,6 +225,7 @@ export default class Mongo implements DataLayer {
         },
         {
           $push: { users: userId },
+          $set: { updatedDate: new Date() },
         },
         {
           session: options?.session,
@@ -250,6 +251,7 @@ export default class Mongo implements DataLayer {
         },
         {
           $push: { users: userId },
+          $set: { updatedDate: new Date() },
         },
         {
           session: options?.session,
@@ -269,6 +271,7 @@ export default class Mongo implements DataLayer {
     if (!this.connected) {
       return false;
     }
+    game.updatedDate = new Date();
     try {
       const res = await Models.Game.updateOne({ id: gameId }, game, {
         upsert: true,
