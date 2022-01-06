@@ -27,8 +27,6 @@ export default class GameManager {
   }
 
   makeMove(userId: string, move: HexCoord[]): Game {
-    console.log("move :", move);
-
     if (!this.game) {
       throw new Error("Game Manager has no game!");
     }
