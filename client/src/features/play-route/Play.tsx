@@ -73,7 +73,7 @@ const Play: React.FC = () => {
 
   if (fourohfour) {
     return (
-      <div className="flex-shrink-0 lg:flex-shrink flex flex-auto flex-col h-screen justify-center items-center">
+      <div className="flex flex-auto flex-col h-screen justify-center items-center">
         <h1>404</h1>
         <Link className="underline text-blue-700" to="/">
           home
@@ -84,16 +84,38 @@ const Play: React.FC = () => {
 
   if (game && game.users.length === 1) {
     return (
-      <div className="flex-shrink-0 lg:flex-shrink flex flex-auto flex-col h-screen justify-center items-center">
-        <span className="text-2xl">Invite an opponent to start the game</span>
-        <span>they can use this link to join you</span>
-        <a
-          className="underline text-blue-700"
-          href={window.location.toString()}
-        >
-          {window.location.toString()}
-        </a>
-        <CopyToClipboard label="Copy link" text={window.location.toString()} />
+      <div className="max-w-screen flex flex-auto flex-col h-screen justify-center items-center">
+        <div className=" bg-darkbg flex flex-shrink-0 flex-col justify-center items-center p-8 rounded-xl mb-5">
+          <h2 className="text-2xl flex-wrap">Invite an opponent to start the game</h2>
+          <span>they can use this link to join you</span>
+          <a
+            className="underline text-blue-700 text-sm"
+            href={window.location.toString()}
+          >
+            {window.location.toString()}
+          </a>
+          <CopyToClipboard
+            label="Copy link"
+            text={window.location.toString()}
+          />
+        </div>
+        <div className="p-8 bg-darkbg rounded-xl text-center">
+          <h2 className="text-2xl">Watch the tutorial</h2>
+          <div>in the mean time</div>
+          <iframe
+            style={{
+              maxWidth: '80vw',
+              width: '560px'
+            }}
+            height="315"
+            src="https://www.youtube.com/embed/nNs_bT4hjvg"
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="border-darkbrown border-2 rounded-lg"
+          ></iframe>
+        </div>
         {nickModal}
       </div>
     );
