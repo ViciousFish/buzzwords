@@ -17,6 +17,7 @@ import { refresh, createNewGame } from "./gamelistActions";
 import { toggleIsOpen } from "./gamelistSlice";
 import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
 import { User } from "../user/userSlice";
+import { getAllUsers } from "../user/userSelectors";
 
 const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
 const BeeLazy = React.lazy(() => import("../../assets/Bee"));
@@ -25,16 +26,9 @@ const HexWordLazy = React.lazy(() => import("../thereed-lettering/HexWord"));
 const GameList: React.FC = () => {
   const games = useAppSelector((state) => state.gamelist.games);
   const isOpen = useAppSelector((state) => state.gamelist.isOpen);
-  const selfUser = useAppSelector((state) => state.user.user);
-  const opponents = useAppSelector((state) => state.user.opponents);
   const dispatch = useAppDispatch();
 
-  const allUsers: { [id: string]: User } = {
-    ...opponents,
-  };
-  if (selfUser) {
-    allUsers[selfUser.id] = selfUser;
-  }
+  const allUsers = useAppSelector(getAllUsers);
 
   const safeAreaLeft = Number(
     getComputedStyle(document.documentElement)

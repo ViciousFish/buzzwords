@@ -11,11 +11,9 @@ import GameBoard from "../game/GameBoard";
 import CopyToClipboard from "../../presentational/CopyToClipboard";
 import NicknameModal from "../user/NicknameModal";
 import { useAppSelector } from "../../app/hooks";
-import { fetchOpponent } from "../user/userActions";
 import { initiateReplay } from "../game/gameActions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faDotCircle,
   faHistory,
   faPlay,
   faPlayCircle,
@@ -46,15 +44,6 @@ const Play: React.FC = () => {
       ? game.users.findIndex((val) => val === currentUser.id)
       : null;
 
-  const otherUser =
-    game &&
-    currentUser &&
-    game.users.filter((user) => user !== currentUser.id)[0];
-
-  const opponent = useAppSelector((state) =>
-    otherUser ? state.user.opponents[otherUser] : null
-  );
-
   useEffect(() => {
     if (id) {
       console.log("set current game", id);
@@ -78,12 +67,6 @@ const Play: React.FC = () => {
       setFourohfour(false);
     }
   }, [id, dispatch, game, gamesLoaded]);
-
-  useEffect(() => {
-    if (game && otherUser && !opponent) {
-      dispatch(fetchOpponent(otherUser));
-    }
-  }, [dispatch, game, otherUser, opponent]);
 
   const nickModal =
     currentUser && !currentUser.nickname ? <NicknameModal /> : null;
@@ -166,7 +149,6 @@ const Play: React.FC = () => {
       )}
       {nickModal}
     </div>
-    // </div>
   );
 };
 

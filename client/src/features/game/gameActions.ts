@@ -1,6 +1,6 @@
 import { nanoid } from "@reduxjs/toolkit";
 import axios from "axios";
-import { Move } from "buzzwords-shared/Game";
+
 import { emitSelection } from "../../app/socket";
 import { AppThunk } from "../../app/store";
 import { QRCoord } from "../hexGrid/hexGrid";
