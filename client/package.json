@@ -22,7 +22,7 @@
     "@react-three/drei": "^7.0.2",
     "@react-three/fiber": "^7.0.1",
     "@react-three/postprocessing": "^2.1.2",
-    "@reduxjs/toolkit": "^1.6.0",
+    "@reduxjs/toolkit": "^1.7.1",
     "@use-gesture/react": "^10.0.0-beta.14",
     "axios": "^0.24.0",
     "buzzwords-shared": "1.0.0",
