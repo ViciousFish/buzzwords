@@ -99,7 +99,7 @@ const GameList: React.FC = () => {
           </a.div>
         </div>
         <div className="flex-auto flex flex-col overflow-y-auto">
-          <div className="h-[150px]">
+          <div className="h-[150px] no-touch">
             <React.Suspense fallback={<></>}>
               <CanvasLazy>
                 <BeeLazy position={[0, 5, 0]} scale={4} />
