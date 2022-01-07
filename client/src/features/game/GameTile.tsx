@@ -28,7 +28,6 @@ import { GamePlayer } from "./game";
 import { Flower01 } from "../../assets/Flower01";
 import {
   getHightlightedCoordsForCurrentReplayState,
-  getOrderedTileSelectionCoords,
   getTileSelectionInParsedHexCoords,
 } from "./gameSelectors";
 import { Sakura } from "../../assets/Sakura";

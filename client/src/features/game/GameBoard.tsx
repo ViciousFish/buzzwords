@@ -149,6 +149,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                   coord={coord}
                   letter={revealLetters ? gridTile.value : ""}
                   position={[
+                    // https://www.redblobgames.com/grids/hexagons/#hex-to-pixel-axial
                     3.1 * (3 / 2) * gridTile.q,
                     -1 *
                       3.1 *
