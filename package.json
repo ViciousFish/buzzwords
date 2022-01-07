@@ -15,7 +15,7 @@
     "url": "git+https://github.com/chuckdries/buzzwords.git"
   },
   "author": "",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/chuckdries/buzzwords/issues"
   },

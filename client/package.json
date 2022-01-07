@@ -1,7 +1,6 @@
 {
   "version": "1.0.0",
   "name": "buzzwords-client",
-  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
