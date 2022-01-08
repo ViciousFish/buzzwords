@@ -8,6 +8,7 @@ import morgan from "morgan";
 import cookie from "cookie";
 import { createAdapter } from "@socket.io/mongo-adapter";
 import { MongoClient } from "mongodb";
+import cors from "cors";
 
 import getConfig from "./config";
 import DL from "./datalayer";
@@ -41,10 +42,20 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   transports: ["websocket"],
+  cors: {
+    origin: true,
+    credentials: true,
+  },
 });
 const mongoClient = new MongoClient(config.mongoUrl, {});
 
 app.use(morgan("dev"));
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(cookieParser(config.cookieSecret));

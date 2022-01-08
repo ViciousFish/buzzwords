@@ -1,5 +1,6 @@
 import { nanoid } from "@reduxjs/toolkit";
 import axios from "axios";
+import { getApiUrl } from "../../app/apiPrefix";
 
 import { emitSelection } from "../../app/socket";
 import { AppThunk } from "../../app/store";
@@ -58,7 +59,7 @@ export const submitMove =
     });
 
     try {
-      await axios.post(`/api/game/${gameId}/move`, {
+      await axios.post(getApiUrl("/game", gameId, "/move"), {
         move: formattedCoords,
       });
     } catch (e) {

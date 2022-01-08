@@ -1,9 +1,10 @@
 import axios from "axios";
+import { getApiUrl } from "../../app/apiPrefix";
 import { AppThunk } from "../../app/store";
 import { nicknameSet, opponentReceived, User, userReceived } from "./userSlice";
 
 export const getUser = (): AppThunk => async (dispatch) => {
-  const user: User = await fetch("/api/user").then((res) => res.json());
+  const { data: user } = await axios.get<User>(getApiUrl("/user"));
   console.log("user", user);
 
   dispatch(userReceived(user));
@@ -18,7 +19,7 @@ export const setNickname =
       return;
     }
     try {
-      await axios.post(`/api/user/nickname`, {
+      await axios.post(getApiUrl("/user/nickname"), {
         nickname,
       });
     } catch (e) {
@@ -30,7 +31,7 @@ export const setNickname =
 export const fetchOpponent =
   (id: string): AppThunk =>
   async (dispatch) => {
-    const opponent = await axios.get<User>(`/api/user/${id}`)
+    const opponent = await axios.get<User>(getApiUrl("/user", id));
     console.log("opponent", opponent.data);
     dispatch(opponentReceived(opponent.data));
   };

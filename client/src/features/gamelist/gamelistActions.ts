@@ -6,13 +6,13 @@ import Game from "buzzwords-shared/Game";
 import { User } from "../user/userSlice";
 import { getAllUsers } from "../user/userSelectors";
 import { fetchOpponent } from "../user/userActions";
+import axios from "axios";
+import { getApiUrl } from "../../app/apiPrefix";
 
 export const refresh = (): AppThunk => async (dispatch, getState) => {
   console.log("refresh");
-  const games: Game[] = await fetch("/api/games").then((response) =>
-    response.json()
-  );
-  const gamesById: { [id: string]: Game } = games.reduce((acc, game) => {
+  const games = await axios.get<Game[]>(getApiUrl("/games"));
+  const gamesById: { [id: string]: Game } = games.data.reduce((acc, game) => {
     acc[game.id] = {
       ...game,
       grid: game.grid,
@@ -30,7 +30,7 @@ export const refresh = (): AppThunk => async (dispatch, getState) => {
     R.map<{ [id: string]: Game }, Game>(R.prop("users")),
     R.values,
     R.flatten
-  // @ts-ignore
+    // @ts-ignore
   )(gamesById);
 
   const missingPlayers = R.difference(
@@ -70,25 +70,19 @@ export const receiveGameUpdatedSocket =
     );
   };
 
-
-
 export const createNewGame = (): AppThunk => async (dispatch) => {
-  const res = await fetch("/api/game", {
-    method: "POST",
-  }).then((response) => response.text());
+  const res = await axios.post(getApiUrl("/game"));
 
   await dispatch(refresh());
-  return res;
+  return res.data;
 };
 
 export const joinGameById =
   (id: string): AppThunk =>
   async (dispatch) => {
     try {
-      const res = await fetch(`/api/game/${id}/join`, {
-        method: "POST",
-      }).then((response) => response.text());
-      if (res === "Not Found") {
+      const res = await axios.post(getApiUrl("/game", id, "join"));
+      if (res.data === "Not Found") {
         return false;
       }
       dispatch(refresh());
