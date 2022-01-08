@@ -84,12 +84,12 @@ const Play: React.FC = () => {
 
   if (game && game.users.length === 1) {
     return (
-      <div className="max-w-screen flex flex-auto flex-col h-screen justify-center items-center">
-        <div className=" bg-darkbg flex flex-shrink-0 flex-col justify-center items-center p-8 rounded-xl mb-5">
+      <div className="flex flex-auto flex-col overflow-auto lg:h-screen justify-center items-center py-12 px-4">
+        <div className="max-w-full flex-shrink-0 bg-darkbg flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
           <h2 className="text-2xl flex-wrap">Invite an opponent to start the game</h2>
           <span>they can use this link to join you</span>
           <a
-            className="underline text-blue-700 text-sm"
+            className="underline text-blue-700 text-xs"
             href={window.location.toString()}
           >
             {window.location.toString()}
@@ -99,16 +99,16 @@ const Play: React.FC = () => {
             text={window.location.toString()}
           />
         </div>
-        <div className="p-8 bg-darkbg rounded-xl text-center">
+        <div className=" bg-darkbg rounded-xl text-center">
           <h2 className="text-2xl">Watch the tutorial</h2>
-          <div>in the mean time</div>
+          <span>in the mean time</span>
           <iframe
             style={{
-              maxWidth: '80vw',
+              maxWidth: '100%',
               width: '560px'
             }}
             height="315"
-            src="https://www.youtube.com/embed/nNs_bT4hjvg"
+            src="https://www.youtube.com/embed/MwULUSGQ9oo"
             title="YouTube video player"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
