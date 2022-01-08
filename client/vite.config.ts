@@ -9,9 +9,11 @@ export default ({ command, mode }) => {
       proxy: {
         "/api": {
           target: "http://localhost:8080",
+          ws: true,
         },
         "/socket.io": {
           target: "http://localhost:8080",
+          ws: true,
         },
       },
     },
