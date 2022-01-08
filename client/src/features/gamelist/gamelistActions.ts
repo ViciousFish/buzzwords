@@ -17,18 +17,13 @@ export const refresh = (): AppThunk => async (dispatch, getState) => {
   }>(getApiUrl("/games"));
   const gamesById: { [id: string]: Game } = response.data.games.reduce(
     (acc, game) => {
-      acc[game.id] = {
-        ...game,
-        grid: game.grid,
-      } as Game;
+      acc[game.id] = game
       return acc;
     },
     {}
   );
 
-  await Promise.all(
-    Object.values(response.data.users).map((u) => dispatch(opponentReceived(u)))
-  );
+  Object.values(response.data.users).forEach((u) => dispatch(opponentReceived(u)))
   dispatch(refreshReceived(gamesById));
 };
 
@@ -49,10 +44,7 @@ export const receiveGameUpdatedSocket =
       });
     }
     dispatch(
-      updateGame({
-        ...game,
-        grid: game.grid,
-      })
+      updateGame(game)
     );
   };
 
