@@ -31,8 +31,6 @@ jobs:
               echo "This modified file is not under the 'client' folder."
               echo "::set-output name=run_job::true"
               break
-            else
-              echo "::set-output name=run_job::false"
             fi
           done < files.txt
   build:
