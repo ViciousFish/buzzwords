@@ -9,4 +9,4 @@ export const getApiUrl = (...path: string[]) =>
     ...path
   );
 
-export const SOCKET_URL = String(import.meta.env.VITE_SOCKET_URL) || "http://localhost:8080"
+export const SOCKET_URL = String(import.meta.env.VITE_SOCKET_URL || "http://localhost:8080")
