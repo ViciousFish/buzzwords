@@ -3,6 +3,7 @@ import {
   faHome,
   faPlus,
   faQuestion,
+  faSpinner,
   faSync,
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
@@ -26,6 +27,7 @@ const HexWordLazy = React.lazy(() => import("../thereed-lettering/HexWord"));
 
 const GameList: React.FC = () => {
   const games = useAppSelector((state) => state.gamelist.games);
+  const gamesLoaded = useAppSelector((state) => state.gamelist.gamesLoaded);
   const isOpen = useAppSelector((state) => state.gamelist.isOpen);
   const dispatch = useAppDispatch();
 
@@ -149,7 +151,12 @@ const GameList: React.FC = () => {
                 </li>
               );
             })}
-            {Object.keys(games).length === 0 && <>No games</>}
+            {Object.keys(games).length === 0 && (
+              <div className="p-2">
+                {!gamesLoaded && <><FontAwesomeIcon className="animate-spin mr-2" icon={faSpinner} />Loading games</>}
+                {gamesLoaded && <>No games</>}
+              </div>
+            )}
           </ul>
           <div className="p-2 text-center text-gray-800 text-sm">
             by Chuck Dries and James Quigley
