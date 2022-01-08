@@ -8,6 +8,7 @@ interface GameListState {
   };
   gamesLoaded: boolean;
   isOpen: boolean;
+  showCompletedGames: boolean;
 }
 
 // Define the initial state using that type
@@ -15,6 +16,7 @@ const initialState: GameListState = {
   games: {},
   gamesLoaded: false,
   isOpen: window.innerWidth >= 1024,
+  showCompletedGames: true,
 };
 
 export const gamelistSlice = createSlice({
@@ -31,12 +33,23 @@ export const gamelistSlice = createSlice({
     toggleIsOpen: (state) => {
       state.isOpen = !state.isOpen;
     },
+    toggleCompletedGames: (state) => {
+      state.showCompletedGames = !state.showCompletedGames;
+    },
+    setShowCompletedGames: (state, action: PayloadAction<boolean>) => {
+      state.showCompletedGames = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { refreshReceived, updateGame, toggleIsOpen } =
-  gamelistSlice.actions;
+export const {
+  refreshReceived,
+  updateGame,
+  toggleIsOpen,
+  toggleCompletedGames,
+  setShowCompletedGames,
+} = gamelistSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (state: RootState) => state.counter.value;

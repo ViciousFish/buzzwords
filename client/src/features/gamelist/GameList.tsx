@@ -11,16 +11,15 @@ import {
 import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import React, { useState } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
 import { animated as a, useSpring } from "@react-spring/web";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import { createNewGame } from "./gamelistActions";
-import { toggleIsOpen } from "./gamelistSlice";
+import { toggleCompletedGames, toggleIsOpen } from "./gamelistSlice";
 import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
-import { getAllUsers } from "../user/userSelectors";
 import { toggleTutorialModal } from "../game/gameSlice";
 import GameListItem from "./GameListItem";
 
@@ -34,8 +33,8 @@ const GameList: React.FC = () => {
   const games = useAppSelector((state) => state.gamelist.games);
   const gamesLoaded = useAppSelector((state) => state.gamelist.gamesLoaded);
   const isOpen = useAppSelector((state) => state.gamelist.isOpen);
+  const showCompletedGames = useAppSelector(state => state.gamelist.showCompletedGames);
 
-  const [showCompletedGames, setShowCompletedGames] = useState(false);
 
   const incompleteGames = Object.values(games).filter((game) => !game.gameOver);
   const completedGames = Object.values(games).filter((game) => game.gameOver);
@@ -161,7 +160,7 @@ const GameList: React.FC = () => {
               <div className="px-2 ">
                 <button
                   className="flex items-center"
-                  onClick={() => setShowCompletedGames(!showCompletedGames)}
+                  onClick={() => dispatch(toggleCompletedGames())}
                 >
                   <FontAwesomeIcon
                     className={showCompletedGames ? "mr-1" : "mr-1 ml-1"}
