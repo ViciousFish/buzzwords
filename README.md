@@ -28,4 +28,8 @@ Because we're using transactions, your mongo must be a replica set
 ## Running the code in production
 
 For now, production is dockerized with docker compose. `docker-compose build` or `docker-compose pull`, then `docker-compose up`.
-You'll need a .env file in this folder with just the MONGO_URL
+You'll need a .env file in the root folder with 
+```
+MONGO_URL=<your connection string>
+COOKIE_DOMAIN=<the domain you're hosting the API on>
+```
