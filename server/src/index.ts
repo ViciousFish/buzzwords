@@ -75,6 +75,10 @@ app.get("/healthz", (req, res) => {
   res.sendStatus(200);
 });
 
+app.get("/", (req, res) => {
+  res.sendStatus(200);
+});
+
 app.get("/api/user", async (req, res) => {
   const user = res.locals.userId as string;
   const nickname = await dl.getNickName(user);
