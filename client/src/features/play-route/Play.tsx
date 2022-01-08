@@ -17,8 +17,10 @@ import {
   faHistory,
   faPlay,
   faPlayCircle,
+  faShare,
 } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
+import Button from "../../presentational/Button";
 
 const Play: React.FC = () => {
   const dispatch = useDispatch();
@@ -86,26 +88,41 @@ const Play: React.FC = () => {
     return (
       <div className="flex flex-auto flex-col overflow-auto lg:h-screen justify-center items-center py-12 px-4">
         <div className="max-w-full flex-shrink-0 bg-darkbg flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
-          <h2 className="text-2xl flex-wrap">Invite an opponent to start the game</h2>
+          <h2 className="text-2xl flex-wrap">
+            Invite an opponent to start the game
+          </h2>
           <span>they can use this link to join you</span>
           <a
-            className="underline text-blue-700 text-xs"
+            className="underline text-blue-700 text-sm break-words"
             href={window.location.toString()}
           >
             {window.location.toString()}
           </a>
-          <CopyToClipboard
-            label="Copy link"
-            text={window.location.toString()}
-          />
+          <div>
+            <CopyToClipboard
+              label="Copy link"
+              text={window.location.toString()}
+            />
+            {navigator.share && (
+              <Button
+                onClick={() => {
+                  navigator.share?.({
+                    url: window.location.toString(),
+                  });
+                }}
+              >
+                Share <FontAwesomeIcon icon={faShare} />{" "}
+              </Button>
+            )}
+          </div>
         </div>
         <div className=" bg-darkbg rounded-xl text-center">
           <h2 className="text-2xl">Watch the tutorial</h2>
           <span>in the mean time</span>
           <iframe
             style={{
-              maxWidth: '100%',
-              width: '560px'
+              maxWidth: "100%",
+              width: "560px",
             }}
             height="315"
             src="https://www.youtube.com/embed/MwULUSGQ9oo"
