@@ -3,7 +3,7 @@ import * as R from "ramda";
 import { AppThunk } from "../../app/store";
 import { refreshReceived, updateGame } from "./gamelistSlice";
 import Game from "buzzwords-shared/Game";
-import { User } from "../user/userSlice";
+import { opponentReceived, User } from "../user/userSlice";
 import { getAllUsers } from "../user/userSelectors";
 import { fetchOpponent } from "../user/userActions";
 import axios from "axios";
@@ -11,38 +11,24 @@ import { getApiUrl } from "../../app/apiPrefix";
 
 export const refresh = (): AppThunk => async (dispatch, getState) => {
   console.log("refresh");
-  const games = await axios.get<Game[]>(getApiUrl("/games"));
-  const gamesById: { [id: string]: Game } = games.data.reduce((acc, game) => {
-    acc[game.id] = {
-      ...game,
-      grid: game.grid,
-    } as Game;
-    return acc;
-  }, {});
-
-  const allKnownPlayersWithNicknames = R.pipe(
-    R.filter((player: User) => Boolean(player.nickname)),
-    R.keys
-  )(getAllUsers(getState()));
-
-  // @ts-ignore
-  const allGamePlayers: string[] = R.pipe(
-    R.map<{ [id: string]: Game }, Game>(R.prop("users")),
-    R.values,
-    R.flatten
-    // @ts-ignore
-  )(gamesById);
-
-  const missingPlayers = R.difference(
-    allGamePlayers,
-    allKnownPlayersWithNicknames
+  const response = await axios.get<{
+    games: Game[];
+    users: User[];
+  }>(getApiUrl("/games"));
+  const gamesById: { [id: string]: Game } = response.data.games.reduce(
+    (acc, game) => {
+      acc[game.id] = {
+        ...game,
+        grid: game.grid,
+      } as Game;
+      return acc;
+    },
+    {}
   );
-  if (missingPlayers.length) {
-    await Promise.all(missingPlayers.map((missingPlayer) => 
-      dispatch(fetchOpponent(missingPlayer))
-    ));
-  }
 
+  await Promise.all(
+    Object.values(response.data.users).map((u) => dispatch(opponentReceived(u)))
+  );
   dispatch(refreshReceived(gamesById));
 };
 

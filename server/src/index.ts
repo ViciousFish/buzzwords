@@ -138,7 +138,33 @@ app.get("/api/user/:id", async (req, res) => {
 app.get("/api/games", async (req, res) => {
   const user = res.locals.userId as string;
   const games = await dl.getGamesByUserId(user);
-  res.send(games);
+  const userIds: string[] = R.pipe(
+    R.map(R.prop("users")),
+    R.flatten,
+    R.uniq
+  )(games);
+  const nicknames = await Promise.all(
+    R.map((id) => dl.getNickName(id), userIds)
+  );
+
+  const users: {
+    [key: string]: {
+      id: string;
+      nickname: string | null;
+    };
+  } = {};
+
+  for (let i = 0; i < nicknames.length; i++) {
+    users[userIds[i]] = {
+      id: userIds[i],
+      nickname: nicknames[i],
+    };
+  }
+
+  res.send({
+    games,
+    users,
+  });
 });
 
 app.get("/api/game/:id", async (req, res) => {
