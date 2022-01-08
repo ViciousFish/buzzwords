@@ -17,7 +17,9 @@ interface SelectionEventProps {
 
 // called by getUser
 export const subscribeSocket = (dispatch: AppDispatch) => {
-  socket = io();
+  socket = io({
+    transports: ["websocket"],
+  });
   socket.on("game updated", (game: Game) => {
     dispatch(receiveGameUpdatedSocket(game));
     dispatch(resetSelection()); // clear selection

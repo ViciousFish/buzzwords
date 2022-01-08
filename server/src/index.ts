@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser";
 import { nanoid } from "nanoid";
 import morgan from "morgan";
 import cookie from "cookie";
+import { createAdapter } from "@socket.io/mongo-adapter";
+import { MongoClient } from "mongodb";
 
 import getConfig from "./config";
 import DL from "./datalayer";
@@ -14,6 +16,9 @@ import { DataLayer } from "./types";
 import { HexCoord } from "buzzwords-shared/types";
 import GameManager from "./GameManager";
 import BannedWords from "./banned_words.json";
+
+const DB = "buzzwords";
+const COLLECTION = "socket.io-adapter-events";
 
 const config = getConfig();
 
@@ -34,7 +39,10 @@ switch (config.dbType) {
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  transports: ["websocket"],
+});
+const mongoClient = new MongoClient(config.mongoUrl, {});
 
 app.use(morgan("dev"));
 
@@ -249,8 +257,26 @@ io.on("connection", async (socket) => {
       io.to(user).emit("selection", { selection, gameId });
     });
   });
+  socket.on("disconnect", (reason) => {
+    console.log("user", userId, "disconnected");
+  });
 });
 
-server.listen(config.port, () => {
-  console.log("Server listening on port", config.port);
-});
+const main = async () => {
+  await mongoClient.connect();
+  try {
+    await mongoClient.db(DB).createCollection(COLLECTION, {
+      capped: true,
+      size: 1e6,
+    });
+  } catch (e) {
+    // Collection already exists. Do nothing
+  }
+  const mongoCollection = mongoClient.db(DB).collection(COLLECTION);
+  io.adapter(createAdapter(mongoCollection));
+  server.listen(config.port, () => {
+    console.log("Server listening on port", config.port);
+  });
+};
+
+main();
