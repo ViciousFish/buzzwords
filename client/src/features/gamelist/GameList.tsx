@@ -62,7 +62,7 @@ const GameList: React.FC = () => {
         <div className="flex flex-shrink-0 py-2 px-2 space-x-1 z-10">
           <a
             className="p-2 rounded-md block hover:bg-primary hover:bg-opacity-50 text-darkbrown"
-            href="https://github.com/chuckdries/buzzwords"
+            href="https://github.com/ViciousFish/buzzwords"
             target="_blank"
             rel="noreferrer"
           >
