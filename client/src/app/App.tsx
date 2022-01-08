@@ -4,9 +4,10 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Globals } from "@react-spring/shared";
 import SidebarRightSide from "./SidebarRightSide";
 import GameList from "../features/gamelist/GameList";
-import { useAppDispatch } from "./hooks";
+import { useAppDispatch, useAppSelector } from "./hooks";
 import { initAction } from "./appActions";
 import { ToastContainer } from "react-toastify";
+import TutorialModal from "../features/game/TutorialModal";
 
 import.meta.env.PROD && Globals.assign({
   frameLoop: "always",
@@ -17,6 +18,7 @@ const PlayLazy = lazy(() => import("../features/play-route/Play"));
 
 function App() {
   const dispatch = useAppDispatch();
+  const showingTutorialModal = useAppSelector(state => state.game.showingTutorialModal);
   useEffect(() => {
     dispatch(initAction());
   }, [dispatch]);
@@ -35,6 +37,7 @@ function App() {
         </SidebarRightSide>
       </div>
       <ToastContainer toastClassName='bg-primary text-darkbrown rounded-lg' />
+      {showingTutorialModal && <TutorialModal />}
     </BrowserRouter>
   );
 }

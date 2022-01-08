@@ -21,6 +21,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import Button from "../../presentational/Button";
+import TutorialModal from "../game/TutorialModal";
 
 const Play: React.FC = () => {
   const dispatch = useDispatch();
@@ -38,6 +39,7 @@ const Play: React.FC = () => {
   const currentReplayIndex = useAppSelector(
     (state) => state.game.replay.moveListIndex
   );
+  const showingTutorialModal = useAppSelector(state => state.game.showingTutorialModal);
 
   const [fourohfour, setFourohfour] = useState(false);
 

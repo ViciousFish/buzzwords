@@ -2,22 +2,23 @@ import {
   faBars,
   faHome,
   faPlus,
+  faQuestion,
   faSync,
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import React, { useEffect } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
 import { animated as a, useSpring } from "@react-spring/web";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
-import { refresh, createNewGame } from "./gamelistActions";
+import { createNewGame } from "./gamelistActions";
 import { toggleIsOpen } from "./gamelistSlice";
 import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
-import { User } from "../user/userSlice";
 import { getAllUsers } from "../user/userSelectors";
+import { toggleTutorialModal } from "../game/gameSlice";
 
 const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
 const BeeLazy = React.lazy(() => import("../../assets/Bee"));
@@ -118,10 +119,10 @@ const GameList: React.FC = () => {
             </Button>
             <Button
               onClick={() => {
-                dispatch(refresh());
+                dispatch(toggleTutorialModal());
               }}
             >
-              <FontAwesomeIcon className="mx-1" icon={faSync} />
+              <FontAwesomeIcon className="mx-1" icon={faQuestion} />
             </Button>
           </div>
           {/* TODO: use useTransition to actually remove them from the dom on disappear? */}

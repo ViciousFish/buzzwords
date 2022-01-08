@@ -15,6 +15,7 @@ interface GameState {
     playbackState: number;
     poisonToken: string;
   };
+  showingTutorialModal: boolean;
 }
 
 const initialState: GameState = {
@@ -27,6 +28,7 @@ const initialState: GameState = {
     playbackState: 0,
     poisonToken: ''
   },
+  showingTutorialModal: false,
 };
 
 export const gameSlice = createSlice({
@@ -71,6 +73,9 @@ export const gameSlice = createSlice({
       state.replay.playbackState = 0;
       state.replay.poisonToken = '';
       state.replay.moveListIndex = 0;
+    },
+    toggleTutorialModal: (state) => {
+      state.showingTutorialModal = !state.showingTutorialModal;
     }
   },
 });
@@ -84,6 +89,7 @@ export const {
   newReplay,
   advanceReplayPlaybackState,
   clearReplay,
+  toggleTutorialModal
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

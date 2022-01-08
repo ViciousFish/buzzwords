@@ -2,24 +2,29 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import React from "react";
 
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import { setNickname } from "./userActions";
 import Modal from "../../presentational/Modal";
+import { toggleTutorialModal } from "../game/gameSlice";
 
 const NicknameValidationSchema = yup.object().shape({
   nickname: yup.string().required(),
 });
 
-
 const NicknameModal: React.FC = () => {
   const dispatch = useAppDispatch();
+  const gamesList = useAppSelector((state) => state.gamelist.games);
   return (
     <Formik
       initialValues={{ nickname: "" }}
       onSubmit={async (values, { setSubmitting, setStatus }) => {
         try {
           await dispatch(setNickname(values.nickname));
+          const games = Object.values(gamesList);
+          if (games.length === 1 && games[0].users.length === 2) {
+            dispatch(toggleTutorialModal());
+          }
         } catch (e) {
           setStatus({
             type: "error",
@@ -43,7 +48,8 @@ const NicknameModal: React.FC = () => {
           <div className="p-8 bg-lightbg rounded-xl text-darkbrown">
             <h1 className="text-2xl">Pick a nickname</h1>
             <p>
-              It doesn&apos;t have to be unique, but you can&apos;t change it (yet). Your opponents will see it.
+              It doesn&apos;t have to be unique, but you can&apos;t change it
+              (yet). Your opponents will see it.
             </p>
             <form
               onSubmit={handleSubmit}
@@ -65,7 +71,11 @@ const NicknameModal: React.FC = () => {
                 save
               </Button>
             </form>
-            {status && <div className="bg-red-400 text-black rounded-md p-2">{status.message}</div>}
+            {status && (
+              <div className="bg-red-400 text-black rounded-md p-2">
+                {status.message}
+              </div>
+            )}
           </div>
         </Modal>
       )}
