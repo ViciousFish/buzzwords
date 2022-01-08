@@ -1,5 +1,7 @@
 import {
   faBars,
+  faCaretDown,
+  faCaretRight,
   faHome,
   faPlus,
   faQuestion,
@@ -9,7 +11,7 @@ import {
 import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import React from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { animated as a, useSpring } from "@react-spring/web";
 
@@ -20,18 +22,23 @@ import { toggleIsOpen } from "./gamelistSlice";
 import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
 import { getAllUsers } from "../user/userSelectors";
 import { toggleTutorialModal } from "../game/gameSlice";
+import GameListItem from "./GameListItem";
 
 const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
 const BeeLazy = React.lazy(() => import("../../assets/Bee"));
 const HexWordLazy = React.lazy(() => import("../thereed-lettering/HexWord"));
 
 const GameList: React.FC = () => {
+  const dispatch = useAppDispatch();
+
   const games = useAppSelector((state) => state.gamelist.games);
   const gamesLoaded = useAppSelector((state) => state.gamelist.gamesLoaded);
   const isOpen = useAppSelector((state) => state.gamelist.isOpen);
-  const dispatch = useAppDispatch();
 
-  const allUsers = useAppSelector(getAllUsers);
+  const [showCompletedGames, setShowCompletedGames] = useState(false);
+
+  const incompleteGames = Object.values(games).filter((game) => !game.gameOver);
+  const completedGames = Object.values(games).filter((game) => game.gameOver);
 
   const safeAreaLeft = Number(
     getComputedStyle(document.documentElement)
@@ -110,54 +117,70 @@ const GameList: React.FC = () => {
               </CanvasLazy>
             </React.Suspense>
           </div>
-          <div className="px-2 mt-0 z-10">
-            <h2 className="inline text-2xl font-bold text-darkbrown">Games</h2>
-            <Button
-              onClick={() => {
-                dispatch(createNewGame());
-              }}
-            >
-              <FontAwesomeIcon className="mx-1" icon={faPlus} />
-            </Button>
-            <Button
-              onClick={() => {
-                dispatch(toggleTutorialModal());
-              }}
-            >
-              <FontAwesomeIcon className="mx-1" icon={faQuestion} />
-            </Button>
-          </div>
-          {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
-          <ul className="px-2 flex-auto">
-            {Object.keys(games).map((id) => {
-              const users = games[id].users;
-              const nick1 = allUsers[users[0]]?.nickname ?? "???";
-              const nick2 = allUsers[users[1]]?.nickname ?? "???";
-              return (
-                <li key={id} className="my-1 whitespace-nowrap">
-                  <NavLink
-                    className={({ isActive }) =>
-                      classNames(
-                        isActive
-                          ? "bg-primary hover:bg-opacity-100"
-                          : "underline text-darkbrown",
-                        "p-2 rounded-xl block hover:bg-primary hover:bg-opacity-50"
-                      )
-                    }
-                    to={`/play/${id}`}
-                  >
-                    {nick1} vs {nick2}
-                  </NavLink>
-                </li>
-              );
-            })}
-            {Object.keys(games).length === 0 && (
-              <div className="p-2">
-                {!gamesLoaded && <><FontAwesomeIcon className="animate-spin mr-2" icon={faSpinner} />Loading games</>}
-                {gamesLoaded && <>No games</>}
+          <div className="flex-auto">
+            <div className="px-2 mt-0 z-10">
+              <h2 className="inline text-2xl font-bold text-darkbrown">
+                Games
+              </h2>
+              <Button
+                onClick={() => {
+                  dispatch(createNewGame());
+                }}
+              >
+                <FontAwesomeIcon className="mx-1" icon={faPlus} />
+              </Button>
+              <Button
+                onClick={() => {
+                  dispatch(toggleTutorialModal());
+                }}
+              >
+                <FontAwesomeIcon className="mx-1" icon={faQuestion} />
+              </Button>
+            </div>
+            {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
+            <ul className="px-2">
+              {incompleteGames.map((game) => (
+                <GameListItem key={game.id} game={game} />
+              ))}
+              {Object.keys(games).length === 0 && (
+                <div className="p-2">
+                  {!gamesLoaded && (
+                    <>
+                      <FontAwesomeIcon
+                        className="animate-spin mr-2"
+                        icon={faSpinner}
+                      />
+                      Loading games
+                    </>
+                  )}
+                  {gamesLoaded && <>No games</>}
+                </div>
+              )}
+            </ul>
+            {completedGames.length ? (
+              <div className="px-2 ">
+                <button
+                  className="flex items-center"
+                  onClick={() => setShowCompletedGames(!showCompletedGames)}
+                >
+                  <FontAwesomeIcon
+                    className={showCompletedGames ? "mr-1" : "mr-1 ml-1"}
+                    icon={showCompletedGames ? faCaretDown : faCaretRight}
+                  />
+                  <h2 className="inline text-2xl font-bold text-darkbrown">
+                    Completed Games
+                  </h2>
+                </button>
               </div>
+            ) : null}
+            {showCompletedGames && (
+              <ul className="px-2">
+                {completedGames.map((game) => (
+                  <GameListItem key={game.id} game={game} />
+                ))}
+              </ul>
             )}
-          </ul>
+          </div>
           <div className="p-2 text-center text-gray-800 text-sm">
             by Chuck Dries and James Quigley
           </div>
