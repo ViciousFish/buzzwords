@@ -70,6 +70,7 @@ app.use(async (req, res, next) => {
     res.cookie("authToken", authToken, {
       expires: new Date(253402300000000), // Approximately Friday, 31 Dec 9999 23:59:59 GMT
       signed: true,
+      domain: config.cookieDomain,
     });
     req.signedCookies = {
       authToken,

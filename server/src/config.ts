@@ -4,6 +4,7 @@ interface Config {
   dbType: string;
   mongoUrl: string;
   cookieSecret: string;
+  cookieDomain: string;
 }
 
 export const getConfig = (): Config => {
@@ -13,6 +14,7 @@ export const getConfig = (): Config => {
     dbType: process.env.DB_TYPE || "memory",
     mongoUrl: process.env.MONGO_URL || "mongodb://localhost/dev",
     cookieSecret: process.env.COOKIE_SECRET || "CHANGE_ME_IN_PRODUCTION",
+    cookieDomain: process.env.COOKIE_DOMAIN || "localhost",
   };
 };
 
