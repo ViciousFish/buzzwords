@@ -38,9 +38,9 @@ export const refresh = (): AppThunk => async (dispatch, getState) => {
     allKnownPlayersWithNicknames
   );
   if (missingPlayers.length) {
-    missingPlayers.forEach((missingPlayer) => {
-      dispatch(fetchOpponent(missingPlayer));
-    });
+    await Promise.all(missingPlayers.map((missingPlayer) => 
+      dispatch(fetchOpponent(missingPlayer))
+    ));
   }
 
   dispatch(refreshReceived(gamesById));

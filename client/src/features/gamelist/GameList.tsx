@@ -1,4 +1,7 @@
 import {
+  faAngleDown,
+  faAngleLeft,
+  faAngleRight,
   faBars,
   faCaretDown,
   faCaretRight,
@@ -33,8 +36,9 @@ const GameList: React.FC = () => {
   const games = useAppSelector((state) => state.gamelist.games);
   const gamesLoaded = useAppSelector((state) => state.gamelist.gamesLoaded);
   const isOpen = useAppSelector((state) => state.gamelist.isOpen);
-  const showCompletedGames = useAppSelector(state => state.gamelist.showCompletedGames);
-
+  const showCompletedGames = useAppSelector(
+    (state) => state.gamelist.showCompletedGames
+  );
 
   const incompleteGames = Object.values(games).filter((game) => !game.gameOver);
   const completedGames = Object.values(games).filter((game) => game.gameOver);
@@ -159,16 +163,14 @@ const GameList: React.FC = () => {
             {completedGames.length ? (
               <div className="px-2 ">
                 <button
-                  className="flex items-center"
+                  className="flex items-center text-darkbrown"
                   onClick={() => dispatch(toggleCompletedGames())}
                 >
                   <FontAwesomeIcon
-                    className={showCompletedGames ? "mr-1" : "mr-1 ml-1"}
-                    icon={showCompletedGames ? faCaretDown : faCaretRight}
+                    className="mr-1"
+                    icon={showCompletedGames ? faAngleDown : faAngleRight}
                   />
-                  <h2 className="inline text-2xl font-bold text-darkbrown">
-                    Completed Games
-                  </h2>
+                  <h2 className="inline text-2xl font-bold">Completed Games</h2>
                 </button>
               </div>
             ) : null}
