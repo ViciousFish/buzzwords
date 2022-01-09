@@ -1,7 +1,6 @@
 import React, { lazy, useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Globals } from "@react-spring/shared";
-import { Helmet } from "react-helmet";
 import FaviconNotification from "favicon-notification";
 
 import SidebarRightSide from "./SidebarRightSide";
@@ -49,8 +48,10 @@ function App() {
   useEffect(() => {
     if (hasUnseenMove) {
       FaviconNotification.add();
+      document.title = "[Your turn] Buzzwords";
     } else {
       FaviconNotification.remove();
+      document.title = "Buzzwords";
     }
   }, [hasUnseenMove]);
 
@@ -69,9 +70,6 @@ function App() {
       </div>
       <ToastContainer toastClassName="bg-primary text-darkbrown rounded-lg" />
       {showingTutorialModal && <TutorialModal />}
-      <Helmet>
-        <title>{hasUnseenMove ? "[Your turn] Buzzwords" : "Buzzwords"}</title>
-      </Helmet>
     </BrowserRouter>
   );
 }
