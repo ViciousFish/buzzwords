@@ -62,8 +62,9 @@ app.use(cookieParser(config.cookieSecret));
 app.use(async (req, res, next) => {
   const cookies = req.signedCookies || {};
   let authToken: string | null = cookies.authToken || null;
-  if (!authToken) {
-    const userId = nanoid();
+  let userId = authToken ? await dl.getUserIdByAuthToken(authToken) : null;
+  if (!userId) {
+    userId = nanoid();
     authToken = nanoid(40);
     await dl.createAuthToken(authToken, userId);
     res.cookie("authToken", authToken, {
@@ -76,7 +77,6 @@ app.use(async (req, res, next) => {
     };
     res.locals.userId = userId;
   } else {
-    const userId = await dl.getUserIdByAuthToken(authToken);
     res.locals.userId = userId;
   }
   next();
