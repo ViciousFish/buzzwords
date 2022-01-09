@@ -21,7 +21,7 @@ import { animated as a, useSpring } from "@react-spring/web";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import { createNewGame } from "./gamelistActions";
-import { toggleCompletedGames, toggleIsOpen } from "./gamelistSlice";
+import { toggleAuthPrompt, toggleCompletedGames, toggleIsOpen } from "./gamelistSlice";
 import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
 import { toggleTutorialModal } from "../game/gameSlice";
 import GameListItem from "./GameListItem";
@@ -38,6 +38,9 @@ const GameList: React.FC = () => {
   const isOpen = useAppSelector((state) => state.gamelist.isOpen);
   const showCompletedGames = useAppSelector(
     (state) => state.gamelist.showCompletedGames
+  );
+  const showAuthPrompt = useAppSelector(
+    (state) => state.gamelist.showAuthPrompt
   );
 
   const incompleteGames = Object.values(games).filter((game) => !game.gameOver);
@@ -183,17 +186,28 @@ const GameList: React.FC = () => {
             )}
           </div>
         </div>
-          <div className="bg-primary rounded-xl p-4 pb-2 mx-2 mt-2">
+        <div className="bg-primary rounded-xl p-2 px-4 mx-2 mt-2">
+          <button type="button" onClick={() => {dispatch(toggleAuthPrompt())}} className="flex w-full items-center">
+            <FontAwesomeIcon className="mr-2" icon={showAuthPrompt ? faAngleDown : faAngleRight} />
             <h3 className="text-lg font-bold m-0">Link an account</h3>
-            <p>to sync your games across devices</p>
-            <div className="flex">
-              <Button className="flex-auto bg-darkbrown text-white">Register</Button>
-              <Button className="flex-auto bg-darkbrown text-white">Login</Button>
+          </button>
+          {showAuthPrompt && (
+            <>
+              <p>to sync your games across devices</p>
+              <div className="flex">
+                <Button className="flex-auto bg-darkbrown text-white">
+                  Register
+                </Button>
+                <Button className="flex-auto bg-darkbrown text-white">
+                  Login
+                </Button>
               </div>
-          </div>
-          <div className="p-2 text-center text-gray-800 text-sm">
-            by Chuck Dries and James Quigley
-          </div>
+            </>
+          )}
+        </div>
+        <div className="p-2 text-center text-gray-800 text-sm">
+          by Chuck Dries and James Quigley
+        </div>
       </ScreenHeightWraper>
     </a.div>
   );

@@ -12,6 +12,7 @@ interface GameListState {
   gamesLoaded: boolean;
   isOpen: boolean;
   showCompletedGames: boolean;
+  showAuthPrompt: boolean;
 }
 
 // Define the initial state using that type
@@ -20,6 +21,7 @@ const initialState: GameListState = {
   gamesLoaded: false,
   isOpen: window.innerWidth >= 1024,
   showCompletedGames: true,
+  showAuthPrompt: true,
 };
 
 export const gamelistSlice = createSlice({
@@ -42,6 +44,9 @@ export const gamelistSlice = createSlice({
     setShowCompletedGames: (state, action: PayloadAction<boolean>) => {
       state.showCompletedGames = action.payload;
     },
+    toggleAuthPrompt: (state) => {
+      state.showAuthPrompt = !state.showAuthPrompt;
+    },
   },
 });
 
@@ -52,6 +57,7 @@ export const {
   toggleIsOpen,
   toggleCompletedGames,
   setShowCompletedGames,
+  toggleAuthPrompt,
 } = gamelistSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
