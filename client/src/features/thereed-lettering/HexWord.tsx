@@ -6,12 +6,14 @@ interface HexWordProps {
   text: string;
   position?: [number, number, number];
   autoSpin?: boolean;
+  color?: string;
 }
 
 const HexWord: React.FC<HexWordProps & GroupProps> = ({
   text,
   position,
   autoSpin,
+  color,
   ...props
 }) => {
   const characters = text.split("");
@@ -31,6 +33,7 @@ const HexWord: React.FC<HexWordProps & GroupProps> = ({
           key={index}
           position={[index * 5.5, 0, 0]}
           index={index}
+          color={color}
         />
       ))}
     </group>

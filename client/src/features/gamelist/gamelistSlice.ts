@@ -1,8 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import Game from "buzzwords-shared/Game";
+import { GameStateModalType } from "../game/GameStateModal";
 
 export interface ClientGame extends Game {
   lastSeenTurn: number;
+  queuedGameStateModals: GameStateModalType[];
 }
 
 interface GameListState {

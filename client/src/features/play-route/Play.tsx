@@ -21,7 +21,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import Button from "../../presentational/Button";
-import TutorialModal from "../game/TutorialModal";
 
 const Play: React.FC = () => {
   const dispatch = useDispatch();

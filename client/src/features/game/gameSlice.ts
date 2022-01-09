@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Move } from "buzzwords-shared/Game";
 import HexGrid from "buzzwords-shared/hexgrid";
 import { QRCoord } from "../hexGrid/hexGrid";
+import { GameStateModalType } from "./GameStateModal";
 
 interface GameState {
   selectedTiles: {
@@ -17,6 +18,7 @@ interface GameState {
   };
   showingTutorialModal: boolean;
   windowHasFocus: boolean;
+  gameStateModal: GameStateModalType | null;
 }
 
 const initialState: GameState = {
@@ -31,6 +33,7 @@ const initialState: GameState = {
   },
   showingTutorialModal: false,
   windowHasFocus: document.hasFocus(),
+  gameStateModal: null,
 };
 
 export const gameSlice = createSlice({
@@ -85,6 +88,9 @@ export const gameSlice = createSlice({
     setWindowHasFocus: (state, action: PayloadAction<boolean>) => {
       state.windowHasFocus = action.payload;
     },
+    setGameStateModal: (state, action: PayloadAction<GameStateModalType | null>) => {
+      state.gameStateModal = action.payload
+    }
   },
 });
 
@@ -99,6 +105,7 @@ export const {
   clearReplay,
   toggleTutorialModal,
   setWindowHasFocus,
+  setGameStateModal,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

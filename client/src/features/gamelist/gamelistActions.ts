@@ -44,6 +44,7 @@ export const refresh = (): AppThunk => async (dispatch, getState) => {
     gamesById[game.id] = {
       ...game,
       lastSeenTurn: lastSeenTurns?.[game.id] ?? game.moves.length,
+      queuedGameStateModals: []
     };
   }, {});
 
@@ -73,10 +74,12 @@ export const receiveGameUpdatedSocket =
 
     if (state.game.currentGame === game.id && state.game.windowHasFocus) {
       updateLastSeenTurns(game.id, game.moves.length);
+      // CQ: get game state modal queue derived from last seen turn and moves list
       return dispatch(
         updateGame({
           ...game,
           lastSeenTurn: game.moves.length,
+          queuedGameStateModals: [],
         })
       );
     }
@@ -87,6 +90,7 @@ export const receiveGameUpdatedSocket =
       updateGame({
         ...game,
         lastSeenTurn,
+        queuedGameStateModals: [],
       })
     );
   };

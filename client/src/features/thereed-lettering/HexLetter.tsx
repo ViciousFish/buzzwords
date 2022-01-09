@@ -25,11 +25,17 @@ interface HexLetterProps {
   position: V3Type;
   letter: string;
   index?: number;
+  color?: string;
 }
 
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
 
-const HexLetter: React.FC<HexLetterProps> = ({ letter, index, ...props }) => {
+const HexLetter: React.FC<HexLetterProps> = ({
+  letter,
+  index,
+  color,
+  ...props
+}) => {
   const viewport = useThree(({ viewport }) => viewport);
   const size = useThree(({ size }) => size);
   const aspect = size.width / viewport.getCurrentViewport().width;
@@ -146,7 +152,7 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, index, ...props }) => {
       </mesh>
       <group position={[0, 0, -0.2]}>
         {/* @ts-ignore */}
-        <HexTile orientation="pointy" {...bind()} />
+        <HexTile color={color} orientation="pointy" {...bind()} />
       </group>
     </a.group>
   );
