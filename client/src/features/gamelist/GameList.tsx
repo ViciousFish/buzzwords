@@ -112,10 +112,10 @@ const GameList: React.FC = () => {
           </a.div>
         </div>
         <div className="flex-auto flex flex-col overflow-y-auto">
-          <div className="h-[150px] no-touch">
+          <div className="h-[130px] no-touch">
             <React.Suspense fallback={<></>}>
               <CanvasLazy>
-                <BeeLazy position={[0, 5, 0]} scale={4} />
+                <BeeLazy position={[0, 5, 0]} scale={3.5} />
                 <HexWordLazy position={[0, -6, 0]} text="BUZZWORDS" />
               </CanvasLazy>
             </React.Suspense>
@@ -182,10 +182,18 @@ const GameList: React.FC = () => {
               </ul>
             )}
           </div>
+        </div>
+          <div className="bg-primary rounded-xl p-4 pb-2 mx-2 mt-2">
+            <h3 className="text-lg font-bold m-0">Link an account</h3>
+            <p>to sync your games across devices</p>
+            <div className="flex">
+              <Button className="flex-auto bg-darkbrown text-white">Register</Button>
+              <Button className="flex-auto bg-darkbrown text-white">Login</Button>
+              </div>
+          </div>
           <div className="p-2 text-center text-gray-800 text-sm">
             by Chuck Dries and James Quigley
           </div>
-        </div>
       </ScreenHeightWraper>
     </a.div>
   );
