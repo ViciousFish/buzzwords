@@ -18,7 +18,6 @@ import { HexCoord } from "buzzwords-shared/types";
 import GameManager from "./GameManager";
 import BannedWords from "./banned_words.json";
 
-const DB = "buzzwords";
 const COLLECTION = "socket.io-adapter-events";
 
 const config = getConfig();
@@ -300,22 +299,26 @@ io.on("connection", async (socket) => {
     });
   });
   socket.on("disconnect", (reason) => {
-    console.log("user", userId, "disconnected");
+    console.log(`user ${userId} disconnected: ${reason}`);
   });
 });
 
 const main = async () => {
-  await mongoClient.connect();
-  try {
-    await mongoClient.db(DB).createCollection(COLLECTION, {
-      capped: true,
-      size: 1e6,
-    });
-  } catch (e) {
-    // Collection already exists. Do nothing
+  if (config.dbType === "mongo") {
+    await mongoClient.connect();
+    try {
+      await mongoClient.db(config.mongoDbName).createCollection(COLLECTION, {
+        capped: true,
+        size: 1e6,
+      });
+    } catch (e) {
+      // Collection already exists. Do nothing
+    }
+    const mongoCollection = mongoClient
+      .db(config.mongoDbName)
+      .collection(COLLECTION);
+    io.adapter(createAdapter(mongoCollection));
   }
-  const mongoCollection = mongoClient.db(DB).collection(COLLECTION);
-  io.adapter(createAdapter(mongoCollection));
   server.listen(config.port, () => {
     console.log("Server listening on port", config.port);
   });

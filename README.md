@@ -22,7 +22,7 @@ DB_TYPE=mongo
 MONGO_URL=<your connection string>
 ```
 
-Because we're using transactions, your mongo must be a replica set
+Because we're using transactions, your mongo must be a replica set. We're using Atlas for this reason.
 
 
 ## Running the code in production
@@ -32,4 +32,5 @@ You'll need a .env file in the root folder with
 ```
 MONGO_URL=<your connection string>
 COOKIE_DOMAIN=<the domain you're hosting the API on>
+MONGO_DB_NAME=<the name of your db, should match what's after the slash in your connection string>
 ```

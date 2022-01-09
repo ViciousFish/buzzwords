@@ -15,6 +15,7 @@ services:
       - DB_TYPE=mongo
       - COOKIE_DOMAIN
       - MONGO_URL # do not set in this file! put a .env file in the root of the repo* or set an actual env var
+      - MONGO_DB_NAME
       # *will be read & interpreted by docker-compose. You may also want an identical .env file in ./server for running locally
     # ports:
     #   - 8080:8080

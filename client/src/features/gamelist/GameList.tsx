@@ -170,7 +170,7 @@ const GameList: React.FC = () => {
                     className="mr-1"
                     icon={showCompletedGames ? faAngleDown : faAngleRight}
                   />
-                  <h2 className="inline text-2xl font-bold">Completed Games</h2>
+                  <h3 className="inline text-lg font-bold">Completed Games</h3>
                 </button>
               </div>
             ) : null}
