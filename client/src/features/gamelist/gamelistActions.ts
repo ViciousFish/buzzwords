@@ -56,10 +56,11 @@ export const refresh = (): AppThunk => async (dispatch, getState) => {
 export const receiveGameUpdatedSocket =
   (game: Game): AppThunk =>
   (dispatch, getState) => {
+    const state = getState();
     const allKnownPlayersWithNicknames = R.pipe(
       R.filter((player: User) => Boolean(player.nickname)),
       R.keys
-    )(getAllUsers(getState()));
+    )(getAllUsers(state));
     const missingPlayers = R.difference(
       game.users,
       allKnownPlayersWithNicknames
@@ -70,7 +71,7 @@ export const receiveGameUpdatedSocket =
       });
     }
 
-    if (getState().game.currentGame === game.id) {
+    if (state.game.currentGame === game.id && state.game.windowHasFocus) {
       updateLastSeenTurns(game.id, game.moves.length);
       return dispatch(
         updateGame({

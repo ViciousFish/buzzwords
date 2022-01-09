@@ -16,6 +16,7 @@ interface GameState {
     poisonToken: string;
   };
   showingTutorialModal: boolean;
+  windowHasFocus: boolean;
 }
 
 const initialState: GameState = {
@@ -26,9 +27,10 @@ const initialState: GameState = {
     move: null,
     moveListIndex: 0,
     playbackState: 0,
-    poisonToken: ''
+    poisonToken: "",
   },
   showingTutorialModal: false,
+  windowHasFocus: true,
 };
 
 export const gameSlice = createSlice({
@@ -59,7 +61,10 @@ export const gameSlice = createSlice({
       state.selectedTiles = {};
       state.selectionIndex = 0;
     },
-    newReplay: (state, action: PayloadAction<{ move: Move, poison: string, index: number}>) => {
+    newReplay: (
+      state,
+      action: PayloadAction<{ move: Move; poison: string; index: number }>
+    ) => {
       state.replay.move = action.payload.move;
       state.replay.moveListIndex = action.payload.index;
       state.replay.poisonToken = action.payload.poison;
@@ -71,12 +76,15 @@ export const gameSlice = createSlice({
     clearReplay: (state) => {
       state.replay.move = null;
       state.replay.playbackState = 0;
-      state.replay.poisonToken = '';
+      state.replay.poisonToken = "";
       state.replay.moveListIndex = 0;
     },
     toggleTutorialModal: (state) => {
       state.showingTutorialModal = !state.showingTutorialModal;
-    }
+    },
+    setWindowHasFocus: (state, action: PayloadAction<boolean>) => {
+      state.windowHasFocus = action.payload;
+    },
   },
 });
 
@@ -89,7 +97,8 @@ export const {
   newReplay,
   advanceReplayPlaybackState,
   clearReplay,
-  toggleTutorialModal
+  toggleTutorialModal,
+  setWindowHasFocus,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

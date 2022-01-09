@@ -4,6 +4,7 @@ import { getApiUrl } from "../../app/apiPrefix";
 
 import { emitSelection } from "../../app/socket";
 import { AppThunk } from "../../app/store";
+import { markGameAsSeen } from "../gamelist/gamelistActions";
 import { QRCoord } from "../hexGrid/hexGrid";
 import { getOrderedTileSelectionCoords } from "./gameSelectors";
 import {
@@ -13,6 +14,7 @@ import {
   resetSelection,
   selectTile,
   setSelection,
+  setWindowHasFocus,
   unselectTile,
 } from "./gameSlice";
 // import { getEmptyGame } from "./game";
@@ -136,3 +138,12 @@ export const initiateReplay =
       }
     }, REPLAY_DELAY + ticks * REPLAY_SPEED + REPLAY_SPEED);
   };
+
+export const setWindowFocusThunk = (focus: boolean): AppThunk => (dispatch, getState) => {
+  const state = getState();
+  if (focus && state.game.currentGame) {
+    dispatch(markGameAsSeen(state.game.currentGame))
+  }
+  dispatch(setWindowHasFocus(focus));
+  console.log('focus', focus);
+}
