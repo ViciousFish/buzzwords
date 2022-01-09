@@ -6,7 +6,7 @@ import classnames from "classnames";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import { setCurrentGame } from "../game/gameSlice";
-import { joinGameById } from "../gamelist/gamelistActions";
+import { joinGameById, markGameAsSeen } from "../gamelist/gamelistActions";
 import GameBoard from "../game/GameBoard";
 import CopyToClipboard from "../../presentational/CopyToClipboard";
 import NicknameModal from "../user/NicknameModal";
@@ -39,7 +39,6 @@ const Play: React.FC = () => {
   const currentReplayIndex = useAppSelector(
     (state) => state.game.replay.moveListIndex
   );
-  const showingTutorialModal = useAppSelector(state => state.game.showingTutorialModal);
 
   const [fourohfour, setFourohfour] = useState(false);
 
@@ -52,6 +51,7 @@ const Play: React.FC = () => {
     if (id) {
       console.log("set current game", id);
       dispatch(setCurrentGame(id));
+      dispatch(markGameAsSeen(id));
     }
     return () => {
       dispatch(setCurrentGame(null));

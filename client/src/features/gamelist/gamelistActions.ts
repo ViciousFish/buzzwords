@@ -1,7 +1,7 @@
 import * as R from "ramda";
 
 import { AppThunk } from "../../app/store";
-import { refreshReceived, updateGame } from "./gamelistSlice";
+import { ClientGame, refreshReceived, updateGame } from "./gamelistSlice";
 import Game from "buzzwords-shared/Game";
 import { opponentReceived, User } from "../user/userSlice";
 import { getAllUsers } from "../user/userSelectors";
@@ -9,21 +9,47 @@ import { fetchOpponent } from "../user/userActions";
 import axios from "axios";
 import { getApiUrl } from "../../app/apiPrefix";
 
+interface GameMetaCache {
+  lastSeenTurns: {
+    [gameId: string]: number;
+  };
+}
+
+const getLastSeenTurns = () => {
+  const metaJSON = localStorage.getItem("gameMetaCache");
+  const metaCache = metaJSON ? (JSON.parse(metaJSON) as GameMetaCache) : null;
+  return metaCache?.lastSeenTurns;
+};
+
+const updateLastSeenTurns = (gameId: string, turns: number) => {
+  const lastSeenTurns = getLastSeenTurns() ?? {};
+  lastSeenTurns[gameId] = turns;
+  const metaCache = JSON.stringify({
+    lastSeenTurns,
+  });
+  localStorage.setItem("gameMetaCache", metaCache);
+};
+
 export const refresh = (): AppThunk => async (dispatch, getState) => {
   console.log("refresh");
   const response = await axios.get<{
     games: Game[];
     users: User[];
   }>(getApiUrl("/games"));
-  const gamesById: { [id: string]: Game } = response.data.games.reduce(
-    (acc, game) => {
-      acc[game.id] = game
-      return acc;
-    },
-    {}
-  );
 
-  Object.values(response.data.users).forEach((u) => dispatch(opponentReceived(u)))
+  const lastSeenTurns = getLastSeenTurns();
+
+  const gamesById: { [id: string]: ClientGame } = {};
+  response.data.games.forEach((game) => {
+    gamesById[game.id] = {
+      ...game,
+      lastSeenTurn: lastSeenTurns?.[game.id] ?? 0,
+    };
+  }, {});
+
+  Object.values(response.data.users).forEach((u) =>
+    dispatch(opponentReceived(u))
+  );
   dispatch(refreshReceived(gamesById));
 };
 
@@ -43,8 +69,42 @@ export const receiveGameUpdatedSocket =
         dispatch(fetchOpponent(missingPlayer));
       });
     }
+
+    if (getState().game.currentGame === game.id) {
+      updateLastSeenTurns(game.id, game.moves.length);
+      return dispatch(
+        updateGame({
+          ...game,
+          lastSeenTurn: game.moves.length,
+        })
+      );
+    }
+
+    const lastSeenTurn = getLastSeenTurns()?.[game.id] ?? 0;
     dispatch(
-      updateGame(game)
+      updateGame({
+        ...game,
+        lastSeenTurn,
+      })
+    );
+  };
+
+export const markGameAsSeen =
+  (gameId: string): AppThunk =>
+  (dispatch, getState) => {
+    const game = getState().gamelist.games[gameId];
+    if (!game) {
+      console.log('inf', gameId);
+      updateLastSeenTurns(gameId, 9999);
+      return;
+    }
+    const lastSeenTurn = game.moves.length;
+    updateLastSeenTurns(gameId, lastSeenTurn);
+    dispatch(
+      updateGame({
+        ...game,
+        lastSeenTurn,
+      })
     );
   };
 

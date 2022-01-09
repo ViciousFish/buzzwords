@@ -1,10 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import Game from "buzzwords-shared/Game";
 
-// Define a type for the slice state
+export interface ClientGame extends Game {
+  lastSeenTurn: number;
+}
+
 interface GameListState {
   games: {
-    [key: string]: Game;
+    [key: string]: ClientGame;
   };
   gamesLoaded: boolean;
   isOpen: boolean;
@@ -23,11 +26,11 @@ export const gamelistSlice = createSlice({
   name: "gamelist",
   initialState,
   reducers: {
-    refreshReceived: (state, action: PayloadAction<GameListState["games"]>) => {
+    refreshReceived: (state, action: PayloadAction<Record<string, ClientGame>>) => {
       state.games = action.payload;
       state.gamesLoaded = true;
     },
-    updateGame: (state, action: PayloadAction<Game>) => {
+    updateGame: (state, action: PayloadAction<ClientGame>) => {
       state.games[action.payload.id] = action.payload;
     },
     toggleIsOpen: (state) => {

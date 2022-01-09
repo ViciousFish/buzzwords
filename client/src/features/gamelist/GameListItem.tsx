@@ -1,12 +1,12 @@
-import Game from "buzzwords-shared/Game";
 import classNames from "classnames";
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { getAllUsers } from "../user/userSelectors";
+import { ClientGame } from "./gamelistSlice";
 
 interface GameListItemProps {
-  game: Game;
+  game: ClientGame;
 }
 
 const GameListItem: React.FC<GameListItemProps> = ({ game }) => {
@@ -22,7 +22,8 @@ const GameListItem: React.FC<GameListItemProps> = ({ game }) => {
             isActive
               ? "bg-primary hover:bg-opacity-100"
               : "underline text-darkbrown",
-            "p-2 rounded-xl block hover:bg-primary hover:bg-opacity-50"
+            "p-2 rounded-xl block hover:bg-primary hover:bg-opacity-50 truncate",
+            game.lastSeenTurn < game.moves.length ? 'font-bold' : ''
           )
         }
         to={`/play/${game.id}`}
