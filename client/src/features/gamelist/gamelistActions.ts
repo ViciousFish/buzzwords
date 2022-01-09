@@ -43,7 +43,7 @@ export const refresh = (): AppThunk => async (dispatch, getState) => {
   response.data.games.forEach((game) => {
     gamesById[game.id] = {
       ...game,
-      lastSeenTurn: lastSeenTurns?.[game.id] ?? 0,
+      lastSeenTurn: lastSeenTurns?.[game.id] ?? game.moves.length,
     };
   }, {});
 
@@ -80,7 +80,8 @@ export const receiveGameUpdatedSocket =
       );
     }
 
-    const lastSeenTurn = getLastSeenTurns()?.[game.id] ?? 0;
+    let lastSeenTurn = getLastSeenTurns()?.[game.id] ?? 0;
+    lastSeenTurn = lastSeenTurn === 9999 ? game.moves.length : lastSeenTurn;
     dispatch(
       updateGame({
         ...game,
