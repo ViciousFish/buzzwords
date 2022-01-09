@@ -19,7 +19,7 @@ import.meta.env.PROD &&
   });
 
 FaviconNotification.init({
-  color: "#000000",
+  color: "#0000CC",
 });
 
 const HomeLazy = lazy(() => import("../features/home-route/Home"));

@@ -30,7 +30,7 @@ const initialState: GameState = {
     poisonToken: "",
   },
   showingTutorialModal: false,
-  windowHasFocus: true,
+  windowHasFocus: document.hasFocus(),
 };
 
 export const gameSlice = createSlice({
