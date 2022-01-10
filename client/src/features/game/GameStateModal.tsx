@@ -27,27 +27,31 @@ const getThreeDText = (type: GameStateModalOwnprops["type"]) => {
   if (type === "defeat") {
     return "DEFEAT";
   }
+  console.log('no 3d text')
   return null;
 };
 
-const getTwoDText = (type: GameStateModalProps["type"]) => {
+const getTwoDText = (type: GameStateModalProps["type"], p1Nick: string, p2Nick: string) => {
   if (type === "extra-turn-p1" || type === "extra-turn-p2") {
-    const thisPlayer = type === "extra-turn-p1" ? "Pink" : "Green";
-    const otherPlayer = type === "extra-turn-p1" ? "Green" : "Pink";
+    const thisPlayer = type === 'extra-turn-p1' ? p1Nick : p2Nick
+    const otherPlayer = type === 'extra-turn-p1' ? p2Nick : p1Nick
     return {
       title: "Extra turn",
-      body: `${thisPlayer} captured ${otherPlayer}'s flower and gets an extra turn`,
+      body: `${thisPlayer} captured ${p2Nick}'s flower and gets an extra turn`,
     };
   }
+  console.log('no 2d text')
   return null;
 };
 
 const GameStateModal: React.FC<GameStateModalOwnprops> = ({
   type,
+  p1Nick,
+  p2Nick,
   onDismiss,
 }) => {
   const threeDText = getThreeDText(type);
-  const twoDText = getTwoDText(type);
+  const twoDText = getTwoDText(type, p1Nick, p2Nick);
   return (
     <Modal>
       <div className="bg-lightbg rounded-xl w-[800px] h-[250px] flex justify-center items-center flex-col">

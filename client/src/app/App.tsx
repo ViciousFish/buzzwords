@@ -73,7 +73,7 @@ function App() {
       </div>
       <ToastContainer toastClassName="bg-primary text-darkbrown rounded-lg" />
       {showingTutorialModal && <TutorialModal />}
-      {gameStateModal && <GameStateModal type={gameStateModal} onDismiss={() => dispatch(setGameStateModal(null))} />}
+      {gameStateModal && <GameStateModal {...gameStateModal} onDismiss={() => dispatch(setGameStateModal(null))} />}
     </BrowserRouter>
   );
 }
