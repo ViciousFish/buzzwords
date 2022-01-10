@@ -108,8 +108,9 @@ const GameList: React.FC = () => {
           <a.div style={hamburgerSpring}>
             <button
               onClick={() => dispatch(toggleIsOpen())}
-              aria-label="toggle menu visibility"
-              className="p-2 rounded-md text-darkbrown hover:bg-primary hover:bg-opacity-50"
+              aria-label="toggle games list"
+              className="text-darkbrown p-2 hover:bg-primary hover:bg-opacity-50 rounded-md"
+              data-tip="Toggle games list"
             >
               <FontAwesomeIcon icon={faBars} />
             </button>
