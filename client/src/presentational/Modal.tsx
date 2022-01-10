@@ -14,9 +14,9 @@ const Modal: React.FC<React.ComponentPropsWithRef<typeof ReactModal>> = ({
   return (
     <ReactModal
       isOpen
-      className={classNames("z-10 shadow-lg", className)}
+      className={classNames("z-20 shadow-lg", className)}
       overlayClassName={classNames(
-        "z-20 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-50 flex items-center justify-center",
+        "z-30 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-50 flex items-center justify-center",
         overlayClassName
       )}
       {...props}

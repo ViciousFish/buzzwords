@@ -12,6 +12,8 @@ export type GameStateModalType =
 
 export interface GameStateModalProps {
   type: GameStateModalType;
+  p1Nick: string;
+  p2Nick: string;
 }
 
 interface GameStateModalOwnprops extends GameStateModalProps {

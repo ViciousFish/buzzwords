@@ -8,6 +8,8 @@ import { getAllUsers } from "../user/userSelectors";
 import { fetchOpponent } from "../user/userActions";
 import axios from "axios";
 import { getApiUrl } from "../../app/apiPrefix";
+import { GameStateModalType } from "../game/GameStateModal";
+import { setGameStateModal } from "../game/gameSlice";
 
 interface GameMetaCache {
   lastSeenTurns: {
@@ -44,7 +46,7 @@ export const refresh = (): AppThunk => async (dispatch, getState) => {
     gamesById[game.id] = {
       ...game,
       lastSeenTurn: lastSeenTurns?.[game.id] ?? game.moves.length,
-      queuedGameStateModals: []
+      queuedGameStateModals: [],
     };
   }, {});
 
@@ -72,9 +74,28 @@ export const receiveGameUpdatedSocket =
       });
     }
 
+    let gameStateModalType: GameStateModalType | null = null;
+    if (game.moves[game.moves.length - 1].player === game.turn) {
+      gameStateModalType = game.turn === 0 ? "extra-turn-p1" : "extra-turn-p2";
+    }
+    if (game.gameOver) {
+      const selfUser = state.user.user?.id;
+      const userIndex = game.users.findIndex((userId) => selfUser === userId);
+    if (userIndex > -1) {
+        gameStateModalType = game.winner === userIndex ? "victory" : "defeat";
+      }
+    }
+
     if (state.game.currentGame === game.id && state.game.windowHasFocus) {
       updateLastSeenTurns(game.id, game.moves.length);
-      // CQ: get game state modal queue derived from last seen turn and moves list
+      // CQ: set game state modal
+      if (gameStateModalType) {
+        dispatch(setGameStateModal({
+          type: gameStateModalType,
+          p1Nick: state.user.opponents[game.users[0]]?.nickname ?? 'Pink',
+          p2Nick: state.user.opponents[game.users[1]]?.nickname ?? 'Green',
+        }));
+      }
       return dispatch(
         updateGame({
           ...game,
@@ -86,11 +107,12 @@ export const receiveGameUpdatedSocket =
 
     let lastSeenTurn = getLastSeenTurns()?.[game.id] ?? 0;
     lastSeenTurn = lastSeenTurn === 9999 ? game.moves.length : lastSeenTurn;
+    // CQ: queue game state modal
     dispatch(
       updateGame({
         ...game,
         lastSeenTurn,
-        queuedGameStateModals: [],
+        queuedGameStateModals: gameStateModalType ? [gameStateModalType] : [],
       })
     );
   };
@@ -100,7 +122,7 @@ export const markGameAsSeen =
   (dispatch, getState) => {
     const game = getState().gamelist.games[gameId];
     if (!game) {
-      console.log('inf', gameId);
+      console.log("inf", gameId);
       updateLastSeenTurns(gameId, 9999);
       return;
     }
