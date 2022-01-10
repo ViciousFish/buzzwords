@@ -41,6 +41,7 @@ export const gamelistSlice = createSlice({
     updateGame: (state, action: PayloadAction<UpdateGamePayload>) => {
       const game = {
         ...state.games[action.payload.game.id],
+        ...action.payload.game,
         lastSeenTurn: action.payload.lastSeenTurn,
       };
       if (action.payload.gameStateModalToQueue) {
