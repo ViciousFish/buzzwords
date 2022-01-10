@@ -54,7 +54,7 @@ const GameStateModal: React.FC<GameStateModalOwnprops> = ({
   const twoDText = getTwoDText(type, p1Nick, p2Nick);
   return (
     <Modal>
-      <div className="bg-lightbg rounded-xl w-[800px] h-[250px] flex justify-center items-center flex-col">
+      <div className="bg-lightbg rounded-xl w-[600px] h-[250px] flex justify-center items-center flex-col">
         {threeDText && (
           <div className="w-full max-w-[90vw] no-touch">
             <Canvas>

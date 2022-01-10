@@ -109,7 +109,7 @@ export const receiveGameUpdatedSocket =
         updateGame({
           game,
           lastSeenTurn: game.moves.length,
-          gameStateModalToQueue: gameStateModalType,
+          gameStateModalToQueue: null,
         })
       );
     }
@@ -139,8 +139,9 @@ export const markGameAsSeen =
     updateLastSeenTurns(gameId, lastSeenTurn);
     dispatch(
       updateGame({
-        ...game,
+        game,
         lastSeenTurn,
+        gameStateModalToQueue: null
       })
     );
   };
