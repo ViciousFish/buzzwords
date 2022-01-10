@@ -60,6 +60,14 @@ const gameSchema = new Schema<Game>({
       },
     },
   ],
+  vsAI: {
+    type: Boolean,
+    required: true,
+  },
+  difficulty: {
+    type: Number,
+    required: true,
+  },
   createdDate: {
     type: Date,
     required: true,

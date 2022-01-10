@@ -10,6 +10,7 @@ import {
   faQuestion,
   faSpinner,
   faSync,
+  faRobot,
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,7 +21,7 @@ import { animated as a, useSpring } from "@react-spring/web";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
-import { createNewGame } from "./gamelistActions";
+import { createNewAIGame, createNewGame } from "./gamelistActions";
 import { toggleCompletedGames, toggleIsOpen } from "./gamelistSlice";
 import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
 import { toggleTutorialModal } from "../game/gameSlice";
@@ -137,6 +138,13 @@ const GameList: React.FC = () => {
                 aria-label="create new game"
               >
                 <FontAwesomeIcon className="mx-1" icon={faPlus} />
+              </Button>
+              <Button
+                onClick={() => {
+                  dispatch(createNewAIGame());
+                }}
+              >
+                <FontAwesomeIcon className="mx-1" icon={faRobot} />
               </Button>
               <Button
                 onClick={() => {

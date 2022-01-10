@@ -13,10 +13,12 @@ import cors from "cors";
 import getConfig from "./config";
 import DL from "./datalayer";
 import Game from "buzzwords-shared/Game";
+import { getBotMove } from "buzzwords-shared/bot";
 import { DataLayer } from "./types";
 import { HexCoord } from "buzzwords-shared/types";
 import GameManager from "./GameManager";
 import BannedWords from "./banned_words.json";
+import { WordsObject } from "./words";
 
 const COLLECTION = "socket.io-adapter-events";
 
@@ -178,8 +180,32 @@ app.get("/api/game/:id", async (req, res) => {
 
 app.post("/api/game", async (req, res) => {
   const user = res.locals.userId as string;
+  const options = req.body;
   const gm = new GameManager(null);
   const game = gm.createGame(user);
+  if (options.vsAI) {
+    game.vsAI = true;
+    game.users.push("AI");
+    let difficulty = 1;
+    if (options.difficulty) {
+      difficulty =
+        typeof options.difficulty == "number"
+          ? options.difficulty
+          : parseInt(options.difficulty);
+      if (
+        typeof difficulty != "number" ||
+        isNaN(difficulty) ||
+        difficulty < 1 ||
+        difficulty > 10
+      ) {
+        res.status(400).json({
+          message: "Difficulty must be a number 1-10",
+        });
+        return;
+      }
+    }
+    game.difficulty = difficulty;
+  }
   try {
     await dl.saveGame(game.id, game);
     res.send(game.id);
@@ -239,6 +265,13 @@ app.post("/api/game/:id/move", async (req, res) => {
   let newGame: Game;
   try {
     newGame = gm.makeMove(user, move);
+    if (newGame.vsAI) {
+      const botMove = getBotMove(newGame.grid, {
+        words: WordsObject,
+        difficulty: newGame.difficulty,
+      });
+      newGame = gm.makeMove("AI", botMove);
+    }
   } catch (e: unknown) {
     res.status(400);
     if (e instanceof Error) {

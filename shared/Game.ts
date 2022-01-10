@@ -11,6 +11,8 @@ export interface Move {
 export default interface Game {
   id: string;
   users: string[];
+  vsAI: boolean;
+  difficulty: number;
   turn: 0 | 1;
   grid: HexGrid;
   gameOver: boolean;
