@@ -27,7 +27,9 @@ const getThreeDText = (type: GameStateModalOwnprops["type"]) => {
   if (type === "defeat") {
     return "DEFEAT";
   }
-  console.log('no 3d text')
+  if (type.startsWith('extra-turn')) {
+    return 'EXTRA TURN'
+  }
   return null;
 };
 
@@ -36,11 +38,20 @@ const getTwoDText = (type: GameStateModalProps["type"], p1Nick: string, p2Nick: 
     const thisPlayer = type === 'extra-turn-p1' ? p1Nick : p2Nick
     const otherPlayer = type === 'extra-turn-p1' ? p2Nick : p1Nick
     return {
-      title: "Extra turn",
-      body: `${thisPlayer} captured ${p2Nick}'s flower and gets an extra turn`,
+      // title: "Extra turn",
+      body: `${thisPlayer} captured ${otherPlayer}'s flower and gets an extra turn`,
     };
   }
-  console.log('no 2d text')
+  if (type === 'defeat') {
+    return {
+      body: "Better luck next time"
+    }
+  }
+  if (type === 'victory') {
+    return {
+      body: "Congratulations!"
+    }
+  }
   return null;
 };
 
@@ -54,17 +65,18 @@ const GameStateModal: React.FC<GameStateModalOwnprops> = ({
   const twoDText = getTwoDText(type, p1Nick, p2Nick);
   return (
     <Modal>
-      <div className="bg-lightbg rounded-xl w-[600px] h-[250px] flex justify-center items-center flex-col">
+      <div className="bg-lightbg rounded-xl w-[700px] h-[250px] flex justify-center items-center flex-col">
         {threeDText && (
           <div className="w-full max-w-[90vw] no-touch">
+            <React.Suspense fallback={null}>
             <Canvas>
               <HexWord text={threeDText} />
             </Canvas>
+            </React.Suspense>
           </div>
         )}
         {twoDText && (
-          <div className="w-full max-w-[90vw] text-center my-2">
-            <h2 className="text-2xl">{twoDText.title}</h2>
+          <div className="w-full max-w-[90vw] text-center">
             <p>{twoDText.body}</p>
           </div>
         )}
