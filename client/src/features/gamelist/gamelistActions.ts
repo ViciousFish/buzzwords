@@ -1,6 +1,6 @@
 import * as R from "ramda";
 
-import { AppThunk } from "../../app/store";
+import { AppThunk, RootState } from "../../app/store";
 import { ClientGame, refreshReceived, updateGame } from "./gamelistSlice";
 import Game from "buzzwords-shared/Game";
 import { opponentReceived, User } from "../user/userSlice";
@@ -30,6 +30,24 @@ const updateLastSeenTurns = (gameId: string, turns: number) => {
     lastSeenTurns,
   });
   localStorage.setItem("gameMetaCache", metaCache);
+};
+
+const gameUpdateEventGetGameStateModalType = (
+  game: Game,
+  state: RootState,
+): GameStateModalType | null => {
+  let gameStateModalType: GameStateModalType | null = null;
+  if (game.moves[game.moves.length - 1].player === game.turn) {
+    gameStateModalType = game.turn === 0 ? "extra-turn-p1" : "extra-turn-p2";
+  }
+  if (game.gameOver) {
+    const selfUser = state.user.user?.id;
+    const userIndex = game.users.findIndex((userId) => selfUser === userId);
+    if (userIndex > -1) {
+      gameStateModalType = game.winner === userIndex ? "victory" : "defeat";
+    }
+  }
+  return gameStateModalType;
 };
 
 export const refresh = (): AppThunk => async (dispatch, getState) => {
@@ -74,33 +92,24 @@ export const receiveGameUpdatedSocket =
       });
     }
 
-    let gameStateModalType: GameStateModalType | null = null;
-    if (game.moves[game.moves.length - 1].player === game.turn) {
-      gameStateModalType = game.turn === 0 ? "extra-turn-p1" : "extra-turn-p2";
-    }
-    if (game.gameOver) {
-      const selfUser = state.user.user?.id;
-      const userIndex = game.users.findIndex((userId) => selfUser === userId);
-    if (userIndex > -1) {
-        gameStateModalType = game.winner === userIndex ? "victory" : "defeat";
-      }
-    }
-
+    const gameStateModalType = game ? gameUpdateEventGetGameStateModalType(game, state) : null;
     if (state.game.currentGame === game.id && state.game.windowHasFocus) {
       updateLastSeenTurns(game.id, game.moves.length);
       // CQ: set game state modal
       if (gameStateModalType) {
-        dispatch(setGameStateModal({
-          type: gameStateModalType,
-          p1Nick: state.user.opponents[game.users[0]]?.nickname ?? 'Pink',
-          p2Nick: state.user.opponents[game.users[1]]?.nickname ?? 'Green',
-        }));
+        dispatch(
+          setGameStateModal({
+            type: gameStateModalType,
+            p1Nick: state.user.opponents[game.users[0]]?.nickname ?? "Pink",
+            p2Nick: state.user.opponents[game.users[1]]?.nickname ?? "Green",
+          })
+        );
       }
       return dispatch(
         updateGame({
-          ...game,
+          game,
           lastSeenTurn: game.moves.length,
-          queuedGameStateModals: [],
+          gameStateModalToQueue: gameStateModalType,
         })
       );
     }
@@ -110,9 +119,9 @@ export const receiveGameUpdatedSocket =
     // CQ: queue game state modal
     dispatch(
       updateGame({
-        ...game,
+        game,
         lastSeenTurn,
-        queuedGameStateModals: gameStateModalType ? [gameStateModalType] : [],
+        gameStateModalToQueue: gameStateModalType,
       })
     );
   };

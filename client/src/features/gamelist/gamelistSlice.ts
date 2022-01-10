@@ -24,6 +24,12 @@ const initialState: GameListState = {
   showCompletedGames: true,
 };
 
+interface UpdateGamePayload {
+  game: Game;
+  lastSeenTurn: number;
+  gameStateModalToQueue: GameStateModalType | null;
+}
+
 export const gamelistSlice = createSlice({
   name: "gamelist",
   initialState,
@@ -32,8 +38,15 @@ export const gamelistSlice = createSlice({
       state.games = action.payload;
       state.gamesLoaded = true;
     },
-    updateGame: (state, action: PayloadAction<ClientGame>) => {
-      state.games[action.payload.id] = action.payload;
+    updateGame: (state, action: PayloadAction<UpdateGamePayload>) => {
+      const game = {
+        ...state.games[action.payload.game.id],
+        lastSeenTurn: action.payload.lastSeenTurn,
+      };
+      if (action.payload.gameStateModalToQueue) {
+        game.queuedGameStateModals.push(action.payload.gameStateModalToQueue)
+      }
+      state.games[action.payload.game.id] = game;
     },
     toggleIsOpen: (state) => {
       state.isOpen = !state.isOpen;
