@@ -175,14 +175,14 @@ export const markGameAsSeen =
   };
 
 export const createNewGame = (): AppThunk => async (dispatch) => {
-  const res = await axios.post(getApiUrl("/game"));
+  const res = await axios.post<string>(getApiUrl("/game"));
 
   await dispatch(refresh());
   return res.data;
 };
 
 export const createNewAIGame = (): AppThunk => async (dispatch) => {
-  const res = await axios.post(getApiUrl("/game"), {
+  const res = await axios.post<string>(getApiUrl("/game"), {
     vsAI: true,
     difficulty: 5,
   });

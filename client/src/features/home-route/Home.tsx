@@ -5,7 +5,7 @@ import Bee from "../../assets/Bee";
 import HexWord from "../thereed-lettering/HexWord";
 import Button from "../../presentational/Button";
 import { useAppDispatch } from "../../app/hooks";
-import { createNewGame } from "../gamelist/gamelistActions";
+import { createNewAIGame, createNewGame } from "../gamelist/gamelistActions";
 import { useNavigate } from "react-router-dom";
 
 const Home: React.FC = () => {
@@ -13,8 +13,13 @@ const Home: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const onPlayClick = useCallback(async () => {
+  const onPlayOnlineClick = useCallback(async () => {
     const game = await dispatch(createNewGame());
+    navigate(`/play/${game}`);
+  }, [navigate, dispatch]);
+
+  const onPlayAIClick = useCallback(async () => {
+    const game = await dispatch(createNewAIGame());
     navigate(`/play/${game}`);
   }, [navigate, dispatch]);
   return (
@@ -35,9 +40,15 @@ const Home: React.FC = () => {
       <div className="flex justify-center items-start">
         <Button
           className="p-4 text-2xl relative mt-[0vw]"
-          onClick={onPlayClick}
+          onClick={onPlayOnlineClick}
         >
-          Play
+          Play online
+        </Button>
+        <Button
+          className="p-4 text-2xl relative mt-[0vw]"
+          onClick={onPlayAIClick}
+        >
+          Play vs AI
         </Button>
       </div>
     </>

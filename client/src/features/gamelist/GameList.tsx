@@ -1,16 +1,12 @@
 import {
   faAngleDown,
-  faAngleLeft,
   faAngleRight,
   faBars,
-  faCaretDown,
-  faCaretRight,
   faHome,
-  faPlus,
   faQuestion,
   faSpinner,
-  faSync,
   faRobot,
+  faGlobe,
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -79,6 +75,7 @@ const GameList: React.FC = () => {
             target="_blank"
             rel="noreferrer"
             aria-label="buzzwords github"
+            data-tip="Github repo"
           >
             <FontAwesomeIcon icon={faGithub} />
           </a>
@@ -88,6 +85,7 @@ const GameList: React.FC = () => {
             target="_blank"
             rel="noreferrer"
             aria-label="buzzwords twitter"
+            data-tip="Follow us on twitter"
           >
             <FontAwesomeIcon icon={faTwitter} /> BuzzwordsGG
           </a>
@@ -103,6 +101,7 @@ const GameList: React.FC = () => {
             }
             to="/"
             aria-label="home"
+            data-tip="Home"
           >
             <FontAwesomeIcon icon={faHome} />
           </NavLink>
@@ -135,14 +134,17 @@ const GameList: React.FC = () => {
                 onClick={() => {
                   dispatch(createNewGame());
                 }}
-                aria-label="create new game"
+                aria-label="create new online game"
+                data-tip="Create new online game"
               >
-                <FontAwesomeIcon className="mx-1" icon={faPlus} />
+                <FontAwesomeIcon className="mx-1" icon={faGlobe} />
               </Button>
               <Button
                 onClick={() => {
                   dispatch(createNewAIGame());
                 }}
+                aria-label="create new game versus AI"
+                data-tip="Create new game vs. AI"
               >
                 <FontAwesomeIcon className="mx-1" icon={faRobot} />
               </Button>
@@ -151,6 +153,7 @@ const GameList: React.FC = () => {
                   dispatch(toggleTutorialModal());
                 }}
                 aria-label="watch tutorial"
+                data-tip="Tutorial"
               >
                 <FontAwesomeIcon className="mx-1" icon={faQuestion} />
               </Button>
