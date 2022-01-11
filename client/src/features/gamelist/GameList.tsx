@@ -137,6 +137,7 @@ const GameList: React.FC = () => {
                 }}
                 aria-label="create new online game"
                 data-tip="Create new online game"
+                className="w-[42px] h-[42px] inline-flex items-center justify-center"
               >
                 <FontAwesomeIcon className="mx-1" icon={faGlobe} />
               </Button>
@@ -146,6 +147,7 @@ const GameList: React.FC = () => {
                 }}
                 aria-label="create new game versus AI"
                 data-tip="Create new game vs. AI"
+                className="w-[42px] h-[42px] inline-flex items-center justify-center"
               >
                 <FontAwesomeIcon className="mx-1" icon={faRobot} />
               </Button>
@@ -155,6 +157,7 @@ const GameList: React.FC = () => {
                 }}
                 aria-label="watch tutorial"
                 data-tip="Tutorial"
+                className="w-[42px] h-[42px] inline-flex items-center justify-center"
               >
                 <FontAwesomeIcon className="mx-1" icon={faQuestion} />
               </Button>
