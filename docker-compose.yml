@@ -3,6 +3,7 @@ services:
   buzzwords-web:
     image: chuckdries/buzzwords-web
     build: ./client
+    restart: always
     # ports:
     #   - 3000:80
     networks:
@@ -11,6 +12,7 @@ services:
   buzzwords-server:
     image: chuckdries/buzzwords-server
     build: ./server
+    restart: always
     environment:
       - DB_TYPE=mongo
       - COOKIE_DOMAIN
