@@ -265,7 +265,7 @@ app.post("/api/game/:id/move", async (req, res) => {
   let newGame: Game;
   try {
     newGame = gm.makeMove(user, move);
-    if (newGame.vsAI) {
+    if (newGame.vsAI && newGame.turn) {
       const botMove = getBotMove(newGame.grid, {
         words: WordsObject,
         difficulty: newGame.difficulty,
