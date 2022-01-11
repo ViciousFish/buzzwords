@@ -16,7 +16,7 @@ export const getBotMove = (
   }
 ): HexCoord[] => {
   const openTiles = Object.values(grid).filter((cell) => {
-    return cell.owner == 2 && cell.value != "";
+    return !cell.capital && cell.owner == 2 && cell.value != "";
   });
 
   const jitter = getRandomInt(-3, 4);
@@ -39,10 +39,14 @@ export const getBotMove = (
     botCapital.r
   ).filter((c) => c.owner == 2);
 
-  const territoryNeighbors = Object.values(grid).filter((cell) =>
-    getCellNeighbors(grid, cell.q, cell.r)
-      .map((c) => c.owner)
-      .includes(1)
+  const territoryNeighbors = Object.values(grid).filter(
+    (cell) =>
+      getCellNeighbors(grid, cell.q, cell.r)
+        .map((c) => c.owner)
+        .includes(1) &&
+      cell.owner == 2 &&
+      !cell.capital &&
+      cell.value != ""
   );
 
   const territoryNonCapitalNeighbors = territoryNeighbors.filter(
@@ -87,13 +91,11 @@ export const getBotMove = (
   };
 
   for (let d = Math.min(defenseTileCount, maxWordLength); d >= 0; d--) {
-    if (d == capitalNeighbors.length) {
+    if (d && d == capitalNeighbors.length) {
       const cells = [...capitalNeighbors];
       const result = permuteAndCheck(cells);
       if (result) {
         return result;
-      } else {
-        continue;
       }
     }
     for (let neighborCells of d ? combinationN(capitalNeighbors, d) : [[]]) {
@@ -102,8 +104,6 @@ export const getBotMove = (
         const result = permuteAndCheck(cells);
         if (result) {
           return result;
-        } else {
-          continue;
         }
       }
       for (

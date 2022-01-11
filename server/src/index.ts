@@ -265,11 +265,12 @@ app.post("/api/game/:id/move", async (req, res) => {
   let newGame: Game;
   try {
     newGame = gm.makeMove(user, move);
-    if (newGame.vsAI && newGame.turn) {
+    while (newGame.vsAI && newGame.turn) {
       const botMove = getBotMove(newGame.grid, {
         words: WordsObject,
         difficulty: newGame.difficulty,
       });
+      console.log("Bot move", botMove);
       newGame = gm.makeMove("AI", botMove);
     }
   } catch (e: unknown) {
