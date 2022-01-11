@@ -236,6 +236,41 @@ app.post("/api/game/join", async (req, res) => {
   res.sendStatus(success ? 201 : 404);
 });
 
+const doBotMoves = async (gameId: string): Promise<void> => {
+  const session = await dl.createContext();
+
+  let game = await dl.getGameById(gameId, {
+    session,
+  });
+
+  if (!game) {
+    return;
+  }
+
+  const gm = new GameManager(game);
+
+  while (game.vsAI && game.turn) {
+    const start = Date.now();
+    const botMove = getBotMove(game.grid, {
+      words: WordsObject,
+      difficulty: game.difficulty,
+    });
+    console.log("Bot move", botMove);
+    game = gm.makeMove("AI", botMove);
+    await dl.saveGame(gameId, game, {
+      session,
+    });
+    const delay = 2000 - (Date.now() - start);
+    console.log("delay", delay);
+    game.users.forEach((user) => {
+      setTimeout(() => {
+        io.to(user).emit("game updated", game);
+      }, delay);
+    });
+  }
+  await dl.commitContext(session);
+};
+
 app.post("/api/game/:id/move", async (req, res) => {
   const user = res.locals.userId as string;
   const gameId = req.params.id;
@@ -265,14 +300,6 @@ app.post("/api/game/:id/move", async (req, res) => {
   let newGame: Game;
   try {
     newGame = gm.makeMove(user, move);
-    while (newGame.vsAI && newGame.turn) {
-      const botMove = getBotMove(newGame.grid, {
-        words: WordsObject,
-        difficulty: newGame.difficulty,
-      });
-      console.log("Bot move", botMove);
-      newGame = gm.makeMove("AI", botMove);
-    }
   } catch (e: unknown) {
     res.status(400);
     if (e instanceof Error) {
@@ -297,6 +324,7 @@ app.post("/api/game/:id/move", async (req, res) => {
   newGame.users.forEach((user) => {
     io.to(user).emit("game updated", newGame);
   });
+  doBotMoves(gameId);
 });
 
 interface SelectionEventProps {
