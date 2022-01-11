@@ -39,71 +39,39 @@ export const getBotMove = (
     botCapital.r
   ).filter((c) => c.owner == 2);
 
+  const territoryNeighbors = Object.values(grid).filter((cell) =>
+    getCellNeighbors(grid, cell.q, cell.r)
+      .map((c) => c.owner)
+      .includes(1)
+  );
+
+  const territoryNonCapitalNeighbors = territoryNeighbors.filter(
+    (cell) =>
+      !getCellNeighbors(grid, cell.q, cell.r)
+        .map((c) => c.capital && Boolean(c.owner))
+        .includes(true)
+  );
+
+  const capitalNeighborCoords = capitalNeighbors.map((c) => `${c.q},${c.r}`);
+
+  const nonNeighborTiles = openTiles.filter(
+    (c) => !capitalNeighborCoords.includes(`${c.q},${c.r}`)
+  );
+
   const wordsTried: {
     [key: string]: boolean;
   } = {};
 
-  // Try to defend the bot capital
-  if (capitalNeighbors.length) {
-    let defenseTileCount = capitalNeighbors.length;
-    if (getRandomInt(1, 11) > options.difficulty) {
-      const defenseJitter = getRandomInt((defenseTileCount - 1) * -1, 0);
-      defenseTileCount += defenseJitter;
-    }
-
-    console.debug(
-      "Bot has ",
-      capitalNeighbors.length,
-      "open cells around capital. Will try to defend ",
-      defenseTileCount
-    );
-
-    const capitalNeighborCoords = capitalNeighbors.map((c) => `${c.q},${c.r}`);
-
-    const nonNeighborTiles = openTiles.filter(
-      (c) => !capitalNeighborCoords.includes(`${c.q},${c.r}`)
-    );
-
-    for (let d = defenseTileCount; d >= 1; d--) {
-      for (let neighborCells of combinationN(capitalNeighbors, d)) {
-        if (d == maxWordLength) {
-          const cells = [...neighborCells];
-          for (let p of permutationN(cells, cells.length)) {
-            const word = p.map((c) => c.value).join("");
-            if (!wordsTried[word]) {
-              if (isValidWord(word, options.words)) {
-                return p.map((c) => ({
-                  q: c.q,
-                  r: c.r,
-                }));
-              }
-            }
-            wordsTried[word] = true;
-          }
-        }
-        for (let i = maxWordLength - d; i > 0; i--) {
-          for (let c of combinationN(nonNeighborTiles, i)) {
-            const cells = [...neighborCells, ...c];
-            for (let p of permutationN(cells, cells.length)) {
-              const word = p.map((c) => c.value).join("");
-              if (!wordsTried[word]) {
-                if (isValidWord(word, options.words)) {
-                  return p.map((c) => ({
-                    q: c.q,
-                    r: c.r,
-                  }));
-                }
-              }
-              wordsTried[word] = true;
-            }
-          }
-        }
-      }
-    }
+  let defenseTileCount = capitalNeighbors.length;
+  if (getRandomInt(1, 11) > options.difficulty) {
+    const defenseJitter = getRandomInt((defenseTileCount - 1) * -1, 0);
+    defenseTileCount += defenseJitter;
   }
 
-  for (let i = maxWordLength; i >= 3; i--) {
-    for (let p of permutationN(openTiles, i)) {
+  defenseTileCount = Math.max(defenseTileCount, 0);
+
+  const permuteAndCheck = (cells: Cell[]): HexCoord[] | null => {
+    for (let p of permutationN(cells, cells.length)) {
       const word = p.map((c) => c.value).join("");
       if (!wordsTried[word]) {
         if (isValidWord(word, options.words)) {
@@ -114,6 +82,64 @@ export const getBotMove = (
         }
       }
       wordsTried[word] = true;
+    }
+    return null;
+  };
+
+  for (let d = Math.min(defenseTileCount, maxWordLength); d >= 0; d--) {
+    if (d == capitalNeighbors.length) {
+      const cells = [...capitalNeighbors];
+      const result = permuteAndCheck(cells);
+      if (result) {
+        return result;
+      } else {
+        continue;
+      }
+    }
+    for (let neighborCells of d ? combinationN(capitalNeighbors, d) : [[]]) {
+      if (d == maxWordLength) {
+        const cells = [...neighborCells];
+        const result = permuteAndCheck(cells);
+        if (result) {
+          return result;
+        } else {
+          continue;
+        }
+      }
+      for (
+        let t = Math.min(
+          maxWordLength - d,
+          territoryNonCapitalNeighbors.length
+        );
+        t >= 0;
+        t--
+      ) {
+        // Next prioritize new territory
+        for (let tCombo of t
+          ? combinationN(territoryNonCapitalNeighbors, t)
+          : [[]]) {
+          if (d + t == maxWordLength) {
+            const cells = [...neighborCells, ...tCombo];
+            const result = permuteAndCheck(cells);
+            if (result) {
+              return result;
+            }
+          }
+          for (
+            let r = Math.min(maxWordLength - d - t, nonNeighborTiles.length);
+            r > 0;
+            r--
+          ) {
+            for (let rCombo of combinationN(nonNeighborTiles, r)) {
+              const cells = [...neighborCells, ...tCombo, ...rCombo];
+              const result = permuteAndCheck(cells);
+              if (result) {
+                return result;
+              }
+            }
+          }
+        }
+      }
     }
   }
   throw "No valid combinations! This shouldn't be possible";
