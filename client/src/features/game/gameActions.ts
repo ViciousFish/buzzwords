@@ -145,5 +145,4 @@ export const setWindowFocusThunk = (focus: boolean): AppThunk => (dispatch, getS
     dispatch(markGameAsSeen(state.game.currentGame))
   }
   dispatch(setWindowHasFocus(focus));
-  console.log('focus', focus);
 }

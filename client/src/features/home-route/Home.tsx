@@ -26,7 +26,7 @@ const Home: React.FC = () => {
           >
             <Bee position={[0, 3, 0]} scale={1.7} />
             <group position={[0, -3, 0]}>
-              <HexWord position={[0, 0, 0]} text="WELCOME" />
+              <HexWord autoSpin position={[0, 0, 0]} text="WELCOME" />
             </group>
             <group position={[0, 0, 0]}></group>
           </React.Suspense>

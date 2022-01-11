@@ -1,8 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import Game from "buzzwords-shared/Game";
+import { GameStateModalType } from "../game/GameStateModal";
 
 export interface ClientGame extends Game {
   lastSeenTurn: number;
+  queuedGameStateModals: GameStateModalType[];
 }
 
 interface GameListState {
@@ -22,6 +24,12 @@ const initialState: GameListState = {
   showCompletedGames: true,
 };
 
+interface UpdateGamePayload {
+  game: Game;
+  lastSeenTurn: number;
+  gameStateModalToQueue: GameStateModalType | null;
+}
+
 export const gamelistSlice = createSlice({
   name: "gamelist",
   initialState,
@@ -30,8 +38,16 @@ export const gamelistSlice = createSlice({
       state.games = action.payload;
       state.gamesLoaded = true;
     },
-    updateGame: (state, action: PayloadAction<ClientGame>) => {
-      state.games[action.payload.id] = action.payload;
+    updateGame: (state, action: PayloadAction<UpdateGamePayload>) => {
+      const game = {
+        ...state.games[action.payload.game.id],
+        ...action.payload.game,
+        lastSeenTurn: action.payload.lastSeenTurn,
+      };
+      if (action.payload.gameStateModalToQueue) {
+        game.queuedGameStateModals.push(action.payload.gameStateModalToQueue)
+      }
+      state.games[action.payload.game.id] = game;
     },
     toggleIsOpen: (state) => {
       state.isOpen = !state.isOpen;
@@ -42,6 +58,9 @@ export const gamelistSlice = createSlice({
     setShowCompletedGames: (state, action: PayloadAction<boolean>) => {
       state.showCompletedGames = action.payload;
     },
+    shiftGameStateModalQueueForGame: (state, action: PayloadAction<string>) => {
+      state.games[action.payload].queuedGameStateModals.shift()
+    }
   },
 });
 
@@ -52,6 +71,7 @@ export const {
   toggleIsOpen,
   toggleCompletedGames,
   setShowCompletedGames,
+  shiftGameStateModalQueueForGame
 } = gamelistSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type

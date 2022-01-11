@@ -75,7 +75,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 currentGame={id}
                 gameOver={game.gameOver}
               />
-              <Html position={[0, game.turn === 0 ? 5 : 4, 0]} center>
+              {/* Modals have z index of 30 */}
+              <Html zIndexRange={[20, 0]} position={[0, game.turn === 0 ? 5 : 4, 0]} center>
                 <span>
                   {userIndex === 0
                     ? nickname ?? "You"
@@ -99,7 +100,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 currentGame={id}
                 gameOver={game.gameOver}
               />
-              <Html position={[0, game.turn === 1 ? 5 : 4, 0]} center>
+              <Html zIndexRange={[20, 0]} position={[0, game.turn === 1 ? 5 : 4, 0]} center>
                 {userIndex === 1
                   ? nickname ?? "You"
                   : opponent?.nickname ?? "Them"}

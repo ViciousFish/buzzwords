@@ -1,13 +1,20 @@
 import * as R from "ramda";
 
-import { AppThunk } from "../../app/store";
-import { ClientGame, refreshReceived, updateGame } from "./gamelistSlice";
+import { AppThunk, RootState } from "../../app/store";
+import {
+  ClientGame,
+  refreshReceived,
+  shiftGameStateModalQueueForGame,
+  updateGame,
+} from "./gamelistSlice";
 import Game from "buzzwords-shared/Game";
 import { opponentReceived, User } from "../user/userSlice";
 import { getAllUsers } from "../user/userSelectors";
 import { fetchOpponent } from "../user/userActions";
 import axios from "axios";
 import { getApiUrl } from "../../app/apiPrefix";
+import { GameStateModalType } from "../game/GameStateModal";
+import { setGameStateModal } from "../game/gameSlice";
 
 interface GameMetaCache {
   lastSeenTurns: {
@@ -30,6 +37,24 @@ const updateLastSeenTurns = (gameId: string, turns: number) => {
   localStorage.setItem("gameMetaCache", metaCache);
 };
 
+const gameUpdateEventGetGameStateModalType = (
+  game: Game,
+  state: RootState
+): GameStateModalType | null => {
+  let gameStateModalType: GameStateModalType | null = null;
+  if (game.moves[game.moves.length - 1].player === game.turn) {
+    gameStateModalType = game.turn === 0 ? "extra-turn-p1" : "extra-turn-p2";
+  }
+  if (game.gameOver) {
+    const selfUser = state.user.user?.id;
+    const userIndex = game.users.findIndex((userId) => selfUser === userId);
+    if (userIndex > -1) {
+      gameStateModalType = game.winner === userIndex ? "victory" : "defeat";
+    }
+  }
+  return gameStateModalType;
+};
+
 export const refresh = (): AppThunk => async (dispatch, getState) => {
   console.log("refresh");
   const response = await axios.get<{
@@ -44,6 +69,7 @@ export const refresh = (): AppThunk => async (dispatch, getState) => {
     gamesById[game.id] = {
       ...game,
       lastSeenTurn: lastSeenTurns?.[game.id] ?? game.moves.length,
+      queuedGameStateModals: [],
     };
   }, {});
 
@@ -71,24 +97,59 @@ export const receiveGameUpdatedSocket =
       });
     }
 
+    const gameStateModalType = game
+      ? gameUpdateEventGetGameStateModalType(game, state)
+      : null;
     if (state.game.currentGame === game.id && state.game.windowHasFocus) {
       updateLastSeenTurns(game.id, game.moves.length);
+      // CQ: set game state modal
+      if (gameStateModalType) {
+        dispatch(
+          setGameStateModal({
+            type: gameStateModalType,
+            p1Nick: state.user.opponents[game.users[0]]?.nickname ?? "Pink",
+            p2Nick: state.user.opponents[game.users[1]]?.nickname ?? "Green",
+          })
+        );
+      }
       return dispatch(
         updateGame({
-          ...game,
+          game,
           lastSeenTurn: game.moves.length,
+          gameStateModalToQueue: null,
         })
       );
     }
 
     let lastSeenTurn = getLastSeenTurns()?.[game.id] ?? 0;
     lastSeenTurn = lastSeenTurn === 9999 ? game.moves.length : lastSeenTurn;
+    // CQ: queue game state modal
     dispatch(
       updateGame({
-        ...game,
+        game,
         lastSeenTurn,
+        gameStateModalToQueue: gameStateModalType,
       })
     );
+  };
+
+export const dequeueOrDismissGameStateModalForGame =
+  (gameId: string): AppThunk =>
+  (dispatch, getState) => {
+    dispatch(setGameStateModal(null));
+    const state = getState();
+    const game = state.gamelist.games[gameId];
+    const gameStateModalToShow = game?.queuedGameStateModals[0];
+    if (gameStateModalToShow) {
+      dispatch(shiftGameStateModalQueueForGame(gameId));
+      dispatch(
+        setGameStateModal({
+          type: gameStateModalToShow,
+          p1Nick: state.user.opponents[game?.users[0]]?.nickname ?? "Pink",
+          p2Nick: state.user.opponents[game?.users[1]]?.nickname ?? "Green",
+        })
+      );
+    }
   };
 
 export const markGameAsSeen =
@@ -96,7 +157,7 @@ export const markGameAsSeen =
   (dispatch, getState) => {
     const game = getState().gamelist.games[gameId];
     if (!game) {
-      console.log('inf', gameId);
+      console.log("inf", gameId);
       updateLastSeenTurns(gameId, 9999);
       return;
     }
@@ -104,10 +165,12 @@ export const markGameAsSeen =
     updateLastSeenTurns(gameId, lastSeenTurn);
     dispatch(
       updateGame({
-        ...game,
+        game,
         lastSeenTurn,
+        gameStateModalToQueue: null,
       })
     );
+    dispatch(dequeueOrDismissGameStateModalForGame(gameId));
   };
 
 export const createNewGame = (): AppThunk => async (dispatch) => {
