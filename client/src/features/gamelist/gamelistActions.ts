@@ -1,7 +1,12 @@
 import * as R from "ramda";
 
 import { AppThunk, RootState } from "../../app/store";
-import { ClientGame, refreshReceived, updateGame } from "./gamelistSlice";
+import {
+  ClientGame,
+  refreshReceived,
+  shiftGameStateModalQueueForGame,
+  updateGame,
+} from "./gamelistSlice";
 import Game from "buzzwords-shared/Game";
 import { opponentReceived, User } from "../user/userSlice";
 import { getAllUsers } from "../user/userSelectors";
@@ -34,7 +39,7 @@ const updateLastSeenTurns = (gameId: string, turns: number) => {
 
 const gameUpdateEventGetGameStateModalType = (
   game: Game,
-  state: RootState,
+  state: RootState
 ): GameStateModalType | null => {
   let gameStateModalType: GameStateModalType | null = null;
   if (game.moves[game.moves.length - 1].player === game.turn) {
@@ -92,7 +97,9 @@ export const receiveGameUpdatedSocket =
       });
     }
 
-    const gameStateModalType = game ? gameUpdateEventGetGameStateModalType(game, state) : null;
+    const gameStateModalType = game
+      ? gameUpdateEventGetGameStateModalType(game, state)
+      : null;
     if (state.game.currentGame === game.id && state.game.windowHasFocus) {
       updateLastSeenTurns(game.id, game.moves.length);
       // CQ: set game state modal
@@ -126,6 +133,25 @@ export const receiveGameUpdatedSocket =
     );
   };
 
+export const dequeueOrDismissGameStateModalForGame =
+  (gameId: string): AppThunk =>
+  (dispatch, getState) => {
+    dispatch(setGameStateModal(null));
+    const state = getState();
+    const game = state.gamelist.games[gameId];
+    const gameStateModalToShow = game?.queuedGameStateModals[0];
+    if (gameStateModalToShow) {
+      dispatch(shiftGameStateModalQueueForGame(gameId));
+      dispatch(
+        setGameStateModal({
+          type: gameStateModalToShow,
+          p1Nick: state.user.opponents[game?.users[0]]?.nickname ?? "Pink",
+          p2Nick: state.user.opponents[game?.users[1]]?.nickname ?? "Green",
+        })
+      );
+    }
+  };
+
 export const markGameAsSeen =
   (gameId: string): AppThunk =>
   (dispatch, getState) => {
@@ -141,9 +167,10 @@ export const markGameAsSeen =
       updateGame({
         game,
         lastSeenTurn,
-        gameStateModalToQueue: null
+        gameStateModalToQueue: null,
       })
     );
+    dispatch(dequeueOrDismissGameStateModalForGame(gameId));
   };
 
 export const createNewGame = (): AppThunk => async (dispatch) => {

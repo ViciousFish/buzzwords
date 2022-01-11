@@ -6,7 +6,11 @@ import classnames from "classnames";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import { setCurrentGame } from "../game/gameSlice";
-import { joinGameById, markGameAsSeen } from "../gamelist/gamelistActions";
+import {
+  dequeueOrDismissGameStateModalForGame,
+  joinGameById,
+  markGameAsSeen,
+} from "../gamelist/gamelistActions";
 import GameBoard from "../game/GameBoard";
 import CopyToClipboard from "../../presentational/CopyToClipboard";
 import NicknameModal from "../user/NicknameModal";
@@ -21,6 +25,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import Button from "../../presentational/Button";
+import GameStateModal from "../game/GameStateModal";
 
 const Play: React.FC = () => {
   const dispatch = useDispatch();
@@ -38,6 +43,7 @@ const Play: React.FC = () => {
   const currentReplayIndex = useAppSelector(
     (state) => state.game.replay.moveListIndex
   );
+  const gameStateModal = useAppSelector((state) => state.game.gameStateModal);
 
   const [fourohfour, setFourohfour] = useState(false);
 
@@ -188,6 +194,12 @@ const Play: React.FC = () => {
         </div>
       )}
       {nickModal}
+      {gameStateModal && id && (
+        <GameStateModal
+          {...gameStateModal}
+          onDismiss={() => dispatch(dequeueOrDismissGameStateModalForGame(id))}
+        />
+      )}
     </div>
   );
 };

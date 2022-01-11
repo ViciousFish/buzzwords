@@ -116,7 +116,7 @@ const GameList: React.FC = () => {
             <React.Suspense fallback={<></>}>
               <CanvasLazy>
                 <BeeLazy position={[0, 5, 0]} scale={4} />
-                <HexWordLazy position={[0, -6, 0]} text="BUZZWORDS" />
+                <HexWordLazy autoSpin position={[0, -6, 0]} text="BUZZWORDS" />
               </CanvasLazy>
             </React.Suspense>
           </div>

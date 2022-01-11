@@ -29,6 +29,7 @@ const HexWord: React.FC<HexWordProps & GroupProps> = ({
     >
       {characters.map((character, index) => (
         <HexLetter
+          autoSpin={autoSpin}
           letter={character}
           key={index}
           position={[index * 5.5, 0, 0]}

@@ -26,6 +26,7 @@ interface HexLetterProps {
   letter: string;
   index?: number;
   color?: string;
+  autoSpin?: boolean;
 }
 
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
@@ -34,6 +35,7 @@ const HexLetter: React.FC<HexLetterProps> = ({
   letter,
   index,
   color,
+  autoSpin,
   ...props
 }) => {
   const viewport = useThree(({ viewport }) => viewport);
@@ -96,23 +98,25 @@ const HexLetter: React.FC<HexLetterProps> = ({
         isAnimating.current = true;
       }, index * 80 + 300);
     }
-    let timer = Math.random() * 8000 + 2000;
-    setTimeout(() => {
-      isAnimating.current = true;
-      rotateSpringApi.start({
-        x: Math.PI * 2,
-        y: 0,
-      });
-    }, timer);
-    timer += Math.random() * 5000 + 200;
-    setTimeout(() => {
-      isAnimating.current = true;
-      rotateSpringApi.start({
-        x: 0,
-        y: 0,
-      });
-    }, timer);
-  }, [rotateSpringApi, index]);
+    if (autoSpin) {
+      let timer = Math.random() * 8000 + 2000;
+      setTimeout(() => {
+        isAnimating.current = true;
+        rotateSpringApi.start({
+          x: Math.PI * 2,
+          y: 0,
+        });
+      }, timer);
+      timer += Math.random() * 5000 + 200;
+      setTimeout(() => {
+        isAnimating.current = true;
+        rotateSpringApi.start({
+          x: 0,
+          y: 0,
+        });
+      }, timer);
+    }
+  }, [rotateSpringApi, index, autoSpin]);
 
   const bind = useGesture({
     onDrag: ({ down, movement: [mx, my] }) => {

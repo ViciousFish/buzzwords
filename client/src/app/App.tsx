@@ -11,8 +11,6 @@ import { ToastContainer } from "react-toastify";
 import TutorialModal from "../features/game/TutorialModal";
 import { getHasUnseenMove } from "../features/gamelist/gamelistSelectors";
 import { setWindowFocusThunk } from "../features/game/gameActions";
-import GameStateModal from "../features/game/GameStateModal";
-import { setGameStateModal } from "../features/game/gameSlice";
 
 import.meta.env.PROD &&
   Globals.assign({
@@ -31,7 +29,6 @@ function App() {
   const showingTutorialModal = useAppSelector(
     (state) => state.game.showingTutorialModal
   );
-  const gameStateModal = useAppSelector(state => state.game.gameStateModal);
 
   const hasUnseenMove = useAppSelector(getHasUnseenMove);
 
@@ -73,7 +70,6 @@ function App() {
       </div>
       <ToastContainer toastClassName="bg-primary text-darkbrown rounded-lg" />
       {showingTutorialModal && <TutorialModal />}
-      {gameStateModal && <GameStateModal {...gameStateModal} onDismiss={() => dispatch(setGameStateModal(null))} />}
     </BrowserRouter>
   );
 }

@@ -58,6 +58,9 @@ export const gamelistSlice = createSlice({
     setShowCompletedGames: (state, action: PayloadAction<boolean>) => {
       state.showCompletedGames = action.payload;
     },
+    shiftGameStateModalQueueForGame: (state, action: PayloadAction<string>) => {
+      state.games[action.payload].queuedGameStateModals.shift()
+    }
   },
 });
 
@@ -68,6 +71,7 @@ export const {
   toggleIsOpen,
   toggleCompletedGames,
   setShowCompletedGames,
+  shiftGameStateModalQueueForGame
 } = gamelistSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
