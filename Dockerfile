@@ -1,6 +1,6 @@
 FROM node:16 as build
 
-WORKDIR /buzzwords
+WORKDIR /build
 
 COPY package.json yarn.lock ./
 # COPY ./client/package.json ./client/
