@@ -6,6 +6,7 @@ export interface Move {
   coords: HexCoord[];
   letters: string[];
   player: 0 | 1;
+  date?: Date;
 }
 
 export default interface Game {

@@ -58,6 +58,11 @@ const gameSchema = new Schema<Game>({
           owner: Number,
         },
       },
+      date: {
+        type: Date,
+        required: true,
+        default: () => new Date(),
+      },
     },
   ],
   vsAI: {
