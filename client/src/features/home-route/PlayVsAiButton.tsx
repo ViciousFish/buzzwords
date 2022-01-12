@@ -50,7 +50,7 @@ const PlayVsAiButton: React.FC<PlayVsAiButtonProps> = ({ mode }) => {
       {showOptions && (
         <div
           ref={clickOutsideRef}
-          className="bg-primary rounded-xl p-4 absolute shadow top-0 text-center"
+          className="bg-primary rounded-xl p-4 absolute shadow-lg top-0 text-center"
         >
           <span>AI Difficulty</span>
           <div className="flex">
