@@ -5,8 +5,9 @@ import Bee from "../../assets/Bee";
 import HexWord from "../thereed-lettering/HexWord";
 import Button from "../../presentational/Button";
 import { useAppDispatch } from "../../app/hooks";
-import { createNewAIGame, createNewGame } from "../gamelist/gamelistActions";
+import { createNewGame } from "../gamelist/gamelistActions";
 import { useNavigate } from "react-router-dom";
+import PlayVsAiButton from "./PlayVsAiButton";
 
 const Home: React.FC = () => {
   const { progress } = useProgress();
@@ -15,11 +16,6 @@ const Home: React.FC = () => {
 
   const onPlayOnlineClick = useCallback(async () => {
     const game = await dispatch(createNewGame());
-    navigate(`/play/${game}`);
-  }, [navigate, dispatch]);
-
-  const onPlayAIClick = useCallback(async () => {
-    const game = await dispatch(createNewAIGame());
     navigate(`/play/${game}`);
   }, [navigate, dispatch]);
   return (
@@ -44,12 +40,7 @@ const Home: React.FC = () => {
         >
           Play online
         </Button>
-        <Button
-          className="p-4 text-2xl relative mt-[0vw]"
-          onClick={onPlayAIClick}
-        >
-          Play vs AI
-        </Button>
+        <PlayVsAiButton mode="homepage" />
       </div>
     </>
   );

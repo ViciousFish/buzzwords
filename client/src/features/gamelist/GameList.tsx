@@ -22,6 +22,7 @@ import { toggleCompletedGames, toggleIsOpen } from "./gamelistSlice";
 import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
 import { toggleTutorialModal } from "../game/gameSlice";
 import GameListItem from "./GameListItem";
+import PlayVsAiButton from "../home-route/PlayVsAiButton";
 
 const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
 const BeeLazy = React.lazy(() => import("../../assets/Bee"));
@@ -141,16 +142,7 @@ const GameList: React.FC = () => {
               >
                 <FontAwesomeIcon className="mx-1" icon={faGlobe} />
               </Button>
-              <Button
-                onClick={() => {
-                  dispatch(createNewAIGame());
-                }}
-                aria-label="create new game versus AI"
-                data-tip="Create new game vs. AI"
-                className="w-[42px] h-[42px] inline-flex items-center justify-center"
-              >
-                <FontAwesomeIcon className="mx-1" icon={faRobot} />
-              </Button>
+              <PlayVsAiButton mode="icon" />
               <Button
                 onClick={() => {
                   dispatch(toggleTutorialModal());

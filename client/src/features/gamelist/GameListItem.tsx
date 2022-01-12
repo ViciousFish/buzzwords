@@ -29,6 +29,12 @@ const GameListItem: React.FC<GameListItemProps> = ({ game }) => {
         to={`/play/${game.id}`}
       >
         {nick1} vs {nick2}
+        {game.vsAI ? (
+          <span className="text-gray-600 no-underline">
+            {" "}
+            ({game.difficulty})
+          </span>
+        ) : null}
       </NavLink>
     </li>
   );
