@@ -78,6 +78,7 @@ export default class GameManager {
         (m) => getCell(this.game?.grid as HexGrid, m.q, m.r)?.value ?? ""
       ),
       player: this.game.turn,
+      date: new Date(),
     };
 
     let capitalCaptured = false;
