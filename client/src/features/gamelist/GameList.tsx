@@ -71,20 +71,22 @@ const GameList: React.FC = () => {
       style={containerSpring}
     >
       <ScreenHeightWraper className="flex flex-col">
-        <div className="flex flex-shrink-0 py-2 px-2 space-x-1 z-10">
+        <header className="z-10 flex flex-shrink-0 px-2 py-2 space-x-1">
           <a
-            className="p-2 rounded-md block hover:bg-primary hover:bg-opacity-50 text-darkbrown"
+            className="block p-2 rounded-md hover:bg-primary hover:bg-opacity-50 text-darkbrown"
             href="https://github.com/ViciousFish/buzzwords"
             target="_blank"
             rel="noreferrer"
+            aria-label="buzzwords github"
           >
             <FontAwesomeIcon icon={faGithub} />
           </a>
           <a
-            className="p-2 rounded-md block hover:bg-primary hover:bg-opacity-50 text-darkbrown"
+            className="block p-2 rounded-md hover:bg-primary hover:bg-opacity-50 text-darkbrown"
             href="https://twitter.com/BuzzwordsGG"
             target="_blank"
             rel="noreferrer"
+            aria-label="buzzwords twitter"
           >
             <FontAwesomeIcon icon={faTwitter} /> BuzzwordsGG
           </a>
@@ -99,20 +101,23 @@ const GameList: React.FC = () => {
               )
             }
             to="/"
+            aria-label="home"
           >
             <FontAwesomeIcon icon={faHome} />
           </NavLink>
           <a.div style={hamburgerSpring}>
             <button
               onClick={() => dispatch(toggleIsOpen())}
-              className="text-darkbrown p-2 hover:bg-primary hover:bg-opacity-50 rounded-md"
+              aria-label="toggle menu visibility"
+              className="p-2 rounded-md text-darkbrown hover:bg-primary hover:bg-opacity-50"
             >
               <FontAwesomeIcon icon={faBars} />
             </button>
           </a.div>
-        </div>
-        <div className="flex-auto flex flex-col overflow-y-auto">
+        </header>
+        <nav className="flex flex-col flex-auto overflow-y-auto">
           <div className="h-[150px] no-touch">
+            <h1 style={{display: 'none'}}>Buzzwords</h1>
             <React.Suspense fallback={<></>}>
               <CanvasLazy>
                 <BeeLazy position={[0, 5, 0]} scale={4} />
@@ -121,7 +126,7 @@ const GameList: React.FC = () => {
             </React.Suspense>
           </div>
           <div className="flex-auto">
-            <div className="px-2 mt-0 z-10">
+            <div className="z-10 px-2 mt-0">
               <h2 className="inline text-2xl font-bold text-darkbrown">
                 Games
               </h2>
@@ -129,6 +134,7 @@ const GameList: React.FC = () => {
                 onClick={() => {
                   dispatch(createNewGame());
                 }}
+                aria-label="create new game"
               >
                 <FontAwesomeIcon className="mx-1" icon={faPlus} />
               </Button>
@@ -136,6 +142,7 @@ const GameList: React.FC = () => {
                 onClick={() => {
                   dispatch(toggleTutorialModal());
                 }}
+                aria-label="watch tutorial"
               >
                 <FontAwesomeIcon className="mx-1" icon={faQuestion} />
               </Button>
@@ -150,7 +157,7 @@ const GameList: React.FC = () => {
                   {!gamesLoaded && (
                     <>
                       <FontAwesomeIcon
-                        className="animate-spin mr-2"
+                        className="mr-2 animate-spin"
                         icon={faSpinner}
                       />
                       Loading games
@@ -182,10 +189,10 @@ const GameList: React.FC = () => {
               </ul>
             )}
           </div>
-          <div className="p-2 text-center text-gray-800 text-sm">
+          <div className="p-2 text-sm text-center text-gray-800">
             by Chuck Dries and James Quigley
           </div>
-        </div>
+        </nav>
       </ScreenHeightWraper>
     </a.div>
   );
