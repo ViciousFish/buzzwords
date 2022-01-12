@@ -10,4 +10,4 @@ COPY client client
 
 COPY shared shared
 
-RUN cd client && yarn build
+RUN cd client && yarn && yarn build
