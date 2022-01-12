@@ -26,5 +26,5 @@ RUN yarn
 COPY ./server/words.json .
 
 COPY --from=build /build/server/dist ./dist
-# RUN ls
+
 CMD ["node", "/buzzwords/dist/index.js"]
