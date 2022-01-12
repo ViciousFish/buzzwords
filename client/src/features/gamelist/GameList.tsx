@@ -5,8 +5,7 @@ import {
   faHome,
   faQuestion,
   faSpinner,
-  faRobot,
-  faGlobe,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -136,11 +135,11 @@ const GameList: React.FC = () => {
                 onClick={() => {
                   dispatch(createNewGame());
                 }}
-                aria-label="create new online game"
-                data-tip="Create new online game"
+                aria-label="create new game versus human"
+                data-tip="Create new game vs human"
                 className="w-[42px] h-[42px] inline-flex items-center justify-center"
               >
-                <FontAwesomeIcon className="mx-1" icon={faGlobe} />
+                <FontAwesomeIcon className="mx-1" icon={faUser} />
               </Button>
               <PlayVsAiButton mode="icon" />
               <Button

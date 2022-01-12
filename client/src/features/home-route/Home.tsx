@@ -8,6 +8,8 @@ import { useAppDispatch } from "../../app/hooks";
 import { createNewGame } from "../gamelist/gamelistActions";
 import { useNavigate } from "react-router-dom";
 import PlayVsAiButton from "./PlayVsAiButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLink, faUser } from "@fortawesome/free-solid-svg-icons";
 
 const Home: React.FC = () => {
   const { progress } = useProgress();
@@ -37,8 +39,10 @@ const Home: React.FC = () => {
         <Button
           className="p-4 text-2xl relative mt-[0vw]"
           onClick={onPlayOnlineClick}
+          data-tip="You'll invite your opponent with a link"
         >
-          Play online
+          <FontAwesomeIcon icon={faUser} />
+          <span className="ml-2">Play vs human</span>
         </Button>
         <PlayVsAiButton mode="homepage" />
       </div>

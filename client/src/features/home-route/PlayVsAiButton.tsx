@@ -15,14 +15,17 @@ interface PlayVsAiButtonProps {
 const PlayVsAiButton: React.FC<PlayVsAiButtonProps> = ({ mode }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [showOptions, setShowOptions] = useState(false);
   const onPlayAIClick = useCallback(
     (difficulty: number) => async () => {
       const game = await dispatch(createNewAIGame(difficulty));
-      navigate(`/play/${game}`);
+      setShowOptions(false);
+      if (mode === "homepage") {
+        navigate(`/play/${game}`);
+      }
     },
-    [navigate, dispatch]
+    [navigate, dispatch, mode]
   );
-  const [showOptions, setShowOptions] = useState(false);
   const clickOutsideRef = useRef<HTMLDivElement>(null);
   const onClickOutside = useCallback(() => {
     setShowOptions(false);
@@ -41,11 +44,8 @@ const PlayVsAiButton: React.FC<PlayVsAiButtonProps> = ({ mode }) => {
         data-tip={mode === "icon" ? "Create new game vs AI" : undefined}
         aria-label="create new game versus AI"
       >
-        {mode === "homepage" ? (
-          <>Play vs AI</>
-        ) : (
-          <FontAwesomeIcon icon={faRobot} />
-        )}
+        <FontAwesomeIcon icon={faRobot} />
+        {mode === "homepage" ? <span className="ml-2">Play vs AI</span> : null}
       </Button>
       {showOptions && (
         <div
