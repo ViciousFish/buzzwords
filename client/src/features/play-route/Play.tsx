@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import * as R from "ramda";
 import { Link, useParams } from "react-router-dom";
 import classnames from "classnames";
+import { toast } from "react-toastify";
 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/store";
-import { setCurrentGame } from "../game/gameSlice";
+import { setCurrentGame, toggleNudgeButton } from "../game/gameSlice";
 import {
   dequeueOrDismissGameStateModalForGame,
   joinGameById,
@@ -15,7 +16,7 @@ import GameBoard from "../game/GameBoard";
 import CopyToClipboard from "../../presentational/CopyToClipboard";
 import NicknameModal from "../user/NicknameModal";
 import { useAppSelector } from "../../app/hooks";
-import { initiateReplay } from "../game/gameActions";
+import { initiateReplay, nudgeGameById } from "../game/gameActions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHistory,
@@ -44,6 +45,9 @@ const Play: React.FC = () => {
     (state) => state.game.replay.moveListIndex
   );
   const gameStateModal = useAppSelector((state) => state.game.gameStateModal);
+  const showingNudgeButton = useAppSelector(
+    (state) => state.game.showingNudgeButton
+  );
 
   const [fourohfour, setFourohfour] = useState(false);
 
@@ -76,6 +80,38 @@ const Play: React.FC = () => {
       setFourohfour(false);
     }
   }, [id, dispatch, game, gamesLoaded]);
+
+  useEffect(() => {
+    if (
+      gamesLoaded &&
+      game &&
+      game.vsAI &&
+      game.turn === 1 &&
+      game.moves.length > 1
+    ) {
+      const move = game.moves[game.moves.length - 1];
+      if (
+        move.date &&
+        new Date().getTime() - new Date(move.date).getTime() > 3000
+      ) {
+        dispatch(toggleNudgeButton(true))
+      }
+    }
+  }, [gamesLoaded, game, dispatch]);
+
+  const onNudgeClick = useCallback(() => {
+    if (!id) {
+      return;
+    }
+    try {
+      dispatch(nudgeGameById(id));
+      dispatch(toggleNudgeButton(false));
+    } catch (e) {
+      toast(e, {
+        type: "error",
+      });
+    }
+  }, [dispatch, id]);
 
   const nickModal =
     currentUser && !currentUser.nickname ? <NicknameModal /> : null;
@@ -152,6 +188,17 @@ const Play: React.FC = () => {
       )}
       {game && id && (
         <div className="m-auto lg:m-0 flex-shrink-0 w-[200px] pt-2 lg:max-h-screen overflow-y-auto">
+          {showingNudgeButton && (
+            <div className="p-2 rounded-xl bg-primary flex flex-col mr-2">
+              <p>Looks like the AI opponent is taking a long time to move</p>
+              <Button
+                onClick={onNudgeClick}
+                className="text-white bg-darkbrown"
+              >
+                Nudge the bot
+              </Button>
+            </div>
+          )}
           <div className="flex flex-shrink-0 items-center text-darkbrown">
             <FontAwesomeIcon
               className={classNames(

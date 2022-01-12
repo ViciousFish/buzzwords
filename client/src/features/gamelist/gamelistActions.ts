@@ -14,7 +14,8 @@ import { fetchOpponent } from "../user/userActions";
 import axios from "axios";
 import { getApiUrl } from "../../app/apiPrefix";
 import { GameStateModalType } from "../game/GameStateModal";
-import { setGameStateModal } from "../game/gameSlice";
+import { setGameStateModal, toggleNudgeButton } from "../game/gameSlice";
+import { maybeShowNudge } from "../game/gameActions";
 
 interface GameMetaCache {
   lastSeenTurns: {
@@ -97,6 +98,17 @@ export const receiveGameUpdatedSocket =
       missingPlayers.forEach((missingPlayer) => {
         dispatch(fetchOpponent(missingPlayer));
       });
+    }
+
+    if (game.vsAI && game.turn === 1) {
+      const { id, moves } = game;
+      const turnNumber = moves.length;
+      setTimeout(() => {
+        dispatch(maybeShowNudge(id, turnNumber));
+      }, 2500);
+    }
+    if (game.vsAI && game.turn === 0) {
+      dispatch(toggleNudgeButton(false));
     }
 
     const gameStateModalType = game
