@@ -10,7 +10,7 @@ static_sites:
     deploy_on_push: true
     repo: ViciousFish/buzzwords
   name: buzzwords
-  output_dir: /build/dist
+  output_dir: /build/client/dist
   routes:
   - path: /
   source_dir: /
