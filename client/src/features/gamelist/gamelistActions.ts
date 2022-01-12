@@ -59,7 +59,6 @@ const gameUpdateEventGetGameStateModalType = (
 };
 
 export const refresh = (): AppThunk => async (dispatch, getState) => {
-  console.log("refresh");
   const response = await axios.get<{
     games: Game[];
     users: User[];
@@ -104,7 +103,6 @@ export const receiveGameUpdatedSocket =
       ? gameUpdateEventGetGameStateModalType(game, state)
       : null;
     if (state.game.currentGame === game.id && state.game.windowHasFocus) {
-      console.log('aaaaaaaaaaaaaaa')
       updateLastSeenTurns(game.id, game.moves.length);
       // CQ: set game state modal
       if (gameStateModalType) {
@@ -124,7 +122,6 @@ export const receiveGameUpdatedSocket =
         })
       );
     }
-    console.log('bbbbbbbbbbbbbbbbbbbbb', game)
 
     let lastSeenTurn = getLastSeenTurns()?.[game.id] ?? 0;
     lastSeenTurn = lastSeenTurn === 9999 ? game.moves.length : lastSeenTurn;
