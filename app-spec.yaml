@@ -6,7 +6,7 @@ region: nyc
 static_sites:
 - dockerfile_path: client/Dockerfile
   github:
-    branch: do-client
+    branch: main
     deploy_on_push: true
     repo: ViciousFish/buzzwords
   name: buzzwords
