@@ -271,6 +271,29 @@ const doBotMoves = async (gameId: string): Promise<void> => {
   await dl.commitContext(session);
 };
 
+app.post("/api/game/:id/nudge", async (req, res) => {
+  const user = res.locals.userId as string;
+  const gameId = req.params.id;
+
+  const game = await dl.getGameById(gameId);
+  if (game == null || game == undefined || !game.users.includes(user)) {
+    res.sendStatus(404);
+    return;
+  }
+
+  if (game.users[game.turn] == user) {
+    res.status(400).json({
+      message: "It is your turn",
+    });
+  }
+
+  if (game.users[game.turn] == "AI") {
+    doBotMoves(gameId);
+  }
+
+  res.sendStatus(201);
+});
+
 app.post("/api/game/:id/move", async (req, res) => {
   const user = res.locals.userId as string;
   const gameId = req.params.id;
