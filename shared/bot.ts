@@ -23,7 +23,7 @@ export const getBotMove = (
 
   // Bound max length between 3 and total open tiles
   const maxWordLength = Math.max(
-    Math.min(openTiles.length, options.difficulty + jitter),
+    Math.min(openTiles.length, options.difficulty + jitter, 6),
     3
   );
 
