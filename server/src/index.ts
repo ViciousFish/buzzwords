@@ -90,7 +90,7 @@ app.get("/", (req, res) => {
   res.sendStatus(200);
 });
 
-app.get("/api/user", async (req, res) => {
+app.get("/user", async (req, res) => {
   const user = res.locals.userId as string;
   const nickname = await dl.getNickName(user);
   res.send({
@@ -99,7 +99,7 @@ app.get("/api/user", async (req, res) => {
   });
 });
 
-app.post("/api/user/nickname", async (req, res) => {
+app.post("/user/nickname", async (req, res) => {
   const user = res.locals.userId as string;
   const nickname = (req.body || {})?.nickname as string | null;
   if (!nickname) {
@@ -126,7 +126,7 @@ app.post("/api/user/nickname", async (req, res) => {
   }
 });
 
-app.get("/api/user/:id", async (req, res) => {
+app.get("/user/:id", async (req, res) => {
   const nickname = await dl.getNickName(req.params.id);
   res.send({
     id: req.params.id,
@@ -134,7 +134,7 @@ app.get("/api/user/:id", async (req, res) => {
   });
 });
 
-app.get("/api/games", async (req, res) => {
+app.get("/games", async (req, res) => {
   const user = res.locals.userId as string;
   const games = await dl.getGamesByUserId(user);
   const userIds: string[] = R.pipe(
@@ -166,7 +166,7 @@ app.get("/api/games", async (req, res) => {
   });
 });
 
-app.get("/api/game/:id", async (req, res) => {
+app.get("/game/:id", async (req, res) => {
   const gameId = req.params.id;
   const game = await dl.getGameById(gameId);
   if (game) {
@@ -176,7 +176,7 @@ app.get("/api/game/:id", async (req, res) => {
   }
 });
 
-app.post("/api/game", async (req, res) => {
+app.post("/game", async (req, res) => {
   const user = res.locals.userId as string;
   const gm = new GameManager(null);
   const game = gm.createGame(user);
@@ -189,7 +189,7 @@ app.post("/api/game", async (req, res) => {
   }
 });
 
-app.post("/api/game/:id/join", async (req, res) => {
+app.post("/game/:id/join", async (req, res) => {
   const user = res.locals.userId as string;
   const gameId = req.params.id;
   const success = await dl.joinGame(user, gameId);
@@ -204,13 +204,13 @@ app.post("/api/game/:id/join", async (req, res) => {
   }
 });
 
-app.post("/api/game/join", async (req, res) => {
+app.post("/game/join", async (req, res) => {
   const user = res.locals.userId as string;
   const success = await dl.joinRandomGame(user);
   res.sendStatus(success ? 201 : 404);
 });
 
-app.post("/api/game/:id/move", async (req, res) => {
+app.post("/game/:id/move", async (req, res) => {
   const user = res.locals.userId as string;
   const gameId = req.params.id;
   const parsedMove: HexCoord[] = [];
