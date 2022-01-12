@@ -13,7 +13,7 @@ static_sites:
   output_dir: /build/dist
   routes:
   - path: /
-  source_dir: client
+  source_dir: /
 domains:
 - domain: buzzwords.gg
   type: PRIMARY

@@ -2,10 +2,12 @@ FROM node:16 as build
 
 WORKDIR /build
 
-COPY package.json .
+COPY package.json yarn.lock ./
 
 RUN yarn
 
-COPY . .
+COPY client client
 
-RUN yarn build
+COPY shared shared
+
+RUN cd client && yarn build
