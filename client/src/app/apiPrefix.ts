@@ -9,4 +9,9 @@ export const getApiUrl = (...path: string[]) =>
     ...path
   );
 
-export const SOCKET_URL = String(import.meta.env.VITE_SOCKET_URL || "http://localhost:8080")
+export const SOCKET_DOMAIN = String(
+  import.meta.env.VITE_SOCKET_DOMAIN || "http://localhost:8080"
+);
+export const SOCKET_PATH = String(
+  import.meta.env.VITE_SOCKET_PATH || "/socket.io"
+);

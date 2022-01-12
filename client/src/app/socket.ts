@@ -7,7 +7,7 @@ import { QRCoord } from "../features/hexGrid/hexGrid";
 import { AppDispatch } from "./store";
 import { maybeOpponentNicknameUpdated } from "../features/user/userSlice";
 import { receiveGameUpdatedSocket } from "../features/gamelist/gamelistActions";
-import { SOCKET_URL } from "./apiPrefix";
+import { SOCKET_DOMAIN, SOCKET_PATH } from "./apiPrefix";
 
 let socket: Socket | null = null;
 
@@ -18,8 +18,9 @@ interface SelectionEventProps {
 
 // called by getUser
 export const subscribeSocket = (dispatch: AppDispatch) => {
-  socket = io(SOCKET_URL, {
+  socket = io(SOCKET_DOMAIN, {
     transports: ["websocket"],
+    path: SOCKET_PATH
   });
   socket.on("game updated", (game: Game) => {
     dispatch(receiveGameUpdatedSocket(game));
