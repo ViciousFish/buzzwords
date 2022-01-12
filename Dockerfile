@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:16 as build
 
 WORKDIR /buzzwords
 
@@ -13,18 +13,18 @@ COPY . .
 
 RUN cd server && yarn build
 
-# FROM node:16-slim as app
+FROM node:16-slim as app
 
-# WORKDIR /buzzwords
+WORKDIR /buzzwords
 
-# COPY ./server/package.json ./
+COPY ./server/package.json ./
 
 ENV NODE_ENV=production
 
-# RUN yarn
+RUN yarn
 
-# COPY ./server/words.json .
+COPY ./server/words.json .
 
-# COPY --from=build /build/server/dist ./dist
-
+COPY --from=build /build/server/dist ./dist
+# RUN ls
 CMD ["node", "/buzzwords/dist/index.js"]
