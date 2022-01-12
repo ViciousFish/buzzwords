@@ -42,6 +42,9 @@ const gameUpdateEventGetGameStateModalType = (
   state: RootState
 ): GameStateModalType | null => {
   let gameStateModalType: GameStateModalType | null = null;
+  if (game.moves.length === 0) {
+    return null;
+  }
   if (game.moves[game.moves.length - 1].player === game.turn) {
     gameStateModalType = game.turn === 0 ? "extra-turn-p1" : "extra-turn-p2";
   }
@@ -101,6 +104,7 @@ export const receiveGameUpdatedSocket =
       ? gameUpdateEventGetGameStateModalType(game, state)
       : null;
     if (state.game.currentGame === game.id && state.game.windowHasFocus) {
+      console.log('aaaaaaaaaaaaaaa')
       updateLastSeenTurns(game.id, game.moves.length);
       // CQ: set game state modal
       if (gameStateModalType) {
@@ -120,10 +124,10 @@ export const receiveGameUpdatedSocket =
         })
       );
     }
+    console.log('bbbbbbbbbbbbbbbbbbbbb', game)
 
     let lastSeenTurn = getLastSeenTurns()?.[game.id] ?? 0;
     lastSeenTurn = lastSeenTurn === 9999 ? game.moves.length : lastSeenTurn;
-    // CQ: queue game state modal
     dispatch(
       updateGame({
         game,
