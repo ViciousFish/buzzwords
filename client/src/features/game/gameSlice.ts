@@ -65,6 +65,7 @@ export const gameSlice = createSlice({
       state.replay = initialState.replay;
       state.selectedTiles = {};
       state.selectionIndex = 0;
+      state.showingNudgeButton = false;
     },
     newReplay: (
       state,
