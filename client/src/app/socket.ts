@@ -39,6 +39,11 @@ export const subscribeSocket = (dispatch: AppDispatch) => {
     });
   });
 
+  socket.on("error", (e) => {
+    toast('error: ' + e, {
+      type: "error",
+    });
+  });
   socket.on("game updated", (game: Game) => {
     dispatch(receiveGameUpdatedSocket(game));
     dispatch(resetSelection()); // clear selection
