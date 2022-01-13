@@ -92,7 +92,7 @@ const Play: React.FC = () => {
       const move = game.moves[game.moves.length - 1];
       if (
         move.date &&
-        new Date().getTime() - new Date(move.date).getTime() > 3000
+        new Date().getTime() - new Date(move.date).getTime() > 5000
       ) {
         dispatch(toggleNudgeButton(true))
       }
