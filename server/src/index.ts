@@ -42,7 +42,7 @@ switch (config.dbType) {
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
-  transports: ["websocket"],
+  // transports: ["websocket"],
   cors: {
     origin: true,
     credentials: true,

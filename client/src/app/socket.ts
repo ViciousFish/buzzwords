@@ -20,27 +20,27 @@ interface SelectionEventProps {
 // called by getUser
 export const subscribeSocket = (dispatch: AppDispatch) => {
   socket = io(SOCKET_DOMAIN, {
-    transports: ["websocket"],
+    // transports: ["websocket"],
     path: SOCKET_PATH,
   });
   socket.io.on("reconnect_error", (e) => {
-    toast('reconnect_error: ' + e.message, {
+    toast("reconnect_error: " + e.message, {
       type: "error",
     });
   });
   socket.io.on("error", (e) => {
-    toast('error: ' + e.message, {
+    toast("error: " + e.message, {
       type: "error",
     });
   });
   socket.io.on("reconnect_failed", () => {
-    toast('socket reconnect_failed', {
+    toast("socket reconnect_failed", {
       type: "error",
     });
   });
 
   socket.on("error", (e) => {
-    toast('error: ' + e, {
+    toast("error: " + e, {
       type: "error",
     });
   });
