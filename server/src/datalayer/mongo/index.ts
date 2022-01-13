@@ -277,7 +277,6 @@ export default class Mongo implements DataLayer {
         upsert: true,
         session: options?.session,
       });
-      console.log(res);
       return true;
     } catch (e) {
       console.log(e);

@@ -334,7 +334,6 @@ const doBotMoves = async (gameId: string): Promise<void> => {
       session,
     });
     const delay = 2000 - (Date.now() - lastMessage);
-    console.log(Date.now(), delay);
     game.users.forEach((user) => {
       const copy = R.clone(removeMongoId(game));
       setTimeout(() => {
