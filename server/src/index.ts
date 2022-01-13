@@ -287,8 +287,18 @@ app.post("/game/:id/nudge", async (req, res) => {
     });
   }
 
-  if (game.users[game.turn] == "AI") {
-    doBotMoves(gameId);
+  try {
+    if (game.users[game.turn] == "AI") {
+      doBotMoves(gameId);
+    }
+  } catch (e) {
+    res.status(500);
+    if (e instanceof Error) {
+      res.send(e.message);
+    } else {
+      res.send();
+    }
+    return;
   }
 
   res.sendStatus(201);
