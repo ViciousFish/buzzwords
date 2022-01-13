@@ -1,15 +1,11 @@
 import {
   faAngleDown,
-  faAngleLeft,
   faAngleRight,
   faBars,
-  faCaretDown,
-  faCaretRight,
   faHome,
-  faPlus,
   faQuestion,
   faSpinner,
-  faSync,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,11 +16,12 @@ import { animated as a, useSpring } from "@react-spring/web";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
-import { createNewGame } from "./gamelistActions";
+import { createNewAIGame, createNewGame } from "./gamelistActions";
 import { toggleCompletedGames, toggleIsOpen } from "./gamelistSlice";
 import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
 import { toggleTutorialModal } from "../game/gameSlice";
 import GameListItem from "./GameListItem";
+import PlayVsAiButton from "../home-route/PlayVsAiButton";
 
 const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
 const BeeLazy = React.lazy(() => import("../../assets/Bee"));
@@ -78,6 +75,7 @@ const GameList: React.FC = () => {
             target="_blank"
             rel="noreferrer"
             aria-label="buzzwords github"
+            data-tip="Github repo"
           >
             <FontAwesomeIcon icon={faGithub} />
           </a>
@@ -87,6 +85,7 @@ const GameList: React.FC = () => {
             target="_blank"
             rel="noreferrer"
             aria-label="buzzwords twitter"
+            data-tip="Follow us on twitter"
           >
             <FontAwesomeIcon icon={faTwitter} /> BuzzwordsGG
           </a>
@@ -102,14 +101,16 @@ const GameList: React.FC = () => {
             }
             to="/"
             aria-label="home"
+            data-tip="Home"
           >
             <FontAwesomeIcon icon={faHome} />
           </NavLink>
           <a.div style={hamburgerSpring}>
             <button
               onClick={() => dispatch(toggleIsOpen())}
-              aria-label="toggle menu visibility"
-              className="p-2 rounded-md text-darkbrown hover:bg-primary hover:bg-opacity-50"
+              aria-label="toggle games list"
+              className="text-darkbrown p-2 hover:bg-primary hover:bg-opacity-50 rounded-md"
+              data-tip="Toggle games list"
             >
               <FontAwesomeIcon icon={faBars} />
             </button>
@@ -134,15 +135,20 @@ const GameList: React.FC = () => {
                 onClick={() => {
                   dispatch(createNewGame());
                 }}
-                aria-label="create new game"
+                aria-label="create new game versus human"
+                data-tip="Create new game vs human"
+                className="w-[42px] h-[42px] inline-flex items-center justify-center"
               >
-                <FontAwesomeIcon className="mx-1" icon={faPlus} />
+                <FontAwesomeIcon className="mx-1" icon={faUser} />
               </Button>
+              <PlayVsAiButton mode="icon" />
               <Button
                 onClick={() => {
                   dispatch(toggleTutorialModal());
                 }}
                 aria-label="watch tutorial"
+                data-tip="Tutorial"
+                className="w-[42px] h-[42px] inline-flex items-center justify-center"
               >
                 <FontAwesomeIcon className="mx-1" icon={faQuestion} />
               </Button>

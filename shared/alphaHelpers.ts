@@ -1,5 +1,7 @@
 import * as R from "ramda";
 
+import { combinationN } from "./utils";
+
 const letters = [
   "a",
   "b",
@@ -72,21 +74,6 @@ export const getRandomCharacter = (): string => {
 };
 
 const vowels = ["a", "e", "i", "o", "u", "y"];
-
-function* combinationN<T>(array: T[], n: number): Iterable<T[]> {
-  if (n === 1) {
-    for (const a of array) {
-      yield [a];
-    }
-    return;
-  }
-
-  for (let i = 0; i <= array.length - n; i++) {
-    for (const c of combinationN(array.slice(i + 1), n - 1)) {
-      yield [array[i], ...c];
-    }
-  }
-}
 
 export const hasAVowel = (letters: string[]): boolean =>
   Boolean(letters.map((l) => vowels.includes(l)).filter(Boolean).length);

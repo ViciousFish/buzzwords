@@ -14,7 +14,8 @@ import { fetchOpponent } from "../user/userActions";
 import axios from "axios";
 import { getApiUrl } from "../../app/apiPrefix";
 import { GameStateModalType } from "../game/GameStateModal";
-import { setGameStateModal } from "../game/gameSlice";
+import { setGameStateModal, toggleNudgeButton } from "../game/gameSlice";
+import { maybeShowNudge } from "../game/gameActions";
 
 interface GameMetaCache {
   lastSeenTurns: {
@@ -99,6 +100,17 @@ export const receiveGameUpdatedSocket =
       });
     }
 
+    if (game.vsAI && game.turn === 1) {
+      const { id, moves } = game;
+      const turnNumber = moves.length;
+      setTimeout(() => {
+        dispatch(maybeShowNudge(id, turnNumber));
+      }, 2500);
+    }
+    if (game.vsAI && game.turn === 0) {
+      dispatch(toggleNudgeButton(false));
+    }
+
     const gameStateModalType = game
       ? gameUpdateEventGetGameStateModalType(game, state)
       : null;
@@ -175,11 +187,23 @@ export const markGameAsSeen =
   };
 
 export const createNewGame = (): AppThunk => async (dispatch) => {
-  const res = await axios.post(getApiUrl("/game"));
+  const res = await axios.post<string>(getApiUrl("/game"));
 
   await dispatch(refresh());
   return res.data;
 };
+
+export const createNewAIGame =
+  (difficulty: number): AppThunk =>
+  async (dispatch) => {
+    const res = await axios.post<string>(getApiUrl("/game"), {
+      vsAI: true,
+      difficulty,
+    });
+
+    await dispatch(refresh());
+    return res.data;
+  };
 
 export const joinGameById =
   (id: string): AppThunk =>

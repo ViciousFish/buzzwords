@@ -58,8 +58,21 @@ const gameSchema = new Schema<Game>({
           owner: Number,
         },
       },
+      date: {
+        type: Date,
+        required: true,
+        default: () => new Date(),
+      },
     },
   ],
+  vsAI: {
+    type: Boolean,
+    required: true,
+  },
+  difficulty: {
+    type: Number,
+    required: true,
+  },
   createdDate: {
     type: Date,
     required: true,

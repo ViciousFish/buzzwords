@@ -13,10 +13,12 @@ import cors from "cors";
 import getConfig from "./config";
 import DL from "./datalayer";
 import Game from "buzzwords-shared/Game";
+import { getBotMove } from "buzzwords-shared/bot";
 import { DataLayer } from "./types";
 import { HexCoord } from "buzzwords-shared/types";
 import GameManager from "./GameManager";
 import BannedWords from "./banned_words.json";
+import { WordsObject } from "./words";
 
 const COLLECTION = "socket.io-adapter-events";
 
@@ -178,8 +180,32 @@ app.get("/game/:id", async (req, res) => {
 
 app.post("/game", async (req, res) => {
   const user = res.locals.userId as string;
+  const options = req.body;
   const gm = new GameManager(null);
   const game = gm.createGame(user);
+  if (options.vsAI) {
+    game.vsAI = true;
+    game.users.push("AI");
+    let difficulty = 1;
+    if (options.difficulty) {
+      difficulty =
+        typeof options.difficulty == "number"
+          ? options.difficulty
+          : parseInt(options.difficulty);
+      if (
+        typeof difficulty != "number" ||
+        isNaN(difficulty) ||
+        difficulty < 1 ||
+        difficulty > 10
+      ) {
+        res.status(400).json({
+          message: "Difficulty must be a number 1-10",
+        });
+        return;
+      }
+    }
+    game.difficulty = difficulty;
+  }
   try {
     await dl.saveGame(game.id, game);
     res.send(game.id);
@@ -208,6 +234,64 @@ app.post("/game/join", async (req, res) => {
   const user = res.locals.userId as string;
   const success = await dl.joinRandomGame(user);
   res.sendStatus(success ? 201 : 404);
+});
+
+const doBotMoves = async (gameId: string): Promise<void> => {
+  const session = await dl.createContext();
+
+  let game = await dl.getGameById(gameId, {
+    session,
+  });
+
+  if (!game) {
+    return;
+  }
+
+  const gm = new GameManager(game);
+
+  while (game.vsAI && game.turn) {
+    const start = Date.now();
+    const botMove = getBotMove(game.grid, {
+      words: WordsObject,
+      difficulty: game.difficulty,
+    });
+    console.log("Bot move", botMove);
+    game = gm.makeMove("AI", botMove);
+    await dl.saveGame(gameId, game, {
+      session,
+    });
+    const delay = 2000 - (Date.now() - start);
+    console.log("delay", delay);
+    game.users.forEach((user) => {
+      setTimeout(() => {
+        io.to(user).emit("game updated", game);
+      }, delay);
+    });
+  }
+  await dl.commitContext(session);
+};
+
+app.post("/game/:id/nudge", async (req, res) => {
+  const user = res.locals.userId as string;
+  const gameId = req.params.id;
+
+  const game = await dl.getGameById(gameId);
+  if (game == null || game == undefined || !game.users.includes(user)) {
+    res.sendStatus(404);
+    return;
+  }
+
+  if (game.users[game.turn] == user) {
+    res.status(400).json({
+      message: "It is your turn",
+    });
+  }
+
+  if (game.users[game.turn] == "AI") {
+    doBotMoves(gameId);
+  }
+
+  res.sendStatus(201);
 });
 
 app.post("/game/:id/move", async (req, res) => {
@@ -263,6 +347,7 @@ app.post("/game/:id/move", async (req, res) => {
   newGame.users.forEach((user) => {
     io.to(user).emit("game updated", newGame);
   });
+  doBotMoves(gameId);
 });
 
 interface SelectionEventProps {

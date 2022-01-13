@@ -7,13 +7,16 @@ import Button from "../../presentational/Button";
 import { useAppDispatch } from "../../app/hooks";
 import { createNewGame } from "../gamelist/gamelistActions";
 import { useNavigate } from "react-router-dom";
+import PlayVsAiButton from "./PlayVsAiButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLink, faUser } from "@fortawesome/free-solid-svg-icons";
 
 const Home: React.FC = () => {
   const { progress } = useProgress();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const onPlayClick = useCallback(async () => {
+  const onPlayOnlineClick = useCallback(async () => {
     const game = await dispatch(createNewGame());
     navigate(`/play/${game}`);
   }, [navigate, dispatch]);
@@ -35,10 +38,13 @@ const Home: React.FC = () => {
       <div className="flex justify-center items-start">
         <Button
           className="p-4 text-2xl relative mt-[0vw]"
-          onClick={onPlayClick}
+          onClick={onPlayOnlineClick}
+          data-tip="You'll invite your opponent with a link"
         >
-          Play
+          <FontAwesomeIcon icon={faUser} />
+          <span className="ml-2">Play vs human</span>
         </Button>
+        <PlayVsAiButton mode="homepage" />
       </div>
     </>
   );

@@ -15,6 +15,7 @@ import {
   selectTile,
   setSelection,
   setWindowHasFocus,
+  toggleNudgeButton,
   unselectTile,
 } from "./gameSlice";
 // import { getEmptyGame } from "./game";
@@ -146,3 +147,33 @@ export const setWindowFocusThunk = (focus: boolean): AppThunk => (dispatch, getS
   }
   dispatch(setWindowHasFocus(focus));
 }
+
+export const maybeShowNudge =
+  (gameId: string, turnNumber: number): AppThunk =>
+  (dispatch, getState) => {
+    const state = getState();
+    const game = state.gamelist.games[gameId];
+    if (
+      state.game.currentGame === gameId &&
+      game &&
+      game.turn === 1 &&
+      game.moves.length === turnNumber
+    ) {
+      dispatch(toggleNudgeButton(true));
+    }
+  };
+
+export const nudgeGameById =
+  (id: string): AppThunk =>
+  async (dispatch, getState) => {
+    const state = getState();
+    const turnNumber = state.gamelist.games[id]?.moves.length;
+    try {
+      await axios.post(getApiUrl('/game', id, '/nudge'))
+      setTimeout(() => {
+        dispatch(maybeShowNudge(id, turnNumber));
+      }, 2500);
+    } catch (e) {
+      throw e.response?.data ?? e.toString();
+    }
+  };
