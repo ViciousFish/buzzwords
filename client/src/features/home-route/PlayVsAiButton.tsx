@@ -50,39 +50,45 @@ const PlayVsAiButton: React.FC<PlayVsAiButtonProps> = ({ mode }) => {
       {showOptions && (
         <div
           ref={clickOutsideRef}
-          className="bg-primary rounded-xl p-4 absolute shadow-lg top-0 text-center"
+          className="bg-primary rounded-xl p-4 absolute shadow-lg top-0 text-center z-10"
         >
-          <span>AI Difficulty</span>
-          <div className="flex">
+          <span>Computer Difficulty</span>
+          <div className="flex flex-col">
             <Button
+              autoFocus
               className="bg-darkbrown text-white"
               onClick={onPlayAIClick(1)}
+              aria-label="beginner difficulty"
             >
-              1
+              beginner
             </Button>
             <Button
               className="bg-darkbrown text-white"
               onClick={onPlayAIClick(3)}
+              aria-label="easy difficulty"
             >
-              3
+              easy
             </Button>
             <Button
               className="bg-darkbrown text-white"
               onClick={onPlayAIClick(5)}
+              aria-label="medium difficulty"
             >
-              5
+              medium
             </Button>
             <Button
               className="bg-darkbrown text-white"
               onClick={onPlayAIClick(7)}
+              aria-label="hard difficulty"
             >
-              7
+              hard
             </Button>
             <Button
               className="bg-darkbrown text-white"
               onClick={onPlayAIClick(9)}
+              aria-label="expert difficulty"
             >
-              9
+              expert
             </Button>
           </div>
         </div>
