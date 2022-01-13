@@ -248,9 +248,9 @@ const doBotMoves = async (gameId: string): Promise<void> => {
   }
 
   const gm = new GameManager(game);
+  let lastMessage = Date.now();
 
-  while (game.vsAI && game.turn) {
-    const start = Date.now();
+  while (!game.gameOver && game.vsAI && game.turn) {
     const botMove = getBotMove(game.grid, {
       words: WordsObject,
       difficulty: game.difficulty,
@@ -260,13 +260,13 @@ const doBotMoves = async (gameId: string): Promise<void> => {
     await dl.saveGame(gameId, game, {
       session,
     });
-    const delay = 2000 - (Date.now() - start);
-    console.log("delay", delay);
+    const delay = 2000 - (Date.now() - lastMessage);
     game.users.forEach((user) => {
       setTimeout(() => {
         io.to(user).emit("game updated", game);
       }, delay);
     });
+    lastMessage = Date.now() + delay;
   }
   await dl.commitContext(session);
 };

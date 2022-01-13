@@ -1,3 +1,5 @@
+import * as R from "ramda";
+
 import HexGrid, { getCellNeighbors } from "./hexgrid";
 import Game from "./Game";
 
@@ -5,6 +7,17 @@ import { permutationN, getRandomInt, combinationN } from "./utils";
 import { isValidWord } from "./alphaHelpers";
 import { HexCoord } from "./types";
 import Cell from "./cell";
+
+const shuffle = <T>(arr: T[]): T[] => {
+  const a = R.clone(arr);
+  for (let i = 0; i < a.length; i++) {
+    const x = getRandomInt(0, a.length);
+    const tmp = a[i];
+    a[i] = a[x];
+    a[x] = tmp;
+  }
+  return a;
+};
 
 export const getBotMove = (
   grid: HexGrid,
@@ -33,11 +46,11 @@ export const getBotMove = (
   if (!botCapital) {
     throw "Bot doesn't have capital on its own turn. Shouldn't be possible!";
   }
-  const capitalNeighbors = getCellNeighbors(
-    grid,
-    botCapital.q,
-    botCapital.r
-  ).filter((c) => c.owner == 2);
+  const capitalNeighbors = shuffle(
+    getCellNeighbors(grid, botCapital.q, botCapital.r).filter(
+      (c) => c.owner == 2
+    )
+  );
 
   const territoryNeighbors = Object.values(grid).filter(
     (cell) =>
@@ -49,17 +62,19 @@ export const getBotMove = (
       cell.value != ""
   );
 
-  const territoryNonCapitalNeighbors = territoryNeighbors.filter(
-    (cell) =>
-      !getCellNeighbors(grid, cell.q, cell.r)
-        .map((c) => c.capital && Boolean(c.owner))
-        .includes(true)
+  const territoryNonCapitalNeighbors = shuffle(
+    territoryNeighbors.filter(
+      (cell) =>
+        !getCellNeighbors(grid, cell.q, cell.r)
+          .map((c) => c.capital && Boolean(c.owner))
+          .includes(true)
+    )
   );
 
   const capitalNeighborCoords = capitalNeighbors.map((c) => `${c.q},${c.r}`);
 
-  const nonNeighborTiles = openTiles.filter(
-    (c) => !capitalNeighborCoords.includes(`${c.q},${c.r}`)
+  const nonNeighborTiles = shuffle(
+    openTiles.filter((c) => !capitalNeighborCoords.includes(`${c.q},${c.r}`))
   );
 
   const wordsTried: {
