@@ -41,11 +41,11 @@ const PlayVsAiButton: React.FC<PlayVsAiButtonProps> = ({ mode }) => {
             : "w-[42px] h-[42px] inline-flex items-center justify-center"
         )}
         onClick={() => setShowOptions(true)}
-        data-tip={mode === "icon" ? "Create new game vs AI" : undefined}
-        aria-label="create new game versus AI"
+        data-tip={mode === "icon" ? "Create new game vs computer" : undefined}
+        aria-label="create new game versus computer"
       >
         <FontAwesomeIcon icon={faRobot} />
-        {mode === "homepage" ? <span className="ml-2">Play vs AI</span> : null}
+        {mode === "homepage" ? <span className="ml-2">Play vs computer</span> : null}
       </Button>
       {showOptions && (
         <div
