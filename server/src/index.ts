@@ -236,6 +236,72 @@ app.post("/game/join", async (req, res) => {
   res.sendStatus(success ? 201 : 404);
 });
 
+const pass = async (gameId: string, userId: string) => {
+  const session = await dl.createContext();
+
+  const game = await dl.getGameById(gameId, {
+    session,
+  });
+
+  if (!game) {
+    return;
+  }
+
+  const gm = new GameManager(game);
+
+  const newGame = gm.pass(userId);
+
+  await dl.saveGame(gameId, newGame, {
+    session,
+  });
+  await dl.commitContext(session);
+  newGame.users.forEach((user) => {
+    io.to(user).emit("game updated", game);
+  });
+};
+
+app.post("/game/:id/pass", async (req, res) => {
+  const user = res.locals.userId as string;
+  const gameId = req.params.id;
+
+  const game = await dl.getGameById(gameId);
+  if (game == null || game == undefined || !game.users.includes(user)) {
+    res.sendStatus(404);
+    return;
+  }
+
+  if (game.users[game.turn] != user) {
+    res.status(400).json({
+      message: "It is not your turn",
+    });
+  }
+
+  try {
+    pass(game.id, user);
+  } catch (e) {
+    res.status(500);
+    if (e instanceof Error) {
+      res.send(e.message);
+    } else {
+      res.send();
+    }
+    return;
+  }
+
+  res.sendStatus(201);
+});
+
+const removeMongoId = <T>(thing: any): T => {
+  if (!R.is(Object, thing)) {
+    return thing;
+  } else if (Array.isArray(thing)) {
+    return R.map(removeMongoId, thing) as unknown as T;
+  } else {
+    thing = R.dissoc("_id", thing);
+    return R.map(removeMongoId, thing) as unknown as T;
+  }
+};
+
 const doBotMoves = async (gameId: string): Promise<void> => {
   const session = await dl.createContext();
 
@@ -251,19 +317,28 @@ const doBotMoves = async (gameId: string): Promise<void> => {
   let lastMessage = Date.now();
 
   while (!game.gameOver && game.vsAI && game.turn) {
-    const botMove = getBotMove(game.grid, {
-      words: WordsObject,
-      difficulty: game.difficulty,
-    });
+    let botMove: HexCoord[];
+    try {
+      botMove = getBotMove(game.grid, {
+        words: WordsObject,
+        difficulty: game.difficulty,
+      });
+    } catch (e) {
+      console.log("BOT FAILED TO FIND MOVE. PASSING");
+      pass(game.id, "AI");
+      return;
+    }
     console.log("Bot move", botMove);
     game = gm.makeMove("AI", botMove);
     await dl.saveGame(gameId, game, {
       session,
     });
     const delay = 2000 - (Date.now() - lastMessage);
+    console.log(Date.now(), delay);
     game.users.forEach((user) => {
+      const copy = R.clone(removeMongoId(game));
       setTimeout(() => {
-        io.to(user).emit("game updated", game);
+        io.to(user).emit("game updated", copy);
       }, delay);
     });
     lastMessage = Date.now() + delay;

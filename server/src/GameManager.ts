@@ -26,6 +26,29 @@ export default class GameManager {
     this.game = game;
   }
 
+  pass(userId: string): Game {
+    if (!this.game) {
+      throw new Error("Game Manager has no game!");
+    }
+    if (!this.game.users.includes(userId)) {
+      throw new Error("Not your game");
+    }
+    if (this.game.gameOver) {
+      throw new Error("Game is over");
+    }
+    const turnUser = this.game.users[this.game.turn];
+    if (userId != turnUser) {
+      throw new Error("Not your turn");
+    }
+    if (this.game.users.length != 2) {
+      throw new Error("Need another player");
+    }
+
+    const nextTurn = Number(!this.game.turn) as 0 | 1;
+    this.game.turn = nextTurn;
+    return this.game;
+  }
+
   makeMove(userId: string, move: HexCoord[]): Game {
     if (!this.game) {
       throw new Error("Game Manager has no game!");
