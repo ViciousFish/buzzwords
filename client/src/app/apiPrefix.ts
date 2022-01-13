@@ -5,7 +5,7 @@ axios.defaults.withCredentials = true;
 
 export const getApiUrl = (...path: string[]) =>
   urljoin(
-    String(import.meta.env.VITE_API_PREFIX || "http://localhost:8080/api"),
+    String(import.meta.env.VITE_API_PREFIX || "http://localhost:8080"),
     ...path
   );
 
