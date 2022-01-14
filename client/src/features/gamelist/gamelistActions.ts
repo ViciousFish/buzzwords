@@ -187,22 +187,28 @@ export const markGameAsSeen =
   };
 
 export const createNewGame = (): AppThunk => async (dispatch) => {
-  const res = await axios.post<string>(getApiUrl("/game"));
-
-  await dispatch(refresh());
-  return res.data;
+  try {
+    const res = await axios.post<string>(getApiUrl("/game"));
+    await dispatch(refresh());
+    return res.data;
+  } catch (e) {
+    throw e.response?.data ?? e.toString();
+  }
 };
 
 export const createNewAIGame =
   (difficulty: number): AppThunk =>
   async (dispatch) => {
-    const res = await axios.post<string>(getApiUrl("/game"), {
-      vsAI: true,
-      difficulty,
-    });
-
-    await dispatch(refresh());
-    return res.data;
+    try {
+      const res = await axios.post<string>(getApiUrl("/game"), {
+        vsAI: true,
+        difficulty,
+      });
+      await dispatch(refresh());
+      return res.data;
+    } catch (e) {
+      throw e.response?.data ?? e.toString();
+    }
   };
 
 export const joinGameById =
@@ -216,7 +222,7 @@ export const joinGameById =
       dispatch(refresh());
       return true;
     } catch (e) {
-      console.log("caught", e);
+      // throw e.response?.data ?? e.toString();
       return false;
     }
   };

@@ -151,18 +151,21 @@ const GameList: React.FC = () => {
                 <FontAwesomeIcon className="mx-1" icon={faUser} />
               </Button>
               <PlayVsAiButton mode="icon" />
-              {!showTutorialCard && (
+              {
                 <Button
                   onClick={() => {
                     dispatch(setShowTutorialCard(true));
                   }}
                   aria-label="display tutorial"
                   data-tip="Tutorial"
-                  className="w-[42px] h-[42px] inline-flex items-center justify-center"
+                  className={classNames(
+                    "w-[42px] h-[42px] inline-flex items-center justify-center",
+                    showTutorialCard && "hidden"
+                  )}
                 >
                   <FontAwesomeIcon className="mx-1" icon={faQuestion} />
                 </Button>
-              )}
+              }
             </div>
             {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
             <ul className="px-2">
