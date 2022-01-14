@@ -291,7 +291,7 @@ app.post("/game/:id/pass", async (req, res) => {
   res.sendStatus(201);
 });
 
-const removeMongoId = <T>(thing: any): T => {
+const removeMongoId = <T>(thing: any): T => { // eslint-disable-line
   if (!R.is(Object, thing)) {
     return thing;
   } else if (Array.isArray(thing)) {

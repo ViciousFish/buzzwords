@@ -53,10 +53,11 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({ mode, buttonClasses }) => {
   const onPlayAIClick = useCallback(
     (difficulty: number) => async () => {
       setIsSubmitting(true);
+      setShowOptions(false);
       try {
         const game = await dispatch(createNewAIGame(difficulty));
-        setShowOptions(false);
         navigate(`/play/${game}`);
+        setIsSubmitting(false);
       } catch (e) {
         setIsSubmitting(false);
         toast(e, {
@@ -67,16 +68,8 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({ mode, buttonClasses }) => {
     [navigate, dispatch]
   );
 
-  const popoverContent = <div
-  className="bg-primary rounded-xl p-4 shadow-lg text-center"
->
-  {isSubmitting ? (
-    <>
-      <FontAwesomeIcon className="animate-spin" icon={faSpinner} />
-      <span className="ml-2 text-sm">setting up game</span>
-    </>
-  ) : (
-    <>
+  const popoverContent = (
+    <div className="bg-primary rounded-xl p-4 shadow-lg text-center">
       <span>Computer Difficulty</span>
       <div className="flex flex-col">
         <DifficultyButton
@@ -122,9 +115,8 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({ mode, buttonClasses }) => {
           onPlayAIClick={onPlayAIClick}
         />
       </div>
-    </>
-  )}
-</div>
+    </div>
+  );
   return (
     <>
       <Button
@@ -153,13 +145,15 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({ mode, buttonClasses }) => {
             mode === "text" || mode === "shorttext"
               ? "relative"
               : "w-[42px] h-[42px] inline-flex items-center justify-center m-0",
-            buttonClasses
+            buttonClasses,
+            isSubmitting && 'bg-gray-500 text-white'
           )}
+          disabled={isSubmitting}
           onClick={() => setShowOptions(true)}
           data-tip="Create new game vs computer"
           aria-label="create new game versus computer"
         >
-          <FontAwesomeIcon icon={faRobot} />
+          <FontAwesomeIcon className={isSubmitting ? 'animate-spin' : ''} icon={isSubmitting ? faSpinner : faRobot} />
           {mode === "text" && <span className="ml-2">Play vs computer</span>}
           {mode === "shorttext" && <span className="ml-2">Computer</span>}
         </Button>
