@@ -28,16 +28,16 @@ export const subscribeSocket = (dispatch: AppDispatch) => {
       authorization: cookies.authToken
     }
   });
-  socket.io.on("reconnect_error", (e) => {
-    toast("reconnect_error: " + e.message, {
-      type: "error",
-    });
-  });
-  socket.io.on("error", (e) => {
-    toast("error: " + e.message, {
-      type: "error",
-    });
-  });
+  // socket.io.on("reconnect_error", (e) => {
+  //   toast("reconnect_error: " + e.message, {
+  //     type: "error",
+  //   });
+  // });
+  // socket.io.on("error", (e) => {
+  //   toast("error: " + e.message, {
+  //     type: "error",
+  //   });
+  // });
   socket.io.on("reconnect_failed", () => {
     toast("socket reconnect_failed", {
       type: "error",
