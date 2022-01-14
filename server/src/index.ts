@@ -453,7 +453,7 @@ io.on("connection", async (socket) => {
   );
 
   if (!userId) {
-    console.log("rejected socket connection for lack of token");
+    console.log("rejected socket connection: couldn't find userId from token");
     socket.emit("error", "rejected socket connection: couldn't find userId");
     return;
   }
