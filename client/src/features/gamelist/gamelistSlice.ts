@@ -14,6 +14,7 @@ interface GameListState {
   gamesLoaded: boolean;
   isOpen: boolean;
   showCompletedGames: boolean;
+  showTutorialCard: boolean;
 }
 
 // Define the initial state using that type
@@ -22,6 +23,7 @@ const initialState: GameListState = {
   gamesLoaded: false,
   isOpen: window.innerWidth >= 1024,
   showCompletedGames: true,
+  showTutorialCard: true,
 };
 
 interface UpdateGamePayload {
@@ -60,6 +62,9 @@ export const gamelistSlice = createSlice({
     },
     shiftGameStateModalQueueForGame: (state, action: PayloadAction<string>) => {
       state.games[action.payload].queuedGameStateModals.shift()
+    },
+    setShowTutorialCard: (state, action: PayloadAction<boolean>) => {
+      state.showTutorialCard = action.payload;
     }
   },
 });
@@ -71,7 +76,8 @@ export const {
   toggleIsOpen,
   toggleCompletedGames,
   setShowCompletedGames,
-  shiftGameStateModalQueueForGame
+  shiftGameStateModalQueueForGame,
+  setShowTutorialCard,
 } = gamelistSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type

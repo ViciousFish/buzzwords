@@ -3,6 +3,7 @@ import {
   faAngleRight,
   faBars,
   faHome,
+  faPlus,
   faQuestion,
   faSpinner,
   faUser,
@@ -16,12 +17,17 @@ import { animated as a, useSpring } from "@react-spring/web";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
-import { createNewAIGame, createNewGame } from "./gamelistActions";
-import { toggleCompletedGames, toggleIsOpen } from "./gamelistSlice";
+import { createNewGame } from "./gamelistActions";
+import {
+  setShowTutorialCard,
+  toggleCompletedGames,
+  toggleIsOpen,
+} from "./gamelistSlice";
 import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
 import { toggleTutorialModal } from "../game/gameSlice";
 import GameListItem from "./GameListItem";
 import PlayVsAiButton from "../home-route/PlayVsAiButton";
+import TutorialCard from "./TutorialCard";
 
 const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
 const BeeLazy = React.lazy(() => import("../../assets/Bee"));
@@ -35,6 +41,9 @@ const GameList: React.FC = () => {
   const isOpen = useAppSelector((state) => state.gamelist.isOpen);
   const showCompletedGames = useAppSelector(
     (state) => state.gamelist.showCompletedGames
+  );
+  const showTutorialCard = useAppSelector(
+    (state) => state.gamelist.showTutorialCard
   );
 
   const incompleteGames = Object.values(games).filter((game) => !game.gameOver);
@@ -118,7 +127,7 @@ const GameList: React.FC = () => {
         </header>
         <nav className="flex flex-col flex-auto overflow-y-auto">
           <div className="h-[150px] no-touch">
-            <h1 style={{display: 'none'}}>Buzzwords</h1>
+            <h1 style={{ display: "none" }}>Buzzwords</h1>
             <React.Suspense fallback={<></>}>
               <CanvasLazy>
                 <BeeLazy position={[0, 5, 0]} scale={4} />
@@ -142,16 +151,18 @@ const GameList: React.FC = () => {
                 <FontAwesomeIcon className="mx-1" icon={faUser} />
               </Button>
               <PlayVsAiButton mode="icon" />
-              <Button
-                onClick={() => {
-                  dispatch(toggleTutorialModal());
-                }}
-                aria-label="watch tutorial"
-                data-tip="Tutorial"
-                className="w-[42px] h-[42px] inline-flex items-center justify-center"
-              >
-                <FontAwesomeIcon className="mx-1" icon={faQuestion} />
-              </Button>
+              {!showTutorialCard && (
+                <Button
+                  onClick={() => {
+                    dispatch(setShowTutorialCard(true));
+                  }}
+                  aria-label="display tutorial"
+                  data-tip="Tutorial"
+                  className="w-[42px] h-[42px] inline-flex items-center justify-center"
+                >
+                  <FontAwesomeIcon className="mx-1" icon={faQuestion} />
+                </Button>
+              )}
             </div>
             {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
             <ul className="px-2">
@@ -195,6 +206,7 @@ const GameList: React.FC = () => {
               </ul>
             )}
           </div>
+          {showTutorialCard && <TutorialCard />}
           <div className="p-2 text-sm text-center text-gray-800">
             by Chuck Dries and James Quigley
           </div>
