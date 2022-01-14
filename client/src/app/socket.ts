@@ -21,6 +21,7 @@ interface SelectionEventProps {
 export const subscribeSocket = (dispatch: AppDispatch) => {
   socket = io(SOCKET_DOMAIN, {
     // transports: ["websocket"],
+    withCredentials: true,
     path: SOCKET_PATH,
   });
   socket.io.on("reconnect_error", (e) => {
