@@ -444,7 +444,7 @@ io.on("connection", async (socket) => {
 
   if (!cookies.authToken) {
     console.log("rejected socket connection for lack of token");
-    socket.emit("error", "rejected socket connection for lack of token");
+    socket.emit("error", "rejected socket connection: no authToken cookie");
     return;
   }
 
@@ -454,7 +454,7 @@ io.on("connection", async (socket) => {
 
   if (!userId) {
     console.log("rejected socket connection for lack of token");
-    socket.emit("error", "rejected socket connection for lack of token");
+    socket.emit("error", "rejected socket connection: couldn't find userId");
     return;
   }
   socket.join(userId);
