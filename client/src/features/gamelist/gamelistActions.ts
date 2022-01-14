@@ -105,7 +105,7 @@ export const receiveGameUpdatedSocket =
       const turnNumber = moves.length;
       setTimeout(() => {
         dispatch(maybeShowNudge(id, turnNumber));
-      }, 5500);
+      }, 10000);
     }
     if (game.vsAI && game.turn === 0) {
       dispatch(toggleNudgeButton(false));
