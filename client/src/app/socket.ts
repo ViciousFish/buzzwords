@@ -1,4 +1,6 @@
 import { io, Socket } from "socket.io-client";
+import { toast } from "react-toastify";
+import cookie from 'cookie';
 
 import { receiveSelectionSocket } from "../features/game/gameActions";
 import { resetSelection } from "../features/game/gameSlice";
@@ -8,7 +10,6 @@ import { AppDispatch } from "./store";
 import { maybeOpponentNicknameUpdated } from "../features/user/userSlice";
 import { receiveGameUpdatedSocket } from "../features/gamelist/gamelistActions";
 import { SOCKET_DOMAIN, SOCKET_PATH } from "./apiPrefix";
-import { toast } from "react-toastify";
 
 let socket: Socket | null = null;
 
@@ -19,10 +20,13 @@ interface SelectionEventProps {
 
 // called by getUser
 export const subscribeSocket = (dispatch: AppDispatch) => {
+  const cookies = cookie.parse(document.cookie);
   socket = io(SOCKET_DOMAIN, {
-    // transports: ["websocket"],
     withCredentials: true,
     path: SOCKET_PATH,
+    extraHeaders: {
+      authorization: cookies.authToken
+    }
   });
   socket.io.on("reconnect_error", (e) => {
     toast("reconnect_error: " + e.message, {

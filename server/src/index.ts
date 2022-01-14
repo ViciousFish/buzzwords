@@ -441,15 +441,22 @@ interface SelectionEventProps {
 
 io.on("connection", async (socket) => {
   const cookies = cookie.parse(socket.request.headers.cookie || "");
+  let authToken: string | undefined = cookies?.authToken;
 
-  if (!cookies.authToken) {
-    console.log("rejected socket connection for lack of token");
-    socket.emit("error", "rejected socket connection: no authToken cookie");
-    return;
+  if (!authToken) {
+    console.log(
+      "socket missing authToken cookie, falling back to authorization header"
+    );
+    authToken = socket.request.headers.authorization;
+    if (!authToken) {
+      console.log("socket also missing authorization header");
+      socket.emit("error", "rejected socket connection: no authToken cookie");
+      return;
+    }
   }
 
   const userId = await dl.getUserIdByAuthToken(
-    cookies.authToken.split(".")[0].substring(2)
+    authToken.split(".")[0].substring(2)
   );
 
   if (!userId) {
