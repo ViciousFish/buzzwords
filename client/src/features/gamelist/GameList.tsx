@@ -134,11 +134,16 @@ const GameList: React.FC = () => {
             </React.Suspense>
           </div>
           <div className="flex-auto">
-            <div className="z-10 px-2 mt-0">
-              <h2 className="inline text-2xl font-bold text-darkbrown">
+            <div className="z-10 px-2 mt-0 flex items-center">
+              <h2 className="text-2xl font-bold text-darkbrown">
                 Games
               </h2>
-              <PlayButtons mode="icon" />
+              <div className="bg-primary mx-1 rounded-xl text-center flex items-center p-1">
+                <h3 className="text-xs mr-1">New</h3>
+                <div className="flex space-x-1">
+                  <PlayButtons mode="icon" buttonClasses="bg-darkbrown text-white" />
+                </div>
+              </div>
               <Button
                 onClick={() => {
                   dispatch(setShowTutorialCard(true));

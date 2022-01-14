@@ -66,13 +66,72 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({ mode, buttonClasses }) => {
     },
     [navigate, dispatch]
   );
+
+  const popoverContent = <div
+  className="bg-primary rounded-xl p-4 shadow-lg text-center"
+>
+  {isSubmitting ? (
+    <>
+      <FontAwesomeIcon className="animate-spin" icon={faSpinner} />
+      <span className="ml-2 text-sm">setting up game</span>
+    </>
+  ) : (
+    <>
+      <span>Computer Difficulty</span>
+      <div className="flex flex-col">
+        <DifficultyButton
+          autoFocus
+          difficultyName="Beginner"
+          difficultyNumber={1}
+          onPlayAIClick={onPlayAIClick}
+        />
+        <DifficultyButton
+          autoFocus
+          difficultyName="Easy"
+          difficultyNumber={3}
+          onPlayAIClick={onPlayAIClick}
+        />
+        <DifficultyButton
+          autoFocus
+          difficultyName="Medium"
+          difficultyNumber={5}
+          onPlayAIClick={onPlayAIClick}
+        />
+        <DifficultyButton
+          autoFocus
+          difficultyName="Hard"
+          difficultyNumber={6}
+          onPlayAIClick={onPlayAIClick}
+        />
+        <DifficultyButton
+          autoFocus
+          difficultyName="Harder"
+          difficultyNumber={7}
+          onPlayAIClick={onPlayAIClick}
+        />
+        <DifficultyButton
+          autoFocus
+          difficultyName="Expert"
+          difficultyNumber={8}
+          onPlayAIClick={onPlayAIClick}
+        />
+        <DifficultyButton
+          autoFocus
+          difficultyName="Expert+"
+          difficultyNumber={9}
+          onPlayAIClick={onPlayAIClick}
+        />
+      </div>
+    </>
+  )}
+</div>
   return (
     <>
       <Button
         className={classNames(
           mode === "text" || mode === "shorttext"
             ? "relative"
-            : "w-[42px] h-[42px] inline-flex items-center justify-center",
+            : "w-[42px] h-[42px] inline-flex items-center justify-center m-0",
           buttonClasses
         )}
         onClick={onPlayOnlineClick}
@@ -87,73 +146,13 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({ mode, buttonClasses }) => {
         isOpen={showOptions}
         containerClassName="z-40"
         onClickOutside={() => setShowOptions(false)}
-        content={
-          <div
-            // ref={clickOutsideRef}
-            className="bg-primary rounded-xl p-4 shadow-lg text-center"
-          >
-            {isSubmitting ? (
-              <>
-                <FontAwesomeIcon className="animate-spin" icon={faSpinner} />
-                <span className="ml-2 text-sm">setting up game</span>
-              </>
-            ) : (
-              <>
-                <span>Computer Difficulty</span>
-                <div className="flex flex-col">
-                  <DifficultyButton
-                    autoFocus
-                    difficultyName="Beginner"
-                    difficultyNumber={1}
-                    onPlayAIClick={onPlayAIClick}
-                  />
-                  <DifficultyButton
-                    autoFocus
-                    difficultyName="Easy"
-                    difficultyNumber={3}
-                    onPlayAIClick={onPlayAIClick}
-                  />
-                  <DifficultyButton
-                    autoFocus
-                    difficultyName="Medium"
-                    difficultyNumber={5}
-                    onPlayAIClick={onPlayAIClick}
-                  />
-                  <DifficultyButton
-                    autoFocus
-                    difficultyName="Hard"
-                    difficultyNumber={6}
-                    onPlayAIClick={onPlayAIClick}
-                  />
-                  <DifficultyButton
-                    autoFocus
-                    difficultyName="Harder"
-                    difficultyNumber={7}
-                    onPlayAIClick={onPlayAIClick}
-                  />
-                  <DifficultyButton
-                    autoFocus
-                    difficultyName="Expert"
-                    difficultyNumber={8}
-                    onPlayAIClick={onPlayAIClick}
-                  />
-                  <DifficultyButton
-                    autoFocus
-                    difficultyName="Expert+"
-                    difficultyNumber={9}
-                    onPlayAIClick={onPlayAIClick}
-                  />
-                </div>
-              </>
-            )}
-          </div>
-        }
+        content={popoverContent}
       >
         <Button
           className={classNames(
             mode === "text" || mode === "shorttext"
               ? "relative"
-              : "w-[42px] h-[42px] inline-flex items-center justify-center",
+              : "w-[42px] h-[42px] inline-flex items-center justify-center m-0",
             buttonClasses
           )}
           onClick={() => setShowOptions(true)}
