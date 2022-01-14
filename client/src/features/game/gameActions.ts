@@ -157,7 +157,8 @@ export const maybeShowNudge =
       state.game.currentGame === gameId &&
       game &&
       game.turn === 1 &&
-      game.moves.length === turnNumber
+      game.moves.length === turnNumber &&
+      !game.gameOver
     ) {
       dispatch(toggleNudgeButton(true));
     }
