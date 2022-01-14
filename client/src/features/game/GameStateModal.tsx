@@ -1,7 +1,9 @@
 import React from "react";
+import { useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import Modal from "../../presentational/Modal";
 import Canvas from "../canvas/Canvas";
+import PlayButtons from "../home-route/PlayButtons";
 import HexWord from "../thereed-lettering/HexWord";
 
 export type GameStateModalType =
@@ -12,8 +14,6 @@ export type GameStateModalType =
 
 export interface GameStateModalProps {
   type: GameStateModalType;
-  p1Nick: string;
-  p2Nick: string;
 }
 
 interface GameStateModalOwnprops extends GameStateModalProps {
@@ -27,60 +27,84 @@ const getThreeDText = (type: GameStateModalOwnprops["type"]) => {
   if (type === "defeat") {
     return "DEFEAT";
   }
-  if (type.startsWith('extra-turn')) {
-    return 'EXTRA TURN'
+  if (type.startsWith("extra-turn")) {
+    return "EXTRA TURN";
   }
   return null;
 };
 
-const getTwoDText = (type: GameStateModalProps["type"], p1Nick: string, p2Nick: string) => {
+const getTwoDText = (
+  type: GameStateModalProps["type"],
+  p1Nick: string,
+  p2Nick: string
+) => {
   if (type === "extra-turn-p1" || type === "extra-turn-p2") {
-    const thisPlayer = type === 'extra-turn-p1' ? p1Nick : p2Nick
-    const otherPlayer = type === 'extra-turn-p1' ? p2Nick : p1Nick
+    const thisPlayer = type === "extra-turn-p1" ? p1Nick : p2Nick;
+    const otherPlayer = type === "extra-turn-p1" ? p2Nick : p1Nick;
     return {
       // title: "Extra turn",
       body: `${thisPlayer} captured ${otherPlayer}'s flower and gets an extra turn`,
     };
   }
-  if (type === 'defeat') {
+  if (type === "defeat") {
     return {
-      body: "Better luck next time"
-    }
+      body: "Better luck next time",
+    };
   }
-  if (type === 'victory') {
+  if (type === "victory") {
     return {
-      body: "Congratulations!"
-    }
+      body: "Congratulations!",
+    };
   }
   return null;
 };
 
 const GameStateModal: React.FC<GameStateModalOwnprops> = ({
   type,
-  p1Nick,
-  p2Nick,
   onDismiss,
 }) => {
+  const selectedGameId = useAppSelector((state) => state.game.currentGame);
+  const game = useAppSelector((state) =>
+    selectedGameId ? state.gamelist.games[selectedGameId] : null
+  );
+  const opponents = useAppSelector((state) => state.user.opponents);
+
+  const p1Nick = (game && opponents[game.users[0]]?.nickname) ?? "Pink";
+  const p2Nick = (game && opponents[game.users[1]]?.nickname) ?? "Green";
+
   const threeDText = getThreeDText(type);
   const twoDText = getTwoDText(type, p1Nick, p2Nick);
   return (
     <Modal key={type}>
-      <div className="bg-lightbg rounded-xl w-[700px] h-[250px] flex justify-center items-center flex-col">
+      <div className="bg-lightbg rounded-xl w-[700px] h-[300px] flex justify-center items-center flex-col">
         {threeDText && (
           <div className="w-full max-w-[90vw] no-touch">
             <React.Suspense fallback={null}>
-            <Canvas>
-              <HexWord text={threeDText} />
-            </Canvas>
+              <Canvas>
+                <HexWord text={threeDText} />
+              </Canvas>
             </React.Suspense>
           </div>
         )}
         {twoDText && (
-          <div className="w-full max-w-[90vw] text-center">
+          <div className="w-full max-w-[90vw] text-lg my-2 text-center">
             <p>{twoDText.body}</p>
           </div>
         )}
-        <Button onClick={onDismiss}>Dismiss</Button>
+        <div className="flex items-end">
+          <Button onClick={onDismiss}>Dismiss</Button>
+          {(type === "defeat" || type === "victory") && (
+            <div className="mx-2 bg-primary rounded-xl flex flex-col justify-center items-center">
+              <span>Play again?</span>
+              <div>
+                <PlayButtons
+                  buttonClasses="bg-darkbrown text-white"
+                  mode="shorttext"
+                />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </Modal>
   );

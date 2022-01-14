@@ -121,8 +121,6 @@ export const receiveGameUpdatedSocket =
         dispatch(
           setGameStateModal({
             type: gameStateModalType,
-            p1Nick: state.user.opponents[game.users[0]]?.nickname ?? "Pink",
-            p2Nick: state.user.opponents[game.users[1]]?.nickname ?? "Green",
           })
         );
       }
@@ -158,8 +156,6 @@ export const dequeueOrDismissGameStateModalForGame =
       dispatch(
         setGameStateModal({
           type: gameStateModalToShow,
-          p1Nick: state.user.opponents[game?.users[0]]?.nickname ?? "Pink",
-          p2Nick: state.user.opponents[game?.users[1]]?.nickname ?? "Green",
         })
       );
     }

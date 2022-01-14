@@ -1,12 +1,12 @@
 import classNames from "classnames";
 import React, { ButtonHTMLAttributes } from "react";
 
-const Button: React.FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({
-  className,
-  disabled,
-  ...props
-}) => (
+const Button = React.forwardRef<
+  HTMLButtonElement,
+  ButtonHTMLAttributes<HTMLButtonElement>
+>(({ className, disabled, ...props }, ref) => (
   <button
+    ref={ref}
     className={classNames(
       `rounded-full p-2 m-1  inset-shadow cursor-default
       transition-all
@@ -17,6 +17,8 @@ const Button: React.FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({
     disabled={disabled}
     {...props}
   />
-);
+));
+
+Button.displayName = "Button";
 
 export default Button;

@@ -17,17 +17,15 @@ import { animated as a, useSpring } from "@react-spring/web";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
-import { createNewGame } from "./gamelistActions";
 import {
   setShowTutorialCard,
   toggleCompletedGames,
   toggleIsOpen,
 } from "./gamelistSlice";
 import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
-import { toggleTutorialModal } from "../game/gameSlice";
 import GameListItem from "./GameListItem";
-import PlayVsAiButton from "../home-route/PlayVsAiButton";
 import TutorialCard from "./TutorialCard";
+import PlayButtons from "../home-route/PlayButtons";
 
 const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
 const BeeLazy = React.lazy(() => import("../../assets/Bee"));
@@ -140,32 +138,20 @@ const GameList: React.FC = () => {
               <h2 className="inline text-2xl font-bold text-darkbrown">
                 Games
               </h2>
+              <PlayButtons mode="icon" />
               <Button
                 onClick={() => {
-                  dispatch(createNewGame());
+                  dispatch(setShowTutorialCard(true));
                 }}
-                aria-label="create new game versus human"
-                data-tip="Create new game vs human"
-                className="w-[42px] h-[42px] inline-flex items-center justify-center"
+                aria-label="display tutorial"
+                data-tip="Tutorial"
+                className={classNames(
+                  "w-[42px] h-[42px] inline-flex items-center justify-center",
+                  showTutorialCard && "hidden"
+                )}
               >
-                <FontAwesomeIcon className="mx-1" icon={faUser} />
+                <FontAwesomeIcon className="mx-1" icon={faQuestion} />
               </Button>
-              <PlayVsAiButton mode="icon" />
-              {
-                <Button
-                  onClick={() => {
-                    dispatch(setShowTutorialCard(true));
-                  }}
-                  aria-label="display tutorial"
-                  data-tip="Tutorial"
-                  className={classNames(
-                    "w-[42px] h-[42px] inline-flex items-center justify-center",
-                    showTutorialCard && "hidden"
-                  )}
-                >
-                  <FontAwesomeIcon className="mx-1" icon={faQuestion} />
-                </Button>
-              }
             </div>
             {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
             <ul className="px-2">
