@@ -65,6 +65,7 @@ export const submitMove =
       await axios.post(getApiUrl("/game", gameId, "/move"), {
         move: formattedCoords,
       });
+      dispatch(clearTileSelection());
     } catch (e) {
       throw e.response?.data ?? e.toString();
     }

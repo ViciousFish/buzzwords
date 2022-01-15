@@ -1,18 +1,17 @@
 import Game from "buzzwords-shared/Game";
-import { DataLayer } from "../types";
+import { DataLayer, User } from "../types";
 
 export default class Memory implements DataLayer {
   games: {
     [key: string]: Game;
   };
   users: {
-    [key: string]: {
-      nickname: string;
-    };
+    [id: string]: User;
   };
   authTokens: {
     [key: string]: string;
   } = {};
+
   constructor() {
     this.games = {};
     this.users = {};
@@ -34,9 +33,20 @@ export default class Memory implements DataLayer {
     return this.authTokens[token];
   }
 
-  async setNickName(id: string, nickname: string): Promise<boolean> {
+  async setNicknameAndMaybeCreateUser(
+    id: string,
+    nickname: string
+  ): Promise<boolean> {
+    let user = this.users[id];
+    if (!user) {
+      user = {
+        nickname,
+        id,
+        hiddenGames: [],
+      };
+    }
     this.users[id] = {
-      ...this.users[id],
+      ...user,
       nickname,
     };
     return true;
@@ -44,6 +54,10 @@ export default class Memory implements DataLayer {
 
   async getNickName(id: string): Promise<string | null> {
     return this.users[id]?.nickname;
+  }
+
+  async getUser(id: string): Promise<User | null> {
+    return this.users[id] ?? null;
   }
 
   async getGamesByUserId(id: string): Promise<Game[]> {
@@ -98,6 +112,14 @@ export default class Memory implements DataLayer {
   }
 
   async commitContext(context: null): Promise<boolean> {
+    return true;
+  }
+  async hideGameForUser(userId: string, gameId: string): Promise<boolean> {
+    const user = this.users[userId];
+    this.users[userId] = {
+      ...user,
+      hiddenGames: [...user.hiddenGames, gameId],
+    };
     return true;
   }
 }

@@ -1,7 +1,7 @@
 import mongoose, { ClientSession } from "mongoose";
 import getConfig from "../../config";
 
-import { DataLayer } from "../../types";
+import { DataLayer, User } from "../../types";
 import { withRetry } from "../../util";
 import Game from "buzzwords-shared/Game";
 import Models from "./models";
@@ -92,7 +92,7 @@ export default class Mongo implements DataLayer {
     }
   }
 
-  async setNickName(
+  async setNicknameAndMaybeCreateUser(
     id: string,
     nickname: string,
     options: Options
@@ -143,6 +143,17 @@ export default class Mongo implements DataLayer {
       console.log(e);
       throw e;
     }
+  }
+
+  async getUser(id: string): Promise<User | null> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+
+    const res = await Models.User.findOne({
+      id,
+    });
+    return res?.toObject() ?? null;
   }
 
   async getGamesByUserId(id: string, options: Options): Promise<Game[]> {
@@ -295,5 +306,20 @@ export default class Mongo implements DataLayer {
     await context.commitTransaction();
     context.endSession();
     return true;
+  }
+
+  async hideGameForUser(userId: string, gameId: string): Promise<boolean> {
+    try {
+      const res = await Models.User.updateOne(
+        { id: userId, hiddenGames: { $nin: gameId } },
+        {
+          $push: { hiddenGames: gameId },
+        }
+      );
+      return Boolean(res.modifiedCount);
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
   }
 }

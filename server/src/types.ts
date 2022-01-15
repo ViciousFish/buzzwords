@@ -1,5 +1,10 @@
 import Game from "buzzwords-shared/Game";
 
+export interface User {
+  id: string;
+  nickname: string | null;
+  hiddenGames: string[];
+}
 export interface DataLayer {
   createAuthToken(
     token: string,
@@ -10,7 +15,7 @@ export interface DataLayer {
     token: string,
     options?: Record<string, unknown>
   ): Promise<string | null>;
-  setNickName(
+  setNicknameAndMaybeCreateUser(
     id: string,
     nickname: string,
     options?: Record<string, unknown>
@@ -19,6 +24,7 @@ export interface DataLayer {
     id: string,
     options?: Record<string, unknown>
   ): Promise<string | null>;
+  getUser(id: string): Promise<User | null>;
   getGamesByUserId(
     id: string,
     options?: Record<string, unknown>
@@ -43,4 +49,5 @@ export interface DataLayer {
   ): Promise<boolean>;
   createContext(): Promise<unknown>;
   commitContext(context: unknown): Promise<boolean>;
+  hideGameForUser(userId: string, gameId: string): Promise<boolean>;
 }

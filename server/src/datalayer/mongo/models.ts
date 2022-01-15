@@ -1,10 +1,7 @@
 import { model, Schema } from "mongoose";
 
 import Game from "buzzwords-shared/Game";
-interface User {
-  id: string;
-  nickname: string;
-}
+import { User } from "../../types";
 
 interface AuthToken {
   token: string;

@@ -93,12 +93,9 @@ app.get("/", (req, res) => {
 });
 
 app.get("/user", async (req, res) => {
-  const user = res.locals.userId as string;
-  const nickname = await dl.getNickName(user);
-  res.send({
-    id: user,
-    nickname,
-  });
+  const userId = res.locals.userId as string;
+  const user = await dl.getUser(userId);
+  res.send(user);
 });
 
 app.post("/user/nickname", async (req, res) => {
@@ -116,7 +113,7 @@ app.post("/user/nickname", async (req, res) => {
     });
     return;
   }
-  const success = await dl.setNickName(user, nickname);
+  const success = await dl.setNicknameAndMaybeCreateUser(user, nickname);
   io.emit("nickname updated", {
     id: user,
     nickname,
@@ -291,7 +288,8 @@ app.post("/game/:id/pass", async (req, res) => {
   res.sendStatus(201);
 });
 
-const removeMongoId = <T>(thing: any): T => { // eslint-disable-line
+const removeMongoId = <T>(thing: any): T => {
+  // eslint-disable-line
   if (!R.is(Object, thing)) {
     return thing;
   } else if (Array.isArray(thing)) {
