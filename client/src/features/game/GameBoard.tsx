@@ -50,8 +50,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
     } catch (e) {
       setSubmitting(false);
       toast(e, {
-        type: 'error',
-      })
+        type: "error",
+      });
     }
   }, [dispatch, id]);
   useEffect(() => {
@@ -59,6 +59,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
       setRevealLetters(true);
     }, 500);
   });
+  const selfName = nickname ?? "You";
+  const opponentName = game.vsAI ? "Computer" : opponent.nickname ?? "Them";
   return (
     <div className="h-[80vh] lg:h-screen flex-auto overflow-hidden">
       <Canvas key={`play-${id}`}>
@@ -76,21 +78,14 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 gameOver={game.gameOver}
               />
               {/* Modals have z index of 30 */}
-              <Html zIndexRange={[20, 0]} position={[0, game.turn === 0 ? 5 : 4, 0]} center>
-                <span>
-                  {userIndex === 0
-                    ? nickname ?? "You"
-                    : opponent?.nickname ?? "Them"}
-                </span>
+              <Html
+                zIndexRange={[20, 0]}
+                position={[0, game.turn === 0 ? 5 : 4, 0]}
+                center
+              >
+                <span>{userIndex === 0 ? selfName : opponentName}</span>
               </Html>
             </group>
-            {/* <Html center>
-              <div className="flex items-center justify-center">
-                {game.turn === 0 && <FontAwesomeIcon className="mr-2" size='lg' icon={faArrowLeft} />}
-                <span className="text-2xl font-bold">TURN</span>
-                {game.turn === 1 && <FontAwesomeIcon className="ml-2" size='lg' icon={faArrowRight} />}
-              </div>
-            </Html> */}
             <group position={[10, 0, 0]}>
               <GameTile
                 owner={1}
@@ -100,10 +95,12 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 currentGame={id}
                 gameOver={game.gameOver}
               />
-              <Html zIndexRange={[20, 0]} position={[0, game.turn === 1 ? 5 : 4, 0]} center>
-                {userIndex === 1
-                  ? nickname ?? "You"
-                  : opponent?.nickname ?? "Them"}
+              <Html
+                zIndexRange={[20, 0]}
+                position={[0, game.turn === 1 ? 5 : 4, 0]}
+                center
+              >
+                {userIndex === 1 ? selfName : opponentName}
               </Html>
             </group>
           </group>
