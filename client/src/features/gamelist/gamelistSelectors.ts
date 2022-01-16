@@ -31,7 +31,7 @@ export const getHowManyGamesAreMyTurn = createSelector(
       R.values,
       R.map((game: ClientGame) => {
         const userIndex = game.users.findIndex((val) => val === user.id);
-        if (game.users.length < 2) {
+        if (game.users.length < 2 || game.gameOver) {
           return 0;
         }
         return game.turn === userIndex ? 1 : 0;

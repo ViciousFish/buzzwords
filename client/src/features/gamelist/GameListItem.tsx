@@ -27,7 +27,7 @@ const GameListItem: React.FC<GameListItemProps> = ({ game }) => {
             isActive ? "bg-primary hover:bg-opacity-100" : "text-darkbrown",
             "p-2 rounded-xl block hover:bg-primary hover:bg-opacity-50 truncate",
             "flex items-center",
-            game.turn === selfIndex && game.users.length === 2
+            game.turn === selfIndex && game.users.length === 2 && !game.gameOver
               ? "font-bold"
               : ""
           )
