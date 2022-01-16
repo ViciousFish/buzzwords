@@ -37,13 +37,18 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({ mode, buttonClasses }) => {
   const navigate = useNavigate();
 
   const [showOptions, setShowOptions] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState<false | "bot" | "human">(
+    false
+  );
 
   const onPlayOnlineClick = useCallback(async () => {
+    setIsSubmitting("human");
     try {
       const game = await dispatch(createNewGame());
       navigate(`/play/${game}`);
+      setIsSubmitting(false);
     } catch (e) {
+      setIsSubmitting(false);
       toast(e, {
         type: "error",
       });
@@ -52,7 +57,7 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({ mode, buttonClasses }) => {
 
   const onPlayAIClick = useCallback(
     (difficulty: number) => async () => {
-      setIsSubmitting(true);
+      setIsSubmitting("bot");
       setShowOptions(false);
       try {
         const game = await dispatch(createNewAIGame(difficulty));
@@ -124,12 +129,17 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({ mode, buttonClasses }) => {
           mode === "text" || mode === "shorttext"
             ? "relative"
             : "w-[42px] h-[42px] inline-flex items-center justify-center m-0",
-          buttonClasses
+          buttonClasses,
+          isSubmitting && "bg-gray-500 text-white"
         )}
+        disabled={Boolean(isSubmitting)}
         onClick={onPlayOnlineClick}
         data-tip="Create new game vs human"
       >
-        <FontAwesomeIcon icon={faUser} />
+        <FontAwesomeIcon
+          className={isSubmitting === "human" ? "animate-spin" : ""}
+          icon={isSubmitting === "human" ? faSpinner : faUser}
+        />
         {mode === "text" && <span className="ml-2">Play vs human</span>}
         {mode === "shorttext" && <span className="ml-2">Human</span>}
       </Button>
@@ -146,14 +156,17 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({ mode, buttonClasses }) => {
               ? "relative"
               : "w-[42px] h-[42px] inline-flex items-center justify-center m-0",
             buttonClasses,
-            isSubmitting && 'bg-gray-500 text-white'
+            isSubmitting && "bg-gray-500 text-white"
           )}
-          disabled={isSubmitting}
+          disabled={Boolean(isSubmitting)}
           onClick={() => setShowOptions(true)}
           data-tip="Create new game vs computer"
           aria-label="create new game versus computer"
         >
-          <FontAwesomeIcon className={isSubmitting ? 'animate-spin' : ''} icon={isSubmitting ? faSpinner : faRobot} />
+          <FontAwesomeIcon
+            className={isSubmitting === "bot" ? "animate-spin" : ""}
+            icon={isSubmitting === "bot" ? faSpinner : faRobot}
+          />
           {mode === "text" && <span className="ml-2">Play vs computer</span>}
           {mode === "shorttext" && <span className="ml-2">Computer</span>}
         </Button>
