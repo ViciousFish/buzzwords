@@ -110,7 +110,7 @@ app.post("/user/nickname", async (req, res) => {
     });
     return;
   }
-  if (R.any((word) => nickname.toLowerCase().includes(word), BannedWords)) {
+  if (R.any((word) => nickname.toLowerCase().trim() === word, BannedWords)) {
     res.status(400).json({
       message: "Nickname contains banned text",
     });
