@@ -1,6 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import { toast } from "react-toastify";
-import cookie from 'cookie';
+import cookie from "cookie";
 
 import { receiveSelectionSocket } from "../features/game/gameActions";
 import { resetSelection } from "../features/game/gameSlice";
@@ -8,7 +8,10 @@ import Game from "buzzwords-shared/Game";
 import { QRCoord } from "../features/hexGrid/hexGrid";
 import { AppDispatch } from "./store";
 import { maybeOpponentNicknameUpdated } from "../features/user/userSlice";
-import { receiveGameUpdatedSocket } from "../features/gamelist/gamelistActions";
+import {
+  receiveGameUpdatedSocket,
+  refresh,
+} from "../features/gamelist/gamelistActions";
 import { SOCKET_DOMAIN, SOCKET_PATH } from "./apiPrefix";
 
 let socket: Socket | null = null;
@@ -25,8 +28,8 @@ export const subscribeSocket = (dispatch: AppDispatch) => {
     withCredentials: true,
     path: SOCKET_PATH,
     extraHeaders: {
-      authorization: cookies.authToken
-    }
+      authorization: cookies.authToken,
+    },
   });
   // socket.io.on("reconnect_error", (e) => {
   //   toast("reconnect_error: " + e.message, {
@@ -42,6 +45,11 @@ export const subscribeSocket = (dispatch: AppDispatch) => {
     toast("socket reconnect_failed", {
       type: "error",
     });
+  });
+
+  socket.io.on("reconnect", () => {
+    dispatch(refresh());
+    toast("reconnected to game service")
   });
 
   socket.on("error", (e) => {

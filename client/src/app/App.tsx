@@ -10,7 +10,7 @@ import { initAction } from "./appActions";
 import { ToastContainer } from "react-toastify";
 import TutorialModal from "../features/game/TutorialModal";
 import { getUnseenMoveCount } from "../features/gamelist/gamelistSelectors";
-import { setWindowFocusThunk } from "../features/game/gameActions";
+import { handleWindowFocusThunk } from "../features/game/gameActions";
 import ReactTooltip from "react-tooltip";
 
 import.meta.env.PROD &&
@@ -36,8 +36,8 @@ function App() {
   useEffect(() => {
     dispatch(initAction());
 
-    const handleFocus = () => dispatch(setWindowFocusThunk(true));
-    const handleBlur = () => dispatch(setWindowFocusThunk(false));
+    const handleFocus = () => dispatch(handleWindowFocusThunk(true));
+    const handleBlur = () => dispatch(handleWindowFocusThunk(false));
     window.addEventListener("focus", handleFocus);
     window.addEventListener("blur", handleBlur);
     return () => {

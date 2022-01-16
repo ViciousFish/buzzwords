@@ -4,7 +4,7 @@ import { getApiUrl } from "../../app/apiPrefix";
 
 import { emitSelection } from "../../app/socket";
 import { AppThunk } from "../../app/store";
-import { markGameAsSeen } from "../gamelist/gamelistActions";
+import { markGameAsSeen, refresh } from "../gamelist/gamelistActions";
 import { QRCoord } from "../hexGrid/hexGrid";
 import { getOrderedTileSelectionCoords } from "./gameSelectors";
 import {
@@ -140,8 +140,11 @@ export const initiateReplay =
     }, REPLAY_DELAY + ticks * REPLAY_SPEED + REPLAY_SPEED);
   };
 
-export const setWindowFocusThunk = (focus: boolean): AppThunk => (dispatch, getState) => {
+export const handleWindowFocusThunk = (focus: boolean): AppThunk => (dispatch, getState) => {
   const state = getState();
+  if (focus) {
+    dispatch(refresh());
+  }
   if (focus && state.game.currentGame) {
     dispatch(markGameAsSeen(state.game.currentGame))
   }
