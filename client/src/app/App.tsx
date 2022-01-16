@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from "./hooks";
 import { initAction } from "./appActions";
 import { ToastContainer } from "react-toastify";
 import TutorialModal from "../features/game/TutorialModal";
-import { getHasUnseenMove } from "../features/gamelist/gamelistSelectors";
+import { getUnseenMoveCount } from "../features/gamelist/gamelistSelectors";
 import { setWindowFocusThunk } from "../features/game/gameActions";
 import ReactTooltip from "react-tooltip";
 
@@ -31,7 +31,7 @@ function App() {
     (state) => state.game.showingTutorialModal
   );
 
-  const hasUnseenMove = useAppSelector(getHasUnseenMove);
+  const hasUnseenMove = Boolean(useAppSelector(getUnseenMoveCount));
 
   useEffect(() => {
     dispatch(initAction());

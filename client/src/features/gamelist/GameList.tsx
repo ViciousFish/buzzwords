@@ -26,6 +26,7 @@ import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
 import GameListItem from "./GameListItem";
 import TutorialCard from "./TutorialCard";
 import PlayButtons from "../home-route/PlayButtons";
+import { getHowManyGamesAreMyTurn } from "./gamelistSelectors";
 
 const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
 const BeeLazy = React.lazy(() => import("../../assets/Bee"));
@@ -43,6 +44,7 @@ const GameList: React.FC = () => {
   const showTutorialCard = useAppSelector(
     (state) => state.gamelist.showTutorialCard
   );
+  const currentTurnCount = useAppSelector(getHowManyGamesAreMyTurn);
 
   const incompleteGames = Object.values(games).filter((game) => !game.gameOver);
   const completedGames = Object.values(games).filter((game) => game.gameOver);
@@ -65,7 +67,7 @@ const GameList: React.FC = () => {
   const hamburgerSpring = useSpring({
     transform: isOpen
       ? "translateX(0px)"
-      : `translateX(${45 + safeAreaLeft}px)`,
+      : `translateX(${65 + safeAreaLeft}px)`,
     config,
   });
 
@@ -120,6 +122,7 @@ const GameList: React.FC = () => {
               data-tip="Toggle games list"
             >
               <FontAwesomeIcon icon={faBars} />
+              {currentTurnCount && !isOpen ? <span className="text-sm ml-1" >({currentTurnCount})</span> : null}
             </button>
           </a.div>
         </header>
@@ -135,13 +138,14 @@ const GameList: React.FC = () => {
           </div>
           <div className="flex-auto">
             <div className="z-10 px-2 mt-0 flex items-center">
-              <h2 className="text-2xl font-bold text-darkbrown">
-                Games
-              </h2>
+              <h2 className="text-2xl font-bold text-darkbrown">Games</h2>
               <div className="bg-primary mx-1 rounded-xl text-center flex items-center p-1">
                 <h3 className="text-xs mr-1">New</h3>
                 <div className="flex space-x-1">
-                  <PlayButtons mode="icon" buttonClasses="bg-darkbrown text-white" />
+                  <PlayButtons
+                    mode="icon"
+                    buttonClasses="bg-darkbrown text-white"
+                  />
                 </div>
               </div>
               <Button
