@@ -2,11 +2,11 @@ import {
   faAngleDown,
   faAngleRight,
   faBars,
+  faCircle,
+  faDotCircle,
   faHome,
-  faPlus,
   faQuestion,
   faSpinner,
-  faUser,
   faVolumeMute,
   faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
@@ -28,7 +28,10 @@ import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
 import GameListItem from "./GameListItem";
 import TutorialCard from "./TutorialCard";
 import PlayButtons from "../home-route/PlayButtons";
-import { getHowManyGamesAreMyTurn } from "./gamelistSelectors";
+import {
+  getHowManyGamesAreMyTurn,
+  getUnseenMoveCount,
+} from "./gamelistSelectors";
 import { setTurnNotificationsMute } from "../game/gameSlice";
 
 const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
@@ -48,13 +51,16 @@ const GameList: React.FC = () => {
     (state) => state.gamelist.showTutorialCard
   );
   const currentTurnCount = useAppSelector(getHowManyGamesAreMyTurn);
-  const turnNotificationsMuted = useAppSelector(state => state.game.turnNotificationsMuted);
+  const currentUnseenCount = useAppSelector(getUnseenMoveCount);
+  const turnNotificationsMuted = useAppSelector(
+    (state) => state.game.turnNotificationsMuted
+  );
 
   const incompleteGames = Object.values(games).filter((game) => !game.gameOver);
   const completedGames = Object.values(games).filter((game) => game.gameOver);
 
   const toggleTurnNotificationsMute = useCallback(() => {
-    dispatch(setTurnNotificationsMute(!turnNotificationsMuted))
+    dispatch(setTurnNotificationsMute(!turnNotificationsMuted));
   }, [dispatch, turnNotificationsMuted]);
 
   const safeAreaLeft = Number(
@@ -75,9 +81,22 @@ const GameList: React.FC = () => {
   const hamburgerSpring = useSpring({
     transform: isOpen
       ? "translateX(0px)"
-      : `translateX(${65 + safeAreaLeft}px)`,
+      : `translateX(${45 + safeAreaLeft}px)`,
     config,
   });
+
+  let hamburgerNotification;
+  if (!isOpen && (currentTurnCount || currentUnseenCount)) {
+    hamburgerNotification = (
+      <FontAwesomeIcon
+        className={classNames(
+          currentUnseenCount ? "text-blue-500" : "text-yellow-700",
+          "drop-shadow"
+        )}
+        icon={faCircle}
+      />
+    );
+  }
 
   return (
     <a.div
@@ -109,11 +128,17 @@ const GameList: React.FC = () => {
           <div className="flex-auto" />
           <button
             className="block p-2 rounded-md hover:bg-primary hover:bg-opacity-50 text-darkbrown"
-            aria-label={`${turnNotificationsMuted ? "unmute" : "mute"} turn notification`}
-            data-tip={`${turnNotificationsMuted ? "Unmute" : "Mute"} turn notification`}
+            aria-label={`${
+              turnNotificationsMuted ? "unmute" : "mute"
+            } turn notification`}
+            data-tip={`${
+              turnNotificationsMuted ? "Unmute" : "Mute"
+            } turn notification`}
             onClick={toggleTurnNotificationsMute}
           >
-            <FontAwesomeIcon icon={turnNotificationsMuted ? faVolumeMute : faVolumeUp} />
+            <FontAwesomeIcon
+              icon={turnNotificationsMuted ? faVolumeMute : faVolumeUp}
+            />
           </button>
           <NavLink
             className={({ isActive }) =>
@@ -138,7 +163,9 @@ const GameList: React.FC = () => {
               data-tip="Toggle games list"
             >
               <FontAwesomeIcon icon={faBars} />
-              {currentTurnCount && !isOpen ? <span className="text-sm ml-1" >({currentTurnCount})</span> : null}
+              <span className="absolute text-sm right-0 top-1">
+                {hamburgerNotification}
+              </span>
             </button>
           </a.div>
         </header>

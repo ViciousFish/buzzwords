@@ -232,3 +232,9 @@ export const joinGameById =
       return false;
     }
   };
+
+export const getTutorialCardSetting = () =>
+  JSON.parse(localStorage.getItem("turnNotificationsMute") || 'false') as boolean;
+
+export const setTutorialCardSetting = (mute: boolean) =>
+  localStorage.setItem("turnNotificationsMute", JSON.stringify(mute));
