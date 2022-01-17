@@ -17,6 +17,8 @@ import { GameStateModalType } from "../game/GameStateModal";
 import { resetSelection, setGameStateModal, toggleNudgeButton } from "../game/gameSlice";
 import { maybeShowNudge } from "../game/gameActions";
 
+import ding from '../../../assets/ding.mp3?url'
+
 interface GameMetaCache {
   lastSeenTurns: {
     [gameId: string]: number;
@@ -82,10 +84,16 @@ export const refresh = (): AppThunk => async (dispatch, getState) => {
   dispatch(refreshReceived(gamesById));
 };
 
+const DingAudio = new Audio(ding);
 export const receiveGameUpdatedSocket =
   (game: Game): AppThunk =>
   (dispatch, getState) => {
     const state = getState();
+    const userIndex = game.users.findIndex(user => user === state.user.user?.id)
+    if (userIndex === game.turn && !game.gameOver && !state.game.turnNotificationsMuted) {
+      DingAudio.play();
+    }
+
     const allKnownPlayersWithNicknames = R.pipe(
       R.filter((player: User) => Boolean(player.nickname)),
       R.keys
@@ -119,7 +127,6 @@ export const receiveGameUpdatedSocket =
     }
     if (state.game.currentGame === game.id && state.game.windowHasFocus) {
       updateLastSeenTurns(game.id, game.moves.length);
-      // CQ: set game state modal
       if (gameStateModalType) {
         dispatch(
           setGameStateModal({

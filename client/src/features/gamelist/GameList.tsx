@@ -7,11 +7,13 @@ import {
   faQuestion,
   faSpinner,
   faUser,
+  faVolumeMute,
+  faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import React from "react";
+import React, { useCallback } from "react";
 import { NavLink } from "react-router-dom";
 import { animated as a, useSpring } from "@react-spring/web";
 
@@ -27,6 +29,7 @@ import GameListItem from "./GameListItem";
 import TutorialCard from "./TutorialCard";
 import PlayButtons from "../home-route/PlayButtons";
 import { getHowManyGamesAreMyTurn } from "./gamelistSelectors";
+import { setTurnNotificationsMute } from "../game/gameSlice";
 
 const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
 const BeeLazy = React.lazy(() => import("../../assets/Bee"));
@@ -45,9 +48,14 @@ const GameList: React.FC = () => {
     (state) => state.gamelist.showTutorialCard
   );
   const currentTurnCount = useAppSelector(getHowManyGamesAreMyTurn);
+  const turnNotificationsMuted = useAppSelector(state => state.game.turnNotificationsMuted);
 
   const incompleteGames = Object.values(games).filter((game) => !game.gameOver);
   const completedGames = Object.values(games).filter((game) => game.gameOver);
+
+  const toggleTurnNotificationsMute = useCallback(() => {
+    dispatch(setTurnNotificationsMute(!turnNotificationsMuted))
+  }, [dispatch, turnNotificationsMuted]);
 
   const safeAreaLeft = Number(
     getComputedStyle(document.documentElement)
@@ -96,9 +104,17 @@ const GameList: React.FC = () => {
             aria-label="buzzwords twitter"
             data-tip="Follow us on twitter"
           >
-            <FontAwesomeIcon icon={faTwitter} /> BuzzwordsGG
+            <FontAwesomeIcon icon={faTwitter} />
           </a>
           <div className="flex-auto" />
+          <button
+            className="block p-2 rounded-md hover:bg-primary hover:bg-opacity-50 text-darkbrown"
+            aria-label={`${turnNotificationsMuted ? "unmute" : "mute"} turn notification`}
+            data-tip={`${turnNotificationsMuted ? "Unmute" : "Mute"} turn notification`}
+            onClick={toggleTurnNotificationsMute}
+          >
+            <FontAwesomeIcon icon={turnNotificationsMuted ? faVolumeMute : faVolumeUp} />
+          </button>
           <NavLink
             className={({ isActive }) =>
               classNames(

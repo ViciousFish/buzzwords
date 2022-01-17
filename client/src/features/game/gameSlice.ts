@@ -20,6 +20,7 @@ interface GameState {
   windowHasFocus: boolean;
   gameStateModal: GameStateModalProps | null;
   showingNudgeButton: boolean;
+  turnNotificationsMuted: boolean;
 }
 
 const initialState: GameState = {
@@ -36,6 +37,7 @@ const initialState: GameState = {
   windowHasFocus: document.hasFocus(),
   gameStateModal: null,
   showingNudgeButton: false,
+  turnNotificationsMuted: false,
 };
 
 export const gameSlice = createSlice({
@@ -97,6 +99,9 @@ export const gameSlice = createSlice({
     toggleNudgeButton: (state, action: PayloadAction<boolean>) => {
       state.showingNudgeButton = action.payload;
     },
+    setTurnNotificationsMute: (state, action: PayloadAction<boolean>) => {
+      state.turnNotificationsMuted = action.payload;
+    }
   },
 });
 
@@ -113,6 +118,7 @@ export const {
   setWindowHasFocus,
   setGameStateModal,
   toggleNudgeButton,
+  setTurnNotificationsMute,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;
