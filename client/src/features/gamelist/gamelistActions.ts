@@ -14,7 +14,7 @@ import { fetchOpponent } from "../user/userActions";
 import axios from "axios";
 import { getApiUrl } from "../../app/apiPrefix";
 import { GameStateModalType } from "../game/GameStateModal";
-import { setGameStateModal, toggleNudgeButton } from "../game/gameSlice";
+import { resetSelection, setGameStateModal, toggleNudgeButton } from "../game/gameSlice";
 import { maybeShowNudge } from "../game/gameActions";
 
 interface GameMetaCache {
@@ -114,6 +114,9 @@ export const receiveGameUpdatedSocket =
     const gameStateModalType = game
       ? gameUpdateEventGetGameStateModalType(game, state)
       : null;
+    if (state.game.currentGame === game.id) {
+      dispatch(resetSelection())
+    }
     if (state.game.currentGame === game.id && state.game.windowHasFocus) {
       updateLastSeenTurns(game.id, game.moves.length);
       // CQ: set game state modal

@@ -3,7 +3,6 @@ import { toast } from "react-toastify";
 import cookie from "cookie";
 
 import { receiveSelectionSocket } from "../features/game/gameActions";
-import { resetSelection } from "../features/game/gameSlice";
 import Game from "buzzwords-shared/Game";
 import { QRCoord } from "../features/hexGrid/hexGrid";
 import { AppDispatch } from "./store";
@@ -59,7 +58,6 @@ export const subscribeSocket = (dispatch: AppDispatch) => {
   });
   socket.on("game updated", (game: Game) => {
     dispatch(receiveGameUpdatedSocket(game));
-    dispatch(resetSelection()); // clear selection
   });
   socket.on("selection", ({ gameId, selection }: SelectionEventProps) => {
     console.log("selection", selection);
