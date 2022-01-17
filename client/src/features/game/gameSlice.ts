@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Move } from "buzzwords-shared/Game";
 import HexGrid from "buzzwords-shared/hexgrid";
 import { QRCoord } from "../hexGrid/hexGrid";
+import { getMuteSetting } from "./gameActions";
 import { GameStateModalProps, GameStateModalType } from "./GameStateModal";
 
 interface GameState {
@@ -37,7 +38,7 @@ const initialState: GameState = {
   windowHasFocus: document.hasFocus(),
   gameStateModal: null,
   showingNudgeButton: false,
-  turnNotificationsMuted: false,
+  turnNotificationsMuted: getMuteSetting(),
 };
 
 export const gameSlice = createSlice({

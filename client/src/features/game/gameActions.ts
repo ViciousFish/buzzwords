@@ -186,7 +186,7 @@ export const nudgeGameById =
   };
 
 export const getMuteSetting = () =>
-  Boolean(localStorage.getItem("turnNotificationsMute"));
+  JSON.parse(localStorage.getItem("turnNotificationsMute") || 'false') as boolean;
 
 export const setMuteSetting = (mute: boolean) =>
   localStorage.setItem("turnNotificationsMute", JSON.stringify(mute));
@@ -196,5 +196,5 @@ export const toggleTurnNotificationsMute =
     const state = getState();
     const mute = !state.game.turnNotificationsMuted;
     setMuteSetting(mute);
-    setTurnNotificationsMute(mute);
+    dispatch(setTurnNotificationsMute(mute));
   };
