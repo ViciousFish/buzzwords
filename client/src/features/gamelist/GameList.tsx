@@ -33,6 +33,7 @@ import {
   getUnseenMoveCount,
 } from "./gamelistSelectors";
 import { setTurnNotificationsMute } from "../game/gameSlice";
+import { toggleTurnNotificationsMute } from "../game/gameActions";
 
 const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
 const BeeLazy = React.lazy(() => import("../../assets/Bee"));
@@ -58,10 +59,6 @@ const GameList: React.FC = () => {
 
   const incompleteGames = Object.values(games).filter((game) => !game.gameOver);
   const completedGames = Object.values(games).filter((game) => game.gameOver);
-
-  const toggleTurnNotificationsMute = useCallback(() => {
-    dispatch(setTurnNotificationsMute(!turnNotificationsMuted));
-  }, [dispatch, turnNotificationsMuted]);
 
   const safeAreaLeft = Number(
     getComputedStyle(document.documentElement)
@@ -134,7 +131,7 @@ const GameList: React.FC = () => {
             data-tip={`${
               turnNotificationsMuted ? "Unmute" : "Mute"
             } turn notification`}
-            onClick={toggleTurnNotificationsMute}
+            onClick={() => dispatch(toggleTurnNotificationsMute())}
           >
             <FontAwesomeIcon
               icon={turnNotificationsMuted ? faVolumeMute : faVolumeUp}

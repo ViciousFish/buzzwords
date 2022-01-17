@@ -14,6 +14,7 @@ import {
   resetSelection,
   selectTile,
   setSelection,
+  setTurnNotificationsMute,
   setWindowHasFocus,
   toggleNudgeButton,
   unselectTile,
@@ -140,16 +141,18 @@ export const initiateReplay =
     }, REPLAY_DELAY + ticks * REPLAY_SPEED + REPLAY_SPEED);
   };
 
-export const handleWindowFocusThunk = (focus: boolean): AppThunk => (dispatch, getState) => {
-  const state = getState();
-  if (focus) {
-    dispatch(refresh());
-  }
-  if (focus && state.game.currentGame) {
-    dispatch(markGameAsSeen(state.game.currentGame))
-  }
-  dispatch(setWindowHasFocus(focus));
-}
+export const handleWindowFocusThunk =
+  (focus: boolean): AppThunk =>
+  (dispatch, getState) => {
+    const state = getState();
+    if (focus) {
+      dispatch(refresh());
+    }
+    if (focus && state.game.currentGame) {
+      dispatch(markGameAsSeen(state.game.currentGame));
+    }
+    dispatch(setWindowHasFocus(focus));
+  };
 
 export const maybeShowNudge =
   (gameId: string, turnNumber: number): AppThunk =>
@@ -173,11 +176,25 @@ export const nudgeGameById =
     const state = getState();
     const turnNumber = state.gamelist.games[id]?.moves.length;
     try {
-      await axios.post(getApiUrl('/game', id, '/nudge'))
+      await axios.post(getApiUrl("/game", id, "/nudge"));
       setTimeout(() => {
         dispatch(maybeShowNudge(id, turnNumber));
       }, 2500);
     } catch (e) {
       throw e.response?.data ?? e.toString();
     }
+  };
+
+export const getMuteSetting = () =>
+  Boolean(localStorage.getItem("turnNotificationsMute"));
+
+export const setMuteSetting = (mute: boolean) =>
+  localStorage.setItem("turnNotificationsMute", JSON.stringify(mute));
+
+export const toggleTurnNotificationsMute =
+  (): AppThunk => (dispatch, getState) => {
+    const state = getState();
+    const mute = !state.game.turnNotificationsMuted;
+    setMuteSetting(mute);
+    setTurnNotificationsMute(mute);
   };
