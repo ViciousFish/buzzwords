@@ -12,6 +12,7 @@ import {
   faShare,
 } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
+import useHotkeys from '@reecelucas/react-use-hotkeys'
 
 import { RootState } from "../../app/store";
 import { setCurrentGame, toggleNudgeButton } from "../game/gameSlice";
@@ -24,7 +25,7 @@ import GameBoard from "../game/GameBoard";
 import CopyToClipboard from "../../presentational/CopyToClipboard";
 import NicknameModal from "../user/NicknameModal";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { initiateReplay, nudgeGameById } from "../game/gameActions";
+import { initiateReplay, nudgeGameById, submitMove } from "../game/gameActions";
 import classNames from "classnames";
 import Button from "../../presentational/Button";
 import GameStateModal from "../game/GameStateModal";
@@ -57,6 +58,12 @@ const Play: React.FC = () => {
     game && currentUser
       ? game.users.findIndex((val) => val === currentUser.id)
       : null;
+
+  useHotkeys("Enter", () => {
+    if (id) {
+      dispatch(submitMove(id))
+    }
+  })
 
   useEffect(() => {
     if (id) {
