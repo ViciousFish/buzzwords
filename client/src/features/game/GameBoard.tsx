@@ -60,7 +60,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
     }, 500);
   });
   const selfName = nickname ?? "You";
-  const opponentName = game.vsAI ? "Computer" : opponent.nickname ?? "Them";
+  const opponentName = game.vsAI ? "Computer" : opponent?.nickname ?? "Them";
   return (
     <div className="h-[80vh] lg:h-screen flex-auto overflow-hidden">
       <Canvas key={`play-${id}`}>
