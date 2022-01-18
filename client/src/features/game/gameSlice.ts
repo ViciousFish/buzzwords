@@ -1,8 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Move } from "buzzwords-shared/Game";
-import HexGrid from "buzzwords-shared/hexgrid";
 import { QRCoord } from "../hexGrid/hexGrid";
-import { GameStateModalProps, GameStateModalType } from "./GameStateModal";
+import { GameStateModalProps } from "./GameStateModal";
 
 interface GameState {
   selectedTiles: {
@@ -21,6 +20,7 @@ interface GameState {
   gameStateModal: GameStateModalProps | null;
   showingNudgeButton: boolean;
   turnNotificationsMuted: boolean;
+  socketConnected: boolean;
 }
 
 const initialState: GameState = {
@@ -38,6 +38,7 @@ const initialState: GameState = {
   gameStateModal: null,
   showingNudgeButton: false,
   turnNotificationsMuted: false,
+  socketConnected: false,
 };
 
 export const gameSlice = createSlice({
@@ -93,15 +94,21 @@ export const gameSlice = createSlice({
     setWindowHasFocus: (state, action: PayloadAction<boolean>) => {
       state.windowHasFocus = action.payload;
     },
-    setGameStateModal: (state, action: PayloadAction<GameStateModalProps | null>) => {
-      state.gameStateModal = action.payload
+    setGameStateModal: (
+      state,
+      action: PayloadAction<GameStateModalProps | null>
+    ) => {
+      state.gameStateModal = action.payload;
     },
     toggleNudgeButton: (state, action: PayloadAction<boolean>) => {
       state.showingNudgeButton = action.payload;
     },
     setTurnNotificationsMute: (state, action: PayloadAction<boolean>) => {
       state.turnNotificationsMuted = action.payload;
-    }
+    },
+    setSocketConnected: (state, action: PayloadAction<boolean>) => {
+      state.socketConnected = action.payload;
+    },
   },
 });
 
@@ -119,6 +126,7 @@ export const {
   setGameStateModal,
   toggleNudgeButton,
   setTurnNotificationsMute,
+  setSocketConnected,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

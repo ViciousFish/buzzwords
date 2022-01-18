@@ -12,6 +12,7 @@ import {
   refresh,
 } from "../features/gamelist/gamelistActions";
 import { SOCKET_DOMAIN, SOCKET_PATH } from "./apiPrefix";
+import { setSocketConnected } from "../features/game/gameSlice";
 
 let socket: Socket | null = null;
 
@@ -20,6 +21,7 @@ interface SelectionEventProps {
   selection: { [position: QRCoord]: number };
 }
 
+// CQ: setSocketConnected
 // called by getUser
 export const subscribeSocket = (dispatch: AppDispatch) => {
   const cookies = cookie.parse(document.cookie);
@@ -40,15 +42,17 @@ export const subscribeSocket = (dispatch: AppDispatch) => {
   //     type: "error",
   //   });
   // });
-  socket.io.on("reconnect_failed", () => {
-    toast("socket reconnect_failed", {
-      type: "error",
-    });
+  socket.io.on("close", () => {
+    dispatch(setSocketConnected(false))
   });
+
+  socket.io.on('open', () => {
+    dispatch(setSocketConnected(true))
+  })
 
   socket.io.on("reconnect", () => {
     dispatch(refresh());
-    toast("reconnected to game service")
+    dispatch(setSocketConnected(true))
   });
 
   socket.on("error", (e) => {

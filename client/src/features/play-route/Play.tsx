@@ -19,6 +19,7 @@ import { useAppSelector } from "../../app/hooks";
 import { initiateReplay, nudgeGameById } from "../game/gameActions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faCircle,
   faHistory,
   faPlay,
   faPlayCircle,
@@ -48,6 +49,7 @@ const Play: React.FC = () => {
   const showingNudgeButton = useAppSelector(
     (state) => state.game.showingNudgeButton
   );
+  const socketConnected = useAppSelector((state) => state.game.socketConnected);
 
   const [fourohfour, setFourohfour] = useState(false);
 
@@ -95,7 +97,7 @@ const Play: React.FC = () => {
         move.date &&
         new Date().getTime() - new Date(move.date).getTime() > 10000
       ) {
-        dispatch(toggleNudgeButton(true))
+        dispatch(toggleNudgeButton(true));
       }
     }
   }, [gamesLoaded, game, dispatch]);
@@ -183,7 +185,11 @@ const Play: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-auto flex-col lg:flex-row">
+    <div className="flex flex-auto flex-col lg:flex-row">
+      <div className="absolute top-1 right-1 text-sm">
+        <span className="mr-1">{socketConnected ? 'online' : 'disconnected'}</span>
+        <FontAwesomeIcon className={socketConnected ? 'text-green-400' : 'text-gray-400'} icon={faCircle} />
+      </div>
       {game && id && userIndex !== null && (
         <GameBoard id={id} game={game} userIndex={userIndex} />
       )}
@@ -200,7 +206,7 @@ const Play: React.FC = () => {
               </Button>
             </div>
           )}
-          <div className="flex flex-shrink-0 items-center text-darkbrown">
+          <div className="flex flex-shrink-0 items-center text-darkbrown pt-2">
             <FontAwesomeIcon
               className={classNames(
                 "mr-1 text-xl",

@@ -6,7 +6,6 @@ import { animated as a } from "@react-spring/web";
 
 import { toggleIsOpen } from "../features/gamelist/gamelistSlice";
 import { useAppDispatch, useAppSelector } from "./hooks";
-import ScreenHeightWraper from "../presentational/ScreenHeightWrapper";
 
 // default tailwind breakpoints
 const BREAKPOINTS = {
@@ -36,27 +35,25 @@ const SidebarRightSide: React.FC = ({ children }) => {
   });
 
   return (
-    <ScreenHeightWraper className="w-full min-w-0">
-      <div
-        className={classNames(
-          "flex-auto overflow-auto h-full",
-          breakcond && "min-w-[100vw]"
-        )}
-      >
-        {children}
-        {transitions(
-          (styles, value) =>
-            value && (
-              <a.div
-                className="absolute top-0 right-0 bottom-0 left-0 bg-black"
-                onClick={onClick}
-                // @ts-ignore
-                style={styles}
-              ></a.div>
-            )
-        )}
-      </div>
-    </ScreenHeightWraper>
+    <div
+      className={classNames(
+        "flex-auto overflow-auto h-full",
+        breakcond && "min-w-[100vw]"
+      )}
+    >
+      {children}
+      {transitions(
+        (styles, value) =>
+          value && (
+            <a.div
+              className="absolute top-0 right-0 bottom-0 left-0 bg-black"
+              onClick={onClick}
+              // @ts-ignore
+              style={styles}
+            ></a.div>
+          )
+      )}
+    </div>
   );
 };
 
