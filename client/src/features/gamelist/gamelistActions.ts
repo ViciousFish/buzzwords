@@ -147,7 +147,7 @@ export const receiveGameUpdatedSocket =
             gameStateModalToQueue: null,
           })
         );
-        if (game.vsAI && game.turn === 0) {
+        if (game.vsAI && game.moves[game.moves.length - 1].player === 1) {
           dispatch(initiateReplay(game.moves.length - 1, true))
         }
       });
