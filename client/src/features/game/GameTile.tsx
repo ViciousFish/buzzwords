@@ -227,7 +227,13 @@ const GameTile: React.FC<GameTileProps> = ({
 
   const onTileClick = useCallback(
     (e: ThreeEvent<MouseEvent>) => {
-      if (!gameOver && coord && letter && currentTurn === userIndex && !isSubmitting) {
+      if (
+        !gameOver &&
+        coord &&
+        letter &&
+        currentTurn === userIndex &&
+        !isSubmitting
+      ) {
         dispatch(toggleTileSelected(coord));
       }
       e.stopPropagation();

@@ -100,7 +100,7 @@ const REPLAY_SPEED = 500;
 const REPLAY_HANG = 2000;
 
 export const initiateReplay =
-  (moveIndex: number): AppThunk<Promise<void>> =>
+  (moveIndex: number, skipInitialDelay?: boolean): AppThunk<Promise<void>> =>
   async (dispatch, getState) => {
     const currentGame = getState().game.currentGame;
     if (!currentGame) {
@@ -109,7 +109,10 @@ export const initiateReplay =
     }
     const move = getState().gamelist.games[currentGame].moves[moveIndex];
     const poison = nanoid();
+    const delay = skipInitialDelay ? 0 : REPLAY_DELAY;
+
     dispatch(newReplay({ move, poison, index: moveIndex }));
+    
     const ticks = move.letters.length;
     for (let tick = 0; tick < ticks; tick++) {
       window.setTimeout(() => {
@@ -119,7 +122,7 @@ export const initiateReplay =
         ) {
           dispatch(advanceReplayPlaybackState());
         }
-      }, REPLAY_DELAY + tick * REPLAY_SPEED);
+      }, delay + tick * REPLAY_SPEED);
     }
     await new Promise<void>((resolve) =>
       setTimeout(() => {
@@ -140,7 +143,7 @@ export const initiateReplay =
             resolve();
           }
         }
-      }, REPLAY_DELAY + ticks * REPLAY_SPEED + REPLAY_SPEED)
+      }, delay + ticks * REPLAY_SPEED + REPLAY_SPEED)
     );
   };
 

@@ -16,12 +16,14 @@ import { getApiUrl } from "../../app/apiPrefix";
 import { GameStateModalType } from "../game/GameStateModal";
 import {
   resetSelection,
+  setFreezeGameBoard,
   setGameStateModal,
   toggleNudgeButton,
 } from "../game/gameSlice";
 import { initiateReplay, maybeShowNudge } from "../game/gameActions";
 
 import ding from "../../../assets/ding.mp3?url";
+import { batch } from "react-redux";
 
 interface GameMetaCache {
   lastSeenTurns: {
@@ -91,7 +93,7 @@ export const refresh = (): AppThunk => async (dispatch, getState) => {
 const DingAudio = new Audio(ding);
 export const receiveGameUpdatedSocket =
   (game: Game): AppThunk =>
-  (dispatch, getState) => {
+  async (dispatch, getState) => {
     const state = getState();
     const userIndex = game.users.findIndex(
       (user) => user === state.user.user?.id
@@ -137,6 +139,18 @@ export const receiveGameUpdatedSocket =
     }
     if (state.game.currentGame === game.id && state.game.windowHasFocus) {
       updateLastSeenTurns(game.id, game.moves.length);
+      batch(() => {
+        dispatch(
+          updateGame({
+            game,
+            lastSeenTurn: game.moves.length,
+            gameStateModalToQueue: null,
+          })
+        );
+        if (game.vsAI && game.turn === 0) {
+          dispatch(initiateReplay(game.moves.length - 1, true))
+        }
+      });
       if (gameStateModalType) {
         dispatch(
           setGameStateModal({
@@ -144,13 +158,6 @@ export const receiveGameUpdatedSocket =
           })
         );
       }
-      return dispatch(
-        updateGame({
-          game,
-          lastSeenTurn: game.moves.length,
-          gameStateModalToQueue: null,
-        })
-      );
     }
 
     let lastSeenTurn = getLastSeenTurns()?.[game.id] ?? 0;
@@ -190,7 +197,8 @@ export const markGameAsSeen =
       updateLastSeenTurns(gameId, 9999);
       return;
     }
-    let lastSeenTurn = game.lastSeenTurn === 9999 ? game.moves.length : game.lastSeenTurn;
+    let lastSeenTurn =
+      game.lastSeenTurn === 9999 ? game.moves.length : game.lastSeenTurn;
     while (lastSeenTurn < game.moves.length) {
       await dispatch(initiateReplay(lastSeenTurn));
       lastSeenTurn++;

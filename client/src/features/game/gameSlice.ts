@@ -21,6 +21,7 @@ interface GameState {
   showingNudgeButton: boolean;
   turnNotificationsMuted: boolean;
   socketConnected: boolean;
+  freezeGameBoard: boolean;
 }
 
 const initialState: GameState = {
@@ -39,6 +40,7 @@ const initialState: GameState = {
   showingNudgeButton: false,
   turnNotificationsMuted: false,
   socketConnected: false,
+  freezeGameBoard: false,
 };
 
 export const gameSlice = createSlice({
@@ -109,6 +111,9 @@ export const gameSlice = createSlice({
     setSocketConnected: (state, action: PayloadAction<boolean>) => {
       state.socketConnected = action.payload;
     },
+    setFreezeGameBoard: (state, action: PayloadAction<boolean>) => {
+      state.freezeGameBoard = action.payload;
+    }
   },
 });
 
@@ -127,6 +132,7 @@ export const {
   toggleNudgeButton,
   setTurnNotificationsMute,
   setSocketConnected,
+  setFreezeGameBoard,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

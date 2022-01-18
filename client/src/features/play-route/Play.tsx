@@ -184,7 +184,7 @@ const Play: React.FC = () => {
 
   return (
     <div className="flex flex-auto flex-col lg:flex-row">
-      <div className="absolute top-1 right-1 text-sm">
+      <div className="absolute top-1 right-1 text-sm bg-lightbg">
         <span className="mr-1">
           {socketConnected ? "online" : "disconnected"}
         </span>
