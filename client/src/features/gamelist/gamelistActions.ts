@@ -14,10 +14,14 @@ import { fetchOpponent } from "../user/userActions";
 import axios from "axios";
 import { getApiUrl } from "../../app/apiPrefix";
 import { GameStateModalType } from "../game/GameStateModal";
-import { resetSelection, setGameStateModal, toggleNudgeButton } from "../game/gameSlice";
-import { maybeShowNudge } from "../game/gameActions";
+import {
+  resetSelection,
+  setGameStateModal,
+  toggleNudgeButton,
+} from "../game/gameSlice";
+import { initiateReplay, maybeShowNudge } from "../game/gameActions";
 
-import ding from '../../../assets/ding.mp3?url'
+import ding from "../../../assets/ding.mp3?url";
 
 interface GameMetaCache {
   lastSeenTurns: {
@@ -89,8 +93,14 @@ export const receiveGameUpdatedSocket =
   (game: Game): AppThunk =>
   (dispatch, getState) => {
     const state = getState();
-    const userIndex = game.users.findIndex(user => user === state.user.user?.id)
-    if (userIndex === game.turn && !game.gameOver && !state.game.turnNotificationsMuted) {
+    const userIndex = game.users.findIndex(
+      (user) => user === state.user.user?.id
+    );
+    if (
+      userIndex === game.turn &&
+      !game.gameOver &&
+      !state.game.turnNotificationsMuted
+    ) {
       DingAudio.play();
     }
 
@@ -123,7 +133,7 @@ export const receiveGameUpdatedSocket =
       ? gameUpdateEventGetGameStateModalType(game, state)
       : null;
     if (state.game.currentGame === game.id) {
-      dispatch(resetSelection())
+      dispatch(resetSelection());
     }
     if (state.game.currentGame === game.id && state.game.windowHasFocus) {
       updateLastSeenTurns(game.id, game.moves.length);
@@ -173,14 +183,18 @@ export const dequeueOrDismissGameStateModalForGame =
 
 export const markGameAsSeen =
   (gameId: string): AppThunk =>
-  (dispatch, getState) => {
+  async (dispatch, getState) => {
     const game = getState().gamelist.games[gameId];
     if (!game) {
-      console.log("inf", gameId);
+      console.log("attempted to mark null game as seen", gameId);
       updateLastSeenTurns(gameId, 9999);
       return;
     }
-    const lastSeenTurn = game.moves.length;
+    let lastSeenTurn = game.lastSeenTurn === 9999 ? game.moves.length : game.lastSeenTurn;
+    while (lastSeenTurn < game.moves.length) {
+      await dispatch(initiateReplay(lastSeenTurn));
+      lastSeenTurn++;
+    }
     updateLastSeenTurns(gameId, lastSeenTurn);
     dispatch(
       updateGame({
@@ -234,7 +248,9 @@ export const joinGameById =
   };
 
 export const getTutorialCardSetting = () =>
-  JSON.parse(localStorage.getItem("turnNotificationsMute") || 'false') as boolean;
+  JSON.parse(
+    localStorage.getItem("turnNotificationsMute") || "false"
+  ) as boolean;
 
 export const setTutorialCardSetting = (mute: boolean) =>
   localStorage.setItem("turnNotificationsMute", JSON.stringify(mute));

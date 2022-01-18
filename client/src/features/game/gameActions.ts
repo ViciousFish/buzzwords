@@ -100,7 +100,7 @@ const REPLAY_SPEED = 500;
 const REPLAY_HANG = 2000;
 
 export const initiateReplay =
-  (moveIndex: number): AppThunk =>
+  (moveIndex: number): AppThunk<Promise<void>> =>
   async (dispatch, getState) => {
     const currentGame = getState().game.currentGame;
     if (!currentGame) {
@@ -121,35 +121,41 @@ export const initiateReplay =
         }
       }, REPLAY_DELAY + tick * REPLAY_SPEED);
     }
-    setTimeout(() => {
-      if (
-        getState().game.replay.poisonToken === poison &&
-        getState().game.currentGame === currentGame
-      ) {
-        const nextMove =
-          getState().gamelist.games[currentGame].moves[moveIndex + 1];
-        if (nextMove) {
-          dispatch(newReplay({ move: nextMove, poison, index: moveIndex }));
-          setTimeout(() => {
+    await new Promise<void>((resolve) =>
+      setTimeout(() => {
+        if (
+          getState().game.replay.poisonToken === poison &&
+          getState().game.currentGame === currentGame
+        ) {
+          const nextMove =
+            getState().gamelist.games[currentGame].moves[moveIndex + 1];
+          if (nextMove) {
+            dispatch(newReplay({ move: nextMove, poison, index: moveIndex }));
+            setTimeout(() => {
+              dispatch(clearReplay());
+              resolve();
+            }, REPLAY_HANG);
+          } else {
             dispatch(clearReplay());
-          }, REPLAY_HANG);
-        } else {
-          dispatch(clearReplay());
+            resolve();
+          }
         }
-      }
-    }, REPLAY_DELAY + ticks * REPLAY_SPEED + REPLAY_SPEED);
+      }, REPLAY_DELAY + ticks * REPLAY_SPEED + REPLAY_SPEED)
+    );
   };
 
-export const handleWindowFocusThunk = (focus: boolean): AppThunk => (dispatch, getState) => {
-  const state = getState();
-  if (focus) {
-    dispatch(refresh());
-  }
-  if (focus && state.game.currentGame) {
-    dispatch(markGameAsSeen(state.game.currentGame))
-  }
-  dispatch(setWindowHasFocus(focus));
-}
+export const handleWindowFocusThunk =
+  (focus: boolean): AppThunk =>
+  (dispatch, getState) => {
+    const state = getState();
+    if (focus) {
+      dispatch(refresh());
+    }
+    if (focus && state.game.currentGame) {
+      dispatch(markGameAsSeen(state.game.currentGame));
+    }
+    dispatch(setWindowHasFocus(focus));
+  };
 
 export const maybeShowNudge =
   (gameId: string, turnNumber: number): AppThunk =>
@@ -173,7 +179,7 @@ export const nudgeGameById =
     const state = getState();
     const turnNumber = state.gamelist.games[id]?.moves.length;
     try {
-      await axios.post(getApiUrl('/game', id, '/nudge'))
+      await axios.post(getApiUrl("/game", id, "/nudge"));
       setTimeout(() => {
         dispatch(maybeShowNudge(id, turnNumber));
       }, 2500);
