@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import Game from "buzzwords-shared/Game";
 import { GameStateModalType } from "../game/GameStateModal";
+import { getTutorialCardSetting } from "./gamelistActions";
 
 export interface ClientGame extends Game {
   lastSeenTurn: number;
@@ -23,7 +24,7 @@ const initialState: GameListState = {
   gamesLoaded: false,
   isOpen: window.innerWidth >= 1024,
   showCompletedGames: true,
-  showTutorialCard: true,
+  showTutorialCard: getTutorialCardSetting(),
 };
 
 interface UpdateGamePayload {

@@ -4,6 +4,7 @@ import { AppThunk, RootState } from "../../app/store";
 import {
   ClientGame,
   refreshReceived,
+  setShowTutorialCard,
   shiftGameStateModalQueueForGame,
   updateGame,
 } from "./gamelistSlice";
@@ -234,7 +235,15 @@ export const joinGameById =
   };
 
 export const getTutorialCardSetting = () =>
-  JSON.parse(localStorage.getItem("turnNotificationsMute") || 'false') as boolean;
+  JSON.parse(localStorage.getItem("showTutorialCard") || 'true') as boolean;
 
 export const setTutorialCardSetting = (mute: boolean) =>
-  localStorage.setItem("turnNotificationsMute", JSON.stringify(mute));
+  localStorage.setItem("showTutorialCard", JSON.stringify(mute));
+
+export const toggleTutorialCard =
+  (): AppThunk => (dispatch, getState) => {
+    const state = getState();
+    const mute = !state.gamelist.showTutorialCard;
+    setTutorialCardSetting(mute);
+    dispatch(setShowTutorialCard(mute));
+  };

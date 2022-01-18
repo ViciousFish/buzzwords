@@ -3,7 +3,6 @@ import {
   faAngleRight,
   faBars,
   faCircle,
-  faDotCircle,
   faHome,
   faQuestion,
   faSpinner,
@@ -13,14 +12,13 @@ import {
 import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import React, { useCallback } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
 import { animated as a, useSpring } from "@react-spring/web";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import {
-  setShowTutorialCard,
   toggleCompletedGames,
   toggleIsOpen,
 } from "./gamelistSlice";
@@ -32,8 +30,8 @@ import {
   getHowManyGamesAreMyTurn,
   getUnseenMoveCount,
 } from "./gamelistSelectors";
-import { setTurnNotificationsMute } from "../game/gameSlice";
 import { toggleTurnNotificationsMute } from "../game/gameActions";
+import { toggleTutorialCard } from "./gamelistActions";
 
 const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
 const BeeLazy = React.lazy(() => import("../../assets/Bee"));
@@ -190,7 +188,7 @@ const GameList: React.FC = () => {
               </div>
               <Button
                 onClick={() => {
-                  dispatch(setShowTutorialCard(true));
+                  dispatch(toggleTutorialCard());
                 }}
                 aria-label="display tutorial"
                 data-tip="Tutorial"

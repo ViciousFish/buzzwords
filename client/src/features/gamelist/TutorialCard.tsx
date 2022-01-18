@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { useAppDispatch } from "../../app/hooks";
 import { toggleTutorialModal } from "../game/gameSlice";
-import { setShowTutorialCard } from "./gamelistSlice";
+import { toggleTutorialCard } from "./gamelistActions";
 
 const TutorialCard: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -23,7 +23,7 @@ const TutorialCard: React.FC = () => {
           className="hover:text-darkbrown"
           data-tip="Dismiss instructions"
           aria-label="dismiss instructions"
-          onClick={() => dispatch(setShowTutorialCard(false))}
+          onClick={() => dispatch(toggleTutorialCard)}
         >
           <FontAwesomeIcon icon={faTimes} />
         </button>
