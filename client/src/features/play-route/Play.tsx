@@ -3,8 +3,16 @@ import * as R from "ramda";
 import { Link, useParams } from "react-router-dom";
 import classnames from "classnames";
 import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCircle,
+  faHistory,
+  faPlay,
+  faPlayCircle,
+  faShare,
+} from "@fortawesome/free-solid-svg-icons";
+import { useSelector } from "react-redux";
 
-import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import { setCurrentGame, toggleNudgeButton } from "../game/gameSlice";
 import {
@@ -15,22 +23,14 @@ import {
 import GameBoard from "../game/GameBoard";
 import CopyToClipboard from "../../presentational/CopyToClipboard";
 import NicknameModal from "../user/NicknameModal";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { initiateReplay, nudgeGameById } from "../game/gameActions";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCircle,
-  faHistory,
-  faPlay,
-  faPlayCircle,
-  faShare,
-} from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import Button from "../../presentational/Button";
 import GameStateModal from "../game/GameStateModal";
 
 const Play: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { id } = useParams();
   const game = useSelector((state: RootState) =>
     id ? state.gamelist.games[id] : null
@@ -71,9 +71,7 @@ const Play: React.FC = () => {
 
   useEffect(() => {
     if (gamesLoaded && !game && id) {
-      // @ts-ignore
       dispatch(joinGameById(id)).then((joinedGame) => {
-        console.log("joinedGame :", joinedGame);
         if (!joinedGame) {
           setFourohfour(true);
         }
@@ -187,8 +185,13 @@ const Play: React.FC = () => {
   return (
     <div className="flex flex-auto flex-col lg:flex-row">
       <div className="absolute top-1 right-1 text-sm">
-        <span className="mr-1">{socketConnected ? 'online' : 'disconnected'}</span>
-        <FontAwesomeIcon className={socketConnected ? 'text-green-400' : 'text-gray-400'} icon={faCircle} />
+        <span className="mr-1">
+          {socketConnected ? "online" : "disconnected"}
+        </span>
+        <FontAwesomeIcon
+          className={socketConnected ? "text-green-400" : "text-gray-400"}
+          icon={faCircle}
+        />
       </div>
       {game && id && userIndex !== null && (
         <GameBoard id={id} game={game} userIndex={userIndex} />

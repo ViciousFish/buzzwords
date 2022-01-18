@@ -218,7 +218,7 @@ export const createNewAIGame =
   };
 
 export const joinGameById =
-  (id: string): AppThunk =>
+  (id: string): AppThunk<Promise<boolean>> =>
   async (dispatch) => {
     try {
       const res = await axios.post(getApiUrl("/game", id, "join"));
