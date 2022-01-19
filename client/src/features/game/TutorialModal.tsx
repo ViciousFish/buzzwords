@@ -11,7 +11,8 @@ const TutorialModal: React.FC = () => {
     <Modal>
       <div className="rounded-xl bg-lightbg flex-shrink-0">
         <p className="px-8 py-4 text-center max-w-[560px]">
-          It looks like this is your first time playing.<br /> Watch a quick minute-ish tutorial?
+          It looks like this is your first time playing.
+          <br /> Watch a quick minute-ish tutorial?
         </p>
         <iframe
           style={{
@@ -26,9 +27,8 @@ const TutorialModal: React.FC = () => {
           allowFullScreen
           className="border-darkbrown border-2 rounded-lg"
         ></iframe>
-        <div className="mt-2" style={{maxWidth: '560px'}}>
-
-        <TutorialCard hideDismiss />
+        <div className="mt-2 lg:hidden" style={{ maxWidth: "560px" }}>
+          <TutorialCard hideDismiss />
         </div>
         <div className="flex justify-center items-center">
           <Button

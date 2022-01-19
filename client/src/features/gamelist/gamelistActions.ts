@@ -92,6 +92,7 @@ export const refresh = (): AppThunk => async (dispatch, getState) => {
 };
 
 const DingAudio = new Audio(ding);
+
 export const receiveGameUpdatedSocket =
   (game: Game): AppThunk =>
   async (dispatch, getState) => {
