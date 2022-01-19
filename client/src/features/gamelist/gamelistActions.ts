@@ -24,6 +24,7 @@ import { initiateReplay, maybeShowNudge } from "../game/gameActions";
 
 import ding from "../../../assets/ding.mp3?url";
 import { batch } from "react-redux";
+import { Api } from "../../app/Api";
 
 interface GameMetaCache {
   lastSeenTurns: {
@@ -68,7 +69,7 @@ const gameUpdateEventGetGameStateModalType = (
 };
 
 export const refresh = (): AppThunk => async (dispatch, getState) => {
-  const response = await axios.get<{
+  const response = await Api.get<{
     games: Game[];
     users: User[];
   }>(getApiUrl("/games"));
@@ -216,7 +217,7 @@ export const markGameAsSeen =
 
 export const createNewGame = (): AppThunk => async (dispatch) => {
   try {
-    const res = await axios.post<string>(getApiUrl("/game"));
+    const res = await Api.post<string>(getApiUrl("/game"));
     await dispatch(refresh());
     return res.data;
   } catch (e) {
@@ -228,7 +229,7 @@ export const createNewAIGame =
   (difficulty: number): AppThunk =>
   async (dispatch) => {
     try {
-      const res = await axios.post<string>(getApiUrl("/game"), {
+      const res = await Api.post<string>(getApiUrl("/game"), {
         vsAI: true,
         difficulty,
       });
@@ -243,7 +244,7 @@ export const joinGameById =
   (id: string): AppThunk<Promise<boolean>> =>
   async (dispatch) => {
     try {
-      const res = await axios.post(getApiUrl("/game", id, "join"));
+      const res = await Api.post(getApiUrl("/game", id, "join"));
       if (res.data === "Not Found") {
         return false;
       }

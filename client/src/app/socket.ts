@@ -13,6 +13,7 @@ import {
 } from "../features/gamelist/gamelistActions";
 import { SOCKET_DOMAIN, SOCKET_PATH } from "./apiPrefix";
 import { setSocketConnected } from "../features/game/gameSlice";
+import { retrieveAuthToken } from "../features/user/userActions";
 
 let socket: Socket | null = null;
 
@@ -24,24 +25,12 @@ interface SelectionEventProps {
 // CQ: setSocketConnected
 // called by getUser
 export const subscribeSocket = (dispatch: AppDispatch) => {
-  const cookies = cookie.parse(document.cookie);
   socket = io(SOCKET_DOMAIN, {
-    withCredentials: true,
     path: SOCKET_PATH,
     extraHeaders: {
-      authorization: cookies.authToken,
+      Authorization: `Bearer ${retrieveAuthToken()}`,
     },
   });
-  // socket.io.on("reconnect_error", (e) => {
-  //   toast("reconnect_error: " + e.message, {
-  //     type: "error",
-  //   });
-  // });
-  // socket.io.on("error", (e) => {
-  //   toast("error: " + e.message, {
-  //     type: "error",
-  //   });
-  // });
   socket.io.on("close", () => {
     dispatch(setSocketConnected(false))
   });

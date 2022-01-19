@@ -1,7 +1,7 @@
 import { nanoid } from "@reduxjs/toolkit";
-import axios from "axios";
-import { getApiUrl } from "../../app/apiPrefix";
 
+import { Api } from "../../app/Api";
+import { getApiUrl } from "../../app/apiPrefix";
 import { emitSelection } from "../../app/socket";
 import { AppThunk } from "../../app/store";
 import { markGameAsSeen, refresh } from "../gamelist/gamelistActions";
@@ -62,7 +62,7 @@ export const submitMove =
     });
 
     try {
-      await axios.post(getApiUrl("/game", gameId, "/move"), {
+      await Api.post(getApiUrl("/game", gameId, "/move"), {
         move: formattedCoords,
       });
     } catch (e) {
@@ -182,7 +182,7 @@ export const nudgeGameById =
     const state = getState();
     const turnNumber = state.gamelist.games[id]?.moves.length;
     try {
-      await axios.post(getApiUrl("/game", id, "/nudge"));
+      await Api.post(getApiUrl("/game", id, "/nudge"));
       setTimeout(() => {
         dispatch(maybeShowNudge(id, turnNumber));
       }, 2500);

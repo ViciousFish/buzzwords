@@ -1,13 +1,23 @@
 import axios from "axios";
+import * as R from "ramda";
+import { Api } from "../../app/Api";
+
 import { getApiUrl } from "../../app/apiPrefix";
 import { AppThunk } from "../../app/store";
 import { nicknameSet, opponentReceived, User, userReceived } from "./userSlice";
 
-export const getUser = (): AppThunk => async (dispatch) => {
-  const { data: user } = await axios.get<User>(getApiUrl("/user"));
-  console.log("user", user);
+interface ApiUser extends User {
+  authToken: string | null;
+}
 
-  dispatch(userReceived(user));
+export const getUser = (): AppThunk => async (dispatch) => {
+  const { data: user } = await Api.get<ApiUser>(getApiUrl("/user"));
+
+  if (user.authToken) {
+    storeAuthToken(user.authToken);
+  }
+
+  dispatch(userReceived(R.omit(["authToken"], user)));
 };
 
 export const setNickname =
@@ -19,7 +29,7 @@ export const setNickname =
       return;
     }
     try {
-      await axios.post(getApiUrl("/user/nickname"), {
+      await Api.post(getApiUrl("/user/nickname"), {
         nickname,
       });
     } catch (e) {
@@ -31,7 +41,11 @@ export const setNickname =
 export const fetchOpponent =
   (id: string): AppThunk =>
   async (dispatch) => {
-    const opponent = await axios.get<User>(getApiUrl("/user", id));
+    const opponent = await Api.get<User>(getApiUrl("/user", id));
     console.log("opponent", opponent.data);
     dispatch(opponentReceived(opponent.data));
   };
+
+export const storeAuthToken = (token: string) =>
+  localStorage.setItem("authToken", token);
+export const retrieveAuthToken = () => localStorage.getItem("authToken");
