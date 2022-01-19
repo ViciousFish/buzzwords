@@ -224,6 +224,9 @@ app.post("/game/:id/join", async (req, res) => {
     game.users.forEach((user) => {
       io.to(user).emit("game updated", game);
     });
+    game.spectators?.forEach((user) => {
+      io.to(user).emit("game updated", game);
+    });
     res.sendStatus(201);
   } else {
     res.sendStatus(404);
@@ -256,6 +259,9 @@ const pass = async (gameId: string, userId: string) => {
   });
   await dl.commitContext(session);
   newGame.users.forEach((user) => {
+    io.to(user).emit("game updated", game);
+  });
+  newGame.spectators?.forEach((user) => {
     io.to(user).emit("game updated", game);
   });
 };
@@ -334,8 +340,13 @@ const doBotMoves = async (gameId: string): Promise<void> => {
       session,
     });
     const delay = 2000 - (Date.now() - lastMessage);
+    const copy = R.clone(removeMongoId(game));
     game.users.forEach((user) => {
-      const copy = R.clone(removeMongoId(game));
+      setTimeout(() => {
+        io.to(user).emit("game updated", copy);
+      }, delay);
+    });
+    game.spectators?.forEach((user) => {
       setTimeout(() => {
         io.to(user).emit("game updated", copy);
       }, delay);
@@ -431,6 +442,9 @@ app.post("/game/:id/move", async (req, res) => {
   newGame.users.forEach((user) => {
     io.to(user).emit("game updated", newGame);
   });
+  newGame.spectators?.forEach((user) => {
+    io.to(user).emit("game updated", newGame);
+  });
   doBotMoves(gameId);
 });
 
@@ -473,6 +487,9 @@ io.on("connection", async (socket) => {
       return;
     }
     game.users.forEach((user) => {
+      io.to(user).emit("selection", { selection, gameId });
+    });
+    game.spectators?.forEach((user) => {
       io.to(user).emit("selection", { selection, gameId });
     });
   });

@@ -69,6 +69,12 @@ export default class Memory implements DataLayer {
       } else if (game.users.length < 2) {
         this.games[gameId].users.push(userId);
         success = true;
+      } else {
+        if (this.games[gameId].spectators) {
+          this.games[gameId].spectators?.push(userId);
+        } else {
+          this.games[gameId].spectators = [userId];
+        }
       }
     }
     return success;

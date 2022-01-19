@@ -215,7 +215,7 @@ export default class Mongo implements DataLayer {
       throw new Error("Db not connected");
     }
     try {
-      const res = await Models.Game.updateOne(
+      let res = await Models.Game.updateOne(
         {
           id: gameId,
           users: {
@@ -231,6 +231,38 @@ export default class Mongo implements DataLayer {
           session: options?.session,
         }
       );
+      if (res.modifiedCount == 0) {
+        res = await Models.Game.updateOne(
+          {
+            id: gameId,
+            spectators: { $exists: true },
+          },
+          {
+            $push: { spectators: userId },
+            $set: { updatedDate: new Date() },
+          },
+          {
+            session: options?.session,
+          }
+        );
+      }
+      if (res.modifiedCount == 0) {
+        res = await Models.Game.updateOne(
+          {
+            id: gameId,
+            spectators: { $exists: false },
+          },
+          {
+            $set: {
+              spectators: [userId],
+              updatedDate: new Date(),
+            },
+          },
+          {
+            session: options?.session,
+          }
+        );
+      }
       return res.modifiedCount == 1;
     } catch (e) {
       console.log(e);
