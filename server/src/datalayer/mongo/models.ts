@@ -83,6 +83,9 @@ const gameSchema = new Schema<Game>({
     required: true,
     default: () => new Date(),
   },
+  spectators: {
+    type: [String],
+  },
 });
 
 const GameModel = model<Game>("Game", gameSchema);
