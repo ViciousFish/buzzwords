@@ -3,7 +3,6 @@ FROM node:16 as build
 WORKDIR /build
 
 COPY package.json yarn.lock ./
-# COPY ./client/package.json ./client/
 COPY ./server/package.json ./server/
 COPY ./shared/package.json ./shared/
 
