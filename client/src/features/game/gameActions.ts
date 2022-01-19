@@ -151,9 +151,6 @@ export const handleWindowFocusThunk =
   (focus: boolean): AppThunk =>
   (dispatch, getState) => {
     const state = getState();
-    if (focus) {
-      dispatch(refresh());
-    }
     if (focus && state.game.currentGame) {
       dispatch(markGameAsSeen(state.game.currentGame));
     }
