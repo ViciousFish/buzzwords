@@ -81,6 +81,7 @@ app.get("/", (req, res) => {
   res.sendStatus(200);
 });
 
+// always the first call client makes
 app.get("/user", async (req, res) => {
   let user = res.locals.userId as string;
   let authToken = null;
@@ -93,6 +94,7 @@ app.get("/user", async (req, res) => {
   // migrate cookie users to local by echoing back their authToken
   if (!req.headers.authorization && req.signedCookies.authToken) {
     authToken = req.signedCookies.authToken;
+    res.clearCookie("authToken");
   }
   console.log("req.signedCookies :", req.signedCookies);
   console.log("req.cookies", req.cookies);
