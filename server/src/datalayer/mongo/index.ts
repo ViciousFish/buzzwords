@@ -6,6 +6,8 @@ import { withRetry } from "../../util";
 import Game from "buzzwords-shared/Game";
 import Models from "./models";
 
+import { performance } from "perf_hooks";
+
 interface Options extends Record<string, unknown> {
   session?: ClientSession;
 }
@@ -150,6 +152,7 @@ export default class Mongo implements DataLayer {
       throw new Error("Db not connected");
     }
     try {
+      const qstart = performance.now();
       const res = await Models.Game.find(
         {
           users: id,
@@ -159,12 +162,18 @@ export default class Mongo implements DataLayer {
           session: options?.session,
         }
       );
+      console.log("[perf] refresh query took", performance.now() - qstart);
+      const start = performance.now();
       const games = [] as Game[];
       for (const doc of res) {
         const game = doc.toObject({ flattenMaps: true });
         games.push(game);
         // game.grid = Object.fromE
       }
+      console.log(
+        `[perf] flattening ${res.length} games took`,
+        performance.now() - start
+      );
       return games;
 
       // return res.map((d) => {

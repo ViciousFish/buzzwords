@@ -19,6 +19,7 @@ import { HexCoord } from "buzzwords-shared/types";
 import GameManager from "./GameManager";
 import BannedWords from "./banned_words.json";
 import { WordsObject } from "./words";
+import { performance } from "perf_hooks";
 
 const COLLECTION = "socket.io-adapter-events";
 
@@ -144,6 +145,7 @@ app.get("/games", async (req, res) => {
     R.flatten,
     R.uniq
   )(games);
+  const start = performance.now();
   const nicknames = await Promise.all(
     R.map((id) => dl.getNickName(id), userIds)
   );
@@ -161,7 +163,10 @@ app.get("/games", async (req, res) => {
       nickname: nicknames[i],
     };
   }
-
+  console.log(
+    `[perf] refresh getting ${userIds.length} nicknames took`,
+    performance.now() - start
+  );
   res.send({
     games,
     users,
@@ -291,7 +296,8 @@ app.post("/game/:id/pass", async (req, res) => {
   res.sendStatus(201);
 });
 
-const removeMongoId = <T>(thing: any): T => { // eslint-disable-line
+const removeMongoId = <T>(thing: any): T => {
+  // eslint-disable-line
   if (!R.is(Object, thing)) {
     return thing;
   } else if (Array.isArray(thing)) {
