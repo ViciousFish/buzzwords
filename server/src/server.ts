@@ -94,9 +94,6 @@ app.get("/user", async (req, res) => {
     authToken = req.signedCookies.authToken;
     res.clearCookie("authToken");
   }
-  console.log("req.signedCookies :", req.signedCookies);
-  console.log("req.cookies", req.cookies);
-  console.log("auth", authToken);
   const nickname = await dl.getNickName(user);
   res.send({
     id: user,
