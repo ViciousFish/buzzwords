@@ -63,24 +63,11 @@ app.use(cookieParser(config.cookieSecret));
 
 app.use(async (req, res, next) => {
   const cookies = req.signedCookies || {};
-  let authToken: string | null = cookies.authToken || null;
-  let userId = authToken ? await dl.getUserIdByAuthToken(authToken) : null;
-  if (!userId) {
-    userId = nanoid();
-    authToken = nanoid(40);
-    await dl.createAuthToken(authToken, userId);
-    res.cookie("authToken", authToken, {
-      expires: new Date(253402300000000), // Approximately Friday, 31 Dec 9999 23:59:59 GMT
-      signed: true,
-      domain: config.cookieDomain,
-    });
-    req.signedCookies = {
-      authToken,
-    };
-    res.locals.userId = userId;
-  } else {
-    res.locals.userId = userId;
-  }
+  const bearerToken = req.headers.authorization?.split(" ")[1] ?? null;
+  const authToken: string | null = bearerToken || cookies.authToken || null;
+  const userId = authToken ? await dl.getUserIdByAuthToken(authToken) : null;
+
+  res.locals.userId = userId;
   next();
 });
 
@@ -94,10 +81,27 @@ app.get("/", (req, res) => {
 
 app.get("/user", async (req, res) => {
   const user = res.locals.userId as string;
+  let user = res.locals.userId as string;
+  let authToken = null;
+  if (!user) {
+    user = nanoid();
+    authToken = nanoid(40);
+    await dl.createAuthToken(authToken, user);
+    res.locals.userId = user;
+  }
+  // migrate cookie users to local by echoing back their authToken
+  if (!req.headers.authorization && req.signedCookies.authToken) {
+    authToken = req.signedCookies.authToken;
+    res.clearCookie("authToken");
+  }
+  console.log("req.signedCookies :", req.signedCookies);
+  console.log("req.cookies", req.cookies);
+  console.log("auth", authToken);
   const nickname = await dl.getNickName(user);
   res.send({
     id: user,
     nickname,
+    authToken,
   });
 });
 
@@ -441,24 +445,17 @@ interface SelectionEventProps {
 }
 
 io.on("connection", async (socket) => {
-  const cookies = cookie.parse(socket.request.headers.cookie || "");
-  let authToken: string | undefined = cookies?.authToken;
+  const cookies = cookie.parse(socket.handshake.headers.cookie || "");
+  const authToken: string | undefined =
+    socket.handshake.headers.authorization?.split(" ")[1] ?? cookies?.authToken;
 
   if (!authToken) {
-    console.log(
-      "socket missing authToken cookie, falling back to authorization header"
-    );
-    authToken = socket.request.headers.authorization;
-    if (!authToken) {
-      console.log("socket also missing authorization header");
-      socket.emit("error", "rejected socket connection: no authToken cookie");
-      return;
-    }
+    console.log("socket missing authorization header");
+    socket.emit("error", "rejected socket connection: no authToken provided");
+    return;
   }
 
-  const userId = await dl.getUserIdByAuthToken(
-    authToken.split(".")[0].substring(2)
-  );
+  const userId = await dl.getUserIdByAuthToken(authToken);
 
   if (!userId) {
     console.log("rejected socket connection: couldn't find userId from token");
