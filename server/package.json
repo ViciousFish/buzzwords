@@ -11,6 +11,14 @@
     "test:watch": "jest --watchAll"
   },
   "dependencies": {
+    "@grpc/grpc-js": "^1.5.1",
+    "@opentelemetry/api": "^1.0.4",
+    "@opentelemetry/auto-instrumentations-node": "^0.27.1",
+    "@opentelemetry/exporter-trace-otlp-grpc": "^0.27.0",
+    "@opentelemetry/instrumentation-express": "^0.27.0",
+    "@opentelemetry/instrumentation-http": "^0.27.0",
+    "@opentelemetry/instrumentation-mongodb": "^0.27.0",
+    "@opentelemetry/sdk-node": "^0.27.0",
     "@socket.io/mongo-adapter": "^0.1.0",
     "body-parser": "^1.19.0",
     "cookie": "^0.4.1",
