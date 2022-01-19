@@ -80,7 +80,6 @@ app.get("/", (req, res) => {
 });
 
 app.get("/user", async (req, res) => {
-  const user = res.locals.userId as string;
   let user = res.locals.userId as string;
   let authToken = null;
   if (!user) {
