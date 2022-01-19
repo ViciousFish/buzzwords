@@ -5,12 +5,16 @@ import { useAppDispatch } from "../../app/hooks";
 import { toggleTutorialModal } from "../game/gameSlice";
 import { setShowTutorialCard } from "./gamelistSlice";
 
-const TutorialCard: React.FC = () => {
+const TutorialCard: React.FC<{
+  hideDismiss?: boolean;
+}> = ({
+  hideDismiss
+}) => {
   const dispatch = useAppDispatch();
   return (
     <div className="rounded-xl bg-primary p-4 mx-2">
       <h3 className="text-lg font-bold inline">How to play</h3>
-      <div className="float-right text-lg">
+      {!hideDismiss && <div className="float-right text-lg">
         <button
           className="hover:text-darkbrown mr-2"
           data-tip="Watch tutorial"
@@ -27,7 +31,7 @@ const TutorialCard: React.FC = () => {
         >
           <FontAwesomeIcon icon={faTimes} />
         </button>
-      </div>
+      </div>}
       <ul className="list-disc list-outside pl-6 text-sm">
         <li>
           <h4 className="font-bold">Make words</h4>
