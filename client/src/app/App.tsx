@@ -13,10 +13,11 @@ import { getUnseenMoveCount } from "../features/gamelist/gamelistSelectors";
 import { handleWindowFocusThunk } from "../features/game/gameActions";
 import ReactTooltip from "react-tooltip";
 
-import.meta.env.PROD &&
-  Globals.assign({
-    frameLoop: "always",
-  });
+// not necessary, as long as there's always a 3d canvas on screen!
+// import.meta.env.PROD &&
+//   Globals.assign({
+//     frameLoop: "always",
+//   });
 
 FaviconNotification.init({
   color: "#0000CC",
