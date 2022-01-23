@@ -52,29 +52,36 @@ export const getBotMove = (
     )
   );
 
-  const territoryNeighbors = Object.values(grid).filter(
-    (cell) =>
-      getCellNeighbors(grid, cell.q, cell.r)
-        .map((c) => c.owner)
-        .includes(1) &&
-      cell.owner == 2 &&
-      !cell.capital &&
-      cell.value != ""
-  );
-
-  const territoryNonCapitalNeighbors = shuffle(
-    territoryNeighbors.filter(
-      (cell) =>
-        !getCellNeighbors(grid, cell.q, cell.r)
-          .map((c) => c.capital && Boolean(c.owner))
-          .includes(true)
-    )
+  const nonCapitalNeighbors = shuffle(
+    Object.values(grid)
+      .filter(
+        (cell) =>
+          getCellNeighbors(grid, cell.q, cell.r)
+            .map((c) => c.owner)
+            .includes(1) &&
+          cell.owner == 2 &&
+          !cell.capital &&
+          cell.value != ""
+      )
+      .filter(
+        (cell) =>
+          !getCellNeighbors(grid, cell.q, cell.r)
+            .map((c) => c.capital && Boolean(c.owner))
+            .includes(true)
+      )
   );
 
   const capitalNeighborCoords = capitalNeighbors.map((c) => `${c.q},${c.r}`);
+  const nonCapitalNeighborCoords = nonCapitalNeighbors.map(
+    (c) => `${c.q},${c.r}`
+  );
 
   const nonNeighborTiles = shuffle(
-    openTiles.filter((c) => !capitalNeighborCoords.includes(`${c.q},${c.r}`))
+    openTiles.filter(
+      (c) =>
+        !capitalNeighborCoords.includes(`${c.q},${c.r}`) &&
+        !nonCapitalNeighborCoords.includes(`${c.q},${c.r}`)
+    )
   );
 
   const wordsTried: {
@@ -122,17 +129,12 @@ export const getBotMove = (
         }
       }
       for (
-        let t = Math.min(
-          maxWordLength - d,
-          territoryNonCapitalNeighbors.length
-        );
+        let t = Math.min(maxWordLength - d, nonCapitalNeighbors.length);
         t >= 0;
         t--
       ) {
         // Next prioritize new territory
-        for (let tCombo of t
-          ? combinationN(territoryNonCapitalNeighbors, t)
-          : [[]]) {
+        for (let tCombo of t ? combinationN(nonCapitalNeighbors, t) : [[]]) {
           if (d + t == maxWordLength) {
             const cells = [...neighborCells, ...tCombo];
             const result = permuteAndCheck(cells);
