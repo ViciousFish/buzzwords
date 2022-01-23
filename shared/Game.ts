@@ -21,4 +21,5 @@ export default interface Game {
   moves: Move[];
   createdDate?: Date;
   updatedDate?: Date;
+  rematch: string[];
 }

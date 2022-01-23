@@ -40,6 +40,10 @@ const gameSchema = new Schema<Game>({
     type: Boolean,
     required: true,
   },
+  rematch: {
+    type: [String],
+    required: true,
+  },
   winner: {
     type: Number,
   },

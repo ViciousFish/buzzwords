@@ -19,6 +19,7 @@ import { HexCoord } from "buzzwords-shared/types";
 import GameManager from "./GameManager";
 import BannedWords from "./banned_words.json";
 import { WordsObject } from "./words";
+import { getRandomInt } from "buzzwords-shared/utils";
 
 const COLLECTION = "socket.io-adapter-events";
 
@@ -228,6 +229,60 @@ app.post("/game/:id/join", async (req, res) => {
   } else {
     res.sendStatus(404);
   }
+});
+
+app.post("/game/:id/rematch", async (req, res) => {
+  const user = res.locals.userId as string;
+  const gameId = req.params.id;
+  const session = await dl.createContext();
+
+  const game = await dl.getGameById(gameId, {
+    session,
+  });
+
+  if (!game) {
+    return;
+  }
+  if (!game.users.includes(user)) {
+    res.sendStatus(404);
+    return;
+  }
+
+  // Set rematch array in case it doesn't exist
+  if (R.isNil(game.rematch)) {
+    game.rematch = [];
+  }
+
+  if (!game.gameOver || !game.vsAI || game.rematch.includes(user)) {
+    // Not a valid vote
+    res.sendStatus(400);
+    return;
+  }
+
+  game.rematch.push(user);
+
+  await dl.saveGame(gameId, game, {
+    session,
+  });
+  let newGameId = null;
+  if (game.rematch.length == game.users.length) {
+    // All users have voted for a rematch! Make a new game
+    const gm = new GameManager(null);
+    const newGame = gm.createGame(user);
+    newGame.users = game.users;
+    newGame.turn = getRandomInt(0, 2) as 0 | 1;
+
+    newGameId = newGame.id;
+    await dl.saveGame(newGame.id, newGame, {
+      session,
+    });
+  }
+  await dl.commitContext(session);
+
+  res.status(201).json({
+    newGameId,
+  });
+  return;
 });
 
 app.post("/game/join", async (req, res) => {

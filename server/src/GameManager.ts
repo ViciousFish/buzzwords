@@ -209,6 +209,7 @@ export default class GameManager {
       moves: [],
       vsAI: false,
       difficulty: 1,
+      rematch: [],
     };
     const neighbors = [
       ...getCellNeighbors(game.grid, -2, -1),
