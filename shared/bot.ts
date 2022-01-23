@@ -97,6 +97,10 @@ export const getBotMove = (
   defenseTileCount = Math.max(defenseTileCount, 0);
 
   const permuteAndCheck = (cells: Cell[]): HexCoord[] | null => {
+    if (R.uniq(cells.map((c) => `${c.q},${c.r}`)).length != cells.length) {
+      // Somehow we reused a cell. Not a valid word
+      return null;
+    }
     for (let p of permutationN(cells, cells.length)) {
       const word = p.map((c) => c.value).join("");
       if (!wordsTried[word]) {
