@@ -295,6 +295,9 @@ const removeMongoId = <T>(thing: any): T => {
   // eslint-disable-line
   if (!R.is(Object, thing)) {
     return thing;
+  } else if (R.is(Date, thing)) {
+    // @ts-expect-error no clue lol
+    return thing;
   } else if (Array.isArray(thing)) {
     return R.map(removeMongoId, thing) as unknown as T;
   } else {
