@@ -29,6 +29,7 @@ import { initiateReplay, nudgeGameById, submitMove } from "../game/gameActions";
 import classNames from "classnames";
 import Button from "../../presentational/Button";
 import GameStateModal from "../game/GameStateModal";
+import MoveListItem from "./MoveListItem";
 
 const Play: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -42,9 +43,6 @@ const Play: React.FC = () => {
   const currentUser = useSelector((state: RootState) => state.user.user);
   const replayState = useAppSelector((state) =>
     Boolean(state.game.replay.move)
-  );
-  const currentReplayIndex = useAppSelector(
-    (state) => state.game.replay.moveListIndex
   );
   const gameStateModal = useAppSelector((state) => state.game.gameStateModal);
   const showingNudgeButton = useAppSelector(
@@ -232,26 +230,7 @@ const Play: React.FC = () => {
             {R.reverse(game.moves).map((move, i) => {
               const index = game.moves.length - i - 1;
               return (
-                <li key={index} className="flex">
-                  <button
-                    type="button"
-                    className={classnames(
-                      "flex-auto p-1 font-bold text-center rounded-md m-1 inset-shadow hover:bg-opacity-70",
-                      move.player === 0 ? "bg-p1" : "bg-p2",
-                      replayState &&
-                        currentReplayIndex === index &&
-                        "bg-blue-400 text-white"
-                    )}
-                    onClick={() => {
-                      dispatch(initiateReplay(index));
-                    }}
-                  >
-                    {replayState && currentReplayIndex === index && (
-                      <FontAwesomeIcon className="mr-2" icon={faPlay} />
-                    )}
-                    {move.letters.join("").toUpperCase()}
-                  </button>
-                </li>
+                <MoveListItem move={move} index={index} key={index} />
               );
             })}
           </ul>
