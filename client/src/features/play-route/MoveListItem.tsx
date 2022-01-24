@@ -133,8 +133,10 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
         <button
           type="button"
           className={classNames(
-            "flex-auto p-1 font-bold text-center rounded-md m-1 inset-shadow hover:bg-opacity-70",
-            move.player === 0 ? "bg-p1" : "bg-p2"
+            "flex-auto p-1 font-bold text-center rounded-md m-1 hover:bg-opacity-70",
+            isOpen && 'bg-primary',
+            !isOpen && (move.player === 0 ? "bg-p1" : "bg-p2"),
+            !isOpen && 'inset-shadow',
           )}
           onClick={() => {
             if (!isOpen) {
