@@ -249,7 +249,17 @@ const GameList: React.FC = () => {
           </div>
           {showTutorialCard && <TutorialCard />}
           <div className="p-2 text-sm text-center text-gray-800">
-            by Chuck Dries and James Quigley
+            by{" "}
+            <a className="underline" href="https://chuckdries.com">
+              Chuck Dries
+            </a>{" "}
+            and{" "}
+            <a
+              className="underline"
+              href="https://www.youtube.com/channel/UCBLK4r69Z_cRr087Jfvt0WQ"
+            >
+              James Quigley
+            </a>
           </div>
         </nav>
       </ScreenHeightWraper>
