@@ -45,16 +45,21 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
       );
       setDictionaryData(res.data);
     } catch (e) {
-      console.log(Object.keys(e))
+      console.log(Object.keys(e));
       setDictionaryData({
         type: "error",
-        status: e.response?.status
+        status: e.response?.status,
       });
     }
   }, [setIsOpen, move.letters]);
 
   const popoverContent = (
-    <div className="bg-primary rounded-xl px-4 py-2 w-[300px] z-30 shadow-lg">
+    <div
+      className={classNames(
+        "bg-darkbg rounded-xl px-4 py-2 w-[300px] z-30 shadow-lg border-l-4",
+        move.player === 0 ? "border-p1" : "border-p2"
+      )}
+    >
       <div className="flex justify-between items-baseline">
         <FontAwesomeIcon className="mr-2" icon={faBook} />
         <span className="capitalize text-4xl font-bold mr-2 font-serif">
@@ -70,7 +75,8 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
         <>
           {dictionaryData.type === "error" && (
             <div className="flex justify-center p-4 gap-1 items-center">
-              <FontAwesomeIcon icon={faExclamationTriangle} /> {dictionaryData.status}
+              <FontAwesomeIcon icon={faExclamationTriangle} />{" "}
+              {dictionaryData.status}
             </div>
           )}
           {dictionaryData.type !== "error" && (
@@ -86,7 +92,7 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
                       </span>
                       {meaning.definitions
                         .map((def) => def.definition)
-                        .join(" ")}
+                        .join("/")}
                     </p>
                   </li>
                 );
@@ -99,26 +105,24 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
           <FontAwesomeIcon className="animate-spin" icon={faSpinner} />
         </div>
       )}
-        <Button
-          className={classNames(
-            "bg-darkbrown text-white text-sm p-2 m-0 w-full",
-            replayState && currentReplayIndex === index && "bg-blue-400 "
-          )}
-          onClick={() => {
-            dispatch(initiateReplay(index));
-          }}
-          disabled={replayState}
-        >
-          <FontAwesomeIcon
-            className="mr-2"
-            icon={
-              replayState && currentReplayIndex === index
-                ? faPlay
-                : faPlayCircle
-            }
-          />
-          replay
-        </Button>
+      <Button
+        className={classNames(
+          "text-sm p-2 m-0 w-full",
+          replayState && currentReplayIndex === index && "bg-blue-400 text-white"
+        )}
+        onClick={() => {
+          dispatch(initiateReplay(index));
+        }}
+        disabled={replayState}
+      >
+        <FontAwesomeIcon
+          className="mr-2"
+          icon={
+            replayState && currentReplayIndex === index ? faPlay : faPlayCircle
+          }
+        />
+        Replay
+      </Button>
     </div>
   );
   return (
@@ -129,14 +133,14 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
       content={popoverContent}
       onClickOutside={() => setIsOpen(false)}
     >
-      <li className={classNames(isOpen && "bg-primary", "flex")}>
+      <li className={classNames(isOpen && (move.player === 0 ? "bg-p1" : "bg-p2"), "flex")}>
         <button
           type="button"
           className={classNames(
             "flex-auto p-1 font-bold text-center rounded-md m-1 hover:bg-opacity-70",
-            isOpen && 'bg-primary',
+            // isOpen && "bg-primary",
             !isOpen && (move.player === 0 ? "bg-p1" : "bg-p2"),
-            !isOpen && 'inset-shadow',
+            !isOpen && "inset-shadow"
           )}
           onClick={() => {
             if (!isOpen) {
