@@ -180,6 +180,22 @@ app.get("/game/:id", async (req, res) => {
 
 app.post("/game", async (req, res) => {
   const user = res.locals.userId as string;
+  const session = await dl.createContext();
+  const games = await dl.getGamesByUserId(user, {
+    session,
+  });
+
+  const activeGames = games.filter(
+    (game) => !game.deleted && !game.gameOver
+  ).length;
+
+  const maxGames = getConfig().maxActiveGames;
+  if (activeGames >= maxGames) {
+    res.status(400).json({
+      message: `Max ${maxGames} games supported.`,
+    });
+    return;
+  }
   const options = req.body;
   const gm = new GameManager(null);
   const game = gm.createGame(user);
@@ -207,8 +223,18 @@ app.post("/game", async (req, res) => {
     game.difficulty = difficulty;
   }
   try {
-    await dl.saveGame(game.id, game);
+    let success = await dl.saveGame(game.id, game, { session });
+    if (!success) {
+      res.sendStatus(500);
+      return;
+    }
+    success = await dl.commitContext(session);
+    if (!success) {
+      res.sendStatus(500);
+      return;
+    }
     res.send(game.id);
+    return;
   } catch (e) {
     console.log(e);
     res.sendStatus(500);
