@@ -62,13 +62,12 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
       )}
     >
       <div className="flex justify-between items-baseline">
-        <FontAwesomeIcon className="mr-2 opacity-40" icon={faBook} />
         <span className="capitalize text-4xl font-bold mr-2 font-serif">
           {move.letters.join("")}
         </span>
         <span className="flex-auto"></span>
         {move.date && (
-          <span className="text-xs opacity-50">{relativeDate(move.date)}</span>
+          <span title={new Date(move.date).toLocaleString()} className="text-xs opacity-50">{relativeDate(move.date)}</span>
         )}
       </div>
 
@@ -76,12 +75,13 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
         <>
           {dictionaryData.type === "error" && (
             <div className="flex justify-center p-4 gap-1 items-center">
-              <FontAwesomeIcon icon={faExclamationTriangle} />{" "}
+              <FontAwesomeIcon className="mr-1" icon={faBook} />
+              <FontAwesomeIcon className="mr-1" icon={faExclamationTriangle} />
               {dictionaryData.status}
             </div>
           )}
           {dictionaryData.type !== "error" && (
-            <ul className="mt-2 text-sm">
+            <ul className="text-sm">
               {/* @ts-ignore */}
               {dictionaryData[0].meanings.map((meaning, index) => {
                 console.log("meaning", meaning);
@@ -103,6 +103,7 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
         </>
       ) : (
         <div className="flex justify-center p-4">
+          <FontAwesomeIcon className="mr-2" icon={faBook} />
           <FontAwesomeIcon className="animate-spin" icon={faSpinner} />
         </div>
       )}

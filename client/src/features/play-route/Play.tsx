@@ -29,7 +29,7 @@ import GameBoard from "../game/GameBoard";
 import CopyToClipboard from "../../presentational/CopyToClipboard";
 import NicknameModal from "../user/NicknameModal";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { initiateReplay, nudgeGameById, submitMove } from "../game/gameActions";
+import { nudgeGameById, submitMove } from "../game/gameActions";
 import classNames from "classnames";
 import Button from "../../presentational/Button";
 import GameStateModal from "../game/GameStateModal";
@@ -228,7 +228,7 @@ const Play: React.FC = () => {
             >
               <FontAwesomeIcon
                 className={classNames(
-                  "mr-1 text-xl",
+                  "mx-1 text-xl",
                   replayState && "text-blue-500 hover:text-red-500"
                 )}
                 icon={replayState ? faPlayCircle : faHistory}
