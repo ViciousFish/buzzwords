@@ -40,6 +40,12 @@ const gameSchema = new Schema<Game>({
     type: Boolean,
     required: true,
   },
+  deleted: {
+    type: Boolean,
+    required: true,
+    default: false,
+    index: true,
+  },
   winner: {
     type: Number,
   },
