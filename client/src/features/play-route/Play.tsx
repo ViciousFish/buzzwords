@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import * as R from "ramda";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import classnames from "classnames";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,13 +10,15 @@ import {
   faPlay,
   faPlayCircle,
   faShare,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
-import useHotkeys from '@reecelucas/react-use-hotkeys'
+import useHotkeys from "@reecelucas/react-use-hotkeys";
 
 import { RootState } from "../../app/store";
 import { setCurrentGame, toggleNudgeButton } from "../game/gameSlice";
 import {
+  deleteGameById,
   dequeueOrDismissGameStateModalForGame,
   joinGameById,
   markGameAsSeen,
@@ -33,7 +35,10 @@ import MoveListItem from "./MoveListItem";
 
 const Play: React.FC = () => {
   const dispatch = useAppDispatch();
+
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const game = useSelector((state: RootState) =>
     id ? state.gamelist.games[id] : null
   );
@@ -59,9 +64,9 @@ const Play: React.FC = () => {
 
   useHotkeys("Enter", () => {
     if (id) {
-      dispatch(submitMove(id))
+      dispatch(submitMove(id));
     }
-  })
+  });
 
   useEffect(() => {
     if (id) {
@@ -163,6 +168,18 @@ const Play: React.FC = () => {
                 Share <FontAwesomeIcon icon={faShare} />{" "}
               </Button>
             )}
+            {id && (
+              <Button
+                className="bg-red-600 text-white"
+                onClick={() => {
+                  dispatch(deleteGameById(id));
+                  navigate('/');
+                }}
+              >
+                <FontAwesomeIcon className="mr-2" icon={faTrash} />
+                Delete
+              </Button>
+            )}
           </div>
         </div>
         <div className=" bg-darkbg rounded-xl text-center">
@@ -229,9 +246,7 @@ const Play: React.FC = () => {
           <ul className="">
             {R.reverse(game.moves).map((move, i) => {
               const index = game.moves.length - i - 1;
-              return (
-                <MoveListItem move={move} index={index} key={index} />
-              );
+              return <MoveListItem move={move} index={index} key={index} />;
             })}
           </ul>
         </div>

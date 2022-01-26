@@ -65,6 +65,9 @@ export const gamelistSlice = createSlice({
     },
     setShowTutorialCard: (state, action: PayloadAction<boolean>) => {
       state.showTutorialCard = action.payload;
+    },
+    deleteGame: (state, action: PayloadAction<string>) => {
+      delete state.games[action.payload]
     }
   },
 });
@@ -78,6 +81,7 @@ export const {
   setShowCompletedGames,
   shiftGameStateModalQueueForGame,
   setShowTutorialCard,
+  deleteGame,
 } = gamelistSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
