@@ -62,13 +62,13 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
       )}
     >
       <div className="flex justify-between items-baseline">
-        <FontAwesomeIcon className="mr-2" icon={faBook} />
+        <FontAwesomeIcon className="mr-2 opacity-40" icon={faBook} />
         <span className="capitalize text-4xl font-bold mr-2 font-serif">
           {move.letters.join("")}
         </span>
         <span className="flex-auto"></span>
         {move.date && (
-          <span className="text-xs">{relativeDate(move.date)}</span>
+          <span className="text-xs opacity-50">{relativeDate(move.date)}</span>
         )}
       </div>
 
@@ -87,8 +87,8 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
                 console.log("meaning", meaning);
                 return (
                   <li key={index} className="mb-2">
-                    <p className="font-serif inline-block">
-                      <span className="italic mr-2 opacity-50">
+                    <p className="font-serif inline-block opacity-75">
+                      <span className="italic mr-2 opacity-75">
                         {meaning.partOfSpeech}
                       </span>
                       {meaning.definitions
