@@ -22,7 +22,7 @@ import {
 } from "../game/gameSlice";
 import { initiateReplay, maybeShowNudge } from "../game/gameActions";
 
-import ding from "../../../assets/ding.mp3?url";
+import chord from "../../../assets/fmajor.m4a?url";
 import { batch } from "react-redux";
 import { Api } from "../../app/Api";
 
@@ -91,7 +91,7 @@ export const refresh = (): AppThunk => async (dispatch, getState) => {
   dispatch(refreshReceived(gamesById));
 };
 
-const DingAudio = new Audio(ding);
+const DingAudio = new Audio(chord);
 
 export const receiveGameUpdatedSocket =
   (game: Game): AppThunk =>
