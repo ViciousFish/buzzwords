@@ -16,6 +16,7 @@ import relativeDate from "tiny-relative-date";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import { initiateReplay } from "../game/gameActions";
+import { clearReplay } from "../game/gameSlice";
 
 interface MoveListItemProps {
   move: Move;
@@ -56,7 +57,7 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
   const popoverContent = (
     <div
       className={classNames(
-        "bg-darkbg rounded-xl px-4 py-2 w-[300px] z-30 shadow-lg border-l-4",
+        "bg-darkbg rounded-xl px-4 py-2 w-[300px] z-30 shadow-lg border-b-4 border-r-4",
         move.player === 0 ? "border-p1" : "border-p2"
       )}
     >
@@ -80,12 +81,12 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
             </div>
           )}
           {dictionaryData.type !== "error" && (
-            <ul>
+            <ul className="mt-2 text-sm">
               {/* @ts-ignore */}
               {dictionaryData[0].meanings.map((meaning, index) => {
                 console.log("meaning", meaning);
                 return (
-                  <li key={index}>
+                  <li key={index} className="mb-2">
                     <p className="font-serif inline-block">
                       <span className="italic mr-2 opacity-50">
                         {meaning.partOfSpeech}
@@ -108,12 +109,17 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
       <Button
         className={classNames(
           "text-sm p-2 m-0 w-full",
-          replayState && currentReplayIndex === index && "bg-blue-400 text-white"
+          replayState &&
+            currentReplayIndex === index &&
+            "bg-blue-400 text-white",
+          replayState && "bg-gray-300 hover:bg-red-500"
         )}
         onClick={() => {
+          if (replayState) {
+            return dispatch(clearReplay());
+          }
           dispatch(initiateReplay(index));
         }}
-        disabled={replayState}
       >
         <FontAwesomeIcon
           className="mr-2"
@@ -133,7 +139,12 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
       content={popoverContent}
       onClickOutside={() => setIsOpen(false)}
     >
-      <li className={classNames(isOpen && (move.player === 0 ? "bg-p1" : "bg-p2"), "flex")}>
+      <li
+        className={classNames(
+          isOpen && (move.player === 0 ? "bg-p1" : "bg-p2"),
+          "flex"
+        )}
+      >
         <button
           type="button"
           className={classNames(

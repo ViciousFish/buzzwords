@@ -12,10 +12,14 @@ import {
   faShare,
 } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
-import useHotkeys from '@reecelucas/react-use-hotkeys'
+import useHotkeys from "@reecelucas/react-use-hotkeys";
 
 import { RootState } from "../../app/store";
-import { setCurrentGame, toggleNudgeButton } from "../game/gameSlice";
+import {
+  clearReplay,
+  setCurrentGame,
+  toggleNudgeButton,
+} from "../game/gameSlice";
 import {
   dequeueOrDismissGameStateModalForGame,
   joinGameById,
@@ -59,9 +63,9 @@ const Play: React.FC = () => {
 
   useHotkeys("Enter", () => {
     if (id) {
-      dispatch(submitMove(id))
+      dispatch(submitMove(id));
     }
-  })
+  });
 
   useEffect(() => {
     if (id) {
@@ -215,13 +219,21 @@ const Play: React.FC = () => {
             </div>
           )}
           <div className="flex flex-shrink-0 items-center text-darkbrown pt-2">
-            <FontAwesomeIcon
-              className={classNames(
-                "mr-1 text-xl",
-                replayState && "text-blue-500"
-              )}
-              icon={replayState ? faPlayCircle : faHistory}
-            />
+            <button
+              onClick={() => {
+                if (replayState) {
+                  return dispatch(clearReplay());
+                }
+              }}
+            >
+              <FontAwesomeIcon
+                className={classNames(
+                  "mr-1 text-xl",
+                  replayState && "text-blue-500 hover:text-red-500"
+                )}
+                icon={replayState ? faPlayCircle : faHistory}
+              />
+            </button>
             <h3 className="flex-auto">
               <span className="text-2xl font-bold m-0">Turns</span>
             </h3>
@@ -229,9 +241,7 @@ const Play: React.FC = () => {
           <ul className="">
             {R.reverse(game.moves).map((move, i) => {
               const index = game.moves.length - i - 1;
-              return (
-                <MoveListItem move={move} index={index} key={index} />
-              );
+              return <MoveListItem move={move} index={index} key={index} />;
             })}
           </ul>
         </div>
