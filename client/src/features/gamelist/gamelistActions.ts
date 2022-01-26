@@ -11,18 +11,16 @@ import Game from "buzzwords-shared/Game";
 import { opponentReceived, User } from "../user/userSlice";
 import { getAllUsers } from "../user/userSelectors";
 import { fetchOpponent } from "../user/userActions";
-import axios from "axios";
 import { getApiUrl } from "../../app/apiPrefix";
 import { GameStateModalType } from "../game/GameStateModal";
 import {
   resetSelection,
-  setFreezeGameBoard,
   setGameStateModal,
   toggleNudgeButton,
 } from "../game/gameSlice";
 import { initiateReplay, maybeShowNudge } from "../game/gameActions";
 
-import chord from "../../../assets/fmajor.m4a?url";
+import chord from "../../../assets/fmajor-pleasant.m4a?url";
 import { batch } from "react-redux";
 import { Api } from "../../app/Api";
 

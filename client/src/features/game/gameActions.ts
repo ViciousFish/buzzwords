@@ -4,7 +4,7 @@ import { Api } from "../../app/Api";
 import { getApiUrl } from "../../app/apiPrefix";
 import { emitSelection } from "../../app/socket";
 import { AppThunk } from "../../app/store";
-import { markGameAsSeen, refresh } from "../gamelist/gamelistActions";
+import { markGameAsSeen } from "../gamelist/gamelistActions";
 import { QRCoord } from "../hexGrid/hexGrid";
 import { getOrderedTileSelectionCoords } from "./gameSelectors";
 import {
