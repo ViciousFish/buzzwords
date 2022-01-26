@@ -21,5 +21,4 @@ export default interface Game {
   moves: Move[];
   createdDate?: Date;
   updatedDate?: Date;
-  deleted: boolean;
 }

@@ -180,22 +180,6 @@ app.get("/game/:id", async (req, res) => {
 
 app.post("/game", async (req, res) => {
   const user = res.locals.userId as string;
-  const session = await dl.createContext();
-  const games = await dl.getGamesByUserId(user, {
-    session,
-  });
-
-  const activeGames = games.filter(
-    (game) => !game.deleted && !game.gameOver
-  ).length;
-
-  const maxGames = getConfig().maxActiveGames;
-  if (activeGames >= maxGames) {
-    res.status(400).json({
-      message: `Max ${maxGames} games supported.`,
-    });
-    return;
-  }
   const options = req.body;
   const gm = new GameManager(null);
   const game = gm.createGame(user);
@@ -223,57 +207,12 @@ app.post("/game", async (req, res) => {
     game.difficulty = difficulty;
   }
   try {
-    let success = await dl.saveGame(game.id, game, { session });
-    if (!success) {
-      res.sendStatus(500);
-      return;
-    }
-    success = await dl.commitContext(session);
-    if (!success) {
-      res.sendStatus(500);
-      return;
-    }
+    await dl.saveGame(game.id, game);
     res.send(game.id);
-    return;
   } catch (e) {
     console.log(e);
     res.sendStatus(500);
   }
-});
-
-app.post("/game/:id/delete", async (req, res) => {
-  const user = res.locals.userId as string;
-  const gameId = req.params.id;
-  const session = await dl.createContext();
-  const game = await dl.getGameById(gameId, {
-    session,
-  });
-  if (!game || !game.users.includes(user)) {
-    res.sendStatus(404);
-    return;
-  }
-  if (game.users.length > 1) {
-    res.sendStatus(400);
-    return;
-  }
-
-  if (game.deleted) {
-    res.sendStatus(201);
-    return;
-  }
-
-  game.deleted = true;
-
-  let success = await dl.saveGame(gameId, game, { session });
-
-  if (!success) {
-    res.sendStatus(500);
-    return;
-  }
-
-  success = await dl.commitContext(session);
-  res.sendStatus(success ? 201 : 500);
-  return;
 });
 
 app.post("/game/:id/join", async (req, res) => {

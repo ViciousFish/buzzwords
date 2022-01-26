@@ -1,10 +1,8 @@
 import * as R from "ramda";
-import { toast } from "react-toastify";
 
 import { AppThunk, RootState } from "../../app/store";
 import {
   ClientGame,
-  deleteGame,
   refreshReceived,
   shiftGameStateModalQueueForGame,
   updateGame,
@@ -150,7 +148,7 @@ export const receiveGameUpdatedSocket =
           })
         );
         if (game.vsAI && game.moves[game.moves.length - 1].player === 1) {
-          dispatch(initiateReplay(game.moves.length - 1, true));
+          dispatch(initiateReplay(game.moves.length - 1, true))
         }
       });
       if (gameStateModalType) {
@@ -222,9 +220,6 @@ export const createNewGame = (): AppThunk => async (dispatch) => {
     await dispatch(refresh());
     return res.data;
   } catch (e) {
-    if (e.response?.data?.message) {
-      toast(e.response.data.message);
-    }
     throw e.response?.data ?? e.toString();
   }
 };
@@ -240,9 +235,6 @@ export const createNewAIGame =
       await dispatch(refresh());
       return res.data;
     } catch (e) {
-      if (e.response?.data?.message) {
-        toast(e.response.data.message);
-      }
       throw e.response?.data ?? e.toString();
     }
   };
@@ -259,19 +251,7 @@ export const joinGameById =
       return true;
     } catch (e) {
       // throw e.response?.data ?? e.toString();
-      toast(e.response?.data ?? e.toString(), { type: "error" });
       return false;
-    }
-  };
-
-export const deleteGameById =
-  (id: string): AppThunk<Promise<void>> =>
-  async (dispatch) => {
-    try {
-      await Api.post(getApiUrl("/game", id, "delete"));
-      dispatch(deleteGame(id));
-    } catch (e) {
-      toast(e.response?.data ?? e, { type: "error" });
     }
   };
 

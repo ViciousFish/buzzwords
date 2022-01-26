@@ -156,7 +156,6 @@ export default class Mongo implements DataLayer {
       const res = await Models.Game.find(
         {
           users: id,
-          deleted: false,
         },
         null,
         {

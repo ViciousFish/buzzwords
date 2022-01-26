@@ -50,10 +50,7 @@ export default class Memory implements DataLayer {
     const games = [];
     const gameIds = Object.keys(this.games);
     for (const gameId of gameIds) {
-      if (
-        this.games[gameId].users.includes(id) &&
-        !this.games[gameId].deleted
-      ) {
+      if (this.games[gameId].users.includes(id)) {
         games.push(this.games[gameId]);
       }
     }
