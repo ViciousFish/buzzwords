@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import * as R from "ramda";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import classnames from "classnames";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,6 +10,7 @@ import {
   faPlay,
   faPlayCircle,
   faShare,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import useHotkeys from "@reecelucas/react-use-hotkeys";
@@ -21,6 +22,7 @@ import {
   toggleNudgeButton,
 } from "../game/gameSlice";
 import {
+  deleteGameById,
   dequeueOrDismissGameStateModalForGame,
   joinGameById,
   markGameAsSeen,
@@ -37,7 +39,10 @@ import MoveListItem from "./MoveListItem";
 
 const Play: React.FC = () => {
   const dispatch = useAppDispatch();
+
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const game = useSelector((state: RootState) =>
     id ? state.gamelist.games[id] : null
   );
@@ -165,6 +170,18 @@ const Play: React.FC = () => {
                 }}
               >
                 Share <FontAwesomeIcon icon={faShare} />{" "}
+              </Button>
+            )}
+            {id && (
+              <Button
+                className="bg-red-600 text-white"
+                onClick={() => {
+                  dispatch(deleteGameById(id));
+                  navigate('/');
+                }}
+              >
+                <FontAwesomeIcon className="mr-2" icon={faTrash} />
+                Delete
               </Button>
             )}
           </div>
