@@ -1,7 +1,7 @@
 import mongoose, { ClientSession } from "mongoose";
 import getConfig from "../../config";
 
-import { DataLayer } from "../../types";
+import { DataLayer, User } from "../../types";
 import { withRetry } from "../../util";
 import Game from "buzzwords-shared/Game";
 import Models from "./models";
@@ -66,6 +66,54 @@ export default class Mongo implements DataLayer {
     }
   }
 
+  async assumeUser(
+    assumeeId: string,
+    assumerId: string,
+    options?: Options
+  ): Promise<boolean> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      await Models.Game.updateMany(
+        {
+          users: assumeeId,
+        },
+        {
+          $set: {
+            "users.$[element]": assumerId,
+          },
+        },
+        {
+          arrayFilters: [
+            {
+              element: {
+                $eq: assumeeId,
+              },
+            },
+          ],
+          session: options?.session,
+        }
+      );
+
+      await Models.AuthToken.updateMany(
+        {
+          userId: assumeeId,
+        },
+        {
+          userId: assumerId,
+        },
+        {
+          session: options?.session,
+        }
+      );
+      return true;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
   async getUserIdByAuthToken(
     token: string,
     options?: Options
@@ -88,6 +136,86 @@ export default class Mongo implements DataLayer {
       }
 
       return res?.toObject()?.userId;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async getUserById(id: string, options?: Options): Promise<User | null> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res: any = await Models.User.findOne(
+        {
+          id,
+        },
+        null,
+        {
+          session: options?.session,
+        }
+      );
+      if (!res) {
+        return null;
+      }
+      return res.toObject();
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async getUserByGoogleId(
+    googleId: string,
+    options?: Options
+  ): Promise<User | null> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res: any = await Models.User.findOne(
+        {
+          googleId,
+        },
+        null,
+        {
+          session: options?.session,
+        }
+      );
+      if (!res) {
+        return null;
+      }
+      return res.toObject();
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async setUserGoogleId(
+    id: string,
+    googleId: string,
+    options: Options
+  ): Promise<boolean> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res: any = await Models.User.updateOne(
+        {
+          id,
+        },
+        {
+          id,
+          googleId,
+        },
+        {
+          session: options?.session,
+          upsert: true,
+        }
+      );
+      return res.modifiedCount == 1 || res.upsertedCount == 1;
     } catch (e) {
       console.log(e);
       throw e;

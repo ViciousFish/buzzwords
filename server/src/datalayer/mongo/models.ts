@@ -1,16 +1,8 @@
 import { model, Schema } from "mongoose";
 
-import Game from "buzzwords-shared/Game";
-interface User {
-  id: string;
-  nickname: string;
-}
+import { User, AuthToken } from "../../types";
 
-interface AuthToken {
-  token: string;
-  userId: string;
-  createdDate: Date;
-}
+import Game from "buzzwords-shared/Game";
 
 const gameSchema = new Schema<Game>({
   id: {
@@ -101,6 +93,9 @@ const userSchema = new Schema<User>({
   nickname: {
     type: String,
     required: true,
+  },
+  googleId: {
+    type: String,
   },
 });
 

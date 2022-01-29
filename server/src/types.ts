@@ -1,11 +1,41 @@
 import Game from "buzzwords-shared/Game";
 
+export interface User {
+  id: string;
+  nickname: string;
+  googleId?: string;
+}
+
+export interface AuthToken {
+  token: string;
+  userId: string;
+  createdDate: Date;
+}
+
 export interface DataLayer {
   createAuthToken(
     token: string,
     userId: string,
     options?: Record<string, unknown>
   ): Promise<boolean>;
+  assumeUser(
+    assumeeId: string,
+    assumerId: string,
+    options?: Record<string, unknown>
+  ): Promise<boolean>;
+  getUserById(
+    id: string,
+    options?: Record<string, unknown>
+  ): Promise<User | null>;
+  setUserGoogleId(
+    userId: string,
+    googleId: string,
+    options?: Record<string, unknown>
+  ): Promise<boolean>;
+  getUserByGoogleId(
+    googleId: string,
+    options?: Record<string, unknown>
+  ): Promise<User | null>;
   getUserIdByAuthToken(
     token: string,
     options?: Record<string, unknown>

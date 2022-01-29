@@ -7,14 +7,16 @@ import { nanoid } from "nanoid";
 import morgan from "morgan";
 import cookie from "cookie";
 import { createAdapter } from "@socket.io/mongo-adapter";
-import { MongoClient } from "mongodb";
+import { Db, MongoClient } from "mongodb";
 import cors from "cors";
+import passport from "passport";
+import { OAuth2Strategy } from "passport-google-oauth";
 
 import getConfig from "./config";
 import DL from "./datalayer";
 import Game from "buzzwords-shared/Game";
 import { getBotMove } from "buzzwords-shared/bot";
-import { DataLayer } from "./types";
+import { DataLayer, User } from "./types";
 import { HexCoord } from "buzzwords-shared/types";
 import GameManager from "./GameManager";
 import BannedWords from "./banned_words.json";
@@ -71,15 +73,15 @@ app.use(async (req, res, next) => {
   next();
 });
 
-app.get("/healthz", (req, res) => {
+app.get(config.apiPrefix + "/healthz", (req, res) => {
   res.sendStatus(200);
 });
 
-app.get("/", (req, res) => {
+app.get(config.apiPrefix + "/", (req, res) => {
   res.sendStatus(200);
 });
 
-app.get("/user", async (req, res) => {
+app.get(config.apiPrefix + "/user", async (req, res) => {
   let user = res.locals.userId as string;
   let authToken = null;
   if (!user) {
@@ -91,8 +93,11 @@ app.get("/user", async (req, res) => {
   // migrate cookie users to local by echoing back their authToken
   if (!req.headers.authorization && req.signedCookies.authToken) {
     authToken = req.signedCookies.authToken;
-    res.clearCookie("authToken");
   }
+  res.cookie("authToken", authToken, {
+    maxAge: 1000 * 60 * 60 * 24 * 365 * 15, // 15 years
+    signed: true,
+  });
   const nickname = await dl.getNickName(user);
   res.send({
     id: user,
@@ -101,7 +106,7 @@ app.get("/user", async (req, res) => {
   });
 });
 
-app.post("/user/nickname", async (req, res) => {
+app.post(config.apiPrefix + "/user/nickname", async (req, res) => {
   const user = res.locals.userId as string;
   const nickname = (req.body || {})?.nickname as string | null;
   if (!nickname) {
@@ -128,7 +133,7 @@ app.post("/user/nickname", async (req, res) => {
   }
 });
 
-app.get("/user/:id", async (req, res) => {
+app.get(config.apiPrefix + "/user/:id", async (req, res) => {
   const nickname = await dl.getNickName(req.params.id);
   res.send({
     id: req.params.id,
@@ -136,7 +141,7 @@ app.get("/user/:id", async (req, res) => {
   });
 });
 
-app.get("/games", async (req, res) => {
+app.get(config.apiPrefix + "/games", async (req, res) => {
   const user = res.locals.userId as string;
   const games = await dl.getGamesByUserId(user);
   const userIds: string[] = R.pipe(
@@ -168,7 +173,7 @@ app.get("/games", async (req, res) => {
   });
 });
 
-app.get("/game/:id", async (req, res) => {
+app.get(config.apiPrefix + "/game/:id", async (req, res) => {
   const gameId = req.params.id;
   const game = await dl.getGameById(gameId);
   if (game) {
@@ -178,7 +183,7 @@ app.get("/game/:id", async (req, res) => {
   }
 });
 
-app.post("/game", async (req, res) => {
+app.post(config.apiPrefix + "/game", async (req, res) => {
   const user = res.locals.userId as string;
   const session = await dl.createContext();
   const games = await dl.getGamesByUserId(user, {
@@ -241,7 +246,7 @@ app.post("/game", async (req, res) => {
   }
 });
 
-app.post("/game/:id/delete", async (req, res) => {
+app.post(config.apiPrefix + "/game/:id/delete", async (req, res) => {
   const user = res.locals.userId as string;
   const gameId = req.params.id;
   const session = await dl.createContext();
@@ -276,7 +281,7 @@ app.post("/game/:id/delete", async (req, res) => {
   return;
 });
 
-app.post("/game/:id/join", async (req, res) => {
+app.post(config.apiPrefix + "/game/:id/join", async (req, res) => {
   const user = res.locals.userId as string;
   const gameId = req.params.id;
   const success = await dl.joinGame(user, gameId);
@@ -291,7 +296,7 @@ app.post("/game/:id/join", async (req, res) => {
   }
 });
 
-app.post("/game/join", async (req, res) => {
+app.post(config.apiPrefix + "/game/join", async (req, res) => {
   const user = res.locals.userId as string;
   const success = await dl.joinRandomGame(user);
   res.sendStatus(success ? 201 : 404);
@@ -321,7 +326,7 @@ const pass = async (gameId: string, userId: string) => {
   });
 };
 
-app.post("/game/:id/pass", async (req, res) => {
+app.post(config.apiPrefix + "/game/:id/pass", async (req, res) => {
   const user = res.locals.userId as string;
   const gameId = req.params.id;
 
@@ -410,7 +415,7 @@ const doBotMoves = async (gameId: string): Promise<void> => {
   await dl.commitContext(session);
 };
 
-app.post("/game/:id/nudge", async (req, res) => {
+app.post(config.apiPrefix + "/game/:id/nudge", async (req, res) => {
   const user = res.locals.userId as string;
   const gameId = req.params.id;
 
@@ -443,7 +448,7 @@ app.post("/game/:id/nudge", async (req, res) => {
   res.sendStatus(201);
 });
 
-app.post("/game/:id/move", async (req, res) => {
+app.post(config.apiPrefix + "/game/:id/move", async (req, res) => {
   const user = res.locals.userId as string;
   const gameId = req.params.id;
   const parsedMove: HexCoord[] = [];
@@ -498,6 +503,101 @@ app.post("/game/:id/move", async (req, res) => {
   });
   doBotMoves(gameId);
 });
+
+app.get(
+  config.apiPrefix + "/login/google",
+  passport.authenticate("google", { scope: ["profile"] })
+);
+
+app.get(
+  config.apiPrefix + "/login/google/redirect",
+  passport.authenticate("google", {
+    failureRedirect: "/",
+    failureMessage: true,
+  }),
+  function (req, res) {
+    res.redirect("/");
+  }
+);
+
+passport.serializeUser((user, done) => {
+  console.log("SERIALIZE", user);
+  const u = user as User;
+  done(null, u.id);
+});
+
+passport.deserializeUser((id: string, done) => {
+  console.log("DESERIALIZE", id);
+  dl.getUserById(id)
+    .then((user) => {
+      done(null, user);
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
+if (config.googleClientId && config.googleClientSecret) {
+  passport.use(
+    new OAuth2Strategy(
+      {
+        clientID: config.googleClientId,
+        clientSecret: config.googleClientSecret,
+        callbackURL: config.googleCallbackUrl,
+        passReqToCallback: true,
+      },
+      async (req, _, __, profile, done) => {
+        const res = req.res;
+        if (!res) {
+          done("Can't get request/response objects");
+          return;
+        }
+        const userId = (res?.locals.userId ?? nanoid()) as string;
+        if (!userId) {
+          res.locals.userId = userId;
+        }
+        dl.getUserByGoogleId(profile.id)
+          .then((user) => {
+            dl.createContext().then(async (session) => {
+              if (!user) {
+                let success = await dl.setUserGoogleId(userId, profile.id, {
+                  session,
+                });
+
+                if (!success) {
+                  done({ message: "error setting google id on user" });
+                }
+                const result = await dl.getUserById(userId, {
+                  session,
+                });
+                user = result;
+                await dl.assumeUser(userId, (user as unknown as User).id, {
+                  session,
+                });
+                success = await dl.commitContext(session);
+                if (!success) {
+                  done({
+                    message: "error committing transaction for google login",
+                  });
+                }
+                done(null, user);
+              } else {
+                await dl.assumeUser(userId, user.id, { session });
+                const success = await dl.commitContext(session);
+                if (!success) {
+                  done({
+                    message: "error committing transaction for google login",
+                  });
+                }
+                done(null, user);
+              }
+            });
+          })
+          .catch((err) => done(err));
+      }
+    )
+  );
+}
 
 interface SelectionEventProps {
   gameId: string;

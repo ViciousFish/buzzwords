@@ -10,7 +10,11 @@ import {
   faVolumeMute,
   faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
-import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
+import {
+  faGithub,
+  faGoogle,
+  faTwitter,
+} from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import React, { useCallback } from "react";
@@ -33,6 +37,7 @@ import {
   getUnseenMoveCount,
 } from "./gamelistSelectors";
 import { setTurnNotificationsMute } from "../game/gameSlice";
+import { getApiUrl } from "../../app/apiPrefix";
 
 const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
 const BeeLazy = React.lazy(() => import("../../assets/Bee"));
@@ -155,9 +160,19 @@ const GameList: React.FC = () => {
           >
             <FontAwesomeIcon icon={faHome} />
           </NavLink>
+          <a.div>
+            <a href={getApiUrl("/login/google")}>
+              <button
+                className="text-darkbrown p-2 hover:bg-primary hover:bg-opacity-50 rounded-md"
+                aria-label="login with google"
+                data-tip="Login with Google"
+              >
+                <FontAwesomeIcon icon={faGoogle} />
+              </button>
+            </a>
+          </a.div>
           <a.div style={hamburgerSpring}>
             <button
-              onClick={() => dispatch(toggleIsOpen())}
               aria-label="toggle games list"
               className="text-darkbrown p-2 hover:bg-primary hover:bg-opacity-50 rounded-md"
               data-tip="Toggle games list"

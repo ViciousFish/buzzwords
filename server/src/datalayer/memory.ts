@@ -1,14 +1,12 @@
 import Game from "buzzwords-shared/Game";
-import { DataLayer } from "../types";
+import { DataLayer, User } from "../types";
 
 export default class Memory implements DataLayer {
   games: {
     [key: string]: Game;
   };
   users: {
-    [key: string]: {
-      nickname: string;
-    };
+    [key: string]: User;
   };
   authTokens: {
     [key: string]: string;
@@ -27,11 +25,59 @@ export default class Memory implements DataLayer {
     return true;
   }
 
+  async assumeUser(
+    assumeeId: string,
+    assumerId: string,
+    options?: Record<string, unknown>
+  ): Promise<boolean> {
+    for (const [gameId, game] of Object.entries(this.games)) {
+      const idx = game.users.indexOf(assumeeId);
+      if (idx != -1) {
+        game.users[idx] = assumerId;
+      }
+      this.games[gameId] = game;
+    }
+    for (const [id, userId] of Object.entries(this.authTokens)) {
+      if (userId == assumeeId) {
+        this.authTokens[id] = assumerId;
+      }
+    }
+    return true;
+  }
+
   async getUserIdByAuthToken(
     token: string,
     options?: Record<string, unknown>
   ): Promise<string | null> {
     return this.authTokens[token];
+  }
+
+  async getUserById(
+    id: string,
+    options?: Record<string, unknown>
+  ): Promise<User | null> {
+    return this.users[id];
+  }
+
+  async getUserByGoogleId(
+    googleId: string,
+    options?: Record<string, unknown>
+  ): Promise<User | null> {
+    return (
+      Object.values(this.users).find((u) => u.googleId === googleId) ?? null
+    );
+  }
+
+  async setUserGoogleId(
+    userId: string,
+    googleId: string,
+    options?: Record<string, unknown>
+  ): Promise<boolean> {
+    this.users[userId] = {
+      ...this.users[userId],
+      googleId,
+    };
+    return true;
   }
 
   async setNickName(id: string, nickname: string): Promise<boolean> {
