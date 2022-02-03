@@ -1,6 +1,7 @@
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import React from "react";
 import { getApiUrl } from "../../app/apiPrefix";
 
@@ -8,9 +9,7 @@ interface AuthPromptProps {
   onDismiss: () => void;
 }
 
-const AuthPrompt: React.FC<AuthPromptProps> = ({
-  onDismiss
-}) => {
+const AuthPrompt: React.FC<AuthPromptProps> = ({ onDismiss }) => {
   return (
     <div className="rounded-xl bg-primary shadow-lg p-4">
       <button
@@ -24,7 +23,10 @@ const AuthPrompt: React.FC<AuthPromptProps> = ({
       <p>to sync your games across devices</p>
       <div className="my-2">
         <a
-          className="block bg-darkbrown text-white p-2 text-sm hover:bg-opacity-50 rounded-md"
+          className={classNames(
+            "block bg-darkbrown text-white p-2 text-sm hover:bg-opacity-50",
+            "rounded-full inset-shadow transition-all"
+          )}
           href={getApiUrl("/login/google")}
         >
           <FontAwesomeIcon className="mx-2" icon={faGoogle} /> Sign in with

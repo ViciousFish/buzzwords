@@ -8,7 +8,7 @@ const Button = React.forwardRef<
   <button
     ref={ref}
     className={classNames(
-      `rounded-full p-2 m-1  inset-shadow cursor-default
+      `rounded-full p-2 m-1 inset-shadow cursor-default
       transition-all
       active:transform active:scale-90 active:bg-opacity-100`,
       disabled ? "bg-gray-300" : "bg-primary hover:bg-opacity-50",

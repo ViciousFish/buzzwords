@@ -124,7 +124,7 @@ const TopBar: React.FC = () => {
           <button
             onClick={() => setAuthPrompt(true)}
             className={classNames(
-              "text-sm p-2 rounded-md hover:bg-primary hover:bg-opacity-50",
+              "p-2 rounded-md hover:bg-primary hover:bg-opacity-50",
               authPrompt && "bg-primary"
             )}
             type="button"
