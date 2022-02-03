@@ -114,7 +114,7 @@ const GameList: React.FC = () => {
                 <div className="flex space-x-1">
                   <PlayButtons
                     mode="icon"
-                    buttonClasses="bg-darkbrown text-white"
+                    buttonVariant="dark"
                   />
                 </div>
               </div>

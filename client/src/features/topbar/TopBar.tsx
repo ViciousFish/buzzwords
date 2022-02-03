@@ -57,81 +57,84 @@ const TopBar: React.FC = () => {
   return (
     <div
       className={classNames(
-        "fixed top-0",
-        "bg-darkbg z-30 border-darkbrown text-darkbrown",
-        "h-[50px] w-screen flex justify-between p-4 items-center shadow"
+        "fixed top-0 z-30",
+        "bg-black text-darkbrown",
+        "h-[50px] w-screen  shadow"
       )}
     >
-      <div className="flex">
-        <button
-          onClick={() => {
-            dispatch(toggleIsOpen())
-            if (isOpen) {
-              dispatch(setShowTutorialCard(false))
-            }
-          }}
-          aria-label="toggle games list"
-          className="p-2 hover:bg-primary bg-opacity-50 rounded-md"
-          data-tip="Toggle games list"
-        >
-          <FontAwesomeIcon icon={faBars} />
-          <span className="absolute text-sm left-[10px] top-1">
-            {hamburgerNotification}
-          </span>
-        </button>
-        <button
-          className="p-2 rounded-md hover:bg-primary hover:bg-opacity-50"
-          aria-label={`${
-            turnNotificationsMuted ? "unmute" : "mute"
-          } turn notification`}
-          data-tip={`${
-            turnNotificationsMuted ? "Unmute" : "Mute"
-          } turn notification`}
-          onClick={toggleTurnNotificationsMute}
-        >
-          <FontAwesomeIcon
-            icon={turnNotificationsMuted ? faVolumeMute : faVolumeUp}
-          />
-        </button>
-        <Popover
-          positions={["bottom"]}
-          content={<TutorialCard shadow />}
-          isOpen={!isOpen && showTutorialCard}
-          containerClassName="z-30 max-w-[300px] w-[50vw]"
-        >
+      <div className="wood-light-x rounded-t-xl flex justify-between h-full px-4 items-center">
+        <div className="flex">
           <button
             onClick={() => {
-              dispatch(setShowTutorialCard(true));
+              dispatch(toggleIsOpen());
+              if (isOpen) {
+                dispatch(setShowTutorialCard(false));
+              }
             }}
-            aria-label="display tutorial"
-            data-tip="Tutorial"
-            className={classNames(
-              "p-2 rounded-md hover:bg-primary hover:bg-opacity-50",
-              isOpen && showTutorialCard && "hidden"
-            )}
+            aria-label="toggle games list"
+            className="p-2 hover:bg-primary hover:bg-opacity-50 rounded-md"
+            data-tip="Toggle games list"
           >
-            <FontAwesomeIcon icon={faQuestion} />
+            <FontAwesomeIcon icon={faBars} />
+            <span className="absolute text-sm left-[10px] top-1">
+              {hamburgerNotification}
+            </span>
           </button>
-        </Popover>
-      </div>
-      <div className="flex">
-        <Popover
-          positions={["bottom"]}
-          containerClassName="z-30 px-2"
-          isOpen={authPrompt}
-          content={<AuthPrompt onDismiss={() => setAuthPrompt(false)} />}
-        >
           <button
-            onClick={() => setAuthPrompt(true)}
-            className={classNames(
-              "p-2 rounded-md hover:bg-primary hover:bg-opacity-50",
-              authPrompt && "bg-primary"
-            )}
-            type="button"
+            className="p-2 rounded-md hover:bg-primary hover:bg-opacity-50"
+            aria-label={`${
+              turnNotificationsMuted ? "unmute" : "mute"
+            } turn notification`}
+            data-tip={`${
+              turnNotificationsMuted ? "Unmute" : "Mute"
+            } turn notification`}
+            onClick={toggleTurnNotificationsMute}
           >
-            Login
+            <FontAwesomeIcon
+              icon={turnNotificationsMuted ? faVolumeMute : faVolumeUp}
+            />
           </button>
-        </Popover>
+          <Popover
+            positions={["bottom"]}
+            content={<TutorialCard shadow />}
+            isOpen={!isOpen && showTutorialCard}
+            containerClassName="z-30 max-w-[300px] w-[50vw]"
+          >
+            <button
+              onClick={() => {
+                dispatch(setShowTutorialCard(true));
+              }}
+              aria-label="display tutorial"
+              data-tip="Tutorial"
+              className={classNames(
+                "p-2 rounded-md hover:bg-primary hover:bg-opacity-50",
+                isOpen && showTutorialCard && "hidden"
+              )}
+            >
+              <FontAwesomeIcon icon={faQuestion} />
+            </button>
+          </Popover>
+        </div>
+        <div className="flex">
+          <Popover
+            positions={["bottom"]}
+            containerClassName="z-30 px-2"
+            isOpen={authPrompt}
+            content={<AuthPrompt onDismiss={() => setAuthPrompt(false)} />}
+          >
+            <Button
+            variant="dark"
+            texture="wood"
+              onClick={() => setAuthPrompt(true)}
+              className={classNames(
+                "p-2 rounded-md hover:bg-primary hover:bg-opacity-50",
+                authPrompt && "bg-primary"
+              )}
+            >
+              Login
+            </Button>
+          </Popover>
+        </div>
       </div>
     </div>
   );

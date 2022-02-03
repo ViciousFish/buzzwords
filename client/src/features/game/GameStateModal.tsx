@@ -98,7 +98,7 @@ const GameStateModal: React.FC<GameStateModalOwnprops> = ({
               <span>Play again?</span>
               <div>
                 <PlayButtons
-                  buttonClasses="bg-darkbrown text-white"
+                  buttonVariant="dark"
                   mode="shorttext"
                 />
               </div>
