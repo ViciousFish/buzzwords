@@ -130,7 +130,6 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({
   return (
     <>
       <Button
-        texture="wood"
         variant={buttonVariant}
         className={classNames(
           mode === "text" || mode === "shorttext"
@@ -158,7 +157,6 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({
         content={popoverContent}
       >
         <Button
-          texture="wood"
           variant={buttonVariant}
           className={classNames(
             mode === "text" || mode === "shorttext"
