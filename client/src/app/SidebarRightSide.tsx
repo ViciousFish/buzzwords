@@ -46,7 +46,7 @@ const SidebarRightSide: React.FC = ({ children }) => {
         (styles, value) =>
           value && (
             <a.div
-              className="absolute top-0 right-0 bottom-0 left-0 bg-black"
+              className="absolute top-[50px] right-0 h-full left-0 bg-black"
               onClick={onClick}
               // @ts-ignore
               style={styles}

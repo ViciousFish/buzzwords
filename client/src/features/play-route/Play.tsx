@@ -210,7 +210,7 @@ const Play: React.FC = () => {
 
   return (
     <div className="flex flex-auto flex-col lg:flex-row">
-      <div className="absolute top-1 right-1 text-sm bg-lightbg">
+      {/* <div className="absolute top-1 right-1 text-sm bg-lightbg">
         <span className="mr-1">
           {socketConnected ? "online" : "disconnected"}
         </span>
@@ -218,7 +218,8 @@ const Play: React.FC = () => {
           className={socketConnected ? "text-green-400" : "text-gray-400"}
           icon={faCircle}
         />
-      </div>
+      </div> */}
+      {/* CQx: status indicator in topbar */}
       {game && id && userIndex !== null && (
         <GameBoard id={id} game={game} userIndex={userIndex} />
       )}

@@ -23,7 +23,7 @@ const initialState: GameListState = {
   gamesLoaded: false,
   isOpen: window.innerWidth >= 1024,
   showCompletedGames: true,
-  showTutorialCard: true,
+  showTutorialCard: window.innerWidth >= 1024,
 };
 
 interface UpdateGamePayload {
