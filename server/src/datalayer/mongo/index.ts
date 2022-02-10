@@ -55,10 +55,38 @@ export default class Mongo implements DataLayer {
       throw new Error("Db not connected");
     }
     try {
-      const res = await Models.AuthToken.create({
-        token,
-        userId,
-      });
+      const res = await Models.AuthToken.create(
+        {
+          token,
+          userId,
+        },
+        {
+          session: options?.session,
+        }
+      );
+      return true;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async deleteAuthToken(token: string, options?: Options): Promise<boolean> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res = await Models.AuthToken.updateOne(
+        {
+          token,
+        },
+        {
+          deleted: true,
+        },
+        {
+          session: options?.session,
+        }
+      );
       return true;
     } catch (e) {
       console.log(e);
@@ -125,6 +153,16 @@ export default class Mongo implements DataLayer {
       const res = await Models.AuthToken.findOne(
         {
           token,
+          $or: [
+            {
+              deleted: false,
+            },
+            {
+              deleted: {
+                $exists: false,
+              },
+            },
+          ],
         },
         null,
         {

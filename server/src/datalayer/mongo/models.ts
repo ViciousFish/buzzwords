@@ -116,6 +116,10 @@ const authTokenSchema = new Schema<AuthToken>({
     required: true,
     default: () => new Date(),
   },
+  deleted: {
+    type: Boolean,
+    default: () => false,
+  },
 });
 
 const AuthTokenModel = model<AuthToken>("AuthToken", authTokenSchema);

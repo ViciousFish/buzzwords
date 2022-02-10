@@ -71,6 +71,7 @@ app.use(async (req, res, next) => {
   const userId = authToken ? await dl.getUserIdByAuthToken(authToken) : null;
 
   res.locals.userId = userId;
+  res.locals.authToken = authToken;
   next();
 });
 
@@ -502,6 +503,14 @@ app.post(config.apiPrefix + "/game/:id/move", async (req, res) => {
     io.to(user).emit("game updated", newGame);
   });
   doBotMoves(gameId);
+});
+
+app.get(config.apiPrefix + "/logout", async (req, res) => {
+  res.clearCookie("authToken");
+  const authToken = res.locals.authToken;
+  const success = await dl.deleteAuthToken(authToken);
+  res.sendStatus(success ? 200 : 500);
+  return;
 });
 
 app.get(

@@ -10,12 +10,17 @@ export interface AuthToken {
   token: string;
   userId: string;
   createdDate: Date;
+  deleted?: boolean;
 }
 
 export interface DataLayer {
   createAuthToken(
     token: string,
     userId: string,
+    options?: Record<string, unknown>
+  ): Promise<boolean>;
+  deleteAuthToken(
+    token: string,
     options?: Record<string, unknown>
   ): Promise<boolean>;
   assumeUser(

@@ -1,5 +1,5 @@
 import Game from "buzzwords-shared/Game";
-import { DataLayer, User } from "../types";
+import { AuthToken, DataLayer, User } from "../types";
 
 export default class Memory implements DataLayer {
   games: {
@@ -9,7 +9,7 @@ export default class Memory implements DataLayer {
     [key: string]: User;
   };
   authTokens: {
-    [key: string]: string;
+    [key: string]: AuthToken;
   } = {};
   constructor() {
     this.games = {};
@@ -21,7 +21,23 @@ export default class Memory implements DataLayer {
     userId: string,
     options?: Record<string, unknown>
   ): Promise<boolean> {
-    this.authTokens[token] = userId;
+    this.authTokens[token] = {
+      token,
+      userId,
+      createdDate: new Date(),
+      deleted: false,
+    };
+    return true;
+  }
+
+  async deleteAuthToken(
+    token: string,
+    options?: Record<string, unknown>
+  ): Promise<boolean> {
+    this.authTokens[token] = {
+      ...(this.authTokens[token] || {}),
+      deleted: true,
+    };
     return true;
   }
 
@@ -37,9 +53,9 @@ export default class Memory implements DataLayer {
       }
       this.games[gameId] = game;
     }
-    for (const [id, userId] of Object.entries(this.authTokens)) {
-      if (userId == assumeeId) {
-        this.authTokens[id] = assumerId;
+    for (const [id, authToken] of Object.entries(this.authTokens)) {
+      if (authToken.userId == assumeeId) {
+        this.authTokens[id].userId = assumerId;
       }
     }
     return true;
@@ -49,7 +65,8 @@ export default class Memory implements DataLayer {
     token: string,
     options?: Record<string, unknown>
   ): Promise<string | null> {
-    return this.authTokens[token];
+    const authToken = this.authTokens[token];
+    return authToken.deleted ? null : authToken.userId;
   }
 
   async getUserById(
