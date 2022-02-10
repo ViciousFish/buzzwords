@@ -21,6 +21,7 @@ import { HexCoord } from "buzzwords-shared/types";
 import GameManager from "./GameManager";
 import BannedWords from "./banned_words.json";
 import { WordsObject } from "./words";
+import { isAnonymousUser } from "./util";
 
 const COLLECTION = "socket.io-adapter-events";
 
@@ -82,13 +83,13 @@ app.get(config.apiPrefix + "/", (req, res) => {
 });
 
 app.get(config.apiPrefix + "/user", async (req, res) => {
-  let user = res.locals.userId as string;
+  let userId = res.locals.userIdId as string;
   let authToken = null;
-  if (!user) {
-    user = nanoid();
+  if (!userId) {
+    userId = nanoid();
     authToken = nanoid(40);
-    await dl.createAuthToken(authToken, user);
-    res.locals.userId = user;
+    await dl.createAuthToken(authToken, userId);
+    res.locals.userId = userId;
   }
   // migrate cookie users to local by echoing back their authToken
   if (!req.headers.authorization && req.signedCookies.authToken) {
@@ -98,10 +99,9 @@ app.get(config.apiPrefix + "/user", async (req, res) => {
     maxAge: 1000 * 60 * 60 * 24 * 365 * 15, // 15 years
     signed: true,
   });
-  const nickname = await dl.getNickName(user);
+  const user = await dl.getUserById(userId);
   res.send({
-    id: user,
-    nickname,
+    ...user,
     authToken,
   });
 });
@@ -555,6 +555,13 @@ if (config.googleClientId && config.googleClientSecret) {
         const userId = (res?.locals.userId ?? nanoid()) as string;
         if (!userId) {
           res.locals.userId = userId;
+        }
+        const u = await dl.getUserById(userId);
+        const isAnon = u ? isAnonymousUser(u) : true;
+        if (!isAnon) {
+          // You're already logged in. Can't log in twice!
+          done(null, u);
+          return;
         }
         dl.getUserByGoogleId(profile.id)
           .then((user) => {
