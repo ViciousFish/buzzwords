@@ -2,7 +2,7 @@ import classNames from "classnames";
 import React, { ButtonHTMLAttributes } from "react";
 
 interface ButtonProps {
-  variant?: "light" | "dark";
+  variant?: "light" | "dark" | 'quiet';
   texture?: "plain" | "wood";
 }
 
@@ -11,6 +11,7 @@ const Button = React.forwardRef<
   ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps
 >(({ variant, texture, className, disabled, ...props }, ref) => {
   let bg = "bg-primary hover:bg-opacity-50";
+  let shadow = 'inset-shadow'
   if (texture === "wood") {
     if (variant === "light" || variant === undefined) {
       bg = "wood-med-x";
@@ -22,6 +23,10 @@ const Button = React.forwardRef<
     if (variant === "dark") {
       bg = "bg-darkbrown text-white hover:bg-opacity-50";
     }
+    if (variant === 'quiet') {
+      bg = 'bg-opacity-50'
+      shadow = ''
+    }
     if (disabled) {
       bg = "bg-gray-300";
     }
@@ -30,9 +35,9 @@ const Button = React.forwardRef<
     <button
       ref={ref}
       className={classNames(
-        "rounded-full p-2 m-1 inset-shadow cursor-default transition-all",
+        "rounded-full p-2 m-1 cursor-default transition-all",
         "active:transform active:scale-90 active:bg-opacity-100",
-        bg,
+        bg, shadow,
         className
       )}
       disabled={disabled}

@@ -59,10 +59,10 @@ const TopBar: React.FC = () => {
       className={classNames(
         "fixed top-0 z-30",
         "bg-black text-darkbrown",
-        "h-[50px] w-screen  shadow"
+        "h-[50px] w-screen shadow-md"
       )}
     >
-      <div className="wood-light-x rounded-t-xl flex justify-between h-full px-4 items-center">
+      <div className="bg-darkbg rounded-t-xl flex justify-between h-full px-4 items-center">
         <div className="flex">
           <button
             onClick={() => {
@@ -123,8 +123,7 @@ const TopBar: React.FC = () => {
             content={<AuthPrompt onDismiss={() => setAuthPrompt(false)} />}
           >
             <Button
-            variant="dark"
-            texture="wood"
+              variant="quiet"
               onClick={() => setAuthPrompt(true)}
               className={classNames(
                 "p-2 rounded-md hover:bg-primary hover:bg-opacity-50",
