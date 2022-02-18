@@ -14,7 +14,7 @@ import {
   Vector3 as V3Type,
 } from "@react-three/fiber";
 import { FontLoader } from "three";
-import { useSpring, animated as a } from "@react-spring/three";
+import { useSpring, animated as a, useTransition } from "@react-spring/three";
 import { config as springConfig } from "@react-spring/core";
 
 import HexTile from "../../assets/HexTile";
@@ -155,8 +155,16 @@ const GameTile: React.FC<GameTileProps> = ({
 
   const outline = isPlayerIdentity && currentTurn === owner;
 
-  const outlineScaleSpring = useSpring({
-    scale: outline ? [1, 1, 1] : [0, 0, 0],
+  const outlineTransition = useTransition(outline, {
+    from: {
+      scale: [0, 0, 0],
+    },
+    enter: {
+      scale: [1, 1, 1],
+    },
+    leave: {
+      scale: [0, 0, 0],
+    },
   });
 
   const isAnimating = useRef(false);
@@ -273,7 +281,7 @@ const GameTile: React.FC<GameTileProps> = ({
         </HexTile>
       </group>
       {/* @ts-ignore */}
-      <a.group {...outlineScaleSpring}>
+      {outlineTransition((styles, item) => item && <a.group {...styles}>
         {/* <HexOutline /> */}
         <HexOutlineSolid>
           <a.meshStandardMaterial
@@ -281,7 +289,7 @@ const GameTile: React.FC<GameTileProps> = ({
             color={colorAndScaleSpring.color}
           />
         </HexOutlineSolid>
-      </a.group>
+      </a.group>)}
     </a.group>
   );
 };
