@@ -90,6 +90,7 @@ app.get(config.apiPrefix + "/user", async (req, res) => {
     userId = nanoid();
     authToken = nanoid(40);
     await dl.createAuthToken(authToken, userId);
+    await dl.setNickName(userId, "");
     res.locals.userId = userId;
   }
   // migrate cookie users to local by echoing back their authToken

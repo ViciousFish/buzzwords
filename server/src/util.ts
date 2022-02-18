@@ -30,5 +30,5 @@ export const withRetry =
   };
 
 export const isAnonymousUser = (user: User): boolean => {
-  return Boolean(user.googleId);
+  return !user.googleId;
 };
