@@ -2,7 +2,7 @@ import Game from "buzzwords-shared/Game";
 
 export interface User {
   id: string;
-  nickname: string;
+  nickname?: string;
   googleId?: string;
 }
 
@@ -15,6 +15,8 @@ export interface AuthToken {
 }
 
 export interface DataLayer {
+  createUser(id: string, options?: Record<string, unknown>): Promise<User>;
+  deleteUser(id: string, options?: Record<string, unknown>): Promise<boolean>;
   createAuthToken(
     token: string,
     userId: string,

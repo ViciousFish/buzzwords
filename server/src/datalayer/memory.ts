@@ -16,6 +16,24 @@ export default class Memory implements DataLayer {
     this.users = {};
   }
 
+  async createUser(
+    id: string,
+    option?: Record<string, unknown>
+  ): Promise<User> {
+    this.users[id] = {
+      id,
+    };
+    return this.users[id];
+  }
+
+  async deleteUser(
+    id: string,
+    option?: Record<string, unknown>
+  ): Promise<boolean> {
+    delete this.users[id];
+    return true;
+  }
+
   async createAuthToken(
     token: string,
     userId: string,
@@ -127,7 +145,7 @@ export default class Memory implements DataLayer {
   }
 
   async getNickName(id: string): Promise<string | null> {
-    return this.users[id]?.nickname;
+    return this.users[id]?.nickname || null;
   }
 
   async getGamesByUserId(id: string): Promise<Game[]> {

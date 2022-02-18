@@ -92,7 +92,6 @@ const userSchema = new Schema<User>({
   },
   nickname: {
     type: String,
-    required: true,
   },
   googleId: {
     type: String,

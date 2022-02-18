@@ -46,6 +46,48 @@ export default class Mongo implements DataLayer {
     }
   }
 
+  async createUser(id: string, options?: Options): Promise<User> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res = await Models.User.create(
+        [
+          {
+            id,
+          },
+        ],
+        {
+          session: options?.session,
+        }
+      );
+      return res[0].toObject();
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async deleteUser(id: string, options?: Options): Promise<boolean> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res = await Models.User.deleteOne(
+        {
+          id,
+        },
+        {
+          session: options?.session,
+        }
+      );
+      return res.deletedCount === 1;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
   async createAuthToken(
     token: string,
     userId: string,

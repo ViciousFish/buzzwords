@@ -90,7 +90,6 @@ app.get(config.apiPrefix + "/user", async (req, res) => {
     userId = nanoid();
     authToken = nanoid(40);
     await dl.createAuthToken(authToken, userId);
-    await dl.setNickName(userId, "");
     res.locals.userId = userId;
   }
   // migrate cookie users to local by echoing back their authToken
@@ -103,6 +102,7 @@ app.get(config.apiPrefix + "/user", async (req, res) => {
   });
   const user = await dl.getUserById(userId);
   res.send({
+    id: userId,
     ...user,
     authToken,
   });
@@ -609,7 +609,12 @@ if (config.googleClientId && config.googleClientSecret) {
           });
           return;
         }
-        const u = await dl.getUserById(userId, { session });
+        let u = await dl.getUserById(userId, { session });
+        if (!u) {
+          // If user doesn't exist, create one!
+          u = await dl.createUser(userId, { session });
+        }
+
         const isAnon = u ? isAnonymousUser(u) : true;
         if (!isAnon) {
           // You're already logged in. Can't log in twice!
@@ -644,6 +649,7 @@ if (config.googleClientId && config.googleClientSecret) {
               done(null, user);
             } else {
               await dl.assumeUser(userId, user.id, { session });
+              await dl.deleteUser(userId, { session });
               const success = await dl.commitContext(session);
               if (!success) {
                 done({
