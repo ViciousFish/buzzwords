@@ -506,7 +506,7 @@ app.post(config.apiPrefix + "/game/:id/move", async (req, res) => {
   doBotMoves(gameId);
 });
 
-app.get(config.apiPrefix + "/logout", async (req, res) => {
+app.post(config.apiPrefix + "/logout", async (req, res) => {
   res.clearCookie("authToken");
   const authToken = res.locals.authToken;
   const success = await dl.deleteAuthToken(authToken);

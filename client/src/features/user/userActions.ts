@@ -1,4 +1,5 @@
 import * as R from "ramda";
+import { toast } from "react-toastify";
 import { Api } from "../../app/Api";
 
 import { getApiUrl } from "../../app/apiPrefix";
@@ -62,6 +63,6 @@ export const logout = (): AppThunk => async () => {
     deleteAuthToken();
     window.location.reload();
   } catch (e) {
-    throw e.response?.data?.message ?? e.toString();
+    toast(e.response?.data?.message ?? e.toString(), { type: "error" });
   }
 };
