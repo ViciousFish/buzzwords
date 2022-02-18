@@ -1,38 +1,22 @@
 import {
   faAngleDown,
   faAngleRight,
-  faBars,
-  faCircle,
-  faDotCircle,
   faHome,
-  faQuestion,
   faSpinner,
-  faVolumeMute,
-  faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import React, { useCallback } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
 import { animated as a, useSpring } from "@react-spring/web";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import Button from "../../presentational/Button";
-import {
-  setShowTutorialCard,
-  toggleCompletedGames,
-  toggleIsOpen,
-} from "./gamelistSlice";
+import { toggleCompletedGames } from "./gamelistSlice";
 import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
 import GameListItem from "./GameListItem";
 import TutorialCard from "./TutorialCard";
 import PlayButtons from "../home-route/PlayButtons";
-import {
-  getHowManyGamesAreMyTurn,
-  getUnseenMoveCount,
-} from "./gamelistSelectors";
-import { setTurnNotificationsMute } from "../game/gameSlice";
 
 const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
 const BeeLazy = React.lazy(() => import("../../assets/Bee"));
@@ -50,18 +34,8 @@ const GameList: React.FC = () => {
   const showTutorialCard = useAppSelector(
     (state) => state.gamelist.showTutorialCard
   );
-  const currentTurnCount = useAppSelector(getHowManyGamesAreMyTurn);
-  const currentUnseenCount = useAppSelector(getUnseenMoveCount);
-  const turnNotificationsMuted = useAppSelector(
-    (state) => state.game.turnNotificationsMuted
-  );
-
   const incompleteGames = Object.values(games).filter((game) => !game.gameOver);
   const completedGames = Object.values(games).filter((game) => game.gameOver);
-
-  const toggleTurnNotificationsMute = useCallback(() => {
-    dispatch(setTurnNotificationsMute(!turnNotificationsMuted));
-  }, [dispatch, turnNotificationsMuted]);
 
   const safeAreaLeft = Number(
     getComputedStyle(document.documentElement)
@@ -78,32 +52,12 @@ const GameList: React.FC = () => {
     config,
   });
 
-  const hamburgerSpring = useSpring({
-    transform: isOpen
-      ? "translateX(0px)"
-      : `translateX(${45 + safeAreaLeft}px)`,
-    config,
-  });
-
-  let hamburgerNotification;
-  if (!isOpen && (currentTurnCount || currentUnseenCount)) {
-    hamburgerNotification = (
-      <FontAwesomeIcon
-        className={classNames(
-          currentUnseenCount ? "text-blue-500" : "text-yellow-700",
-          "drop-shadow"
-        )}
-        icon={faCircle}
-      />
-    );
-  }
-
   return (
     <a.div
       className="w-[300px] flex-shrink-0 z-10 bg-darkbg"
       style={containerSpring}
     >
-      <ScreenHeightWraper className="flex flex-col">
+      <ScreenHeightWraper insetTop={50} className="flex flex-col">
         <header className="z-10 flex flex-shrink-0 px-2 py-2 space-x-1">
           <a
             className="block p-2 rounded-md hover:bg-primary hover:bg-opacity-50 text-darkbrown"
@@ -126,20 +80,6 @@ const GameList: React.FC = () => {
             <FontAwesomeIcon icon={faTwitter} />
           </a>
           <div className="flex-auto" />
-          <button
-            className="block p-2 rounded-md hover:bg-primary hover:bg-opacity-50 text-darkbrown"
-            aria-label={`${
-              turnNotificationsMuted ? "unmute" : "mute"
-            } turn notification`}
-            data-tip={`${
-              turnNotificationsMuted ? "Unmute" : "Mute"
-            } turn notification`}
-            onClick={toggleTurnNotificationsMute}
-          >
-            <FontAwesomeIcon
-              icon={turnNotificationsMuted ? faVolumeMute : faVolumeUp}
-            />
-          </button>
           <NavLink
             className={({ isActive }) =>
               classNames(
@@ -155,19 +95,6 @@ const GameList: React.FC = () => {
           >
             <FontAwesomeIcon icon={faHome} />
           </NavLink>
-          <a.div style={hamburgerSpring}>
-            <button
-              onClick={() => dispatch(toggleIsOpen())}
-              aria-label="toggle games list"
-              className="text-darkbrown p-2 hover:bg-primary hover:bg-opacity-50 rounded-md"
-              data-tip="Toggle games list"
-            >
-              <FontAwesomeIcon icon={faBars} />
-              <span className="absolute text-sm right-0 top-1">
-                {hamburgerNotification}
-              </span>
-            </button>
-          </a.div>
         </header>
         <nav className="flex flex-col flex-auto overflow-y-auto">
           <div className="h-[150px] no-touch">
@@ -187,23 +114,10 @@ const GameList: React.FC = () => {
                 <div className="flex space-x-1">
                   <PlayButtons
                     mode="icon"
-                    buttonClasses="bg-darkbrown text-white"
+                    buttonVariant="dark"
                   />
                 </div>
               </div>
-              <Button
-                onClick={() => {
-                  dispatch(setShowTutorialCard(true));
-                }}
-                aria-label="display tutorial"
-                data-tip="Tutorial"
-                className={classNames(
-                  "w-[42px] h-[42px] inline-flex items-center justify-center",
-                  showTutorialCard && "hidden"
-                )}
-              >
-                <FontAwesomeIcon className="mx-1" icon={faQuestion} />
-              </Button>
             </div>
             {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
             <ul className="px-2">
@@ -247,7 +161,7 @@ const GameList: React.FC = () => {
               </ul>
             )}
           </div>
-          {showTutorialCard && <TutorialCard />}
+          {showTutorialCard && isOpen && <TutorialCard />}
           <div className="p-2 text-sm text-center text-gray-800">
             by{" "}
             <a className="underline" href="https://chuckdries.com">

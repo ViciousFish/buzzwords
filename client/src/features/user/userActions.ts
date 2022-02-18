@@ -1,5 +1,5 @@
-import axios from "axios";
 import * as R from "ramda";
+import { toast } from "react-toastify";
 import { Api } from "../../app/Api";
 
 import { getApiUrl } from "../../app/apiPrefix";
@@ -18,6 +18,12 @@ export const getUser = (): AppThunk => async (dispatch) => {
   }
 
   dispatch(userReceived(R.omit(["authToken"], user)));
+};
+
+export const getGoogleLoginURL = (): AppThunk => async (dispatch) => {
+  const { data } = await Api.post<{ url: string }>(getApiUrl("/login/google"));
+
+  window.location.href = data.url;
 };
 
 export const setNickname =
@@ -49,3 +55,14 @@ export const fetchOpponent =
 export const storeAuthToken = (token: string) =>
   localStorage.setItem("authToken", token);
 export const retrieveAuthToken = () => localStorage.getItem("authToken");
+export const deleteAuthToken = () => localStorage.removeItem("authToken");
+
+export const logout = (): AppThunk => async () => {
+  try {
+    await Api.post(getApiUrl("/logout"));
+    deleteAuthToken();
+    window.location.reload();
+  } catch (e) {
+    toast(e.response?.data?.message ?? e.toString(), { type: "error" });
+  }
+};

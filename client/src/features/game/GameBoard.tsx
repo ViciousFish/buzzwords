@@ -62,7 +62,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   const selfName = nickname ?? "You";
   const opponentName = game.vsAI ? "Computer" : opponent?.nickname ?? "Them";
   return (
-    <div className="h-[80vh] lg:h-screen flex-auto overflow-hidden">
+    <div className="h-[80vh] lg:h-[calc(100vh-50px)] flex-auto overflow-hidden">
       <Canvas key={`play-${id}`}>
         {/* <CameraControls /> */}
         <React.Suspense

@@ -12,12 +12,15 @@ import TutorialModal from "../features/game/TutorialModal";
 import { getUnseenMoveCount } from "../features/gamelist/gamelistSelectors";
 import { handleWindowFocusThunk } from "../features/game/gameActions";
 import ReactTooltip from "react-tooltip";
+import TopBar from "../features/topbar/TopBar";
 
 // not necessary, as long as there's always a 3d canvas on screen!
 // import.meta.env.PROD &&
 //   Globals.assign({
 //     frameLoop: "always",
 //   });
+
+const isTouch = window.matchMedia("(pointer: coarse)").matches;
 
 FaviconNotification.init({
   color: "#0000CC",
@@ -59,7 +62,8 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="App flex overflow-hidden max-w-[100vw] flex-row safe-area-pad">
+      <TopBar />
+      <div className="App mt-[50px] flex overflow-hidden max-w-[100vw] flex-row safe-area-pad">
         <GameList />
         <SidebarRightSide>
           <React.Suspense fallback={<></>}>
@@ -72,7 +76,7 @@ function App() {
       </div>
       <ToastContainer toastClassName="bg-primary text-darkbrown rounded-lg" />
       {showingTutorialModal && <TutorialModal />}
-      <ReactTooltip />
+      {!isTouch && <ReactTooltip />}
     </BrowserRouter>
   );
 }

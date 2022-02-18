@@ -9,7 +9,7 @@ const TutorialModal: React.FC = () => {
   const dispatch = useAppDispatch();
   return (
     <Modal>
-      <div className="rounded-xl bg-lightbg flex-shrink-0">
+      <div className="rounded-xl bg-lightbg flex-shrink-0 flex flex-col items-center">
         <p className="px-8 py-4 text-center max-w-[560px]">
           It looks like this is your first time playing.
           <br /> Watch a quick minute-ish tutorial?

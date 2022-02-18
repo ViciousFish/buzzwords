@@ -23,7 +23,7 @@ const initialState: GameListState = {
   gamesLoaded: false,
   isOpen: window.innerWidth >= 1024,
   showCompletedGames: true,
-  showTutorialCard: true,
+  showTutorialCard: window.innerWidth >= 1024,
 };
 
 interface UpdateGamePayload {
@@ -36,7 +36,10 @@ export const gamelistSlice = createSlice({
   name: "gamelist",
   initialState,
   reducers: {
-    refreshReceived: (state, action: PayloadAction<Record<string, ClientGame>>) => {
+    refreshReceived: (
+      state,
+      action: PayloadAction<Record<string, ClientGame>>
+    ) => {
       state.games = action.payload;
       state.gamesLoaded = true;
     },
@@ -47,7 +50,7 @@ export const gamelistSlice = createSlice({
         lastSeenTurn: action.payload.lastSeenTurn,
       };
       if (action.payload.gameStateModalToQueue) {
-        game.queuedGameStateModals.push(action.payload.gameStateModalToQueue)
+        game.queuedGameStateModals.push(action.payload.gameStateModalToQueue);
       }
       state.games[action.payload.game.id] = game;
     },
@@ -61,14 +64,14 @@ export const gamelistSlice = createSlice({
       state.showCompletedGames = action.payload;
     },
     shiftGameStateModalQueueForGame: (state, action: PayloadAction<string>) => {
-      state.games[action.payload].queuedGameStateModals.shift()
+      state.games[action.payload].queuedGameStateModals.shift();
     },
     setShowTutorialCard: (state, action: PayloadAction<boolean>) => {
       state.showTutorialCard = action.payload;
     },
     deleteGame: (state, action: PayloadAction<string>) => {
-      delete state.games[action.payload]
-    }
+      delete state.games[action.payload];
+    },
   },
 });
 

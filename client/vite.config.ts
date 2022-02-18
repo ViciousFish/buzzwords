@@ -6,16 +6,16 @@ export default ({ command, mode }) => {
   console.log(mode);
   return defineConfig({
     server: {
-      // proxy: {
-      //   "/api": {
-      //     target: "http://localhost:8080",
-      //     ws: true,
-      //   },
-      //   "/socket.io": {
-      //     target: "http://localhost:8080",
-      //     ws: true,
-      //   },
-      // },
+      proxy: {
+        "/api": {
+          target: "http://localhost:8080",
+          ws: true,
+        },
+        "/socket.io": {
+          target: "http://localhost:8080",
+          ws: true,
+        },
+      },
     },
     plugins: [
       // {

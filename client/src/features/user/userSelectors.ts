@@ -6,11 +6,18 @@ export const getAllUsers = createSelector(
   (state: RootState) => state.user.user,
   (opponents, selfUser) => {
     const allUsers = {
-      ...opponents
-    }
+      ...opponents,
+    };
     if (selfUser) {
-      allUsers[selfUser.id] = selfUser
+      allUsers[selfUser.id] = selfUser;
     }
     return allUsers;
   }
-)
+);
+
+export const isUserLoggedIn = createSelector(
+  (state: RootState) => state.user.user,
+  (self) => {
+    return self ? Boolean(self.googleId) : null;
+  }
+);

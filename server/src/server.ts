@@ -9,16 +9,19 @@ import cookie from "cookie";
 import { createAdapter } from "@socket.io/mongo-adapter";
 import { MongoClient } from "mongodb";
 import cors from "cors";
+import passport from "passport";
+import { OAuth2Strategy } from "passport-google-oauth";
 
 import getConfig from "./config";
 import DL from "./datalayer";
 import Game from "buzzwords-shared/Game";
 import { getBotMove } from "buzzwords-shared/bot";
-import { DataLayer } from "./types";
+import { DataLayer, User } from "./types";
 import { HexCoord } from "buzzwords-shared/types";
 import GameManager from "./GameManager";
 import BannedWords from "./banned_words.json";
 import { WordsObject } from "./words";
+import { isAnonymousUser } from "./util";
 
 const COLLECTION = "socket.io-adapter-events";
 
@@ -68,40 +71,40 @@ app.use(async (req, res, next) => {
   const userId = authToken ? await dl.getUserIdByAuthToken(authToken) : null;
 
   res.locals.userId = userId;
+  res.locals.authToken = authToken;
   next();
 });
 
-app.get("/healthz", (req, res) => {
+app.get(config.apiPrefix + "/healthz", (req, res) => {
   res.sendStatus(200);
 });
 
-app.get("/", (req, res) => {
+app.get(config.apiPrefix + "/", (req, res) => {
   res.sendStatus(200);
 });
 
-app.get("/user", async (req, res) => {
-  let user = res.locals.userId as string;
+app.get(config.apiPrefix + "/user", async (req, res) => {
+  let userId = res.locals.userId as string;
   let authToken = null;
-  if (!user) {
-    user = nanoid();
+  if (!userId) {
+    userId = nanoid();
     authToken = nanoid(40);
-    await dl.createAuthToken(authToken, user);
-    res.locals.userId = user;
+    await dl.createAuthToken(authToken, userId);
+    res.locals.userId = userId;
   }
   // migrate cookie users to local by echoing back their authToken
   if (!req.headers.authorization && req.signedCookies.authToken) {
     authToken = req.signedCookies.authToken;
-    res.clearCookie("authToken");
   }
-  const nickname = await dl.getNickName(user);
+  const user = await dl.getUserById(userId);
   res.send({
-    id: user,
-    nickname,
+    id: userId,
+    ...user,
     authToken,
   });
 });
 
-app.post("/user/nickname", async (req, res) => {
+app.post(config.apiPrefix + "/user/nickname", async (req, res) => {
   const user = res.locals.userId as string;
   const nickname = (req.body || {})?.nickname as string | null;
   if (!nickname) {
@@ -128,7 +131,7 @@ app.post("/user/nickname", async (req, res) => {
   }
 });
 
-app.get("/user/:id", async (req, res) => {
+app.get(config.apiPrefix + "/user/:id", async (req, res) => {
   const nickname = await dl.getNickName(req.params.id);
   res.send({
     id: req.params.id,
@@ -136,7 +139,7 @@ app.get("/user/:id", async (req, res) => {
   });
 });
 
-app.get("/games", async (req, res) => {
+app.get(config.apiPrefix + "/games", async (req, res) => {
   const user = res.locals.userId as string;
   const games = await dl.getGamesByUserId(user);
   const userIds: string[] = R.pipe(
@@ -168,7 +171,7 @@ app.get("/games", async (req, res) => {
   });
 });
 
-app.get("/game/:id", async (req, res) => {
+app.get(config.apiPrefix + "/game/:id", async (req, res) => {
   const gameId = req.params.id;
   const game = await dl.getGameById(gameId);
   if (game) {
@@ -178,7 +181,7 @@ app.get("/game/:id", async (req, res) => {
   }
 });
 
-app.post("/game", async (req, res) => {
+app.post(config.apiPrefix + "/game", async (req, res) => {
   const user = res.locals.userId as string;
   const session = await dl.createContext();
   const games = await dl.getGamesByUserId(user, {
@@ -241,7 +244,7 @@ app.post("/game", async (req, res) => {
   }
 });
 
-app.post("/game/:id/delete", async (req, res) => {
+app.post(config.apiPrefix + "/game/:id/delete", async (req, res) => {
   const user = res.locals.userId as string;
   const gameId = req.params.id;
   const session = await dl.createContext();
@@ -276,7 +279,7 @@ app.post("/game/:id/delete", async (req, res) => {
   return;
 });
 
-app.post("/game/:id/join", async (req, res) => {
+app.post(config.apiPrefix + "/game/:id/join", async (req, res) => {
   const user = res.locals.userId as string;
   const gameId = req.params.id;
   const success = await dl.joinGame(user, gameId);
@@ -291,7 +294,7 @@ app.post("/game/:id/join", async (req, res) => {
   }
 });
 
-app.post("/game/join", async (req, res) => {
+app.post(config.apiPrefix + "/game/join", async (req, res) => {
   const user = res.locals.userId as string;
   const success = await dl.joinRandomGame(user);
   res.sendStatus(success ? 201 : 404);
@@ -321,7 +324,7 @@ const pass = async (gameId: string, userId: string) => {
   });
 };
 
-app.post("/game/:id/pass", async (req, res) => {
+app.post(config.apiPrefix + "/game/:id/pass", async (req, res) => {
   const user = res.locals.userId as string;
   const gameId = req.params.id;
 
@@ -410,7 +413,7 @@ const doBotMoves = async (gameId: string): Promise<void> => {
   await dl.commitContext(session);
 };
 
-app.post("/game/:id/nudge", async (req, res) => {
+app.post(config.apiPrefix + "/game/:id/nudge", async (req, res) => {
   const user = res.locals.userId as string;
   const gameId = req.params.id;
 
@@ -443,7 +446,7 @@ app.post("/game/:id/nudge", async (req, res) => {
   res.sendStatus(201);
 });
 
-app.post("/game/:id/move", async (req, res) => {
+app.post(config.apiPrefix + "/game/:id/move", async (req, res) => {
   const user = res.locals.userId as string;
   const gameId = req.params.id;
   const parsedMove: HexCoord[] = [];
@@ -498,6 +501,165 @@ app.post("/game/:id/move", async (req, res) => {
   });
   doBotMoves(gameId);
 });
+
+app.post(config.apiPrefix + "/logout", async (req, res) => {
+  res.clearCookie("authToken");
+  const authToken = res.locals.authToken;
+  const success = await dl.deleteAuthToken(authToken);
+  res.sendStatus(success ? 200 : 500);
+  return;
+});
+
+app.get(
+  config.apiPrefix + "/login/google",
+  passport.authenticate("google", { scope: ["profile"], state: "FOOBAR" })
+);
+
+app.post(config.apiPrefix + "/login/google", async (req, res) => {
+  const authToken = res.locals.authToken;
+
+  if (!authToken) {
+    // You have to call the /user endpoint first to get an anonymous authToken
+    res.sendStatus(400);
+    return;
+  }
+
+  const state = nanoid(40);
+
+  const success = await dl.setAuthTokenState(authToken, state);
+  if (!success) {
+    res.sendStatus(500);
+    return;
+  }
+
+  res.json({
+    url:
+      "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&scope=profile&flowName=GeneralOAuthFlow&client_id=" +
+      config.googleClientId +
+      "&redirect_uri=" +
+      config.googleCallbackUrl +
+      "&state=" +
+      state,
+  });
+  return;
+});
+
+app.get(
+  config.apiPrefix + "/login/google/redirect",
+  passport.authenticate("google", {
+    failureRedirect: "/",
+    failureMessage: true,
+  }),
+  function (req, res) {
+    res.redirect("/");
+  }
+);
+
+passport.serializeUser((user, done) => {
+  console.log("SERIALIZE", user);
+  const u = user as User;
+  done(null, u.id);
+});
+
+passport.deserializeUser((id: string, done) => {
+  console.log("DESERIALIZE", id);
+  dl.getUserById(id)
+    .then((user) => {
+      done(null, user);
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
+if (config.googleClientId && config.googleClientSecret) {
+  passport.use(
+    new OAuth2Strategy(
+      {
+        clientID: config.googleClientId,
+        clientSecret: config.googleClientSecret,
+        callbackURL: config.googleCallbackUrl,
+        passReqToCallback: true,
+      },
+      async (req, _, __, profile, done) => {
+        const state = req.query.state;
+        if (!state || Array.isArray(state)) {
+          done("Invalid state param");
+          return;
+        }
+
+        const session = await dl.createContext();
+        const authToken = await dl.getAuthTokenByState(state as string, {
+          session,
+        });
+        if (!authToken) {
+          dl.commitContext(session).finally(() => {
+            done("Invalid state param");
+          });
+          return;
+        }
+        const userId = authToken.userId;
+        if (!userId) {
+          dl.commitContext(session).finally(() => {
+            done("Invalid state param");
+          });
+          return;
+        }
+        let u = await dl.getUserById(userId, { session });
+        if (!u) {
+          // If user doesn't exist, create one!
+          u = await dl.createUser(userId, { session });
+        }
+
+        const isAnon = u ? isAnonymousUser(u) : true;
+        if (!isAnon) {
+          // You're already logged in. Can't log in twice!
+          dl.commitContext(session).finally(() => {
+            done(null, u);
+          });
+          return;
+        }
+        dl.getUserByGoogleId(profile.id)
+          .then(async (user) => {
+            if (!user) {
+              let success = await dl.setUserGoogleId(userId, profile.id, {
+                session,
+              });
+
+              if (!success) {
+                done({ message: "error setting google id on user" });
+              }
+              const result = await dl.getUserById(userId, {
+                session,
+              });
+              user = result;
+              await dl.assumeUser(userId, (user as unknown as User).id, {
+                session,
+              });
+              success = await dl.commitContext(session);
+              if (!success) {
+                done({
+                  message: "error committing transaction for google login",
+                });
+              }
+              done(null, user);
+            } else {
+              await dl.assumeUser(userId, user.id, { session });
+              await dl.deleteUser(userId, { session });
+              const success = await dl.commitContext(session);
+              if (!success) {
+                done({
+                  message: "error committing transaction for google login",
+                });
+              }
+              done(null, user);
+            }
+          })
+          .catch((err) => done(err));
+      }
+    )
+  );
+}
 
 interface SelectionEventProps {
   gameId: string;

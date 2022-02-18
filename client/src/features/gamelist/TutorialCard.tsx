@@ -1,5 +1,6 @@
 import { faFilm, faTimes, faVideo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import React from "react";
 import { useAppDispatch } from "../../app/hooks";
 import { toggleTutorialModal } from "../game/gameSlice";
@@ -7,12 +8,14 @@ import { setShowTutorialCard } from "./gamelistSlice";
 
 const TutorialCard: React.FC<{
   hideDismiss?: boolean;
+  shadow?: boolean;
 }> = ({
-  hideDismiss
+  hideDismiss,
+  shadow
 }) => {
   const dispatch = useAppDispatch();
   return (
-    <div className="rounded-xl bg-primary p-4 mx-2">
+    <div className={classNames("rounded-xl bg-primary p-4 mx-2", shadow && 'shadow-xl')}>
       <h3 className="text-lg font-bold inline">How to play</h3>
       {!hideDismiss && <div className="float-right text-lg">
         <button

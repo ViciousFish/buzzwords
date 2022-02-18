@@ -57,6 +57,7 @@
     "@types/react-dom": "^17.0.0",
     "@types/three": "^0.129.1",
     "@types/url-join": "^4.0.1",
+    "@types/yup": "^0.29.13",
     "@types/zdog": "^1.1.1",
     "@types/zfont": "^1.2.0",
     "@typescript-eslint/eslint-plugin": "^4.28.0",

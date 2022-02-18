@@ -18,7 +18,7 @@ const DifficultyButton: React.FC<{
 }> = ({ difficultyName, difficultyNumber, onPlayAIClick, autoFocus }) => (
   <Button
     autoFocus={autoFocus}
-    className="bg-darkbrown text-white"
+    variant="dark"
     onClick={onPlayAIClick(difficultyNumber)}
     aria-label={`create ${difficultyName} difficulty game vs bot`}
   >
@@ -30,9 +30,14 @@ const DifficultyButton: React.FC<{
 interface PlayButtonsProps {
   mode: "text" | "icon" | "shorttext";
   buttonClasses?: string;
+  buttonVariant?: "dark" | "light";
 }
 
-const PlayButtons: React.FC<PlayButtonsProps> = ({ mode, buttonClasses }) => {
+const PlayButtons: React.FC<PlayButtonsProps> = ({
+  mode,
+  buttonClasses,
+  buttonVariant,
+}) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -125,6 +130,7 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({ mode, buttonClasses }) => {
   return (
     <>
       <Button
+        variant={buttonVariant}
         className={classNames(
           mode === "text" || mode === "shorttext"
             ? "relative"
@@ -151,6 +157,7 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({ mode, buttonClasses }) => {
         content={popoverContent}
       >
         <Button
+          variant={buttonVariant}
           className={classNames(
             mode === "text" || mode === "shorttext"
               ? "relative"
