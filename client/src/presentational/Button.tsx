@@ -11,7 +11,7 @@ const Button = React.forwardRef<
   ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps
 >(({ variant, texture, className, disabled, ...props }, ref) => {
   let bg = "bg-primary hover:bg-opacity-50";
-  let shadow = 'inset-shadow'
+  let shadow = 'inset-shadow cursor-default'
   if (texture === "wood") {
     if (variant === "light" || variant === undefined) {
       bg = "wood-med-x";
@@ -35,7 +35,7 @@ const Button = React.forwardRef<
     <button
       ref={ref}
       className={classNames(
-        "rounded-full p-2 m-1 cursor-default transition-all",
+        "rounded-full p-2 m-1 transition-all",
         "active:transform active:scale-90 active:bg-opacity-100",
         bg, shadow,
         className
