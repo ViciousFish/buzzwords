@@ -160,6 +160,7 @@ export const receiveGameUpdatedSocket =
           })
         );
       }
+      return;
     }
 
     let lastSeenTurn = getLastSeenTurns()?.[game.id] ?? 0;
