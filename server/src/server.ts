@@ -7,7 +7,7 @@ import { nanoid } from "nanoid";
 import morgan from "morgan";
 import cookie from "cookie";
 import { createAdapter } from "@socket.io/mongo-adapter";
-import { Db, MongoClient } from "mongodb";
+import { MongoClient } from "mongodb";
 import cors from "cors";
 import passport from "passport";
 import { OAuth2Strategy } from "passport-google-oauth";
@@ -96,10 +96,6 @@ app.get(config.apiPrefix + "/user", async (req, res) => {
   if (!req.headers.authorization && req.signedCookies.authToken) {
     authToken = req.signedCookies.authToken;
   }
-  res.cookie("authToken", authToken, {
-    maxAge: 1000 * 60 * 60 * 24 * 365 * 15, // 15 years
-    signed: true,
-  });
   const user = await dl.getUserById(userId);
   res.send({
     id: userId,
