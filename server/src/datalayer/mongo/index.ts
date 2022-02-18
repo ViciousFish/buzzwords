@@ -56,10 +56,12 @@ export default class Mongo implements DataLayer {
     }
     try {
       const res = await Models.AuthToken.create(
-        {
-          token,
-          userId,
-        },
+        [
+          {
+            token,
+            userId,
+          },
+        ],
         {
           session: options?.session,
         }
