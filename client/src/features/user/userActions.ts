@@ -1,4 +1,3 @@
-import axios from "axios";
 import * as R from "ramda";
 import { Api } from "../../app/Api";
 
@@ -55,3 +54,14 @@ export const fetchOpponent =
 export const storeAuthToken = (token: string) =>
   localStorage.setItem("authToken", token);
 export const retrieveAuthToken = () => localStorage.getItem("authToken");
+export const deleteAuthToken = () => localStorage.removeItem("authToken");
+
+export const logout = (): AppThunk => async () => {
+  try {
+    await Api.post(getApiUrl("/logout"));
+    deleteAuthToken();
+    window.location.reload();
+  } catch (e) {
+    throw e.response?.data?.message ?? e.toString();
+  }
+};

@@ -18,6 +18,7 @@ import {
 } from "../gamelist/gamelistSelectors";
 import { setShowTutorialCard, toggleIsOpen } from "../gamelist/gamelistSlice";
 import TutorialCard from "../gamelist/TutorialCard";
+import { logout } from "../user/userActions";
 import { isUserLoggedIn } from "../user/userSelectors";
 import AuthPrompt from "./AuthPrompt";
 
@@ -36,7 +37,8 @@ const TopBar: React.FC = () => {
 
   const isLoggedIn = useAppSelector(isUserLoggedIn);
 
-  const [authPrompt, setAuthPrompt] = useState(true);
+  const [_authPrompt, setAuthPrompt] = useState(true);
+  const authPrompt = !isLoggedIn && _authPrompt;
 
   const toggleTurnNotificationsMute = useCallback(() => {
     dispatch(setTurnNotificationsMute(!turnNotificationsMuted));
@@ -114,14 +116,22 @@ const TopBar: React.FC = () => {
             </button>
           </Popover>
         </div>
-        {!isLoggedIn && (
-          <div className="flex">
-            <Popover
-              positions={["bottom"]}
-              containerClassName="z-30 px-2"
-              isOpen={authPrompt}
-              content={<AuthPrompt onDismiss={() => setAuthPrompt(false)} />}
-            >
+        <div className="flex">
+          <Popover
+            positions={["bottom"]}
+            containerClassName="z-30 px-2"
+            isOpen={authPrompt}
+            content={<AuthPrompt onDismiss={() => setAuthPrompt(false)} />}
+          >
+            {isLoggedIn ? (
+              <Button
+                variant="quiet"
+                className="p-2 rounded-md"
+                onClick={() => dispatch(logout())}
+              >
+                Logout
+              </Button>
+            ) : (
               <Button
                 variant="quiet"
                 onClick={() => setAuthPrompt(true)}
@@ -129,9 +139,9 @@ const TopBar: React.FC = () => {
               >
                 Login
               </Button>
-            </Popover>
-          </div>
-        )}
+            )}
+          </Popover>
+        </div>
       </div>
     </div>
   );

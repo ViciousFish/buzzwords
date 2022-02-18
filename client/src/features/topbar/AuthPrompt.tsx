@@ -6,13 +6,11 @@ import { ErrorMessage, Field, Formik } from "formik";
 import React, { useState } from "react";
 import * as yup from "yup";
 
-import { getApiUrl } from "../../app/apiPrefix";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppDispatch } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import { getGoogleLoginURL } from "../user/userActions";
-import { isUserLoggedIn } from "../user/userSelectors";
 
-const AuthRegister: React.FC = () => {};
+// const AuthRegister: React.FC = () => {};
 
 const LoginValidationSchema = yup.object().shape({
   email: yup.string().email().required(),
@@ -105,19 +103,21 @@ const AuthPrompt: React.FC<AuthPromptProps> = ({ onDismiss }) => {
         <>
           <h3 className="text-lg font-bold m-0">Link an account</h3>
           <p>to sync your games across devices</p>
+          <div className="flex">
+
           <button
             type="button"
             className={classNames(
-              "mt-2 block bg-darkbrown text-white p-2 text-sm hover:bg-opacity-50",
+              "mt-2 mb-2 flex items-center flex-auto bg-darkbrown text-white p-2 text-sm hover:bg-opacity-50",
               "rounded-full inset-shadow transition-all"
             )}
-            // href={getApiUrl("/login/google")}
             onClick={() => dispatch(getGoogleLoginURL())}
           >
             <FontAwesomeIcon className="mx-2" icon={faGoogle} /> Sign in with
             Google
           </button>
-          <div className="my-2 flex space-x-2">
+          </div>
+          {/* <div className="my-2 flex space-x-2">
             <button
               type="button"
               onClick={() => setView("user-pass-login")}
@@ -128,10 +128,10 @@ const AuthPrompt: React.FC<AuthPromptProps> = ({ onDismiss }) => {
             <button className="flex-auto bg-darkbrown text-white p-2 text-sm hover:bg-opacity-50 rounded-full inset-shadow transition-all">
               Register with email
             </button>
-          </div>
+          </div> */}
           <p className="px-2 text-xs opacity-75 max-w-xs">
             Don&apos;t worry, the game will continue to work just fine if you
-            choose not to.
+            choose not to. More authentication options are coming soon.
           </p>
         </>
       )}
