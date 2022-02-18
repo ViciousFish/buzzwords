@@ -18,6 +18,6 @@ export const getAllUsers = createSelector(
 export const isUserLoggedIn = createSelector(
   (state: RootState) => state.user.user,
   (self) => {
-    return Boolean(self?.googleId);
+    return self ? Boolean(self.googleId) : null;
   }
 );

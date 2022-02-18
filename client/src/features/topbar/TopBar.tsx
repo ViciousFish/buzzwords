@@ -38,7 +38,7 @@ const TopBar: React.FC = () => {
   const isLoggedIn = useAppSelector(isUserLoggedIn);
 
   const [_authPrompt, setAuthPrompt] = useState(true);
-  const authPrompt = !isLoggedIn && _authPrompt;
+  const authPrompt = isLoggedIn === false && _authPrompt;
 
   const toggleTurnNotificationsMute = useCallback(() => {
     dispatch(setTurnNotificationsMute(!turnNotificationsMuted));
@@ -117,7 +117,7 @@ const TopBar: React.FC = () => {
           </Popover>
         </div>
         <div className="flex">
-          <Popover
+          {isLoggedIn !== null && <Popover
             positions={["bottom"]}
             containerClassName="z-30 px-2"
             isOpen={authPrompt}
@@ -140,7 +140,7 @@ const TopBar: React.FC = () => {
                 Login
               </Button>
             )}
-          </Popover>
+          </Popover>}
         </div>
       </div>
     </div>
