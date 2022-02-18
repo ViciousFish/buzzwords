@@ -11,6 +11,7 @@ export interface AuthToken {
   userId: string;
   createdDate: Date;
   deleted?: boolean;
+  state?: string;
 }
 
 export interface DataLayer {
@@ -23,6 +24,15 @@ export interface DataLayer {
     token: string,
     options?: Record<string, unknown>
   ): Promise<boolean>;
+  setAuthTokenState(
+    token: string,
+    state: string,
+    options?: Record<string, unknown>
+  ): Promise<boolean>;
+  getAuthTokenByState(
+    state: string,
+    options?: Record<string, unknown>
+  ): Promise<AuthToken | null>;
   assumeUser(
     assumeeId: string,
     assumerId: string,

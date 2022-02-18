@@ -120,6 +120,10 @@ const authTokenSchema = new Schema<AuthToken>({
     type: Boolean,
     default: () => false,
   },
+  state: {
+    type: String,
+    index: true,
+  },
 });
 
 const AuthTokenModel = model<AuthToken>("AuthToken", authTokenSchema);

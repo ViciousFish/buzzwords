@@ -84,7 +84,7 @@ app.get(config.apiPrefix + "/", (req, res) => {
 });
 
 app.get(config.apiPrefix + "/user", async (req, res) => {
-  let userId = res.locals.userIdId as string;
+  let userId = res.locals.userId as string;
   let authToken = null;
   if (!userId) {
     userId = nanoid();
@@ -515,8 +515,37 @@ app.get(config.apiPrefix + "/logout", async (req, res) => {
 
 app.get(
   config.apiPrefix + "/login/google",
-  passport.authenticate("google", { scope: ["profile"] })
+  passport.authenticate("google", { scope: ["profile"], state: "FOOBAR" })
 );
+
+app.post(config.apiPrefix + "/login/google", async (req, res) => {
+  const authToken = res.locals.authToken;
+
+  if (!authToken) {
+    // You have to call the /user endpoint first to get an anonymous authToken
+    res.sendStatus(400);
+    return;
+  }
+
+  const state = nanoid(40);
+
+  const success = await dl.setAuthTokenState(authToken, state);
+  if (!success) {
+    res.sendStatus(500);
+    return;
+  }
+
+  res.json({
+    url:
+      "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&scope=profile&flowName=GeneralOAuthFlow&client_id=" +
+      config.googleClientId +
+      "&redirect_uri=" +
+      config.googleCallbackUrl +
+      "&state=" +
+      state,
+  });
+  return;
+});
 
 app.get(
   config.apiPrefix + "/login/google/redirect",
@@ -556,58 +585,72 @@ if (config.googleClientId && config.googleClientSecret) {
         passReqToCallback: true,
       },
       async (req, _, __, profile, done) => {
-        const res = req.res;
-        if (!res) {
-          done("Can't get request/response objects");
+        const state = req.query.state;
+        if (!state || Array.isArray(state)) {
+          done("Invalid state param");
           return;
         }
-        const userId = (res?.locals.userId ?? nanoid()) as string;
-        if (!userId) {
-          res.locals.userId = userId;
+
+        const session = await dl.createContext();
+        const authToken = await dl.getAuthTokenByState(state as string, {
+          session,
+        });
+        if (!authToken) {
+          dl.commitContext(session).finally(() => {
+            done("Invalid state param");
+          });
+          return;
         }
-        const u = await dl.getUserById(userId);
+        const userId = authToken.userId;
+        if (!userId) {
+          dl.commitContext(session).finally(() => {
+            done("Invalid state param");
+          });
+          return;
+        }
+        const u = await dl.getUserById(userId, { session });
         const isAnon = u ? isAnonymousUser(u) : true;
         if (!isAnon) {
           // You're already logged in. Can't log in twice!
-          done(null, u);
+          dl.commitContext(session).finally(() => {
+            done(null, u);
+          });
           return;
         }
         dl.getUserByGoogleId(profile.id)
-          .then((user) => {
-            dl.createContext().then(async (session) => {
-              if (!user) {
-                let success = await dl.setUserGoogleId(userId, profile.id, {
-                  session,
-                });
+          .then(async (user) => {
+            if (!user) {
+              let success = await dl.setUserGoogleId(userId, profile.id, {
+                session,
+              });
 
-                if (!success) {
-                  done({ message: "error setting google id on user" });
-                }
-                const result = await dl.getUserById(userId, {
-                  session,
-                });
-                user = result;
-                await dl.assumeUser(userId, (user as unknown as User).id, {
-                  session,
-                });
-                success = await dl.commitContext(session);
-                if (!success) {
-                  done({
-                    message: "error committing transaction for google login",
-                  });
-                }
-                done(null, user);
-              } else {
-                await dl.assumeUser(userId, user.id, { session });
-                const success = await dl.commitContext(session);
-                if (!success) {
-                  done({
-                    message: "error committing transaction for google login",
-                  });
-                }
-                done(null, user);
+              if (!success) {
+                done({ message: "error setting google id on user" });
               }
-            });
+              const result = await dl.getUserById(userId, {
+                session,
+              });
+              user = result;
+              await dl.assumeUser(userId, (user as unknown as User).id, {
+                session,
+              });
+              success = await dl.commitContext(session);
+              if (!success) {
+                done({
+                  message: "error committing transaction for google login",
+                });
+              }
+              done(null, user);
+            } else {
+              await dl.assumeUser(userId, user.id, { session });
+              const success = await dl.commitContext(session);
+              if (!success) {
+                done({
+                  message: "error committing transaction for google login",
+                });
+              }
+              done(null, user);
+            }
           })
           .catch((err) => done(err));
       }

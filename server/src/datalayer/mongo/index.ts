@@ -1,7 +1,7 @@
 import mongoose, { ClientSession } from "mongoose";
 import getConfig from "../../config";
 
-import { DataLayer, User } from "../../types";
+import { AuthToken, DataLayer, User } from "../../types";
 import { withRetry } from "../../util";
 import Game from "buzzwords-shared/Game";
 import Models from "./models";
@@ -90,6 +90,57 @@ export default class Mongo implements DataLayer {
         }
       );
       return true;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async setAuthTokenState(
+    token: string,
+    state: string,
+    options?: Options
+  ): Promise<boolean> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res = await Models.AuthToken.findOneAndUpdate(
+        {
+          token,
+        },
+        {
+          state,
+        },
+        {
+          session: options?.session,
+        }
+      );
+      return true;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async getAuthTokenByState(
+    state: string,
+    options?: Options
+  ): Promise<AuthToken | null> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res = await Models.AuthToken.findOne(
+        {
+          state,
+        },
+        null,
+        {
+          session: options?.session,
+        }
+      );
+      return res ? res?.toObject() : null;
     } catch (e) {
       console.log(e);
       throw e;

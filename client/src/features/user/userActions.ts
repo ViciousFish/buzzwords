@@ -20,6 +20,12 @@ export const getUser = (): AppThunk => async (dispatch) => {
   dispatch(userReceived(R.omit(["authToken"], user)));
 };
 
+export const getGoogleLoginURL = (): AppThunk => async (dispatch) => {
+  const { data } = await Api.post<{ url: string }>(getApiUrl("/login/google"));
+
+  window.location.href = data.url;
+};
+
 export const setNickname =
   (nickname: string): AppThunk =>
   async (dispatch, getState) => {

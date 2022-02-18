@@ -41,6 +41,27 @@ export default class Memory implements DataLayer {
     return true;
   }
 
+  async setAuthTokenState(
+    token: string,
+    state: string,
+    options?: Record<string, unknown>
+  ): Promise<boolean> {
+    this.authTokens[token] = {
+      ...this.authTokens[token],
+      state,
+    };
+    return true;
+  }
+
+  async getAuthTokenByState(
+    state: string,
+    options?: Record<string, unknown>
+  ): Promise<AuthToken | null> {
+    return (
+      Object.values(this.authTokens).find((t) => t.state === state) || null
+    );
+  }
+
   async assumeUser(
     assumeeId: string,
     assumerId: string,

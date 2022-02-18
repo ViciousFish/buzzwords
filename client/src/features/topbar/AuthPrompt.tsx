@@ -7,7 +7,10 @@ import React, { useState } from "react";
 import * as yup from "yup";
 
 import { getApiUrl } from "../../app/apiPrefix";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
+import { getGoogleLoginURL } from "../user/userActions";
+import { isUserLoggedIn } from "../user/userSelectors";
 
 const AuthRegister: React.FC = () => {};
 
@@ -41,7 +44,11 @@ const AuthLogin: React.FC = () => {
                 type="email"
                 name="email"
               />
-              <ErrorMessage className='opacity-75 text-sm' name="email" component="div" />
+              <ErrorMessage
+                className="opacity-75 text-sm"
+                name="email"
+                component="div"
+              />
             </div>
             <div className="flex flex-col">
               <label htmlFor="login-password">Password</label>
@@ -51,7 +58,11 @@ const AuthLogin: React.FC = () => {
                 type="password"
                 name="password"
               />
-              <ErrorMessage className='opacity-75 text-sm' name="password" component="div" />
+              <ErrorMessage
+                className="opacity-75 text-sm"
+                name="password"
+                component="div"
+              />
             </div>
             <div className="flex justify-center mt-2">
               <Button
@@ -79,6 +90,7 @@ type AuthPromptView =
   | "user-pass-register";
 
 const AuthPrompt: React.FC<AuthPromptProps> = ({ onDismiss }) => {
+  const dispatch = useAppDispatch();
   const [view, setView] = useState<AuthPromptView>("login-options");
   return (
     <div className="rounded-xl border border-darkbrown bg-primary shadow-lg p-4">
@@ -93,16 +105,18 @@ const AuthPrompt: React.FC<AuthPromptProps> = ({ onDismiss }) => {
         <>
           <h3 className="text-lg font-bold m-0">Link an account</h3>
           <p>to sync your games across devices</p>
-          <a
+          <button
+            type="button"
             className={classNames(
               "mt-2 block bg-darkbrown text-white p-2 text-sm hover:bg-opacity-50",
               "rounded-full inset-shadow transition-all"
             )}
-            href={getApiUrl("/login/google")}
+            // href={getApiUrl("/login/google")}
+            onClick={() => dispatch(getGoogleLoginURL())}
           >
             <FontAwesomeIcon className="mx-2" icon={faGoogle} /> Sign in with
             Google
-          </a>
+          </button>
           <div className="my-2 flex space-x-2">
             <button
               type="button"
@@ -124,7 +138,7 @@ const AuthPrompt: React.FC<AuthPromptProps> = ({ onDismiss }) => {
       {view === "user-pass-login" && (
         <>
           <button
-          className="underline text-sm"
+            className="underline text-sm"
             onClick={() => {
               setView("login-options");
             }}
