@@ -66,9 +66,5 @@ body {
 }
 
 .topbar {
-  background: linear-gradient(
-    0deg,
-    rgba(224, 193, 100, 1) 0%,
-    rgba(242, 220, 157, 1) 100%
-  );
+  background: linear-gradient(0deg, rgba(233,187,72,1) 0%, rgba(246,197,75,1) 100%);
 }

@@ -11,7 +11,7 @@ interface AuthPromptProps {
 
 const AuthPrompt: React.FC<AuthPromptProps> = ({ onDismiss }) => {
   return (
-    <div className="rounded-xl bg-primary shadow-lg p-4">
+    <div className="rounded-xl border border-darkbrown bg-primary shadow-lg p-4">
       <button
         aria-label="dismiss login prompt"
         className="float-right hover:opacity-75"

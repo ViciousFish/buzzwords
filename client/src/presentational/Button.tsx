@@ -24,7 +24,7 @@ const Button = React.forwardRef<
       bg = "bg-darkbrown text-white hover:bg-opacity-50";
     }
     if (variant === 'quiet') {
-      bg = 'bg-opacity-50'
+      bg = 'bg-lightbg bg-opacity-0 hover:bg-opacity-50'
       shadow = ''
     }
     if (disabled) {

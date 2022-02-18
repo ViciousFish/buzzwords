@@ -20,9 +20,6 @@ import { setShowTutorialCard, toggleIsOpen } from "../gamelist/gamelistSlice";
 import TutorialCard from "../gamelist/TutorialCard";
 import AuthPrompt from "./AuthPrompt";
 
-const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
-const HexWordLazy = React.lazy(() => import("../thereed-lettering/HexWord"));
-
 const TopBar: React.FC = () => {
   const dispatch = useAppDispatch();
 
@@ -57,12 +54,11 @@ const TopBar: React.FC = () => {
   return (
     <div
       className={classNames(
-        "fixed top-0 z-30",
-        "bg-black text-darkbrown",
+        "fixed top-0 z-30 bg-black text-darkbrown",
         "h-[50px] w-screen shadow-md"
       )}
     >
-      <div className="bg-darkbg rounded-t-xl flex justify-between h-full px-4 items-center">
+      <div className="topbar rounded-t-xl flex justify-between h-full px-4 items-center">
         <div className="flex">
           <button
             onClick={() => {
@@ -72,7 +68,7 @@ const TopBar: React.FC = () => {
               }
             }}
             aria-label="toggle games list"
-            className="p-2 hover:bg-primary hover:bg-opacity-50 rounded-md"
+            className="p-2 hover:bg-lightbg hover:bg-opacity-50 rounded-md"
             data-tip="Toggle games list"
           >
             <FontAwesomeIcon icon={faBars} />
@@ -81,7 +77,7 @@ const TopBar: React.FC = () => {
             </span>
           </button>
           <button
-            className="p-2 rounded-md hover:bg-primary hover:bg-opacity-50"
+            className="p-2 rounded-md hover:bg-lightbg hover:bg-opacity-50"
             aria-label={`${
               turnNotificationsMuted ? "unmute" : "mute"
             } turn notification`}
@@ -125,10 +121,7 @@ const TopBar: React.FC = () => {
             <Button
               variant="quiet"
               onClick={() => setAuthPrompt(true)}
-              className={classNames(
-                "p-2 rounded-md hover:bg-primary hover:bg-opacity-50",
-                authPrompt && "bg-primary"
-              )}
+              className="p-2 rounded-md"
             >
               Login
             </Button>
