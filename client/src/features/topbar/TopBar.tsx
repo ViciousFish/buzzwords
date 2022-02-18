@@ -59,7 +59,7 @@ const TopBar: React.FC = () => {
   return (
     <div
       className={classNames(
-        "fixed top-0 z-30 bg-black text-darkbrown",
+        "fixed top-0 z-30 md:bg-black text-darkbrown",
         "h-[50px] w-screen shadow-md"
       )}
     >

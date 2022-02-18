@@ -20,6 +20,8 @@ import TopBar from "../features/topbar/TopBar";
 //     frameLoop: "always",
 //   });
 
+const isTouch = window.matchMedia("(pointer: coarse)").matches;
+
 FaviconNotification.init({
   color: "#0000CC",
 });
@@ -74,7 +76,7 @@ function App() {
       </div>
       <ToastContainer toastClassName="bg-primary text-darkbrown rounded-lg" />
       {showingTutorialModal && <TutorialModal />}
-      <ReactTooltip />
+      {!isTouch && <ReactTooltip />}
     </BrowserRouter>
   );
 }
