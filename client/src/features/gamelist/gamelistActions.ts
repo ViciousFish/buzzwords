@@ -202,6 +202,10 @@ export const markGameAsSeen =
     }
     let lastSeenTurn =
       game.lastSeenTurn === 9999 ? game.moves.length : game.lastSeenTurn;
+    // don't force players to re-watch the whole game they played on a different device
+    if (game.moves.length - lastSeenTurn > 2) {
+      lastSeenTurn = game.moves.length - 1
+    }
     while (lastSeenTurn < game.moves.length) {
       await dispatch(initiateReplay(lastSeenTurn));
       lastSeenTurn++;
