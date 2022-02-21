@@ -300,6 +300,7 @@ const GameTile: React.FC<GameTileProps> = ({
       {outlineTransition(
         (styles, item) =>
           item && (
+            // @ts-ignore
             <a.group {...styles}>
               {/* <HexOutline /> */}
               <HexOutlineSolid>

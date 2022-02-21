@@ -48,7 +48,6 @@ export const fetchOpponent =
   (id: string): AppThunk =>
   async (dispatch) => {
     const opponent = await Api.get<User>(getApiUrl("/user", id));
-    console.log("opponent", opponent.data);
     dispatch(opponentReceived(opponent.data));
   };
 

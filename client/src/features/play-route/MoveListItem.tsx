@@ -67,7 +67,12 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
         </span>
         <span className="flex-auto"></span>
         {move.date && (
-          <span title={new Date(move.date).toLocaleString()} className="text-xs opacity-50">{relativeDate(move.date)}</span>
+          <span
+            title={new Date(move.date).toLocaleString()}
+            className="text-xs opacity-50"
+          >
+            {relativeDate(move.date)}
+          </span>
         )}
       </div>
 
@@ -84,7 +89,6 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
             <ul className="text-sm">
               {/* @ts-ignore */}
               {dictionaryData[0].meanings.map((meaning, index) => {
-                console.log("meaning", meaning);
                 return (
                   <li key={index} className="mb-2">
                     <p className="font-serif inline-block opacity-75">
