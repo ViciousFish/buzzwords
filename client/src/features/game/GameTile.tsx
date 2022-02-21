@@ -99,12 +99,6 @@ const GameTile: React.FC<GameTileProps> = ({
     getHightlightedCoordsForCurrentReplayState
   );
 
-  const tilesThatWillBeReset = useAppSelector(
-    (state) =>
-      gridState &&
-      getTilesThatWillBeResetFromCurrentPlay(state, gridState, currentTurn)
-  );
-
   const letter =
     replayMove && coord ? replayMove.grid[coord]?.value : letterProp;
   const owner =
@@ -115,6 +109,12 @@ const GameTile: React.FC<GameTileProps> = ({
     replayMove && coord ? Boolean(replayTiles[coord]) : isSelectedState;
   const turn = replayMove?.player ?? currentTurn;
   const grid = replayMove?.grid ?? gridState;
+
+  const tilesThatWillBeReset = useAppSelector(
+    (state) =>
+      gridState &&
+      getTilesThatWillBeResetFromCurrentPlay(state, gridState, turn)
+  );
 
   const willBeReset =
     tilesThatWillBeReset &&
