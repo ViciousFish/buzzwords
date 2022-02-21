@@ -120,7 +120,6 @@ const GameTile: React.FC<GameTileProps> = ({
     tilesThatWillBeReset &&
     coord &&
     tilesThatWillBeReset[coord] &&
-    owner !== turn &&
     owner !== 2;
 
   let color = theme.colors.primary;
