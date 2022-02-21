@@ -29,6 +29,7 @@ import { Flower01 } from "../../assets/Flower01";
 import {
   getHightlightedCoordsForCurrentReplayState,
   getTileSelectionInParsedHexCoords,
+  getTilesThatWillBeResetFromCurrentPlay,
 } from "./gameSelectors";
 import { Sakura } from "../../assets/Sakura";
 import { HexOutlineSolid } from "../../assets/Hexoutlinesolid";
@@ -98,6 +99,12 @@ const GameTile: React.FC<GameTileProps> = ({
     getHightlightedCoordsForCurrentReplayState
   );
 
+  const tilesThatWillBeReset = useAppSelector(
+    (state) =>
+      gridState &&
+      getTilesThatWillBeResetFromCurrentPlay(state, gridState, currentTurn)
+  );
+
   const letter =
     replayMove && coord ? replayMove.grid[coord]?.value : letterProp;
   const owner =
@@ -109,8 +116,17 @@ const GameTile: React.FC<GameTileProps> = ({
   const turn = replayMove?.player ?? currentTurn;
   const grid = replayMove?.grid ?? gridState;
 
+  const willBeReset =
+    tilesThatWillBeReset &&
+    coord &&
+    tilesThatWillBeReset[coord] &&
+    owner !== turn &&
+    owner !== 2;
+
   let color = theme.colors.primary;
-  if (owner === 0) {
+  if (willBeReset) {
+    color = theme.colors.tile_selected;
+  } else if (owner === 0) {
     color = theme.colors.tile_p1;
   } else if (owner === 1) {
     color = theme.colors.tile_p2;
@@ -281,15 +297,20 @@ const GameTile: React.FC<GameTileProps> = ({
         </HexTile>
       </group>
       {/* @ts-ignore */}
-      {outlineTransition((styles, item) => item && <a.group {...styles}>
-        {/* <HexOutline /> */}
-        <HexOutlineSolid>
-          <a.meshStandardMaterial
-            toneMapped={false}
-            color={colorAndScaleSpring.color}
-          />
-        </HexOutlineSolid>
-      </a.group>)}
+      {outlineTransition(
+        (styles, item) =>
+          item && (
+            <a.group {...styles}>
+              {/* <HexOutline /> */}
+              <HexOutlineSolid>
+                <a.meshStandardMaterial
+                  toneMapped={false}
+                  color={colorAndScaleSpring.color}
+                />
+              </HexOutlineSolid>
+            </a.group>
+          )
+      )}
     </a.group>
   );
 };

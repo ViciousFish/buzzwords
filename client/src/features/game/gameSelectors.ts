@@ -1,9 +1,12 @@
 import { createSelector } from "@reduxjs/toolkit";
 import * as R from "ramda";
 import { HexCoord } from "buzzwords-shared/types";
+import HexGrid from "buzzwords-shared/hexgrid";
 
 import { RootState } from "../../app/store";
 import { QRCoord } from "../hexGrid/hexGrid";
+import { getCellsToBeReset } from "buzzwords-shared/gridHelpers";
+import Cell from "buzzwords-shared/cell";
 
 export const getOrderedTileSelectionCoords = createSelector(
   (state: RootState) => state.game.selectedTiles,
@@ -40,12 +43,6 @@ export interface willTileTouchTerritoryParams {
   gameId: string;
 }
 
-// export const willTileTouchTerritory = createSelector(
-//   getOrderedTileSelectionCoords,
-//   (_, touchParams: willTileTouchTerritoryParams) => touchParams,
-//   () => {}
-// )
-
 export const getSelectedWordByGameId = createSelector(
   getOrderedTileSelectionCoords,
   getGridByGameId,
@@ -72,5 +69,17 @@ export const getHightlightedCoordsForCurrentReplayState = createSelector(
       R.fromPairs
     )(move.coords);
     return tiles;
+  }
+);
+
+export const getTilesThatWillBeResetFromCurrentPlay = createSelector(
+  [
+    getTileSelectionInParsedHexCoords,
+    (_state, grid: HexGrid) => grid,
+    (_state, _grid, turn: 0 | 1) => turn,
+  ],
+  (selection, grid, turn) => {
+    const cellsToBeReset = getCellsToBeReset(grid, selection, turn);
+    return R.groupBy((cell: Cell) => `${cell.q},${cell.r}`, cellsToBeReset);
   }
 );
