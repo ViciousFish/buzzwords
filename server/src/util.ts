@@ -1,3 +1,4 @@
+import * as R from "ramda";
 import { User } from "./types";
 
 export const sleep = async (ms: number): Promise<void> => {
@@ -31,4 +32,19 @@ export const withRetry =
 
 export const isAnonymousUser = (user: User): boolean => {
   return !user.googleId;
+};
+
+export const removeMongoId = <T>(thing: any): T => {
+  // eslint-disable-line
+  if (!R.is(Object, thing)) {
+    return thing;
+  } else if (R.is(Date, thing)) {
+    // @ts-expect-error no clue lol
+    return thing;
+  } else if (Array.isArray(thing)) {
+    return R.map(removeMongoId, thing) as unknown as T;
+  } else {
+    thing = R.dissoc("_id", thing);
+    return R.map(removeMongoId, thing) as unknown as T;
+  }
 };

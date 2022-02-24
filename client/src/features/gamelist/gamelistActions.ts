@@ -72,7 +72,7 @@ export const refresh = (): AppThunk => async (dispatch, getState) => {
   const response = await Api.get<{
     games: Game[];
     users: User[];
-  }>(getApiUrl("/games"));
+  }>(getApiUrl("/game"));
 
   const lastSeenTurns = getLastSeenTurns();
 
