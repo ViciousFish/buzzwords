@@ -87,6 +87,9 @@ export const getBotMove = (
   const wordsTried: {
     [key: string]: boolean;
   } = {};
+  const letterCombosTried: {
+    [key: string]: boolean;
+  } = {};
 
   let defenseTileCount = capitalNeighbors.length;
   if (getRandomInt(1, 11) > options.difficulty) {
@@ -101,6 +104,16 @@ export const getBotMove = (
       // Somehow we reused a cell. Not a valid word
       return null;
     }
+    if (
+      letterCombosTried[
+        cells
+          .map((c) => c.value)
+          .sort()
+          .join("")
+      ]
+    ) {
+      return null;
+    }
     for (let p of permutationN(cells, cells.length)) {
       const word = p.map((c) => c.value).join("");
       if (!wordsTried[word]) {
@@ -113,11 +126,18 @@ export const getBotMove = (
       }
       wordsTried[word] = true;
     }
+    letterCombosTried[
+      cells
+        .map((c) => c.value)
+        .sort()
+        .join("")
+    ] = true;
+
     return null;
   };
 
   for (let d = Math.min(defenseTileCount, maxWordLength); d >= 0; d--) {
-    if (d && d == capitalNeighbors.length) {
+    if (d && d == capitalNeighbors.length && d == maxWordLength) {
       const cells = [...capitalNeighbors];
       const result = permuteAndCheck(cells);
       if (result) {
@@ -148,10 +168,10 @@ export const getBotMove = (
           }
           for (
             let r = Math.min(maxWordLength - d - t, nonNeighborTiles.length);
-            r > 0;
+            r >= 0;
             r--
           ) {
-            for (let rCombo of combinationN(nonNeighborTiles, r)) {
+            for (let rCombo of r ? combinationN(nonNeighborTiles, r) : [[]]) {
               const cells = [...neighborCells, ...tCombo, ...rCombo];
               const result = permuteAndCheck(cells);
               if (result) {

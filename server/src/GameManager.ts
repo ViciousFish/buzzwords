@@ -44,6 +44,24 @@ export default class GameManager {
       throw new Error("Need another player");
     }
 
+    let opponentHasCapital = false;
+    const opponentCells = [];
+    for (const cell of Object.values(this.game.grid)) {
+      if (cell.owner == Number(!this.game.turn)) {
+        opponentCells.push(cell);
+        if (cell.capital) {
+          opponentHasCapital = true;
+        }
+      }
+    }
+
+    if (!opponentHasCapital) {
+      const newCapital =
+        opponentCells[Math.floor(Math.random() * opponentCells.length)];
+      newCapital.capital = true;
+      setCell(this.game.grid, newCapital);
+    }
+
     const nextTurn = Number(!this.game.turn) as 0 | 1;
     this.game.turn = nextTurn;
     return this.game;

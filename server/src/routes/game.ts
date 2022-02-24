@@ -253,6 +253,7 @@ export default (io: Server) => {
         });
       } catch (e) {
         console.log("BOT FAILED TO FIND MOVE. PASSING");
+        await dl.commitContext(session);
         pass(game.id, "AI");
         return;
       }
