@@ -288,6 +288,7 @@ export default (io: Server) => {
       res.status(400).json({
         message: "It is your turn",
       });
+      return;
     }
 
     try {
