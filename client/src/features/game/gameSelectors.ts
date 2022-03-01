@@ -77,14 +77,15 @@ export const getTilesThatWillBeResetFromCurrentPlay = createSelector(
     getTileSelectionInParsedHexCoords,
     (state: RootState) => state.game.replay.move,
     getReplayState,
-    (_state, grid: HexGrid) => grid,
-    (_state, _grid, turn: 0 | 1) => turn,
+    (_state, currentGrid: HexGrid) => currentGrid,
+    (_state, _currentGrid, currentTurn: 0 | 1) => currentTurn,
   ],
-  (_selection, replayMove, { playbackState }, _grid, turn) => {
+  (_selection, replayMove, { playbackState }, _currentGrid, _currentTurn) => {
     const selection = replayMove
       ? R.take(playbackState, replayMove.coords)
       : _selection;
-    const grid = replayMove ? replayMove.grid : _grid;
+    const grid = replayMove ? replayMove.grid : _currentGrid;
+    const turn = replayMove ? replayMove.player : _currentTurn;
     const cellsToBeReset = getCellsToBeReset(grid, selection, turn);
     return R.groupBy((cell: Cell) => `${cell.q},${cell.r}`, cellsToBeReset);
   }

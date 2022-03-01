@@ -113,7 +113,7 @@ const GameTile: React.FC<GameTileProps> = ({
   const tilesThatWillBeReset = useAppSelector(
     (state) =>
       gridState &&
-      getTilesThatWillBeResetFromCurrentPlay(state, gridState, turn)
+      getTilesThatWillBeResetFromCurrentPlay(state, gridState, currentTurn)
   );
 
   const willBeReset =
