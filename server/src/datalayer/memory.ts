@@ -105,7 +105,7 @@ export default class Memory implements DataLayer {
     options?: Record<string, unknown>
   ): Promise<string | null> {
     const authToken = this.authTokens[token];
-    return authToken.deleted ? null : authToken.userId;
+    return authToken?.deleted ? null : authToken.userId;
   }
 
   async getUserById(
