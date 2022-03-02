@@ -65,6 +65,10 @@ export const gameSlice = createSlice({
       state.selectionIndex = 0;
       state.selectedTiles = {};
     },
+    backspaceSelection: (state) => {
+      const sortedCoords = Object.keys(state.selectedTiles).sort((a, b) => state.selectedTiles[b] - state.selectedTiles[a])
+      delete state.selectedTiles[sortedCoords[0]]
+    },
     setCurrentGame: (state, action: PayloadAction<string | null>) => {
       state.currentGame = action.payload;
       state.replay = initialState.replay;
@@ -121,6 +125,7 @@ export const {
   selectTile,
   unselectTile,
   resetSelection,
+  backspaceSelection,
   setCurrentGame,
   setSelection,
   newReplay,

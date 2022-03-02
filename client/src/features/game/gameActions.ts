@@ -9,6 +9,7 @@ import { QRCoord } from "../hexGrid/hexGrid";
 import { getOrderedTileSelectionCoords } from "./gameSelectors";
 import {
   advanceReplayPlaybackState,
+  backspaceSelection,
   clearReplay,
   newReplay,
   resetSelection,
@@ -46,6 +47,12 @@ export const clearTileSelection = (): AppThunk => (dispatch, getState) => {
   const { currentGame } = getState().game;
   emitSelection({}, currentGame);
 };
+
+export const backspaceTileSelection = (): AppThunk => (dispatch, getState) => {
+  dispatch(backspaceSelection());
+  const { currentGame, selectedTiles } = getState().game;
+  emitSelection(selectedTiles, currentGame);
+}
 
 export const submitMove =
   (gameId: string): AppThunk =>

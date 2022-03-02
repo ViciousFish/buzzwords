@@ -9,10 +9,12 @@ import Button from "../../presentational/Button";
 import Canvas from "../canvas/Canvas";
 import { QRCoord } from "../hexGrid/hexGrid";
 import { User } from "../user/userSlice";
-import { clearTileSelection, submitMove } from "./gameActions";
+import { backspaceTileSelection, clearTileSelection, submitMove } from "./gameActions";
 import { getSelectedWordByGameId } from "./gameSelectors";
 import GameTile from "./GameTile";
 import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowCircleRight, faBackspace, faPaperPlane, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
 interface GameBoardProps {
   id: string;
@@ -108,15 +110,28 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
             <Html center zIndexRange={[20, 0]}>
               <div className="flex justify-center items-center">
                 {selectedWord?.length && game.turn === userIndex ? (
-                  <Button
+                  <button
+                    onClick={() => {
+                      dispatch(backspaceTileSelection());
+                    }}
+                    disabled={submitting}
+                    type="button"
+                    className='text-darkbrown mx-1'
+                  >
+                    <FontAwesomeIcon icon={faBackspace} size='2x'/>
+                  </button>
+                ) : null}
+                {selectedWord?.length && game.turn === userIndex ? (
+                  <button
                     onClick={() => {
                       dispatch(clearTileSelection());
                     }}
                     disabled={submitting}
                     type="button"
+                    className='text-darkbrown mx-1'
                   >
-                    clear
-                  </Button>
+                    <FontAwesomeIcon icon={faTimesCircle} size='2x' />
+                  </button>
                 ) : null}
                 <div className="text-[calc(4vh+4vw)] text-darkbrown font-fredoka">
                   {replayLetters
@@ -126,13 +141,15 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                     : selectedWord ?? ""}
                 </div>
                 {selectedWord?.length && game.turn === userIndex ? (
-                  <Button
+                  <button
+                    // variant='quiet'
                     onClick={onSubmit}
                     disabled={submitting}
                     type="button"
+                    className='font-bold text-lightbg bg-opacity-100 bg-darkbrown rounded-md p-1 mx-1'
                   >
-                    submit
-                  </Button>
+                    Submit
+                  </button>
                 ) : null}
               </div>
             </Html>
