@@ -36,6 +36,7 @@ const TopBar: React.FC = () => {
   );
 
   const isLoggedIn = useAppSelector(isUserLoggedIn);
+  const socketConnected = useAppSelector(state => state.game.socketConnected);
 
   const [_authPrompt, setAuthPrompt] = useState(true);
   const authPrompt = isLoggedIn === false && _authPrompt;

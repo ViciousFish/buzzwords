@@ -41,3 +41,10 @@ export const getHowManyGamesAreMyTurn = createSelector(
     return currentTurns;
   }
 );
+
+export const getActiveGames = createSelector(
+  getAllGames,
+  (games) => {
+    return Object.values(games).filter(game => !game.gameOver)
+  }
+)

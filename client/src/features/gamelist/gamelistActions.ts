@@ -25,6 +25,7 @@ import { initiateReplay, maybeShowNudge } from "../game/gameActions";
 import chord from "../../../assets/fmajor-pleasant.m4a?url";
 import { batch } from "react-redux";
 import { Api } from "../../app/Api";
+import { getActiveGames } from "./gamelistSelectors";
 
 interface GameMetaCache {
   lastSeenTurns: {
@@ -91,6 +92,21 @@ export const refresh = (): AppThunk => async (dispatch, getState) => {
   dispatch(refreshReceived(gamesById));
 };
 
+export const refreshActiveGames =
+  (): AppThunk => async (dispatch, getState) => {
+    const activeGames = getActiveGames(getState());
+
+    await Promise.all(
+      activeGames.map(async (game) => {
+        const { data } = await Api.get<Game>(getApiUrl("/game", game.id));
+        // @ts-ignore;
+        delete data._id;
+
+        dispatch(receiveGameUpdatedSocket(data))
+      })
+    );
+  };
+
 const DingAudio = new Audio(chord);
 
 export const receiveGameUpdatedSocket =
@@ -113,10 +129,11 @@ export const receiveGameUpdatedSocket =
       R.keys
     )(getAllUsers(state));
     const missingPlayers = R.difference(
-      game.users,
+      game.users.filter(Boolean),
       allKnownPlayersWithNicknames
     );
     if (missingPlayers.length) {
+      console.log("🚀 ~ file: gamelistActions.ts ~ line 137 ~ missingPlayers", missingPlayers)
       missingPlayers.forEach((missingPlayer) => {
         dispatch(fetchOpponent(missingPlayer));
       });
@@ -204,7 +221,7 @@ export const markGameAsSeen =
       game.lastSeenTurn === 9999 ? game.moves.length : game.lastSeenTurn;
     // don't force players to re-watch the whole game they played on a different device
     if (game.moves.length - lastSeenTurn > 2) {
-      lastSeenTurn = game.moves.length - 1
+      lastSeenTurn = game.moves.length - 1;
     }
     while (lastSeenTurn < game.moves.length) {
       await dispatch(initiateReplay(lastSeenTurn));

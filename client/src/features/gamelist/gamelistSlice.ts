@@ -40,7 +40,19 @@ export const gamelistSlice = createSlice({
       state,
       action: PayloadAction<Record<string, ClientGame>>
     ) => {
-      state.games = action.payload;
+      Object.keys(action.payload).forEach((id) => {
+        if (
+          action.payload[id].moves.length >=
+          (state.games[id]?.moves.length ?? 0)
+        ) {
+          state.games[id] = action.payload[id];
+        }
+      });
+      Object.keys(state.games).forEach((id) => {
+        if (!action.payload[id]) {
+          delete state.games[id];
+        }
+      });
       state.gamesLoaded = true;
     },
     updateGame: (state, action: PayloadAction<UpdateGamePayload>) => {

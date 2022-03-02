@@ -142,7 +142,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 </div>
                 {selectedWord?.length && game.turn === userIndex ? (
                   <button
-                    // variant='quiet'
                     onClick={onSubmit}
                     disabled={submitting}
                     type="button"

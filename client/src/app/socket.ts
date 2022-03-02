@@ -10,6 +10,7 @@ import { maybeOpponentNicknameUpdated } from "../features/user/userSlice";
 import {
   receiveGameUpdatedSocket,
   refresh,
+  refreshActiveGames,
 } from "../features/gamelist/gamelistActions";
 import { SOCKET_DOMAIN, SOCKET_PATH } from "./apiPrefix";
 import { setSocketConnected } from "../features/game/gameSlice";
@@ -32,16 +33,17 @@ export const subscribeSocket = (dispatch: AppDispatch) => {
     },
   });
   socket.io.on("close", () => {
-    dispatch(setSocketConnected(false))
+    dispatch(setSocketConnected(false));
   });
 
-  socket.io.on('open', () => {
-    dispatch(setSocketConnected(true))
-  })
+  socket.io.on("open", () => {
+    dispatch(setSocketConnected(true));
+  });
 
   socket.io.on("reconnect", () => {
-    dispatch(refresh());
-    dispatch(setSocketConnected(true))
+    console.log("socket reconnect");
+    dispatch(refreshActiveGames());
+    dispatch(setSocketConnected(true));
   });
 
   socket.on("error", (e) => {
