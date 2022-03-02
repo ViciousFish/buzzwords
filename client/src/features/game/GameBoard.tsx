@@ -9,12 +9,22 @@ import Button from "../../presentational/Button";
 import Canvas from "../canvas/Canvas";
 import { QRCoord } from "../hexGrid/hexGrid";
 import { User } from "../user/userSlice";
-import { backspaceTileSelection, clearTileSelection, submitMove } from "./gameActions";
+import {
+  backspaceTileSelection,
+  clearTileSelection,
+  submitMove,
+} from "./gameActions";
 import { getSelectedWordByGameId } from "./gameSelectors";
 import GameTile from "./GameTile";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowCircleRight, faBackspace, faPaperPlane, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowCircleRight,
+  faBackspace,
+  faPaperPlane,
+  faTimesCircle,
+} from "@fortawesome/free-solid-svg-icons";
+import classNames from "classnames";
 
 interface GameBoardProps {
   id: string;
@@ -116,9 +126,12 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                     }}
                     disabled={submitting}
                     type="button"
-                    className='text-darkbrown mx-1'
+                    className={classNames(
+                      "mx-1",
+                      submitting ? "text-gray-500" : "text-darkbrown"
+                    )}
                   >
-                    <FontAwesomeIcon icon={faBackspace} size='2x'/>
+                    <FontAwesomeIcon icon={faBackspace} size="2x" />
                   </button>
                 ) : null}
                 {selectedWord?.length && game.turn === userIndex ? (
@@ -128,9 +141,12 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                     }}
                     disabled={submitting}
                     type="button"
-                    className='text-darkbrown mx-1'
+                    className={classNames(
+                      "mx-1",
+                      submitting ? "text-gray-500" : "text-darkbrown"
+                    )}
                   >
-                    <FontAwesomeIcon icon={faTimesCircle} size='2x' />
+                    <FontAwesomeIcon icon={faTimesCircle} size="2x" />
                   </button>
                 ) : null}
                 <div className="text-[calc(4vh+4vw)] text-darkbrown font-fredoka">
@@ -146,7 +162,10 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                     onClick={onSubmit}
                     disabled={submitting}
                     type="button"
-                    className='font-bold text-lightbg bg-opacity-100 bg-darkbrown rounded-md p-1 mx-1'
+                    className={classNames(
+                      "font-bold text-lightbg bg-opacity-100 rounded-md p-1 mx-1",
+                      submitting ? "bg-gray-500" : "bg-darkbrown"
+                    )}
                   >
                     Submit
                   </button>
