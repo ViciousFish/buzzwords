@@ -37,6 +37,8 @@ const probabilities = [
   5.7351, 6.9509, 3.6308, 1.0074, 1.2899, 0.2902, 1.7779, 0.2722,
 ].map((p) => p / 100);
 
+const cdfObj = R.zipObj(letters, probabilities);
+
 let cdfArray: number[] = [];
 
 let total = 0;
@@ -46,6 +48,9 @@ for (let p of probabilities) {
 }
 
 cdfArray = cdfArray.map((p) => Math.round(p * 100000) / 100000);
+
+const normalize = (val: number, max: number, min: number) =>
+  (val - min) / (max - min);
 
 export const isValidWord = (
   word: string,
@@ -60,17 +65,37 @@ export const isValidWord = (
   return true;
 };
 
-export const getRandomCharacter = (): string => {
+export const getRandomCharacter = (omit?: string[]): string => {
   let n = Math.random();
+  const cdf = R.clone(cdfObj);
+  if (omit && omit.length) {
+    let total = 0;
+    for (let letter of omit) {
+      total += cdf[letter];
+      delete cdf[letter];
+    }
+    n = normalize(n, 1 - total, 0);
+  }
+  const letterArr = Object.keys(cdf);
+  const probArr = Object.values(cdf);
+  let cdfArray: number[] = [];
+
+  let total = 0;
+  for (let p of probArr) {
+    total += p;
+    cdfArray.push(total);
+  }
+
+  cdfArray = cdfArray.map((p) => Math.round(p * 100000) / 100000);
   if (n > 0 && n < cdfArray[0]) {
-    return letters[0];
+    return letterArr[0];
   }
   for (let i = 0; i < cdfArray.length - 1; i++) {
     if (n > cdfArray[i] && n < cdfArray[i + 1]) {
-      return letters[i + 1];
+      return letterArr[i + 1];
     }
   }
-  return letters[letters.length - 1];
+  return letterArr[letterArr.length - 1];
 };
 
 const vowels = ["a", "e", "i", "o", "u", "y"];

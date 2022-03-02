@@ -1,3 +1,5 @@
+import * as R from "ramda";
+
 export function* combinationN<T>(array: T[], n: number): Iterable<T[]> {
   if (n === 1) {
     for (const a of array) {
@@ -36,4 +38,15 @@ export const getRandomInt = (min: number, max: number): number => {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min) + min);
+};
+
+export const shuffle = <T>(arr: T[]): T[] => {
+  const a = R.clone(arr);
+  for (let i = 0; i < a.length; i++) {
+    const x = getRandomInt(0, a.length);
+    const tmp = a[i];
+    a[i] = a[x];
+    a[x] = tmp;
+  }
+  return a;
 };

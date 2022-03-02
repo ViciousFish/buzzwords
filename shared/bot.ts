@@ -3,21 +3,10 @@ import * as R from "ramda";
 import HexGrid, { getCellNeighbors } from "./hexgrid";
 import Game from "./Game";
 
-import { permutationN, getRandomInt, combinationN } from "./utils";
+import { permutationN, getRandomInt, combinationN, shuffle } from "./utils";
 import { isValidWord } from "./alphaHelpers";
 import { HexCoord } from "./types";
 import Cell from "./cell";
-
-const shuffle = <T>(arr: T[]): T[] => {
-  const a = R.clone(arr);
-  for (let i = 0; i < a.length; i++) {
-    const x = getRandomInt(0, a.length);
-    const tmp = a[i];
-    a[i] = a[x];
-    a[x] = tmp;
-  }
-  return a;
-};
 
 export const getBotMove = (
   grid: HexGrid,
