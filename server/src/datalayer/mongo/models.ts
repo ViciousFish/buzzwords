@@ -8,6 +8,8 @@ const gameSchema = new Schema<Game>({
   id: {
     type: String,
     required: true,
+    unique: true,
+    index: true,
   },
   users: {
     type: [String],
@@ -20,6 +22,7 @@ const gameSchema = new Schema<Game>({
   },
   grid: {
     type: Map,
+    _id: false,
     of: {
       q: Number,
       r: Number,
@@ -55,12 +58,14 @@ const gameSchema = new Schema<Game>({
           capital: Boolean,
           owner: Number,
         },
+        _id: false,
       },
       date: {
         type: Date,
         required: true,
         default: () => new Date(),
       },
+      _id: false,
     },
   ],
   vsAI: {
@@ -89,6 +94,8 @@ const userSchema = new Schema<User>({
   id: {
     type: String,
     required: true,
+    unique: true,
+    index: true,
   },
   nickname: {
     type: String,
@@ -105,6 +112,7 @@ const authTokenSchema = new Schema<AuthToken>({
     type: String,
     required: true,
     index: true,
+    unique: true,
   },
   userId: {
     type: String,
@@ -127,8 +135,22 @@ const authTokenSchema = new Schema<AuthToken>({
 
 const AuthTokenModel = model<AuthToken>("AuthToken", authTokenSchema);
 
+const migrationSchema = new Schema<{ version: number }>(
+  {
+    version: {
+      type: Number,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const MigrationModel = model<{ version: number }>("Migration", migrationSchema);
+
 export default {
   Game: GameModel,
   User: UserModel,
   AuthToken: AuthTokenModel,
+  Migration: MigrationModel,
 };

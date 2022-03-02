@@ -22,6 +22,8 @@ import { isAnonymousUser, removeMongoId } from "./util";
 import makeUserRouter from "./routes/user";
 import makeGameRouter from "./routes/game";
 
+import runMigrations from "./migrations";
+
 const COLLECTION = "socket.io-adapter-events";
 
 const config = getConfig();
@@ -270,6 +272,7 @@ io.on("connection", async (socket) => {
 
 const main = async () => {
   if (config.dbType === "mongo") {
+    await runMigrations();
     await mongoClient.connect();
     try {
       await mongoClient.db(config.mongoDbName).createCollection(COLLECTION, {
