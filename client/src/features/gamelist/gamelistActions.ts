@@ -6,6 +6,7 @@ import {
   ClientGame,
   deleteGame,
   refreshReceived,
+  setGameLoading,
   shiftGameStateModalQueueForGame,
   updateGame,
 } from "./gamelistSlice";
@@ -204,7 +205,7 @@ export const markGameAsSeen =
       game.lastSeenTurn === 9999 ? game.moves.length : game.lastSeenTurn;
     // don't force players to re-watch the whole game they played on a different device
     if (game.moves.length - lastSeenTurn > 2) {
-      lastSeenTurn = game.moves.length - 1
+      lastSeenTurn = game.moves.length - 1;
     }
     while (lastSeenTurn < game.moves.length) {
       await dispatch(initiateReplay(lastSeenTurn));
@@ -287,3 +288,17 @@ export const getTutorialCardSetting = () =>
 
 export const setTutorialCardSetting = (mute: boolean) =>
   localStorage.setItem("turnNotificationsMute", JSON.stringify(mute));
+
+export const fetchGameById =
+  (id: string): AppThunk =>
+  async (dispatch) => {
+    dispatch(setGameLoading({ id, loading: 'loading' }));
+    const { data } = await Api.get<Game>(getApiUrl("/game", id));
+    dispatch(
+      updateGame({
+        game: data,
+        lastSeenTurn: 0,
+        gameStateModalToQueue: null,
+      })
+    );
+  };

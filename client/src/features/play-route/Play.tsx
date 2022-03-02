@@ -24,6 +24,7 @@ import {
 import {
   deleteGameById,
   dequeueOrDismissGameStateModalForGame,
+  fetchGameById,
   joinGameById,
   markGameAsSeen,
 } from "../gamelist/gamelistActions";
@@ -58,6 +59,7 @@ const Play: React.FC = () => {
     (state) => state.game.showingNudgeButton
   );
   const socketConnected = useAppSelector((state) => state.game.socketConnected);
+  const gameLoadingState = useAppSelector(state => id && state.gamelist.gamesLoading[id]);
 
   const [fourohfour, setFourohfour] = useState(false);
 
@@ -84,6 +86,11 @@ const Play: React.FC = () => {
   }, [dispatch, id]);
 
   useEffect(() => {
+    if (!gameLoadingState && id) {
+      dispatch(fetchGameById(id))
+    }
+    // fetch game (if not fetching?)
+    // join prompt
     if (gamesLoaded && !game && id) {
       dispatch(joinGameById(id)).then((joinedGame) => {
         if (!joinedGame) {
@@ -93,7 +100,7 @@ const Play: React.FC = () => {
     } else {
       setFourohfour(false);
     }
-  }, [id, dispatch, game, gamesLoaded]);
+  }, [id, dispatch, game, gamesLoaded, gameLoadingState]);
 
   useEffect(() => {
     if (
