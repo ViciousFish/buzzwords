@@ -1,12 +1,8 @@
 import * as R from "ramda";
 
-import {
-  getRandomCharacter,
-  canMakeAValidWord,
-  getMaxRepeatedLetter,
-} from "./alphaHelpers";
+import { getRandomCharacter } from "./alphaHelpers";
 import Cell, { makeCell } from "./cell";
-import { getRandomInt } from "./utils";
+import { combinationN, getRandomInt, shuffle } from "./utils";
 
 const QRLookup = (q: number): number => {
   switch (q) {
@@ -75,16 +71,13 @@ export const getCellNeighbors = (
   return potentialNeighbors.filter((cell) => Boolean(cell));
 };
 
-const MAX_ITERATIONS = 10;
 const MAX_REPEATED_LETTER = 3;
-
-const vowels = ["a", "e", "i", "o", "u", "y"];
 
 export const getNewCellValues = (
   grid: HexGrid,
   toBeReset: Cell[],
   toBeOwned: Cell[],
-  wordsBySortedLetters: {
+  words: {
     [key: string]: number;
   }
 ): string[] => {
@@ -96,41 +89,66 @@ export const getNewCellValues = (
     toBeOwned.map((cell) => `${cell.q},${cell.r}`)
   );
   const letters = keys.map((k) => grid[k].value).filter(Boolean);
-  const hasVowel = Boolean(letters.filter((l) => vowels.includes(l)).length);
 
-  let iterations = 0;
-  while (true) {
-    let newValues = hasVowel
-      ? R.repeat("", toBeReset.length).map(() => getRandomCharacter())
-      : R.repeat("", toBeReset.length - 1)
-          .map(() => getRandomCharacter())
-          .concat(vowels[getRandomInt(0, vowels.length)]);
-    if (
-      getMaxRepeatedLetter([...letters, ...newValues]) > MAX_REPEATED_LETTER ||
-      !canMakeAValidWord([...letters, ...newValues], wordsBySortedLetters)
-    ) {
-      console.log("Invalid combo! Gotta run again");
-      iterations++;
-      if (iterations > MAX_ITERATIONS) {
-        console.error("UNABLE TO FIND VALID LETTER CONFIGURATION");
-        break;
-      }
+  let w = Object.keys(words);
+  let potentialWords: string[] = [];
+  let combos: string[][] = [];
+  if (!letters.length) {
+    potentialWords = w.filter((word) => word.length <= toBeReset.length);
+  } else {
+    for (let i = 1; i <= letters.length; i++) {
+      combos = [...combos, ...combinationN(letters, i)];
     }
-    return newValues;
+    combos = shuffle(combos);
+
+    for (let combo of combos) {
+      const validWords = w.filter((word) => {
+        const wordLetters = word.split("");
+        for (let letter of combo) {
+          const idx = wordLetters.indexOf(letter);
+          if (idx == -1) {
+            return false;
+          }
+          wordLetters.splice(idx, 1);
+        }
+        return wordLetters.length <= toBeReset.length;
+      });
+      if (!validWords.length) {
+        continue;
+      }
+      potentialWords = validWords;
+      break;
+    }
   }
 
-  // Somehow we couldn't get a valid combination
-  // Just grab a random short word and put it in there
-  const shortWords = Object.keys(wordsBySortedLetters).filter(
-    (w) => w.length <= toBeReset.length
-  );
+  const word = potentialWords[getRandomInt(0, potentialWords.length)];
 
-  const randomShortWordLetters =
-    shortWords[getRandomInt(0, shortWords.length)].split("");
+  const letters2 = R.clone(letters);
+  const neededLetters = [];
+  for (const letter of word.split("")) {
+    const idx = letters2.indexOf(letter);
+    if (idx === -1) {
+      neededLetters.push(letter);
+      continue;
+    }
+    letters2.splice(idx, 1);
+  }
 
-  return randomShortWordLetters.concat(
-    R.repeat("", toBeReset.length - randomShortWordLetters.length).map(() =>
-      getRandomCharacter()
-    )
-  );
+  const fillerLength = toBeReset.length - neededLetters.length;
+  let filler: string[] = [];
+
+  for (let i = 0; i < fillerLength; i++) {
+    const letterCount = R.countBy(R.identity, [
+      ...letters,
+      ...neededLetters,
+      ...filler,
+    ]);
+
+    const omit = Object.entries(letterCount)
+      .filter(([k, v]) => v >= MAX_REPEATED_LETTER)
+      .map(([k, v]) => k);
+
+    filler.push(getRandomCharacter(omit));
+  }
+  return shuffle([...neededLetters, ...filler]);
 };
