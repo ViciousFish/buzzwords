@@ -432,13 +432,13 @@ export default class Mongo implements DataLayer {
         {
           session: options?.session,
         }
-      );
+      ).lean();
       console.log("[perf] refresh query took", performance.now() - qstart);
       const start = performance.now();
       const games = [] as Game[];
       for (const doc of res) {
-        const game = doc.toObject({ flattenMaps: true });
-        games.push(game);
+        // const game = doc.toObject({ flattenMaps: true });
+        games.push(doc);
         // game.grid = Object.fromE
       }
       console.log(
