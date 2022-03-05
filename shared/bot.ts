@@ -15,6 +15,9 @@ export const getBotMove = (
     words: {
       [key: string]: number;
     };
+    bannedWords: {
+      [key: string]: number;
+    };
   }
 ): HexCoord[] => {
   const openTiles = Object.values(grid).filter((cell) => {
@@ -106,7 +109,7 @@ export const getBotMove = (
     for (let p of permutationN(cells, cells.length)) {
       const word = p.map((c) => c.value).join("");
       if (!wordsTried[word]) {
-        if (isValidWord(word, options.words)) {
+        if (isValidWord(word, options.words) && !options.bannedWords[word]) {
           return p.map((c) => ({
             q: c.q,
             r: c.r,

@@ -9,7 +9,7 @@ import Game from "buzzwords-shared/Game";
 import dl from "../datalayer";
 import getConfig from "../config";
 import GameManager from "../GameManager";
-import { WordsObject } from "../words";
+import { WordsObject, BannedWordsObject } from "../words";
 import { removeMongoId } from "../util";
 
 export default (io: Server) => {
@@ -250,6 +250,7 @@ export default (io: Server) => {
         botMove = getBotMove(game.grid, {
           words: WordsObject,
           difficulty: game.difficulty,
+          bannedWords: BannedWordsObject,
         });
       } catch (e) {
         console.log("BOT FAILED TO FIND MOVE. PASSING");
