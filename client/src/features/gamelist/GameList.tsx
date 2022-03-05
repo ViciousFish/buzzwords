@@ -124,7 +124,7 @@ const GameList: React.FC = () => {
               {incompleteGames.map((game) => (
                 <GameListItem key={game.id} game={game} />
               ))}
-              {Object.keys(games).length === 0 && (
+              {(Object.keys(games).length === 0 || !gamesLoaded) && (
                 <div className="p-2">
                   {!gamesLoaded && (
                     <>
