@@ -7,6 +7,7 @@ import {
   deleteGame,
   refreshReceived,
   setGameLoading,
+  setIsRefreshing,
   shiftGameStateModalQueueForGame,
   updateGame,
 } from "./gamelistSlice";
@@ -70,26 +71,31 @@ const gameUpdateEventGetGameStateModalType = (
 };
 
 export const refresh = (): AppThunk => async (dispatch, getState) => {
-  const response = await Api.get<{
-    games: Game[];
-    users: User[];
-  }>(getApiUrl("/game"));
+  dispatch(setIsRefreshing(true));
+  try {
+    const response = await Api.get<{
+      games: Game[];
+      users: User[];
+    }>(getApiUrl("/game"));
 
-  const lastSeenTurns = getLastSeenTurns();
+    const lastSeenTurns = getLastSeenTurns();
 
-  const gamesById: { [id: string]: ClientGame } = {};
-  response.data.games.forEach((game) => {
-    gamesById[game.id] = {
-      ...game,
-      lastSeenTurn: lastSeenTurns?.[game.id] ?? game.moves.length,
-      queuedGameStateModals: [],
-    };
-  }, {});
+    const gamesById: { [id: string]: ClientGame } = {};
+    response.data.games.forEach((game) => {
+      gamesById[game.id] = {
+        ...game,
+        lastSeenTurn: lastSeenTurns?.[game.id] ?? game.moves.length,
+        queuedGameStateModals: [],
+      };
+    }, {});
 
-  Object.values(response.data.users).forEach((u) =>
-    dispatch(opponentReceived(u))
-  );
-  dispatch(refreshReceived(gamesById));
+    Object.values(response.data.users).forEach((u) =>
+      dispatch(opponentReceived(u))
+    );
+    dispatch(refreshReceived(gamesById));
+  } catch (e) {
+    toast(e.response?.data?.message ?? e.toString(), { type: "error" });
+  }
 };
 
 const DingAudio = new Audio(chord);
@@ -128,7 +134,7 @@ export const receiveGameUpdatedSocket =
       const turnNumber = moves.length;
       setTimeout(() => {
         dispatch(maybeShowNudge(id, turnNumber));
-      }, 10000);
+      }, 20000);
     }
     if (game.vsAI && game.turn === 0) {
       dispatch(toggleNudgeButton(false));

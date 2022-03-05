@@ -128,7 +128,7 @@ const TopBar: React.FC = () => {
             <FontAwesomeIcon icon={faSpinner} className="mr-2 animate-spin" />
           )}
           <FontAwesomeIcon
-            className={socketConnected ? "text-green-400" : "text-gray-400"}
+            className={socketConnected ? "text-green-500" : "text-gray-400"}
             icon={faCircle}
           />
           {isLoggedIn !== null && (

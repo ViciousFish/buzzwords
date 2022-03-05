@@ -47,6 +47,7 @@ export const gamelistSlice = createSlice({
       action: PayloadAction<Record<string, ClientGame>>
     ) => {
       state.games = action.payload;
+      state.isRefreshing = false;
       state.gamesLoaded = true;
     },
     updateGame: (state, action: PayloadAction<UpdateGamePayload>) => {
