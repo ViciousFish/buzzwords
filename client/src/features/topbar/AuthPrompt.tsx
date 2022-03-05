@@ -103,7 +103,7 @@ const AuthPrompt: React.FC<AuthPromptProps> = ({ onDismiss }) => {
         <>
           <h3 className="text-lg font-bold m-0">
             Link an account{" "}
-            <span className="font-light text-md">(optional)</span>
+            <span className="font-light text-md opacity-75">(optional)</span>
           </h3>
           <p>to sync your games across devices</p>
           <div className="flex">
