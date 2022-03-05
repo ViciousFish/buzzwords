@@ -125,7 +125,11 @@ export const getBotMove = (
     return null;
   };
 
-  let d1 = Math.min(defenseTileCount, maxWordLength);
+  let d1 = Math.max(
+    Math.min(defenseTileCount, maxWordLength),
+    3 - (nonCapitalNeighbors.length + nonNeighborTiles.length)
+  );
+  3 - nonCapitalNeighbors.length + nonNeighborTiles.length;
   if (openTiles.length === capitalNeighbors.length) {
     // There are only capital neighbors. Make d at least 3
     d1 = Math.max(d1, 3);
