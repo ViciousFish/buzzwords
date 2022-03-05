@@ -4,13 +4,16 @@ import { useContextBridge } from "@react-three/drei";
 import { ReactReduxContext } from "react-redux";
 
 import Wrap3d from "./Wrap3d";
+import classNames from "classnames";
 
-const Canvas: React.FC = ({ children }) => {
+const Canvas: React.FC<{
+  className?: string;
+}> = ({ children, className }) => {
   const ReduxProvider = useContextBridge(ReactReduxContext);
 
   return (
     <ThreeCanvas
-      className="shrinkable"
+      className={classNames("shrinkable", className)}
       camera={{
         position: [0, 0, 20],
         zoom: 3,

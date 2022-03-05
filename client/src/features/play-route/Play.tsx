@@ -35,7 +35,10 @@ import classNames from "classnames";
 import Button from "../../presentational/Button";
 import GameStateModal from "../game/GameStateModal";
 import MoveListItem from "./MoveListItem";
-import { getOpponentName } from "../user/userSelectors";
+import { getOpponent } from "../user/userSelectors";
+import { fetchOpponent } from "../user/userActions";
+import Canvas from "../canvas/Canvas";
+import Bee from "../../assets/Bee";
 
 const Play: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -62,14 +65,15 @@ const Play: React.FC = () => {
   );
 
   const [fourohfour, setFourohfour] = useState(false);
+  const [fetchedOpponentName, setFetchedOpponentName] = useState(false);
 
   const userIndex =
     game && currentUser
       ? game.users.findIndex((val) => val === currentUser.id)
       : null;
 
-  const opponentName = useAppSelector((state) =>
-    id ? getOpponentName(state, id) : null
+  const opponent = useAppSelector((state) =>
+    id ? getOpponent(state, id) : null
   );
 
   useEffect(() => {
@@ -118,9 +122,13 @@ const Play: React.FC = () => {
     }
   }, [game, dispatch]);
 
+  console.log("opponent", opponent);
   useEffect(() => {
-    // cq: fetch opponent!
-  }, []);
+    if (game && opponent && !opponent.nickname && !fetchedOpponentName) {
+      setFetchedOpponentName(true);
+      dispatch(fetchOpponent(opponent.id));
+    }
+  }, [game, opponent, fetchedOpponentName, dispatch]);
 
   const onNudgeClick = useCallback(() => {
     if (!id) {
@@ -137,7 +145,7 @@ const Play: React.FC = () => {
   }, [dispatch, id]);
 
   const nickModal =
-    currentUser && !currentUser.nickname ? <NicknameModal /> : null;
+    game && currentUser && !currentUser.nickname ? <NicknameModal /> : null;
 
   if (fourohfour) {
     return (
@@ -160,19 +168,15 @@ const Play: React.FC = () => {
       <div className="flex flex-auto flex-col overflow-auto lg:h-screen justify-center items-center py-12 px-4">
         <div className="max-w-full flex-shrink-0 bg-darkbg flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
           <h2 className="text-2xl flex-wrap">
-            {opponent || '???'} has invited you to play Buzzwords
+            <span className="font-bold italic">{opponent?.nickname || "???"}</span> has
+            invited you to play Buzzwords
           </h2>
         </div>
-        <h2>join game?</h2>
+        <Button>Join game</Button>
       </div>
     );
   }
 
-  console.log("userIndex", userIndex);
-  console.log(
-    "🚀 ~ file: Play.tsx ~ line 167 ~ game && game.users.length === 1",
-    game && game.users.length === 1
-  );
   if (game && game.users.length === 1 && userIndex !== null && userIndex > -1) {
     return (
       <div className="flex flex-auto flex-col overflow-auto lg:h-screen justify-center items-center py-12 px-4">

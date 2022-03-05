@@ -101,21 +101,23 @@ const AuthPrompt: React.FC<AuthPromptProps> = ({ onDismiss }) => {
       </button>
       {view === "login-options" && (
         <>
-          <h3 className="text-lg font-bold m-0">Link an account</h3>
+          <h3 className="text-lg font-bold m-0">
+            Link an account{" "}
+            <span className="font-light text-md">(optional)</span>
+          </h3>
           <p>to sync your games across devices</p>
           <div className="flex">
-
-          <button
-            type="button"
-            className={classNames(
-              "mt-2 mb-2 flex items-center flex-auto bg-darkbrown text-white p-2 text-sm hover:bg-opacity-50",
-              "rounded-full inset-shadow transition-all"
-            )}
-            onClick={() => dispatch(getGoogleLoginURL())}
-          >
-            <FontAwesomeIcon className="mx-2" icon={faGoogle} /> Sign in with
-            Google
-          </button>
+            <button
+              type="button"
+              className={classNames(
+                "mt-2 mb-2 flex items-center flex-auto bg-darkbrown text-white p-2 text-sm hover:bg-opacity-50",
+                "rounded-full inset-shadow transition-all"
+              )}
+              onClick={() => dispatch(getGoogleLoginURL())}
+            >
+              <FontAwesomeIcon className="mx-2" icon={faGoogle} /> Sign in with
+              Google
+            </button>
           </div>
           {/* <div className="my-2 flex space-x-2">
             <button

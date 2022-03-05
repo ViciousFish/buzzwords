@@ -25,7 +25,6 @@ const ScreenHeightWraper: React.FC<
       .replace(/\D/g, "")
   );
 
-  console.log(`${(height ?? 0) - (safeAreaBottom + safeAreaTop)}px`);
   return (
     <div
       {...props}

@@ -15,26 +15,26 @@ export const getAllUsers = createSelector(
   }
 );
 
-export const getOpponentName = createSelector(
+export const getOpponent = createSelector(
   [
     (state: RootState) => state.user.opponents,
     (state: RootState) => state.gamelist.games,
+    (state: RootState) => state.user.user,
     (_state, gameId: string) => gameId,
   ],
-  (opponentUsers, allGames, gameId) => {
+  (opponentUsers, allGames, selfUser, gameId) => {
     const game = allGames[gameId];
-    if (!game) {
+    if (!game || !selfUser) {
       return null;
     }
-    const opponentsArray = Object.values(opponentUsers);
-    const opponent = game.users.filter(
-      (user) =>
-        opponentsArray.findIndex((opponent) => opponent.id === user) > -1
+    const gameOpponent = game.users.filter(
+      (gameUser) => gameUser !== selfUser.id
     )[0];
+    const opponent = opponentUsers[gameOpponent];
     if (!opponent) {
-      return null;
+      return { id: gameOpponent };
     }
-    return opponentUsers[opponent]?.nickname ?? null;
+    return opponent;
   }
 );
 
