@@ -1,13 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import * as R from "ramda";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import classnames from "classnames";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faCircle,
   faHistory,
-  faPlay,
   faPlayCircle,
   faShare,
   faTrash,
@@ -32,11 +30,12 @@ import GameBoard from "../game/GameBoard";
 import CopyToClipboard from "../../presentational/CopyToClipboard";
 import NicknameModal from "../user/NicknameModal";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { nudgeGameById, submitMove } from "../game/gameActions";
+import { nudgeGameById } from "../game/gameActions";
 import classNames from "classnames";
 import Button from "../../presentational/Button";
 import GameStateModal from "../game/GameStateModal";
 import MoveListItem from "./MoveListItem";
+import { getOpponentName } from "../user/userSelectors";
 
 const Play: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -58,7 +57,9 @@ const Play: React.FC = () => {
   const showingNudgeButton = useAppSelector(
     (state) => state.game.showingNudgeButton
   );
-  const gameLoadingState = useAppSelector(state => id && state.gamelist.gamesLoading[id]);
+  const gameLoadingState = useAppSelector(
+    (state) => id && state.gamelist.gamesLoading[id]
+  );
 
   const [fourohfour, setFourohfour] = useState(false);
 
@@ -67,11 +68,9 @@ const Play: React.FC = () => {
       ? game.users.findIndex((val) => val === currentUser.id)
       : null;
 
-  useHotkeys("Enter", () => {
-    if (id) {
-      dispatch(submitMove(id));
-    }
-  });
+  const opponentName = useAppSelector((state) =>
+    id ? getOpponentName(state, id) : null
+  );
 
   useEffect(() => {
     if (id) {
@@ -86,7 +85,7 @@ const Play: React.FC = () => {
 
   useEffect(() => {
     if (!gameLoadingState && id) {
-      dispatch(fetchGameById(id))
+      dispatch(fetchGameById(id));
     }
     // fetch game (if not fetching?)
     // join prompt
@@ -119,6 +118,10 @@ const Play: React.FC = () => {
     }
   }, [game, dispatch]);
 
+  useEffect(() => {
+    // cq: fetch opponent!
+  }, []);
+
   const onNudgeClick = useCallback(() => {
     if (!id) {
       return;
@@ -147,7 +150,30 @@ const Play: React.FC = () => {
     );
   }
 
-  if (game && game.users.length === 1) {
+  if (
+    game &&
+    game.users.length === 1 &&
+    userIndex !== null &&
+    userIndex === -1
+  ) {
+    return (
+      <div className="flex flex-auto flex-col overflow-auto lg:h-screen justify-center items-center py-12 px-4">
+        <div className="max-w-full flex-shrink-0 bg-darkbg flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
+          <h2 className="text-2xl flex-wrap">
+            {opponent || '???'} has invited you to play Buzzwords
+          </h2>
+        </div>
+        <h2>join game?</h2>
+      </div>
+    );
+  }
+
+  console.log("userIndex", userIndex);
+  console.log(
+    "🚀 ~ file: Play.tsx ~ line 167 ~ game && game.users.length === 1",
+    game && game.users.length === 1
+  );
+  if (game && game.users.length === 1 && userIndex !== null && userIndex > -1) {
     return (
       <div className="flex flex-auto flex-col overflow-auto lg:h-screen justify-center items-center py-12 px-4">
         <div className="max-w-full flex-shrink-0 bg-darkbg flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
@@ -182,7 +208,7 @@ const Play: React.FC = () => {
                 className="bg-red-600 text-white"
                 onClick={() => {
                   dispatch(deleteGameById(id));
-                  navigate('/');
+                  navigate("/");
                 }}
               >
                 <FontAwesomeIcon className="mr-2" icon={faTrash} />

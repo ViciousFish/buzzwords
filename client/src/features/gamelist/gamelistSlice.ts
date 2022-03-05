@@ -46,7 +46,10 @@ export const gamelistSlice = createSlice({
       state,
       action: PayloadAction<Record<string, ClientGame>>
     ) => {
-      state.games = action.payload;
+      state.games = {
+        ...state.games,
+        ...action.payload
+      };
       state.isRefreshing = false;
       state.gamesLoaded = true;
     },

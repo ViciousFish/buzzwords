@@ -1,3 +1,5 @@
+// CQ: hide games you're not a member of from sidebar unless currently active route
+// CQ: delete games you're not a member of from state when you navigate away?
 import {
   faAngleDown,
   faAngleRight,

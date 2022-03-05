@@ -25,6 +25,7 @@ import {
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
+import useHotkeys from "@reecelucas/react-use-hotkeys";
 
 interface GameBoardProps {
   id: string;
@@ -70,6 +71,11 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
     setTimeout(() => {
       setRevealLetters(true);
     }, 500);
+  });
+  useHotkeys("Enter", () => {
+    if (id) {
+      dispatch(onSubmit());
+    }
   });
   const selfName = nickname ?? "You";
   const opponentName = game.vsAI ? "Computer" : opponent?.nickname ?? "Them";
