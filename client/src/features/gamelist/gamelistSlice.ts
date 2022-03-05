@@ -15,6 +15,7 @@ interface GameListState {
     [key: string]: "loading" | "loaded" | undefined;
   };
   gamesLoaded: boolean;
+  isRefreshing: boolean;
   isOpen: boolean;
   showCompletedGames: boolean;
   showTutorialCard: boolean;
@@ -25,6 +26,7 @@ const initialState: GameListState = {
   games: {},
   gamesLoading: {},
   gamesLoaded: false,
+  isRefreshing: false,
   isOpen: window.innerWidth >= 1024,
   showCompletedGames: true,
   showTutorialCard: window.innerWidth >= 1024,
@@ -85,6 +87,9 @@ export const gamelistSlice = createSlice({
     ) => {
       state.gamesLoading[action.payload.id] = action.payload.loading;
     },
+    setIsRefreshing: (state, action: PayloadAction<boolean>) => {
+      state.isRefreshing = action.payload;
+    }
   },
 });
 
@@ -99,6 +104,7 @@ export const {
   setShowTutorialCard,
   deleteGame,
   setGameLoading,
+  setIsRefreshing,
 } = gamelistSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type

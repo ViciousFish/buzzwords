@@ -292,13 +292,19 @@ export const setTutorialCardSetting = (mute: boolean) =>
 export const fetchGameById =
   (id: string): AppThunk =>
   async (dispatch) => {
-    dispatch(setGameLoading({ id, loading: 'loading' }));
+    dispatch(setGameLoading({ id, loading: "loading" }));
     const { data } = await Api.get<Game>(getApiUrl("/game", id));
     dispatch(
       updateGame({
         game: data,
         lastSeenTurn: 0,
         gameStateModalToQueue: null,
+      })
+    );
+    dispatch(
+      setGameLoading({
+        id,
+        loading: "loaded",
       })
     );
   };

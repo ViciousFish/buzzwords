@@ -58,7 +58,6 @@ const Play: React.FC = () => {
   const showingNudgeButton = useAppSelector(
     (state) => state.game.showingNudgeButton
   );
-  const socketConnected = useAppSelector((state) => state.game.socketConnected);
   const gameLoadingState = useAppSelector(state => id && state.gamelist.gamesLoading[id]);
 
   const [fourohfour, setFourohfour] = useState(false);
@@ -217,16 +216,6 @@ const Play: React.FC = () => {
 
   return (
     <div className="flex flex-auto flex-col lg:flex-row">
-      {/* <div className="absolute top-1 right-1 text-sm bg-lightbg">
-        <span className="mr-1">
-          {socketConnected ? "online" : "disconnected"}
-        </span>
-        <FontAwesomeIcon
-          className={socketConnected ? "text-green-400" : "text-gray-400"}
-          icon={faCircle}
-        />
-      </div> */}
-      {/* CQx: status indicator in topbar */}
       {game && id && userIndex !== null && (
         <GameBoard id={id} game={game} userIndex={userIndex} />
       )}
