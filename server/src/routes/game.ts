@@ -361,6 +361,7 @@ export default (io: Server) => {
     newGame.users.forEach((user) => {
       io.to(user).emit("game updated", newGame);
     });
+
     doBotMoves(gameId);
   });
 

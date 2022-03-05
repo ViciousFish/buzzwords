@@ -2,7 +2,7 @@ import * as R from "ramda";
 
 import { combinationN } from "./utils";
 
-const letters = [
+export const letters = [
   "a",
   "b",
   "c",

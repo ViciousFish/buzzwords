@@ -7,6 +7,7 @@ export interface Move {
   letters: string[];
   player: 0 | 1;
   date?: Date;
+  shuffle?: boolean;
 }
 
 export default interface Game {

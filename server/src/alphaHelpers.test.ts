@@ -1,4 +1,5 @@
 import { getRandomCharacter, isValidWord } from "buzzwords-shared/alphaHelpers";
+import { WordsObject } from "./words";
 
 test("should return a random character", () => {
   const char = getRandomCharacter();
@@ -9,10 +10,10 @@ test("should return a random character", () => {
 });
 
 test("valid word must be at least 3 chars", () => {
-  expect(isValidWord("ax")).toBeFalsy;
-  expect(isValidWord("axe")).toBeTruthy;
+  expect(isValidWord("ax", WordsObject)).toBeFalsy;
+  expect(isValidWord("axe", WordsObject)).toBeTruthy;
 });
 
 test("valid word should take only chars", () => {
-  expect(isValidWord("a123")).toBeFalsy;
+  expect(isValidWord("a123", WordsObject)).toBeFalsy;
 });

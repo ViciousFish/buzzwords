@@ -73,28 +73,18 @@ export const getCellNeighbors = (
 
 const MAX_REPEATED_LETTER = 3;
 
-export const getNewCellValues = (
-  grid: HexGrid,
-  toBeReset: Cell[],
-  toBeOwned: Cell[],
+export const getPotentialWords = (
+  letters: string[],
+  toBeResetLength: number,
   words: {
     [key: string]: number;
   }
 ): string[] => {
-  const keys = R.difference(
-    R.difference(
-      Object.keys(grid),
-      toBeReset.map((cell) => `${cell.q},${cell.r}`)
-    ),
-    toBeOwned.map((cell) => `${cell.q},${cell.r}`)
-  );
-  const letters = keys.map((k) => grid[k].value).filter(Boolean);
-
   let w = Object.keys(words);
   let potentialWords: string[] = [];
   let combos: string[][] = [];
   if (!letters.length) {
-    potentialWords = w.filter((word) => word.length <= toBeReset.length);
+    potentialWords = w.filter((word) => word.length <= toBeResetLength);
   } else {
     for (let i = 1; i <= letters.length; i++) {
       combos = [...combos, ...combinationN(letters, i)];
@@ -111,7 +101,7 @@ export const getNewCellValues = (
           }
           wordLetters.splice(idx, 1);
         }
-        return wordLetters.length <= toBeReset.length;
+        return wordLetters.length <= toBeResetLength;
       });
       if (!validWords.length) {
         continue;
@@ -119,6 +109,60 @@ export const getNewCellValues = (
       potentialWords = validWords;
       break;
     }
+    if (!potentialWords.length) {
+      potentialWords = w.filter((word) => word.length <= toBeResetLength);
+    }
+  }
+  return potentialWords;
+};
+
+export const getNewCellValues = (
+  letters: string[],
+  toBeReset: number,
+  words: {
+    [key: string]: number;
+  }
+): string[] => {
+  if (!toBeReset) {
+    return [];
+  }
+
+  let w = Object.keys(words);
+  let potentialWords: string[] = [];
+  let combos: string[][] = [];
+  if (!letters.length) {
+    potentialWords = w.filter((word) => word.length <= toBeReset);
+  } else {
+    for (let i = 1; i <= letters.length; i++) {
+      combos = [...combos, ...combinationN(letters, i)];
+    }
+    combos = shuffle(combos);
+
+    for (let combo of combos) {
+      const validWords = w.filter((word) => {
+        const wordLetters = word.split("");
+        for (let letter of combo) {
+          const idx = wordLetters.indexOf(letter);
+          if (idx == -1) {
+            return false;
+          }
+          wordLetters.splice(idx, 1);
+        }
+        return wordLetters.length <= toBeReset;
+      });
+      if (!validWords.length) {
+        continue;
+      }
+      potentialWords = validWords;
+      break;
+    }
+    if (!potentialWords.length) {
+      potentialWords = w.filter((word) => word.length <= toBeReset);
+    }
+  }
+
+  if (!potentialWords.length) {
+    throw "No possible combinations";
   }
 
   const word = potentialWords[getRandomInt(0, potentialWords.length)];
@@ -134,7 +178,7 @@ export const getNewCellValues = (
     letters2.splice(idx, 1);
   }
 
-  const fillerLength = toBeReset.length - neededLetters.length;
+  const fillerLength = toBeReset - neededLetters.length;
   let filler: string[] = [];
 
   for (let i = 0; i < fillerLength; i++) {

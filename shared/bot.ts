@@ -125,7 +125,13 @@ export const getBotMove = (
     return null;
   };
 
-  for (let d = Math.min(defenseTileCount, maxWordLength); d >= 0; d--) {
+  let d1 = Math.min(defenseTileCount, maxWordLength);
+  if (openTiles.length === capitalNeighbors.length) {
+    // There are only capital neighbors. Make d at least 3
+    d1 = Math.max(d1, 3);
+  }
+
+  for (let d = d1; d >= 0; d--) {
     if (d && d == capitalNeighbors.length && d == maxWordLength) {
       const cells = [...capitalNeighbors];
       const result = permuteAndCheck(cells);
