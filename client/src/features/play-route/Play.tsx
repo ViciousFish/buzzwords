@@ -47,9 +47,9 @@ const Play: React.FC = () => {
   const game = useSelector((state: RootState) =>
     id ? state.gamelist.games[id] : null
   );
-  const gamesLoaded = useSelector(
-    (state: RootState) => state.gamelist.gamesLoaded
-  );
+  // const gamesLoaded = useSelector(
+  //   (state: RootState) => state.gamelist.gamesLoaded
+  // );
   const currentUser = useSelector((state: RootState) => state.user.user);
   const replayState = useAppSelector((state) =>
     Boolean(state.game.replay.move)
@@ -90,20 +90,19 @@ const Play: React.FC = () => {
     }
     // fetch game (if not fetching?)
     // join prompt
-    if (gamesLoaded && !game && id) {
-      dispatch(joinGameById(id)).then((joinedGame) => {
-        if (!joinedGame) {
-          setFourohfour(true);
-        }
-      });
-    } else {
-      setFourohfour(false);
-    }
-  }, [id, dispatch, game, gamesLoaded, gameLoadingState]);
+    // if (gamesLoaded && !game && id) {
+    //   dispatch(joinGameById(id)).then((joinedGame) => {
+    //     if (!joinedGame) {
+    //       setFourohfour(true);
+    //     }
+    //   });
+    // } else {
+    //   setFourohfour(false);
+    // }
+  }, [id, dispatch, game, gameLoadingState]);
 
   useEffect(() => {
     if (
-      gamesLoaded &&
       game &&
       game.vsAI &&
       game.turn === 1 &&
@@ -113,12 +112,12 @@ const Play: React.FC = () => {
       const move = game.moves[game.moves.length - 1];
       if (
         move.date &&
-        new Date().getTime() - new Date(move.date).getTime() > 10000
+        new Date().getTime() - new Date(move.date).getTime() > 20000
       ) {
         dispatch(toggleNudgeButton(true));
       }
     }
-  }, [gamesLoaded, game, dispatch]);
+  }, [game, dispatch]);
 
   const onNudgeClick = useCallback(() => {
     if (!id) {
