@@ -19,9 +19,7 @@ import GameTile from "./GameTile";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faArrowCircleRight,
   faBackspace,
-  faPaperPlane,
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
@@ -38,13 +36,9 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   const { progress } = useProgress();
   const dispatch = useDispatch();
 
-  const nickname = useAppSelector((state) => state.user.user?.nickname);
-  const opponent: User | undefined = useAppSelector(
-    (state) => state.user.opponents[game.users[1 - userIndex]]
-  );
   const users = useAppSelector(getAllUsers);
   const p1Nick = users[game.users[0]]?.nickname;
-  const p2Nick = users[game.users[1]]?.nickname;
+  const p2Nick = game.vsAI ? 'Computer' : users[game.users[1]]?.nickname;
 
   const selectedWord = useAppSelector((state) =>
     getSelectedWordByGameId(state, id)
