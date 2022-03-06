@@ -67,16 +67,19 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
       });
     }
   }, [dispatch, id]);
+
   useEffect(() => {
     setTimeout(() => {
       setRevealLetters(true);
     }, 500);
   });
+
   useHotkeys("Enter", () => {
     if (id && game.turn === userIndex) {
       dispatch(onSubmit());
     }
   });
+  
   const selfName = nickname ?? "You";
   const opponentName = game.vsAI ? "Computer" : opponent?.nickname ?? "Them";
   return (

@@ -72,6 +72,8 @@ const Play: React.FC = () => {
       ? game.users.findIndex((val) => val === currentUser.id)
       : null;
 
+  const isSpectating = userIndex === -1;
+
   const opponent = useAppSelector((state) =>
     id ? getOpponent(state, id) : null
   );
@@ -121,13 +123,15 @@ const Play: React.FC = () => {
     }
   }, [game, dispatch]);
 
-  console.log("opponent", opponent);
   useEffect(() => {
-    if (game && opponent && !opponent.nickname && !fetchedOpponentName) {
+    if (game && isSpectating && !fetchedOpponentName) {
+      setFetchedOpponentName(true);
+      game.users.forEach((user) => dispatch(fetchOpponent(user)));
+    } else if (game && opponent && !opponent.nickname && !fetchedOpponentName) {
       setFetchedOpponentName(true);
       dispatch(fetchOpponent(opponent.id));
     }
-  }, [game, opponent, fetchedOpponentName, dispatch]);
+  }, [game, opponent, fetchedOpponentName, dispatch, isSpectating]);
 
   const onNudgeClick = useCallback(() => {
     if (!id) {
