@@ -152,7 +152,9 @@ const Play: React.FC = () => {
   }, [dispatch, id]);
 
   const nickModal =
-    game && currentUser && !currentUser.nickname ? <NicknameModal /> : null;
+    game && currentUser && !isSpectating && !currentUser.nickname ? (
+      <NicknameModal />
+    ) : null;
 
   if (fourohfour) {
     return (
