@@ -101,7 +101,11 @@ const Play: React.FC = () => {
 
   useEffect(() => {
     if (!gameLoadingState && id) {
-      dispatch(fetchGameById(id));
+      dispatch(fetchGameById(id)).then((joinedGame) => {
+        if (!joinedGame) {
+          setFourohfour(true);
+        }
+      });
     }
   }, [id, dispatch, game, gameLoadingState]);
 

@@ -296,21 +296,37 @@ export const setTutorialCardSetting = (mute: boolean) =>
   localStorage.setItem("turnNotificationsMute", JSON.stringify(mute));
 
 export const fetchGameById =
-  (id: string): AppThunk =>
+  (id: string): AppThunk<Promise<boolean>> =>
   async (dispatch) => {
     dispatch(setGameLoading({ id, loading: "loading" }));
-    const { data } = await Api.get<Game>(getApiUrl("/game", id));
-    dispatch(
-      updateGame({
-        game: data,
-        lastSeenTurn: 0,
-        gameStateModalToQueue: null,
-      })
-    );
+    try {
+      const { data } = await Api.get<Game>(getApiUrl("/game", id));
+      console.log("🚀 ~ file: gamelistActions.ts ~ line 305 ~ data", data);
+      dispatch(
+        updateGame({
+          game: data,
+          lastSeenTurn: 0,
+          gameStateModalToQueue: null,
+        })
+      );
+    } catch (e) {
+      if (e.response?.status === 404) {
+        dispatch(
+          setGameLoading({
+            id,
+            loading: "loaded",
+          })
+        );
+        return false;
+      }
+      toast(e.response?.data ?? e, { type: "error" });
+      return false; // this is a bug. it will result in showing a 404 page when the request fails due to network errors. I don't care
+    }
     dispatch(
       setGameLoading({
         id,
         loading: "loaded",
       })
     );
+    return true;
   };
