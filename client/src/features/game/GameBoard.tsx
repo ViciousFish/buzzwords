@@ -25,6 +25,8 @@ import {
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
+import useHotkeys from "@reecelucas/react-use-hotkeys";
+import { getAllUsers } from "../user/userSelectors";
 
 interface GameBoardProps {
   id: string;
@@ -40,6 +42,9 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   const opponent: User | undefined = useAppSelector(
     (state) => state.user.opponents[game.users[1 - userIndex]]
   );
+  const users = useAppSelector(getAllUsers);
+  const p1Nick = users[game.users[0]]?.nickname;
+  const p2Nick = users[game.users[1]]?.nickname;
 
   const selectedWord = useAppSelector((state) =>
     getSelectedWordByGameId(state, id)
@@ -66,13 +71,19 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
       });
     }
   }, [dispatch, id]);
+
   useEffect(() => {
     setTimeout(() => {
       setRevealLetters(true);
     }, 500);
   });
-  const selfName = nickname ?? "You";
-  const opponentName = game.vsAI ? "Computer" : opponent?.nickname ?? "Them";
+
+  useHotkeys("Enter", () => {
+    if (id && game.turn === userIndex) {
+      dispatch(onSubmit());
+    }
+  });
+
   return (
     <div className="h-[80vh] lg:h-[calc(100vh-50px)] flex-auto overflow-hidden">
       <Canvas key={`play-${id}`}>
@@ -95,7 +106,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 position={[0, game.turn === 0 ? 4.5 : 4, 0]}
                 center
               >
-                <span>{userIndex === 0 ? selfName : opponentName}</span>
+                <span>{p1Nick || (userIndex === 0 ? 'You' : 'Them')}</span>
               </Html>
             </group>
             <group position={[10, 0, 0]}>
@@ -112,7 +123,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 position={[0, game.turn === 1 ? 4.5 : 4, 0]}
                 center
               >
-                {userIndex === 1 ? selfName : opponentName}
+                {p2Nick || (userIndex === 1 ? 'You' : 'Them')}
               </Html>
             </group>
           </group>

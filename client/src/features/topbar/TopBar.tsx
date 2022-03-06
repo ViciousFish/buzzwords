@@ -2,6 +2,7 @@ import {
   faBars,
   faCircle,
   faQuestion,
+  faSpinner,
   faVolumeMute,
   faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
@@ -34,11 +35,17 @@ const TopBar: React.FC = () => {
   const showTutorialCard = useAppSelector(
     (state) => state.gamelist.showTutorialCard
   );
-
+  const socketConnected = useAppSelector((state) => state.game.socketConnected);
   const isLoggedIn = useAppSelector(isUserLoggedIn);
+  const isRefreshing = useAppSelector((state) => state.gamelist.isRefreshing);
+  const gamesLoading = useAppSelector((state) => state.gamelist.gamesLoading);
+  const currentGame = useAppSelector((state) => state.game.currentGame);
 
   const [_authPrompt, setAuthPrompt] = useState(true);
   const authPrompt = isLoggedIn === false && _authPrompt;
+
+  const isLoading =
+    isRefreshing || (currentGame && gamesLoading[currentGame] === "loading");
 
   const toggleTurnNotificationsMute = useCallback(() => {
     dispatch(setTurnNotificationsMute(!turnNotificationsMuted));
@@ -116,31 +123,40 @@ const TopBar: React.FC = () => {
             </button>
           </Popover>
         </div>
-        <div className="flex">
-          {isLoggedIn !== null && <Popover
-            positions={["bottom"]}
-            containerClassName="z-30 px-2"
-            isOpen={authPrompt}
-            content={<AuthPrompt onDismiss={() => setAuthPrompt(false)} />}
-          >
-            {isLoggedIn ? (
-              <Button
-                variant="quiet"
-                className="p-2 rounded-md"
-                onClick={() => dispatch(logout())}
-              >
-                Logout
-              </Button>
-            ) : (
-              <Button
-                variant="quiet"
-                onClick={() => setAuthPrompt(true)}
-                className="p-2 rounded-md"
-              >
-                Login
-              </Button>
-            )}
-          </Popover>}
+        <div className="flex items-baseline">
+          {isLoading && (
+            <FontAwesomeIcon icon={faSpinner} className="mr-2 animate-spin" />
+          )}
+          <FontAwesomeIcon
+            className={socketConnected ? "text-green-500" : "text-gray-400"}
+            icon={faCircle}
+          />
+          {isLoggedIn !== null && (
+            <Popover
+              positions={["bottom"]}
+              containerClassName="z-30 px-2"
+              isOpen={authPrompt}
+              content={<AuthPrompt onDismiss={() => setAuthPrompt(false)} />}
+            >
+              {isLoggedIn ? (
+                <Button
+                  variant="quiet"
+                  className="p-2 rounded-md"
+                  onClick={() => dispatch(logout())}
+                >
+                  Logout
+                </Button>
+              ) : (
+                <Button
+                  variant="quiet"
+                  onClick={() => setAuthPrompt(true)}
+                  className="p-2 rounded-md"
+                >
+                  Login
+                </Button>
+              )}
+            </Popover>
+          )}
         </div>
       </div>
     </div>

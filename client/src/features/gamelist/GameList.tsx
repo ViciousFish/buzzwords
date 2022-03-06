@@ -1,3 +1,5 @@
+// CQ: hide games you're not a member of from sidebar unless currently active route
+// CQ: delete games you're not a member of from state when you navigate away?
 import {
   faAngleDown,
   faAngleRight,
@@ -124,7 +126,7 @@ const GameList: React.FC = () => {
               {incompleteGames.map((game) => (
                 <GameListItem key={game.id} game={game} />
               ))}
-              {Object.keys(games).length === 0 && (
+              {(Object.keys(games).length === 0 || !gamesLoaded) && (
                 <div className="p-2">
                   {!gamesLoaded && (
                     <>

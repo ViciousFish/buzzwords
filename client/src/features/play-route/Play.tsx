@@ -1,13 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import * as R from "ramda";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import classnames from "classnames";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faCircle,
   faHistory,
-  faPlay,
   faPlayCircle,
   faShare,
   faTrash,
@@ -24,6 +22,7 @@ import {
 import {
   deleteGameById,
   dequeueOrDismissGameStateModalForGame,
+  fetchGameById,
   joinGameById,
   markGameAsSeen,
 } from "../gamelist/gamelistActions";
@@ -31,11 +30,15 @@ import GameBoard from "../game/GameBoard";
 import CopyToClipboard from "../../presentational/CopyToClipboard";
 import NicknameModal from "../user/NicknameModal";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { nudgeGameById, submitMove } from "../game/gameActions";
+import { nudgeGameById } from "../game/gameActions";
 import classNames from "classnames";
 import Button from "../../presentational/Button";
 import GameStateModal from "../game/GameStateModal";
 import MoveListItem from "./MoveListItem";
+import { getOpponent } from "../user/userSelectors";
+import { fetchOpponent } from "../user/userActions";
+import Canvas from "../canvas/Canvas";
+import Bee from "../../assets/Bee";
 
 const Play: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -46,9 +49,9 @@ const Play: React.FC = () => {
   const game = useSelector((state: RootState) =>
     id ? state.gamelist.games[id] : null
   );
-  const gamesLoaded = useSelector(
-    (state: RootState) => state.gamelist.gamesLoaded
-  );
+  // const gamesLoaded = useSelector(
+  //   (state: RootState) => state.gamelist.gamesLoaded
+  // );
   const currentUser = useSelector((state: RootState) => state.user.user);
   const replayState = useAppSelector((state) =>
     Boolean(state.game.replay.move)
@@ -57,20 +60,33 @@ const Play: React.FC = () => {
   const showingNudgeButton = useAppSelector(
     (state) => state.game.showingNudgeButton
   );
-  const socketConnected = useAppSelector((state) => state.game.socketConnected);
+  const gameLoadingState = useAppSelector(
+    (state) => id && state.gamelist.gamesLoading[id]
+  );
 
   const [fourohfour, setFourohfour] = useState(false);
+  const [fetchedOpponentName, setFetchedOpponentName] = useState(false);
 
   const userIndex =
     game && currentUser
       ? game.users.findIndex((val) => val === currentUser.id)
       : null;
 
-  useHotkeys("Enter", () => {
+  const isSpectating = userIndex === -1;
+
+  const opponent = useAppSelector((state) =>
+    id ? getOpponent(state, id) : null
+  );
+
+  const joinGame = useCallback(() => {
     if (id) {
-      dispatch(submitMove(id));
+      dispatch(joinGameById(id)).then((joinedGame) => {
+        if (!joinedGame) {
+          setFourohfour(true);
+        }
+      });
     }
-  });
+  }, [id, dispatch]);
 
   useEffect(() => {
     if (id) {
@@ -84,20 +100,17 @@ const Play: React.FC = () => {
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (gamesLoaded && !game && id) {
-      dispatch(joinGameById(id)).then((joinedGame) => {
+    if (!gameLoadingState && id) {
+      dispatch(fetchGameById(id)).then((joinedGame) => {
         if (!joinedGame) {
           setFourohfour(true);
         }
       });
-    } else {
-      setFourohfour(false);
     }
-  }, [id, dispatch, game, gamesLoaded]);
+  }, [id, dispatch, game, gameLoadingState]);
 
   useEffect(() => {
     if (
-      gamesLoaded &&
       game &&
       game.vsAI &&
       game.turn === 1 &&
@@ -107,12 +120,22 @@ const Play: React.FC = () => {
       const move = game.moves[game.moves.length - 1];
       if (
         move.date &&
-        new Date().getTime() - new Date(move.date).getTime() > 10000
+        new Date().getTime() - new Date(move.date).getTime() > 20000
       ) {
         dispatch(toggleNudgeButton(true));
       }
     }
-  }, [gamesLoaded, game, dispatch]);
+  }, [game, dispatch]);
+
+  useEffect(() => {
+    if (game && isSpectating && !fetchedOpponentName) {
+      setFetchedOpponentName(true);
+      game.users.forEach((user) => dispatch(fetchOpponent(user)));
+    } else if (game && opponent && !opponent.nickname && !fetchedOpponentName) {
+      setFetchedOpponentName(true);
+      dispatch(fetchOpponent(opponent.id));
+    }
+  }, [game, opponent, fetchedOpponentName, dispatch, isSpectating]);
 
   const onNudgeClick = useCallback(() => {
     if (!id) {
@@ -129,7 +152,7 @@ const Play: React.FC = () => {
   }, [dispatch, id]);
 
   const nickModal =
-    currentUser && !currentUser.nickname ? <NicknameModal /> : null;
+    game && currentUser && !currentUser.nickname ? <NicknameModal /> : null;
 
   if (fourohfour) {
     return (
@@ -142,9 +165,30 @@ const Play: React.FC = () => {
     );
   }
 
-  if (game && game.users.length === 1) {
+  if (
+    game &&
+    game.users.length === 1 &&
+    userIndex !== null &&
+    userIndex === -1
+  ) {
     return (
-      <div className="flex flex-auto flex-col overflow-auto lg:h-screen justify-center items-center py-12 px-4">
+      <div className="flex flex-auto flex-col overflow-auto lg:h-[calc(100vh-50px)] justify-center items-center py-12 px-4">
+        <div className="max-w-full flex-shrink-0 bg-darkbg flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
+          <h2 className="text-2xl flex-wrap">
+            <span className="font-bold italic">
+              {opponent?.nickname || "???"}
+            </span>{" "}
+            has invited you to play Buzzwords
+          </h2>
+        </div>
+        <Button onClick={joinGame}>Join game</Button>
+      </div>
+    );
+  }
+
+  if (game && game.users.length === 1 && userIndex !== null && userIndex > -1) {
+    return (
+      <div className="flex flex-auto flex-col overflow-auto lg:h-[calc(100vh-50px)] justify-center items-center py-12 px-4">
         <div className="max-w-full flex-shrink-0 bg-darkbg flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
           <h2 className="text-2xl flex-wrap">
             Invite an opponent to start the game
@@ -177,7 +221,7 @@ const Play: React.FC = () => {
                 className="bg-red-600 text-white"
                 onClick={() => {
                   dispatch(deleteGameById(id));
-                  navigate('/');
+                  navigate("/");
                 }}
               >
                 <FontAwesomeIcon className="mr-2" icon={faTrash} />
@@ -210,16 +254,6 @@ const Play: React.FC = () => {
 
   return (
     <div className="flex flex-auto flex-col lg:flex-row">
-      {/* <div className="absolute top-1 right-1 text-sm bg-lightbg">
-        <span className="mr-1">
-          {socketConnected ? "online" : "disconnected"}
-        </span>
-        <FontAwesomeIcon
-          className={socketConnected ? "text-green-400" : "text-gray-400"}
-          icon={faCircle}
-        />
-      </div> */}
-      {/* CQx: status indicator in topbar */}
       {game && id && userIndex !== null && (
         <GameBoard id={id} game={game} userIndex={userIndex} />
       )}

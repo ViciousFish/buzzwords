@@ -6,6 +6,8 @@ import {
   ClientGame,
   deleteGame,
   refreshReceived,
+  setGameLoading,
+  setIsRefreshing,
   shiftGameStateModalQueueForGame,
   updateGame,
 } from "./gamelistSlice";
@@ -69,26 +71,31 @@ const gameUpdateEventGetGameStateModalType = (
 };
 
 export const refresh = (): AppThunk => async (dispatch, getState) => {
-  const response = await Api.get<{
-    games: Game[];
-    users: User[];
-  }>(getApiUrl("/game"));
+  dispatch(setIsRefreshing(true));
+  try {
+    const response = await Api.get<{
+      games: Game[];
+      users: User[];
+    }>(getApiUrl("/game"));
 
-  const lastSeenTurns = getLastSeenTurns();
+    const lastSeenTurns = getLastSeenTurns();
 
-  const gamesById: { [id: string]: ClientGame } = {};
-  response.data.games.forEach((game) => {
-    gamesById[game.id] = {
-      ...game,
-      lastSeenTurn: lastSeenTurns?.[game.id] ?? game.moves.length,
-      queuedGameStateModals: [],
-    };
-  }, {});
+    const gamesById: { [id: string]: ClientGame } = {};
+    response.data.games.forEach((game) => {
+      gamesById[game.id] = {
+        ...game,
+        lastSeenTurn: lastSeenTurns?.[game.id] ?? game.moves.length,
+        queuedGameStateModals: [],
+      };
+    }, {});
 
-  Object.values(response.data.users).forEach((u) =>
-    dispatch(opponentReceived(u))
-  );
-  dispatch(refreshReceived(gamesById));
+    Object.values(response.data.users).forEach((u) =>
+      dispatch(opponentReceived(u))
+    );
+    dispatch(refreshReceived(gamesById));
+  } catch (e) {
+    toast(e.response?.data?.message ?? e.toString(), { type: "error" });
+  }
 };
 
 const DingAudio = new Audio(chord);
@@ -127,7 +134,7 @@ export const receiveGameUpdatedSocket =
       const turnNumber = moves.length;
       setTimeout(() => {
         dispatch(maybeShowNudge(id, turnNumber));
-      }, 10000);
+      }, 20000);
     }
     if (game.vsAI && game.turn === 0) {
       dispatch(toggleNudgeButton(false));
@@ -204,7 +211,7 @@ export const markGameAsSeen =
       game.lastSeenTurn === 9999 ? game.moves.length : game.lastSeenTurn;
     // don't force players to re-watch the whole game they played on a different device
     if (game.moves.length - lastSeenTurn > 2) {
-      lastSeenTurn = game.moves.length - 1
+      lastSeenTurn = game.moves.length - 1;
     }
     while (lastSeenTurn < game.moves.length) {
       await dispatch(initiateReplay(lastSeenTurn));
@@ -287,3 +294,38 @@ export const getTutorialCardSetting = () =>
 
 export const setTutorialCardSetting = (mute: boolean) =>
   localStorage.setItem("turnNotificationsMute", JSON.stringify(mute));
+
+export const fetchGameById =
+  (id: string): AppThunk<Promise<boolean>> =>
+  async (dispatch) => {
+    dispatch(setGameLoading({ id, loading: "loading" }));
+    try {
+      const { data } = await Api.get<Game>(getApiUrl("/game", id));
+      dispatch(
+        updateGame({
+          game: data,
+          lastSeenTurn: 0,
+          gameStateModalToQueue: null,
+        })
+      );
+    } catch (e) {
+      if (e.response?.status === 404) {
+        dispatch(
+          setGameLoading({
+            id,
+            loading: "loaded",
+          })
+        );
+        return false;
+      }
+      toast(e.response?.data ?? e, { type: "error" });
+      return false; // this is a bug. it will result in showing a 404 page when the request fails due to network errors. I don't care
+    }
+    dispatch(
+      setGameLoading({
+        id,
+        loading: "loaded",
+      })
+    );
+    return true;
+  };
