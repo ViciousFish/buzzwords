@@ -148,6 +148,15 @@ export default class Memory implements DataLayer {
     return this.users[id]?.nickname || null;
   }
 
+  async getNickNames(ids: string[]): Promise<{ [key: string]: string | null }> {
+    const nicknames: { [key: string]: string | null } = {};
+    for (const id of ids) {
+      const nick = this.users[id]?.nickname;
+      nicknames[id] = nick || null;
+    }
+    return nicknames;
+  }
+
   async getGamesByUserId(id: string): Promise<Game[]> {
     const games = [];
     const gameIds = Object.keys(this.games);

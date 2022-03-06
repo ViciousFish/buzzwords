@@ -22,9 +22,8 @@ export default (io: Server) => {
       R.flatten,
       R.uniq
     )(games);
-    const nicknames = await Promise.all(
-      R.map((id) => dl.getNickName(id), userIds)
-    );
+
+    const nicknames = await dl.getNickNames(userIds);
 
     const users: {
       [key: string]: {
@@ -33,10 +32,10 @@ export default (io: Server) => {
       };
     } = {};
 
-    for (let i = 0; i < nicknames.length; i++) {
-      users[userIds[i]] = {
-        id: userIds[i],
-        nickname: nicknames[i],
+    for (const [id, nickname] of Object.entries(nicknames)) {
+      users[id] = {
+        id,
+        nickname,
       };
     }
 

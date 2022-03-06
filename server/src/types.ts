@@ -66,6 +66,10 @@ export interface DataLayer {
     id: string,
     options?: Record<string, unknown>
   ): Promise<string | null>;
+  getNickNames(
+    ids: string[],
+    options?: Record<string, unknown>
+  ): Promise<{ [key: string]: string | null }>;
   getGamesByUserId(
     id: string,
     options?: Record<string, unknown>
