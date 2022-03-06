@@ -301,7 +301,6 @@ export const fetchGameById =
     dispatch(setGameLoading({ id, loading: "loading" }));
     try {
       const { data } = await Api.get<Game>(getApiUrl("/game", id));
-      console.log("🚀 ~ file: gamelistActions.ts ~ line 305 ~ data", data);
       dispatch(
         updateGame({
           game: data,
