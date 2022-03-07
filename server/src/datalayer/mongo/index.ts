@@ -452,32 +452,11 @@ export default class Mongo implements DataLayer {
         null,
         {
           session: options?.session,
+          lean: true,
         }
-      ).lean();
-      console.log("[perf] refresh query took", performance.now() - qstart);
-      const start = performance.now();
-      const games = [] as Game[];
-      for (const doc of res) {
-        // const game = doc.toObject({ flattenMaps: true });
-        games.push(doc);
-        // game.grid = Object.fromE
-      }
-      console.log(
-        `[perf] flattening ${res.length} games took`,
-        performance.now() - start
       );
-      return games;
-
-      // return res.map((d) => {
-      //   const game = d?.toObject();
-      //   // @ts-expect-error I promise this works
-      //   game.grid = Object.fromEntries(game.grid);
-      //   game.grid = Object.fromEntries(
-      //     // @ts-expect-error This also works
-      //     Object.entries(game.grid).map(([k, v]) => [k, v.toObject()])
-      //   );
-      //   return game;
-      // });
+      console.log("[perf] refresh query took", performance.now() - qstart);
+      return res;
     } catch (e) {
       console.log(e);
       throw e;

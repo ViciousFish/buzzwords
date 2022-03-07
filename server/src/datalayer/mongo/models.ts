@@ -12,7 +12,7 @@ const gameSchema = new Schema<Game>({
     index: true,
   },
   users: {
-    type: [String],
+    type: [{ type: String, index: true }],
     index: true,
     required: true,
   },
