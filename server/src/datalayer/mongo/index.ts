@@ -449,7 +449,10 @@ export default class Mongo implements DataLayer {
           users: id,
           deleted: false,
         },
-        null,
+        {
+          grid: 0,
+          moves: 0,
+        },
         {
           session: options?.session,
           lean: true,
