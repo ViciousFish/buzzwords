@@ -1,14 +1,14 @@
 import { faDotCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ShallowGame } from "buzzwords-shared/Game";
 import classNames from "classnames";
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { getAllUsers } from "../user/userSelectors";
-import { ClientGame } from "./gamelistSlice";
 
 interface GameListItemProps {
-  game: ClientGame;
+  game: ShallowGame;
 }
 
 const GameListItem: React.FC<GameListItemProps> = ({ game }) => {
@@ -47,9 +47,6 @@ const GameListItem: React.FC<GameListItemProps> = ({ game }) => {
                 </span>
               ) : null}
             </span>
-            {game.lastSeenTurn < game.moves.length && (
-              <FontAwesomeIcon className="text-blue-500" icon={faDotCircle} />
-            )}
           </>
         )}
       </NavLink>

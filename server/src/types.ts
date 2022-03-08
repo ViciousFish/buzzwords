@@ -1,4 +1,4 @@
-import Game from "buzzwords-shared/Game";
+import Game, { ShallowGame } from "buzzwords-shared/Game";
 
 export interface User {
   id: string;
@@ -73,7 +73,7 @@ export interface DataLayer {
   getGamesByUserId(
     id: string,
     options?: Record<string, unknown>
-  ): Promise<Game[]>;
+  ): Promise<ShallowGame[]>;
   getGameById(
     id: string,
     options?: Record<string, unknown>

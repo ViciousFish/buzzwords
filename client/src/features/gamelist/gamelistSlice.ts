@@ -1,18 +1,22 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import Game from "buzzwords-shared/Game";
+import * as R from "ramda";
+
+import Game, { ShallowGame } from "buzzwords-shared/Game";
 import { GameStateModalType } from "../game/GameStateModal";
 
-export interface ClientGame extends Game {
-  lastSeenTurn: number;
+export interface ClientGameMeta {
   queuedGameStateModals: GameStateModalType[];
 }
 
 interface GameListState {
   games: {
-    [key: string]: ClientGame;
+    [id: string]: Game | ShallowGame;
+  };
+  gameMetas: {
+    [id: string]: ClientGameMeta;
   };
   gamesLoading: {
-    [key: string]: "loading" | "loaded" | undefined;
+    [id: string]: "loading" | "loaded" | undefined;
   };
   gamesLoaded: boolean;
   isRefreshing: boolean;
@@ -24,6 +28,7 @@ interface GameListState {
 // Define the initial state using that type
 const initialState: GameListState = {
   games: {},
+  gameMetas: {},
   gamesLoading: {},
   gamesLoaded: false,
   isRefreshing: false,
@@ -34,7 +39,6 @@ const initialState: GameListState = {
 
 interface UpdateGamePayload {
   game: Game;
-  lastSeenTurn: number;
   gameStateModalToQueue: GameStateModalType | null;
 }
 
@@ -44,12 +48,13 @@ export const gamelistSlice = createSlice({
   reducers: {
     refreshReceived: (
       state,
-      action: PayloadAction<Record<string, ClientGame>>
+      action: PayloadAction<{ [id: string]: ShallowGame }>
     ) => {
-      state.games = {
-        ...state.games,
-        ...action.payload
-      };
+      // @ts-ignore
+      state.games = R.mergeDeepRight<
+        { [id: string]: Game | ShallowGame },
+        { [id: string]: ShallowGame }
+      >(state.games, action.payload);
       state.isRefreshing = false;
       state.gamesLoaded = true;
     },
@@ -57,10 +62,19 @@ export const gamelistSlice = createSlice({
       const game = {
         ...state.games[action.payload.game.id],
         ...action.payload.game,
-        lastSeenTurn: action.payload.lastSeenTurn,
       };
-      if (action.payload.gameStateModalToQueue) {
-        game.queuedGameStateModals.push(action.payload.gameStateModalToQueue);
+      if (state.gameMetas[game.id]) {
+        if (action.payload.gameStateModalToQueue) {
+          state.gameMetas[game.id].queuedGameStateModals.push(
+            action.payload.gameStateModalToQueue
+          );
+        }
+      } else {
+        state.gameMetas[game.id] = {
+          queuedGameStateModals: action.payload.gameStateModalToQueue
+            ? [action.payload.gameStateModalToQueue]
+            : [],
+        };
       }
       state.games[action.payload.game.id] = game;
     },
@@ -74,7 +88,7 @@ export const gamelistSlice = createSlice({
       state.showCompletedGames = action.payload;
     },
     shiftGameStateModalQueueForGame: (state, action: PayloadAction<string>) => {
-      state.games[action.payload].queuedGameStateModals.shift();
+      state.gameMetas[action.payload].queuedGameStateModals.shift();
     },
     setShowTutorialCard: (state, action: PayloadAction<boolean>) => {
       state.showTutorialCard = action.payload;
@@ -93,7 +107,7 @@ export const gamelistSlice = createSlice({
     },
     setIsRefreshing: (state, action: PayloadAction<boolean>) => {
       state.isRefreshing = action.payload;
-    }
+    },
   },
 });
 
@@ -115,3 +129,7 @@ export const {
 // export const selectCount = (state: RootState) => state.counter.value;
 
 export default gamelistSlice.reducer;
+
+export function isFullGame(game: Game | ShallowGame): game is Game {
+  return Boolean((game as Game).moves)
+}

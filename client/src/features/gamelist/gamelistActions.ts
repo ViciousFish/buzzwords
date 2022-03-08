@@ -3,7 +3,6 @@ import { toast } from "react-toastify";
 
 import { AppThunk, RootState } from "../../app/store";
 import {
-  ClientGame,
   deleteGame,
   refreshReceived,
   setGameLoading,
@@ -11,7 +10,7 @@ import {
   shiftGameStateModalQueueForGame,
   updateGame,
 } from "./gamelistSlice";
-import Game from "buzzwords-shared/Game";
+import Game, { ShallowGame } from "buzzwords-shared/Game";
 import { opponentReceived, User } from "../user/userSlice";
 import { getAllUsers } from "../user/userSelectors";
 import { fetchOpponent } from "../user/userActions";
@@ -34,20 +33,20 @@ interface GameMetaCache {
   };
 }
 
-const getLastSeenTurns = () => {
-  const metaJSON = localStorage.getItem("gameMetaCache");
-  const metaCache = metaJSON ? (JSON.parse(metaJSON) as GameMetaCache) : null;
-  return metaCache?.lastSeenTurns;
-};
+// const getLastSeenTurns = () => {
+//   const metaJSON = localStorage.getItem("gameMetaCache");
+//   const metaCache = metaJSON ? (JSON.parse(metaJSON) as GameMetaCache) : null;
+//   return metaCache?.lastSeenTurns;
+// };
 
-const updateLastSeenTurns = (gameId: string, turns: number) => {
-  const lastSeenTurns = getLastSeenTurns() ?? {};
-  lastSeenTurns[gameId] = turns;
-  const metaCache = JSON.stringify({
-    lastSeenTurns,
-  });
-  localStorage.setItem("gameMetaCache", metaCache);
-};
+// const updateLastSeenTurns = (gameId: string, turns: number) => {
+//   const lastSeenTurns = getLastSeenTurns() ?? {};
+//   lastSeenTurns[gameId] = turns;
+//   const metaCache = JSON.stringify({
+//     lastSeenTurns,
+//   });
+//   localStorage.setItem("gameMetaCache", metaCache);
+// };
 
 const gameUpdateEventGetGameStateModalType = (
   game: Game,
@@ -74,19 +73,13 @@ export const refresh = (): AppThunk => async (dispatch, getState) => {
   dispatch(setIsRefreshing(true));
   try {
     const response = await Api.get<{
-      games: Game[];
+      games: ShallowGame[];
       users: User[];
     }>(getApiUrl("/game"));
 
-    const lastSeenTurns = getLastSeenTurns();
-
-    const gamesById: { [id: string]: ClientGame } = {};
+    const gamesById: { [id: string]: ShallowGame } = {};
     response.data.games.forEach((game) => {
-      gamesById[game.id] = {
-        ...game,
-        lastSeenTurn: lastSeenTurns?.[game.id] ?? game.moves.length,
-        queuedGameStateModals: [],
-      };
+      gamesById[game.id] = game;
     }, {});
 
     Object.values(response.data.users).forEach((u) =>
@@ -147,12 +140,10 @@ export const receiveGameUpdatedSocket =
       dispatch(resetSelection());
     }
     if (state.game.currentGame === game.id && state.game.windowHasFocus) {
-      updateLastSeenTurns(game.id, game.moves.length);
       batch(() => {
         dispatch(
           updateGame({
             game,
-            lastSeenTurn: game.moves.length,
             gameStateModalToQueue: null,
           })
         );
@@ -170,12 +161,9 @@ export const receiveGameUpdatedSocket =
       return;
     }
 
-    let lastSeenTurn = getLastSeenTurns()?.[game.id] ?? 0;
-    lastSeenTurn = lastSeenTurn === 9999 ? game.moves.length : lastSeenTurn;
     dispatch(
       updateGame({
         game,
-        lastSeenTurn,
         gameStateModalToQueue: gameStateModalType,
       })
     );
@@ -187,7 +175,7 @@ export const dequeueOrDismissGameStateModalForGame =
     dispatch(setGameStateModal(null));
     const state = getState();
     const game = state.gamelist.games[gameId];
-    const gameStateModalToShow = game?.queuedGameStateModals[0];
+    const gameStateModalToShow = state.gamelist.gameMetas[gameId]?.queuedGameStateModals[0];
     if (gameStateModalToShow) {
       dispatch(shiftGameStateModalQueueForGame(gameId));
       dispatch(
@@ -201,30 +189,6 @@ export const dequeueOrDismissGameStateModalForGame =
 export const markGameAsSeen =
   (gameId: string): AppThunk =>
   async (dispatch, getState) => {
-    const game = getState().gamelist.games[gameId];
-    if (!game) {
-      console.log("attempted to mark null game as seen", gameId);
-      updateLastSeenTurns(gameId, 9999);
-      return;
-    }
-    let lastSeenTurn =
-      game.lastSeenTurn === 9999 ? game.moves.length : game.lastSeenTurn;
-    // don't force players to re-watch the whole game they played on a different device
-    if (game.moves.length - lastSeenTurn > 2) {
-      lastSeenTurn = game.moves.length - 1;
-    }
-    while (lastSeenTurn < game.moves.length) {
-      await dispatch(initiateReplay(lastSeenTurn));
-      lastSeenTurn++;
-    }
-    updateLastSeenTurns(gameId, lastSeenTurn);
-    dispatch(
-      updateGame({
-        game,
-        lastSeenTurn,
-        gameStateModalToQueue: null,
-      })
-    );
     dispatch(dequeueOrDismissGameStateModalForGame(gameId));
   };
 
@@ -304,7 +268,6 @@ export const fetchGameById =
       dispatch(
         updateGame({
           game: data,
-          lastSeenTurn: 0,
           gameStateModalToQueue: null,
         })
       );

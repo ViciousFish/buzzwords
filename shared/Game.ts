@@ -24,3 +24,5 @@ export default interface Game {
   updatedDate?: Date;
   deleted: boolean;
 }
+
+export type ShallowGame = Omit<Game, 'moves' | 'grid'>;
