@@ -132,6 +132,7 @@ const Play: React.FC = () => {
       setFetchedOpponentName(true);
       game.users.forEach((user) => dispatch(fetchOpponent(user)));
     } else if (game && opponent && !opponent.nickname && !fetchedOpponentName) {
+      console.log('fetched opponent not spectating')
       setFetchedOpponentName(true);
       dispatch(fetchOpponent(opponent.id));
     }

@@ -187,7 +187,7 @@ export const dequeueOrDismissGameStateModalForGame =
     dispatch(setGameStateModal(null));
     const state = getState();
     const game = state.gamelist.games[gameId];
-    const gameStateModalToShow = game?.queuedGameStateModals[0];
+    const gameStateModalToShow = game?.queuedGameStateModals?.[0];
     if (gameStateModalToShow) {
       dispatch(shiftGameStateModalQueueForGame(gameId));
       dispatch(
