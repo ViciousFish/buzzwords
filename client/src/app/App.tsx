@@ -9,10 +9,10 @@ import { useAppDispatch, useAppSelector } from "./hooks";
 import { initAction } from "./appActions";
 import { ToastContainer } from "react-toastify";
 import TutorialModal from "../features/game/TutorialModal";
-import { getUnseenMoveCount } from "../features/gamelist/gamelistSelectors";
 import { handleWindowFocusThunk } from "../features/game/gameActions";
 import ReactTooltip from "react-tooltip";
 import TopBar from "../features/topbar/TopBar";
+import { getHowManyGamesAreMyTurn } from "../features/gamelist/gamelistSelectors";
 
 // not necessary, as long as there's always a 3d canvas on screen!
 // import.meta.env.PROD &&
@@ -35,7 +35,7 @@ function App() {
     (state) => state.game.showingTutorialModal
   );
 
-  const hasUnseenMove = Boolean(useAppSelector(getUnseenMoveCount));
+  const hasCurrentTurn = Boolean(useAppSelector(getHowManyGamesAreMyTurn));
 
   useEffect(() => {
     dispatch(initAction());
@@ -51,14 +51,14 @@ function App() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (hasUnseenMove) {
+    if (hasCurrentTurn) {
       FaviconNotification.add();
       document.title = "[Your turn] Buzzwords";
     } else {
       FaviconNotification.remove();
       document.title = "Buzzwords";
     }
-  }, [hasUnseenMove]);
+  }, [hasCurrentTurn]);
 
   return (
     <BrowserRouter>

@@ -15,7 +15,6 @@ import Button from "../../presentational/Button";
 import { setTurnNotificationsMute } from "../game/gameSlice";
 import {
   getHowManyGamesAreMyTurn,
-  getUnseenMoveCount,
 } from "../gamelist/gamelistSelectors";
 import { setShowTutorialCard, toggleIsOpen } from "../gamelist/gamelistSlice";
 import TutorialCard from "../gamelist/TutorialCard";
@@ -27,7 +26,6 @@ const TopBar: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const currentTurnCount = useAppSelector(getHowManyGamesAreMyTurn);
-  const currentUnseenCount = useAppSelector(getUnseenMoveCount);
   const isOpen = useAppSelector((state) => state.gamelist.isOpen);
   const turnNotificationsMuted = useAppSelector(
     (state) => state.game.turnNotificationsMuted
@@ -52,11 +50,11 @@ const TopBar: React.FC = () => {
   }, [dispatch, turnNotificationsMuted]);
 
   let hamburgerNotification;
-  if (!isOpen && (currentTurnCount || currentUnseenCount)) {
+  if (!isOpen && currentTurnCount) {
     hamburgerNotification = (
       <FontAwesomeIcon
         className={classNames(
-          currentUnseenCount ? "text-blue-500" : "text-yellow-700",
+          "text-blue-500",
           "drop-shadow"
         )}
         icon={faCircle}
