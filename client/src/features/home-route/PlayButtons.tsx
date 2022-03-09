@@ -124,6 +124,12 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({
           difficultyNumber={9}
           onPlayAIClick={onPlayAIClick}
         />
+        <DifficultyButton
+          autoFocus
+          difficultyName="Expert++"
+          difficultyNumber={10}
+          onPlayAIClick={onPlayAIClick}
+        />
       </div>
     </div>
   );
