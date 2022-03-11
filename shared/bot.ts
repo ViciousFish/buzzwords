@@ -1,12 +1,10 @@
 import * as R from "ramda";
 
 import HexGrid, { getCellNeighbors } from "./hexgrid";
-import Game from "./Game";
 
-import { permutationN, getRandomInt, combinationN, shuffle } from "./utils";
-import { isValidWord } from "./alphaHelpers";
+import { getRandomInt, shuffle } from "./utils";
+import { normalize } from "./alphaHelpers";
 import { HexCoord } from "./types";
-import Cell from "./cell";
 
 export const getBotMove = (
   grid: HexGrid,
@@ -24,20 +22,11 @@ export const getBotMove = (
     return !cell.capital && cell.owner == 2 && cell.value != "";
   });
 
-  const jitter = getRandomInt(-3, 4);
-
-  // Bound max length between 3 and total open tiles
-  const maxWordLength = Math.max(
-    Math.min(openTiles.length, options.difficulty + jitter, 6),
-    3
-  );
-
-  console.debug("Bot will try to find a word of length", maxWordLength);
-
   const botCapital = Object.values(grid).find((c) => c.owner == 1 && c.capital);
   if (!botCapital) {
     throw "Bot doesn't have capital on its own turn. Shouldn't be possible!";
   }
+
   const capitalNeighbors = shuffle(
     getCellNeighbors(grid, botCapital.q, botCapital.r).filter(
       (c) => c.owner == 2
@@ -75,115 +64,96 @@ export const getBotMove = (
         !nonCapitalNeighborCoords.includes(`${c.q},${c.r}`)
     )
   );
+  const nonNeighborCoords = nonNeighborTiles.map((c) => `${c.q},${c.r}`);
 
-  const wordsTried: {
-    [key: string]: boolean;
-  } = {};
-  const letterCombosTried: {
-    [key: string]: boolean;
+  const possibleWordsToScore: {
+    [key: string]: { score: number; move: HexCoord[]; word: string };
   } = {};
 
-  let defenseTileCount = capitalNeighbors.length;
-  if (getRandomInt(1, 11) > options.difficulty) {
-    const defenseJitter = getRandomInt((defenseTileCount - 1) * -1, 0);
-    defenseTileCount += defenseJitter;
-  }
+  const coordTypes = [
+    nonNeighborCoords,
+    nonCapitalNeighborCoords,
+    capitalNeighborCoords,
+  ];
 
-  defenseTileCount = Math.max(defenseTileCount, 0);
-
-  const permuteAndCheck = (cells: Cell[]): HexCoord[] | null => {
-    if (R.uniq(cells.map((c) => `${c.q},${c.r}`)).length != cells.length) {
-      // Somehow we reused a cell. Not a valid word
-      return null;
+  for (const word of Object.keys(options.words)) {
+    if (word.length < 3) {
+      continue;
     }
-    if (
-      letterCombosTried[
-        cells
-          .map((c) => c.value)
-          .sort()
-          .join("")
-      ]
-    ) {
-      return null;
-    }
-    for (let p of permutationN(cells, cells.length)) {
-      const word = p.map((c) => c.value).join("");
-      if (!wordsTried[word]) {
-        if (isValidWord(word, options.words) && !options.bannedWords[word]) {
-          return p.map((c) => ({
-            q: c.q,
-            r: c.r,
-          }));
+    const tiles = [
+      ...capitalNeighbors,
+      ...nonCapitalNeighbors,
+      ...nonNeighborTiles,
+    ];
+    let valid = true;
+    let score = 1;
+    let move: HexCoord[] = [];
+    for (let letter of word.split("")) {
+      const idx = tiles.findIndex((cell) => cell.value === letter);
+      if (idx === -1) {
+        valid = false;
+        break;
+      }
+      score++;
+      const coord = `${tiles[idx].q},${tiles[idx].r}`;
+      for (let i = 0; i < coordTypes.length; i++) {
+        if (coordTypes[i].includes(coord)) {
+          score *= Math.pow(10, i);
+          break;
         }
       }
-      wordsTried[word] = true;
+
+      move.push({ q: tiles[idx].q, r: tiles[idx].r });
+      tiles.splice(idx, 1);
     }
-    letterCombosTried[
-      cells
-        .map((c) => c.value)
-        .sort()
-        .join("")
-    ] = true;
+    if (valid) {
+      possibleWordsToScore[word] = { score, move, word };
+    }
+  }
 
-    return null;
-  };
+  const wordScoresByWordLength: {
+    score: number;
+    move: HexCoord[];
+    word: string;
+  }[][] = [];
+  for (let i = 3; i <= openTiles.length; i++) {
+    wordScoresByWordLength[i - 3] = [];
+  }
+  for (let wordInfo of Object.values(possibleWordsToScore)) {
+    wordScoresByWordLength[wordInfo.word.length - 3].push(wordInfo);
+  }
 
-  let d1 = Math.max(
-    Math.min(defenseTileCount, maxWordLength),
-    3 - (nonCapitalNeighbors.length + nonNeighborTiles.length)
+  const jitter = getRandomInt(-1, 2);
+
+  const maxWordLength = R.clamp(
+    3,
+    openTiles.length,
+    Math.floor(
+      normalize(
+        options.difficulty + jitter,
+        1,
+        10,
+        3,
+        Math.min(openTiles.length, 12)
+      )
+    )
   );
-  3 - nonCapitalNeighbors.length + nonNeighborTiles.length;
-  if (openTiles.length === capitalNeighbors.length) {
-    // There are only capital neighbors. Make d at least 3
-    d1 = Math.max(d1, 3);
+  for (let i = maxWordLength; i >= 3; i--) {
+    let words = wordScoresByWordLength[i - 3];
+    if (!words.length) {
+      continue;
+    }
+    const sortedWordScores = wordScoresByWordLength[i - 3].sort(
+      (a, b) => a.score - b.score
+    );
+    const word =
+      sortedWordScores[
+        sortedWordScores.length -
+          getRandomInt(1, Math.min(sortedWordScores.length, 5))
+      ];
+
+    return word.move;
   }
 
-  for (let d = d1; d >= 0; d--) {
-    if (d && d == capitalNeighbors.length && d == maxWordLength) {
-      const cells = [...capitalNeighbors];
-      const result = permuteAndCheck(cells);
-      if (result) {
-        return result;
-      }
-    }
-    for (let neighborCells of d ? combinationN(capitalNeighbors, d) : [[]]) {
-      if (d == maxWordLength) {
-        const cells = [...neighborCells];
-        const result = permuteAndCheck(cells);
-        if (result) {
-          return result;
-        }
-      }
-      for (
-        let t = Math.min(maxWordLength - d, nonCapitalNeighbors.length);
-        t >= 0;
-        t--
-      ) {
-        // Next prioritize new territory
-        for (let tCombo of t ? combinationN(nonCapitalNeighbors, t) : [[]]) {
-          if (d + t == maxWordLength) {
-            const cells = [...neighborCells, ...tCombo];
-            const result = permuteAndCheck(cells);
-            if (result) {
-              return result;
-            }
-          }
-          for (
-            let r = Math.min(maxWordLength - d - t, nonNeighborTiles.length);
-            r >= 0;
-            r--
-          ) {
-            for (let rCombo of r ? combinationN(nonNeighborTiles, r) : [[]]) {
-              const cells = [...neighborCells, ...tCombo, ...rCombo];
-              const result = permuteAndCheck(cells);
-              if (result) {
-                return result;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  throw "No valid combinations! This shouldn't be possible";
+  throw "Shouldn't get here ever";
 };
