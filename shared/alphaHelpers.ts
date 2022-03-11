@@ -49,8 +49,15 @@ for (let p of probabilities) {
 
 cdfArray = cdfArray.map((p) => Math.round(p * 100000) / 100000);
 
-const normalize = (val: number, max: number, min: number) =>
-  (val - min) / (max - min);
+export const normalize = (
+  num: number,
+  fromMin: number,
+  fromMax: number,
+  toMin: number,
+  toMax: number
+) => {
+  return toMin + ((num - fromMin) / (fromMax - fromMin)) * (toMax - toMin);
+};
 
 export const isValidWord = (
   word: string,
@@ -74,7 +81,7 @@ export const getRandomCharacter = (omit?: string[]): string => {
       total += cdf[letter];
       delete cdf[letter];
     }
-    n = normalize(n, 1 - total, 0);
+    n = normalize(n, 0, 1, 0, 1 - total);
   }
   const letterArr = Object.keys(cdf);
   const probArr = Object.values(cdf);
