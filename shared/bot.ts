@@ -136,7 +136,7 @@ export const getBotMove = (
         3,
         Math.min(openTiles.length, 12)
       )
-    )
+    ) - 2
   );
   for (let i = maxWordLength; i >= 3; i--) {
     let words = wordScoresByWordLength[i - 3];
