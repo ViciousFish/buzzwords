@@ -9,7 +9,7 @@ import {
 import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { animated as a, useSpring } from "@react-spring/web";
 
@@ -19,6 +19,7 @@ import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
 import GameListItem from "./GameListItem";
 import TutorialCard from "./TutorialCard";
 import PlayButtons from "../home-route/PlayButtons";
+import ReactTooltip from "react-tooltip";
 
 const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
 const BeeLazy = React.lazy(() => import("../../assets/Bee"));
@@ -76,10 +77,8 @@ const GameList: React.FC = () => {
             href="https://twitter.com/BuzzwordsGG"
             target="_blank"
             rel="noreferrer"
-            aria-label="buzzwords twitter"
-            data-tip="Follow us on twitter"
           >
-            <FontAwesomeIcon icon={faTwitter} />
+            <FontAwesomeIcon icon={faTwitter} /> Follow us on Twitter
           </a>
           <div className="flex-auto" />
           <NavLink
