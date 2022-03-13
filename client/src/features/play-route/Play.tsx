@@ -138,10 +138,6 @@ const Play: React.FC = () => {
       game.users.forEach((user) => dispatch(fetchOpponent(user)));
     } else if (game && opponent && !opponent.nickname && !fetchedOpponentName) {
       setFetchedOpponentName(true);
-      console.log(
-        "🚀 ~ file: Play.tsx ~ line 142 ~ useEffect ~ opponent",
-        opponent
-      );
       dispatch(fetchOpponent(opponent.id));
     }
   }, [game, opponent, fetchedOpponentName, dispatch, isSpectating]);
