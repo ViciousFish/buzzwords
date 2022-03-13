@@ -36,6 +36,7 @@ import GameStateModal from "../game/GameStateModal";
 import MoveListItem from "./MoveListItem";
 import { getOpponent } from "../user/userSelectors";
 import { fetchOpponent } from "../user/userActions";
+import { isFullGame } from "../gamelist/gamelistSlice";
 
 const getGameUrl = (id: string) => {
   if (import.meta.env.VITE_SHARE_BASEURL) {
@@ -54,9 +55,6 @@ const Play: React.FC = () => {
   const game = useSelector((state: RootState) =>
     id ? state.gamelist.games[id] : null
   );
-  // const gamesLoaded = useSelector(
-  //   (state: RootState) => state.gamelist.gamesLoaded
-  // );
   const currentUser = useSelector((state: RootState) => state.user.user);
   const replayState = useAppSelector((state) =>
     Boolean(state.game.replay.move)
@@ -119,6 +117,7 @@ const Play: React.FC = () => {
       game &&
       game.vsAI &&
       game.turn === 1 &&
+      isFullGame(game) &&
       game.moves.length > 1 &&
       !game.gameOver
     ) {
@@ -161,6 +160,10 @@ const Play: React.FC = () => {
       <NicknameModal />
     ) : null;
 
+  if (!game || !id || !isFullGame(game)) {
+    return null;
+  }
+
   if (fourohfour) {
     return (
       <div className="flex flex-auto flex-col h-screen justify-center items-center">
@@ -172,12 +175,7 @@ const Play: React.FC = () => {
     );
   }
 
-  if (
-    game &&
-    game.users.length === 1 &&
-    userIndex !== null &&
-    userIndex === -1
-  ) {
+  if (game.users.length === 1 && userIndex !== null && userIndex === -1) {
     return (
       <div className="flex flex-auto flex-col overflow-auto lg:h-[calc(100vh-50px)] justify-center items-center py-12 px-4">
         <div className="max-w-full flex-shrink-0 bg-darkbg flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
@@ -193,13 +191,7 @@ const Play: React.FC = () => {
     );
   }
 
-  if (
-    game &&
-    id &&
-    game.users.length === 1 &&
-    userIndex !== null &&
-    userIndex > -1
-  ) {
+  if (game.users.length === 1 && userIndex !== null && userIndex > -1) {
     return (
       <div className="flex flex-auto flex-col overflow-auto lg:h-[calc(100vh-50px)] justify-center items-center py-12 px-4">
         <div className="max-w-full flex-shrink-0 bg-darkbg flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
@@ -264,52 +256,47 @@ const Play: React.FC = () => {
 
   return (
     <div className="flex flex-auto flex-col lg:flex-row">
-      {game && id && userIndex !== null && (
+      {userIndex !== null && (
         <GameBoard id={id} game={game} userIndex={userIndex} />
       )}
-      {game && id && (
-        <div className="m-auto lg:m-0 flex-shrink-0 w-[200px] pt-2 lg:max-h-[calc(100vh-50px)] overflow-y-auto">
-          {showingNudgeButton && (
-            <div className="p-2 rounded-xl bg-primary flex flex-col mr-2">
-              <p>Looks like the AI opponent is taking a long time to move</p>
-              <Button
-                onClick={onNudgeClick}
-                className="text-white bg-darkbrown"
-              >
-                Nudge the bot
-              </Button>
-            </div>
-          )}
-          <div className="flex flex-shrink-0 items-center text-darkbrown pt-2">
-            <button
-              onClick={() => {
-                if (replayState) {
-                  return dispatch(clearReplay());
-                }
-              }}
-            >
-              <FontAwesomeIcon
-                className={classNames(
-                  "mx-1 text-xl",
-                  replayState && "text-blue-500 hover:text-red-500"
-                )}
-                icon={replayState ? faPlayCircle : faHistory}
-              />
-            </button>
-            <h3 className="flex-auto">
-              <span className="text-2xl font-bold m-0">Turns</span>
-            </h3>
+      <div className="m-auto lg:m-0 flex-shrink-0 w-[200px] pt-2 lg:max-h-[calc(100vh-50px)] overflow-y-auto">
+        {showingNudgeButton && (
+          <div className="p-2 rounded-xl bg-primary flex flex-col mr-2">
+            <p>Looks like the AI opponent is taking a long time to move</p>
+            <Button onClick={onNudgeClick} className="text-white bg-darkbrown">
+              Nudge the bot
+            </Button>
           </div>
-          <ul className="">
-            {R.reverse(game.moves).map((move, i) => {
-              const index = game.moves.length - i - 1;
-              return <MoveListItem move={move} index={index} key={index} />;
-            })}
-          </ul>
+        )}
+        <div className="flex flex-shrink-0 items-center text-darkbrown pt-2">
+          <button
+            onClick={() => {
+              if (replayState) {
+                return dispatch(clearReplay());
+              }
+            }}
+          >
+            <FontAwesomeIcon
+              className={classNames(
+                "mx-1 text-xl",
+                replayState && "text-blue-500 hover:text-red-500"
+              )}
+              icon={replayState ? faPlayCircle : faHistory}
+            />
+          </button>
+          <h3 className="flex-auto">
+            <span className="text-2xl font-bold m-0">Turns</span>
+          </h3>
         </div>
-      )}
+        <ul className="">
+          {R.reverse(game.moves).map((move, i) => {
+            const index = game.moves.length - i - 1;
+            return <MoveListItem move={move} index={index} key={index} />;
+          })}
+        </ul>
+      </div>
       {nickModal}
-      {gameStateModal && id && (
+      {gameStateModal && (
         <GameStateModal
           {...gameStateModal}
           onDismiss={() => dispatch(dequeueOrDismissGameStateModalForGame(id))}
