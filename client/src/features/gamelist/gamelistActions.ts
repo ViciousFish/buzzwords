@@ -275,6 +275,7 @@ export const fetchGameById =
 
 export const refreshActiveGames =
   (): AppThunk => async (dispatch, getState) => {
+    dispatch(setIsRefreshing(true));
     const state = getState();
     const activeGames = Object.values(state.gamelist.games).filter(
       (game) => !game.gameOver
@@ -283,4 +284,5 @@ export const refreshActiveGames =
     await Promise.all(
       activeGames.map((game) => dispatch(fetchGameById(game.id)))
     );
+    dispatch(setIsRefreshing(false));
   };
