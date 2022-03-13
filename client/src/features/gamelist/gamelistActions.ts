@@ -27,27 +27,6 @@ import chord from "../../../assets/fmajor-pleasant.m4a?url";
 import { batch } from "react-redux";
 import { Api } from "../../app/Api";
 
-interface GameMetaCache {
-  lastSeenTurns: {
-    [gameId: string]: number;
-  };
-}
-
-// const getLastSeenTurns = () => {
-//   const metaJSON = localStorage.getItem("gameMetaCache");
-//   const metaCache = metaJSON ? (JSON.parse(metaJSON) as GameMetaCache) : null;
-//   return metaCache?.lastSeenTurns;
-// };
-
-// const updateLastSeenTurns = (gameId: string, turns: number) => {
-//   const lastSeenTurns = getLastSeenTurns() ?? {};
-//   lastSeenTurns[gameId] = turns;
-//   const metaCache = JSON.stringify({
-//     lastSeenTurns,
-//   });
-//   localStorage.setItem("gameMetaCache", metaCache);
-// };
-
 const gameUpdateEventGetGameStateModalType = (
   game: Game,
   state: RootState
@@ -213,7 +192,7 @@ export const createNewAIGame =
         vsAI: true,
         difficulty,
       });
-      await dispatch(refresh());
+      await dispatch(fetchGameById(res.data));
       return res.data;
     } catch (e) {
       if (e.response?.data?.message) {
