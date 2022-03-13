@@ -1,6 +1,5 @@
 import { io, Socket } from "socket.io-client";
 import { toast } from "react-toastify";
-import cookie from "cookie";
 
 import { receiveSelectionSocket } from "../features/game/gameActions";
 import Game from "buzzwords-shared/Game";
@@ -9,7 +8,7 @@ import { AppDispatch } from "./store";
 import { maybeOpponentNicknameUpdated } from "../features/user/userSlice";
 import {
   receiveGameUpdatedSocket,
-  refresh,
+  refreshActiveGames,
 } from "../features/gamelist/gamelistActions";
 import { SOCKET_DOMAIN, SOCKET_PATH } from "./apiPrefix";
 import { setSocketConnected } from "../features/game/gameSlice";
@@ -22,7 +21,6 @@ interface SelectionEventProps {
   selection: { [position: QRCoord]: number };
 }
 
-// CQ: setSocketConnected
 // called by getUser
 export const subscribeSocket = (dispatch: AppDispatch) => {
   socket = io(SOCKET_DOMAIN, {
@@ -40,7 +38,7 @@ export const subscribeSocket = (dispatch: AppDispatch) => {
   })
 
   socket.io.on("reconnect", () => {
-    dispatch(refresh());
+    dispatch(refreshActiveGames());
     dispatch(setSocketConnected(true))
   });
 

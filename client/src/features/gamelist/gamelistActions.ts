@@ -154,7 +154,8 @@ export const dequeueOrDismissGameStateModalForGame =
     dispatch(setGameStateModal(null));
     const state = getState();
     const game = state.gamelist.games[gameId];
-    const gameStateModalToShow = state.gamelist.gameMetas[gameId]?.queuedGameStateModals[0];
+    const gameStateModalToShow =
+      state.gamelist.gameMetas[gameId]?.queuedGameStateModals[0];
     if (gameStateModalToShow) {
       dispatch(shiftGameStateModalQueueForGame(gameId));
       dispatch(
@@ -270,4 +271,16 @@ export const fetchGameById =
       })
     );
     return true;
+  };
+
+export const refreshActiveGames =
+  (): AppThunk => async (dispatch, getState) => {
+    const state = getState();
+    const activeGames = Object.values(state.gamelist.games).filter(
+      (game) => !game.gameOver
+    );
+
+    await Promise.all(
+      activeGames.map((game) => dispatch(fetchGameById(game.id)))
+    );
   };

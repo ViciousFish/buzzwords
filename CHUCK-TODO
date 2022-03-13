@@ -1,3 +1,4 @@
 xfetch game directly instead of refreshing in createNewGame
+xrefresh active games on socket reconnect
 separate extra turn modals into toasts
 show victory/defeat modals at end of final turn replay
