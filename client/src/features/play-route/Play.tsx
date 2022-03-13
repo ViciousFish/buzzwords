@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import * as R from "ramda";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import classnames from "classnames";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,7 +10,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
-import useHotkeys from "@reecelucas/react-use-hotkeys";
+import urljoin from "url-join";
 
 import { RootState } from "../../app/store";
 import {
@@ -37,8 +36,14 @@ import GameStateModal from "../game/GameStateModal";
 import MoveListItem from "./MoveListItem";
 import { getOpponent } from "../user/userSelectors";
 import { fetchOpponent } from "../user/userActions";
-import Canvas from "../canvas/Canvas";
-import Bee from "../../assets/Bee";
+
+const getGameUrl = (id: string) => {
+  if (import.meta.env.VITE_SHARE_BASEURL) {
+    return urljoin(String(import.meta.env.VITE_SHARE_BASEURL), "play", id);
+  }
+  console.warn("warning: VITE_SHARE_BASEURL is not defined");
+  return window.location.toString();
+};
 
 const Play: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -133,6 +138,10 @@ const Play: React.FC = () => {
       game.users.forEach((user) => dispatch(fetchOpponent(user)));
     } else if (game && opponent && !opponent.nickname && !fetchedOpponentName) {
       setFetchedOpponentName(true);
+      console.log(
+        "🚀 ~ file: Play.tsx ~ line 142 ~ useEffect ~ opponent",
+        opponent
+      );
       dispatch(fetchOpponent(opponent.id));
     }
   }, [game, opponent, fetchedOpponentName, dispatch, isSpectating]);
@@ -188,7 +197,13 @@ const Play: React.FC = () => {
     );
   }
 
-  if (game && game.users.length === 1 && userIndex !== null && userIndex > -1) {
+  if (
+    game &&
+    id &&
+    game.users.length === 1 &&
+    userIndex !== null &&
+    userIndex > -1
+  ) {
     return (
       <div className="flex flex-auto flex-col overflow-auto lg:h-[calc(100vh-50px)] justify-center items-center py-12 px-4">
         <div className="max-w-full flex-shrink-0 bg-darkbg flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
@@ -198,20 +213,17 @@ const Play: React.FC = () => {
           <span>they can use this link to join you</span>
           <a
             className="underline text-blue-700 text-sm break-words"
-            href={window.location.toString()}
+            href={getGameUrl(id)}
           >
-            {window.location.toString()}
+            {getGameUrl(id)}
           </a>
           <div>
-            <CopyToClipboard
-              label="Copy link"
-              text={window.location.toString()}
-            />
+            <CopyToClipboard label="Copy link" text={getGameUrl(id)} />
             {navigator.share && (
               <Button
                 onClick={() => {
                   navigator.share?.({
-                    url: window.location.toString(),
+                    url: getGameUrl(id),
                   });
                 }}
               >

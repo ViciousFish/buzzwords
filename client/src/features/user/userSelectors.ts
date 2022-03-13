@@ -30,6 +30,9 @@ export const getOpponent = createSelector(
     const gameOpponent = game.users.filter(
       (gameUser) => gameUser !== selfUser.id
     )[0];
+    if (!gameOpponent) {
+      return null;
+    }
     const opponent = opponentUsers[gameOpponent];
     if (!opponent) {
       return { id: gameOpponent };
