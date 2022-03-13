@@ -18,10 +18,7 @@ import { getSelectedWordByGameId } from "./gameSelectors";
 import GameTile from "./GameTile";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBackspace,
-  faTimesCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faBackspace, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import useHotkeys from "@reecelucas/react-use-hotkeys";
 import { getAllUsers } from "../user/userSelectors";
@@ -38,7 +35,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
 
   const users = useAppSelector(getAllUsers);
   const p1Nick = users[game.users[0]]?.nickname;
-  const p2Nick = game.vsAI ? 'Computer' : users[game.users[1]]?.nickname;
+  const p2Nick = game.vsAI ? "Computer" : users[game.users[1]]?.nickname;
 
   const selectedWord = useAppSelector((state) =>
     getSelectedWordByGameId(state, id)
@@ -100,7 +97,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 position={[0, game.turn === 0 ? 4.5 : 4, 0]}
                 center
               >
-                <span>{p1Nick || (userIndex === 0 ? 'You' : 'Them')}</span>
+                <span>{p1Nick || (userIndex === 0 ? "You" : "Them")}</span>
               </Html>
             </group>
             <group position={[10, 0, 0]}>
@@ -117,7 +114,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 position={[0, game.turn === 1 ? 4.5 : 4, 0]}
                 center
               >
-                {p2Nick || (userIndex === 1 ? 'You' : 'Them')}
+                {p2Nick || (userIndex === 1 ? "You" : "Them")}
               </Html>
             </group>
           </group>
@@ -132,8 +129,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                     disabled={submitting}
                     type="button"
                     className={classNames(
-                      "mx-1",
-                      submitting ? "text-gray-500" : "text-darkbrown"
+                      "mx-1 text-sm",
+                      submitting ? "text-gray-400" : "text-darkbrown"
                     )}
                   >
                     <FontAwesomeIcon icon={faBackspace} size="2x" />
@@ -147,14 +144,14 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                     disabled={submitting}
                     type="button"
                     className={classNames(
-                      "mx-1",
-                      submitting ? "text-gray-500" : "text-darkbrown"
+                      "mx-1 text-sm",
+                      submitting ? "text-gray-400" : "text-darkbrown"
                     )}
                   >
                     <FontAwesomeIcon icon={faTimesCircle} size="2x" />
                   </button>
                 ) : null}
-                <div className="text-[calc(4vh+4vw)] text-darkbrown font-fredoka">
+                <div className="text-[calc(3.5vh+3.5vw)] text-darkbrown font-fredoka">
                   {replayLetters
                     ? R.take(replayProgress, replayLetters)
                         .join("")
@@ -168,8 +165,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                     disabled={submitting}
                     type="button"
                     className={classNames(
-                      "font-bold text-lightbg bg-opacity-100 rounded-md p-1 mx-1",
-                      submitting ? "bg-gray-500" : "bg-darkbrown"
+                      "font-bold text-lightbg bg-opacity-100 rounded-md p-1 mx-1 text-sm",
+                      submitting ? "bg-gray-400" : "bg-darkbrown"
                     )}
                   >
                     Submit
