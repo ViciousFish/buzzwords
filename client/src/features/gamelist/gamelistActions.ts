@@ -174,7 +174,7 @@ export const markGameAsSeen =
 export const createNewGame = (): AppThunk => async (dispatch) => {
   try {
     const res = await Api.post<string>(getApiUrl("/game"));
-    await dispatch(refresh());
+    await dispatch(fetchGameById(res.data));
     return res.data;
   } catch (e) {
     if (e.response?.data?.message) {
