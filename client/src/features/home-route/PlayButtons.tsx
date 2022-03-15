@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { faRobot, faSpinner, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faRobot, faSkull, faSpinner, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { Popover } from "react-tiny-popover";
@@ -12,7 +12,7 @@ import { createNewAIGame, createNewGame } from "../gamelist/gamelistActions";
 
 const DifficultyButton: React.FC<{
   difficultyNumber: number;
-  difficultyName: string;
+  difficultyName: React.ReactNode;
   onPlayAIClick: (difficulty: number) => () => void;
   autoFocus?: boolean;
 }> = ({ difficultyName, difficultyNumber, onPlayAIClick, autoFocus }) => (
@@ -21,9 +21,10 @@ const DifficultyButton: React.FC<{
     variant="dark"
     onClick={onPlayAIClick(difficultyNumber)}
     aria-label={`create ${difficultyName} difficulty game vs bot`}
+    className='px-3 mt-0'
   >
-    {difficultyName}{" "}
-    <span className="opacity-75 text-sm">({difficultyNumber})</span>
+    {difficultyName}
+    <span className="opacity-75 text-sm ml-1">({difficultyNumber})</span>
   </Button>
 );
 
@@ -79,7 +80,7 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({
   );
 
   const popoverContent = (
-    <div className="bg-primary rounded-xl p-4 shadow-lg text-center">
+    <div className="bg-primary rounded-xl p-2 shadow-lg text-center">
       <span>Computer Difficulty</span>
       <div className="flex flex-col">
         <DifficultyButton
@@ -126,7 +127,7 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({
         />
         <DifficultyButton
           autoFocus
-          difficultyName="Expert++"
+          difficultyName={<><FontAwesomeIcon icon={faSkull} /> Impossible</>}
           difficultyNumber={10}
           onPlayAIClick={onPlayAIClick}
         />
