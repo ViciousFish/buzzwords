@@ -100,7 +100,10 @@ export default class GameManager {
     return this.game;
   }
 
-  makeMove(userId: string, move: HexCoord[]): Game {
+  makeMove(
+    userId: string,
+    move: HexCoord[]
+  ): { game: Game | null; word: string } {
     if (!this.game) {
       throw new Error("Game Manager has no game!");
     }
@@ -132,9 +135,10 @@ export default class GameManager {
       }
     }
     console.log("move received word", word);
-    if (!isValidWord(word, WordsObject)) {
+    const valid = isValidWord(word, WordsObject);
+    if (!valid) {
       console.log("word invalid", word);
-      throw new Error("Not a valid word");
+      return { game: null, word };
     }
 
     const gridCopy: { [coord: string]: Cell } = {};
@@ -251,7 +255,7 @@ export default class GameManager {
       this.game.moves.push(gameMove);
       this.game.gameOver = true;
       this.game.winner = this.game.turn;
-      return this.game;
+      return { game: this.game, word };
     }
 
     for (const cell of Object.values(this.game.grid)) {
@@ -292,7 +296,7 @@ export default class GameManager {
       ? this.game.turn
       : (Number(!this.game.turn) as 0 | 1);
     this.game.turn = nextTurn;
-    return this.game;
+    return { game: this.game, word };
   }
 
   createGame(userId: string): Game {

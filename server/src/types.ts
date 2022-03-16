@@ -15,6 +15,11 @@ export interface AuthToken {
 }
 
 export interface DataLayer {
+  saveMove(
+    word: string,
+    valid: boolean,
+    options?: Record<string, unknown>
+  ): Promise<boolean>;
   createUser(id: string, options?: Record<string, unknown>): Promise<User>;
   deleteUser(id: string, options?: Record<string, unknown>): Promise<boolean>;
   createAuthToken(
