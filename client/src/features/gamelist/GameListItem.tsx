@@ -1,9 +1,8 @@
-import { faDotCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ShallowGame } from "buzzwords-shared/Game";
-import classNames from "classnames";
 import React from "react";
+import classNames from "classnames";
 import { NavLink } from "react-router-dom";
+
+import { ShallowGame } from "buzzwords-shared/Game";
 import { useAppSelector } from "../../app/hooks";
 import { getAllUsers } from "../user/userSelectors";
 
@@ -20,7 +19,7 @@ const GameListItem: React.FC<GameListItemProps> = ({ game }) => {
   const nick2 = game.vsAI ? "Computer" : allUsers[users[1]]?.nickname ?? "???";
   const selfIndex = users.findIndex((val) => val === userId);
   return (
-    <li className="my-1 whitespace-nowrap">
+    <li className="my-1 whitespace-nowrap text-sm">
       <NavLink
         className={({ isActive }) =>
           classNames(

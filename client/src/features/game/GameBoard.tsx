@@ -76,13 +76,13 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   });
 
   return (
-    <div className="h-[80vh] lg:h-[calc(100vh-50px)] flex-auto overflow-hidden">
+    <div className="h-[80vh] lg:h-[calc(100vh-100px)] flex-auto overflow-hidden">
       <Canvas key={`play-${id}`}>
         {/* <CameraControls /> */}
         <React.Suspense
           fallback={<Html center>{progress.toFixed(0)} % loaded</Html>}
         >
-          <group position={[0, 21, 0]}>
+          <group position={[0, 22, 0]}>
             <group position={[-10, 0, 0]}>
               <GameTile
                 owner={0}
@@ -92,13 +92,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 gameOver={game.gameOver}
               />
               {/* Modals have z index of 30 */}
-              <Html
-                zIndexRange={[20, 0]}
-                position={[0, game.turn === 0 ? 4.5 : 4, 0]}
-                center
-              >
-                <span>{p1Nick || (userIndex === 0 ? "You" : "Them")}</span>
-              </Html>
             </group>
             <group position={[10, 0, 0]}>
               <GameTile
@@ -109,16 +102,9 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 currentGame={id}
                 gameOver={game.gameOver}
               />
-              <Html
-                zIndexRange={[20, 0]}
-                position={[0, game.turn === 1 ? 4.5 : 4, 0]}
-                center
-              >
-                {p2Nick || (userIndex === 1 ? "You" : "Them")}
-              </Html>
             </group>
           </group>
-          <group position={[0, 13.5, 0]}>
+          <group position={[0, 15, 0]}>
             <Html center zIndexRange={[20, 0]}>
               <div className="flex justify-center items-center">
                 {selectedWord?.length && game.turn === userIndex ? (
@@ -175,7 +161,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
               </div>
             </Html>
           </group>
-          <group position={[0, -8, 0]}>
+          <group position={[0, -6, 0]}>
             {Object.keys(game.grid).map((coord: QRCoord) => {
               const gridTile = game.grid[coord];
               return (

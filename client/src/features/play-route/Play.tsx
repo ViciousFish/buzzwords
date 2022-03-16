@@ -4,9 +4,10 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faEllipsisV,
   faHistory,
   faPlayCircle,
-  faShare,
+  faShareSquare,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
@@ -34,7 +35,7 @@ import classNames from "classnames";
 import Button from "../../presentational/Button";
 import GameStateModal from "../game/GameStateModal";
 import MoveListItem from "./MoveListItem";
-import { getOpponent } from "../user/userSelectors";
+import { getAllUsers, getOpponent } from "../user/userSelectors";
 import { fetchOpponent } from "../user/userActions";
 import { isFullGame } from "../gamelist/gamelistSlice";
 
@@ -80,6 +81,11 @@ const Play: React.FC = () => {
   const opponent = useAppSelector((state) =>
     id ? getOpponent(state, id) : null
   );
+
+  const users = useAppSelector(getAllUsers);
+  const p1Nick = game && users[game.users[0]]?.nickname;
+  const p2Nick =
+    game && (game.vsAI ? "Computer" : users[game.users[1]]?.nickname);
 
   const joinGame = useCallback(() => {
     if (id) {
@@ -215,7 +221,7 @@ const Play: React.FC = () => {
                   });
                 }}
               >
-                Share <FontAwesomeIcon icon={faShare} />{" "}
+                Share <FontAwesomeIcon icon={faShareSquare} />{" "}
               </Button>
             )}
             {id && (
@@ -255,53 +261,80 @@ const Play: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-auto flex-col lg:flex-row">
-      {userIndex !== null && (
-        <GameBoard id={id} game={game} userIndex={userIndex} />
-      )}
-      <div className="m-auto lg:m-0 flex-shrink-0 w-[200px] pt-2 lg:max-h-[calc(100vh-50px)] overflow-y-auto">
-        {showingNudgeButton && (
-          <div className="p-2 rounded-xl bg-primary flex flex-col mr-2">
-            <p>Looks like the AI opponent is taking a long time to move</p>
-            <Button onClick={onNudgeClick} className="text-white bg-darkbrown">
-              Nudge the bot
-            </Button>
-          </div>
-        )}
-        <div className="flex flex-shrink-0 items-center text-darkbrown pt-2">
-          <button
-            onClick={() => {
-              if (replayState) {
-                return dispatch(clearReplay());
-              }
-            }}
-          >
-            <FontAwesomeIcon
-              className={classNames(
-                "mx-1 text-xl",
-                replayState && "text-blue-500 hover:text-red-500"
-              )}
-              icon={replayState ? faPlayCircle : faHistory}
-            />
-          </button>
-          <h3 className="flex-auto">
-            <span className="text-2xl font-bold m-0">Turns</span>
-          </h3>
+    <div>
+      <div className="h-[50px] bg-darkbrown text-white flex px-4">
+        <div className="flex items-center justify-start flex-auto">
+          <span className="text-p1 font-bold">{p1Nick || "You"}</span>
+          <span className="mx-2"> vs </span>
+          <span className="text-p2 font-bold">{p2Nick || "Them"}</span>
+          {game.vsAI && (
+            <span className="text-gray-300 no-underline ml-1">
+              ({game.difficulty})
+            </span>
+          )}
         </div>
-        <ul className="">
-          {R.reverse(game.moves).map((move, i) => {
-            const index = game.moves.length - i - 1;
-            return <MoveListItem move={move} index={index} key={index} />;
-          })}
-        </ul>
+        <div className="lg:w-[200px] flex items-center justify-end">
+          <button className="mr-2">
+            <FontAwesomeIcon icon={faShareSquare} />
+          </button>
+          <button className="px-2">
+            <FontAwesomeIcon icon={faEllipsisV} />
+          </button>
+        </div>
       </div>
-      {nickModal}
-      {gameStateModal && (
-        <GameStateModal
-          {...gameStateModal}
-          onDismiss={() => dispatch(dequeueOrDismissGameStateModalForGame(id))}
-        />
-      )}
+      <div className="flex flex-auto flex-col lg:flex-row">
+        {userIndex !== null && (
+          <GameBoard id={id} game={game} userIndex={userIndex} />
+        )}
+        <div className="m-auto lg:m-0 flex-shrink-0 w-[200px] pt-2 lg:max-h-[calc(100vh-50px)] overflow-y-auto">
+          {showingNudgeButton && (
+            <div className="p-2 rounded-xl bg-primary flex flex-col mr-2">
+              <p>Looks like the AI opponent is taking a long time to move</p>
+              <Button
+                onClick={onNudgeClick}
+                className="text-white bg-darkbrown"
+              >
+                Nudge the bot
+              </Button>
+            </div>
+          )}
+          <div className="flex flex-shrink-0 items-center text-darkbrown pt-2">
+            <button
+              onClick={() => {
+                if (replayState) {
+                  return dispatch(clearReplay());
+                }
+              }}
+            >
+              <FontAwesomeIcon
+                className={classNames(
+                  "mx-1 text-xl",
+                  replayState && "text-blue-500 hover:text-red-500"
+                )}
+                icon={replayState ? faPlayCircle : faHistory}
+              />
+            </button>
+            <h3 className="flex-auto">
+              <span className="text-2xl font-bold m-0">Turns</span>
+            </h3>
+          </div>
+          <ul className="">
+            {R.reverse(game.moves).map((move, i) => {
+              const index = game.moves.length - i - 1;
+              return <MoveListItem move={move} index={index} key={index} />;
+            })}
+          </ul>
+        </div>
+        {nickModal}
+        {gameStateModal && (
+          <GameStateModal
+            {...gameStateModal}
+            onDismiss={() =>
+              dispatch(dequeueOrDismissGameStateModalForGame(id))
+            }
+          />
+        )}
+      </div>
     </div>
   );
 };
