@@ -128,12 +128,18 @@ app.get(
     failureMessage: true,
   }),
   function (req, res) {
-    const { redirectUrl } = JSON.parse(
-      Buffer.from(
-        decodeURIComponent(req.query.state as string),
-        "base64"
-      ).toString("utf-8")
-    );
+    let redirectUrl: string;
+    try {
+      const res = JSON.parse(
+        Buffer.from(
+          decodeURIComponent(req.query.state as string),
+          "base64"
+        ).toString("utf-8")
+      );
+      redirectUrl = res.redirectUrl;
+    } catch (e) {
+      redirectUrl = "/";
+    }
     if (typeof redirectUrl === "string") {
       res.redirect(redirectUrl);
     } else {
@@ -175,11 +181,18 @@ if (config.googleClientId && config.googleClientSecret) {
           return;
         }
 
-        const { stateId } = JSON.parse(
-          Buffer.from(decodeURIComponent(state as string), "base64").toString(
-            "utf-8"
-          )
-        );
+        let res: any;
+        try {
+          res = JSON.parse(
+            Buffer.from(decodeURIComponent(state as string), "base64").toString(
+              "utf-8"
+            )
+          );
+        } catch (e) {
+          done("Invalid state param");
+          return;
+        }
+        const { stateId } = res;
 
         const session = await dl.createContext();
         const authToken = await dl.getAuthTokenByState(stateId as string, {
