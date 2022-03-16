@@ -39,7 +39,7 @@ const TopBar: React.FC = () => {
   const gamesLoading = useAppSelector((state) => state.gamelist.gamesLoading);
   const currentGame = useAppSelector((state) => state.game.currentGame);
 
-  const [_authPrompt, setAuthPrompt] = useState(false); // CQ: temp
+  const [_authPrompt, setAuthPrompt] = useState(!window.location.toString().match(/play/)); // CQ: temp
   const authPrompt = isLoggedIn === false && _authPrompt;
 
   const isLoading =
