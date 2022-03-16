@@ -46,6 +46,18 @@ const gameSchema = new Schema<Game>({
   },
   moves: [
     {
+      shuffle: {
+        type: Boolean,
+        default: false,
+      },
+      pass: {
+        type: Boolean,
+        default: false,
+      },
+      forfeit: {
+        type: Boolean,
+        default: false,
+      },
       player: Number,
       letters: [String],
       coords: [{ q: Number, r: Number }],

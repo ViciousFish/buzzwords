@@ -365,5 +365,49 @@ export default (io: Server) => {
     doBotMoves(gameId);
   });
 
+  router.post("/:id/forfeit", async (req, res) => {
+    const user = res.locals.userId as string;
+    const gameId = req.params.id;
+
+    const session = await dl.createContext();
+
+    const game = await dl.getGameById(gameId, {
+      session,
+    });
+    if (game == null || game == undefined || !game.users.includes(user)) {
+      res.sendStatus(404);
+      return;
+    }
+    const gm = new GameManager(game);
+
+    let newGame: Game;
+    try {
+      newGame = gm.forfeit(user);
+    } catch (e: unknown) {
+      res.status(400);
+      if (e instanceof Error) {
+        res.send(e.message);
+      } else {
+        res.send();
+      }
+      return;
+    }
+    try {
+      await dl.saveGame(gameId, newGame, {
+        session,
+      });
+      await dl.commitContext(session);
+    } catch (e) {
+      res.sendStatus(500);
+      return;
+    }
+
+    res.status(201);
+    res.send(newGame);
+    newGame.users.forEach((user) => {
+      io.to(user).emit("game updated", newGame);
+    });
+  });
+
   return router;
 };
