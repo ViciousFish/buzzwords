@@ -33,7 +33,7 @@ import {
 } from "./gameSelectors";
 import { Sakura } from "../../assets/Sakura";
 import { HexOutlineSolid } from "../../assets/Hexoutlinesolid";
-
+import { isFullGame } from "../gamelist/gamelistSlice";
 import { willConnectToTerritory } from "buzzwords-shared/gridHelpers";
 
 interface GameTileProps {
@@ -81,16 +81,14 @@ const GameTile: React.FC<GameTileProps> = ({
     [font]
   );
 
+  const game = useAppSelector((state) => state.gamelist.games[currentGame]);
+
   const isSelectedState = useAppSelector((state) =>
     coord ? state.game.selectedTiles[coord] : null
   );
-  const currentTurn = useAppSelector(
-    (state) => state.gamelist.games[currentGame].turn
-  );
+  const currentTurn = game.turn;
   const currentMove = useAppSelector(getTileSelectionInParsedHexCoords);
-  const gridState = useAppSelector((state) =>
-    currentGame ? state.gamelist.games[currentGame].grid : null
-  );
+  const gridState = isFullGame(game) ? game.grid : null;
   const replayMove = useAppSelector((state) => state.game.replay.move);
   const replayProgress = useAppSelector(
     (state) => state.game.replay.playbackState
@@ -117,10 +115,7 @@ const GameTile: React.FC<GameTileProps> = ({
   );
 
   const willBeReset =
-    tilesThatWillBeReset &&
-    coord &&
-    tilesThatWillBeReset[coord] &&
-    owner !== 2;
+    tilesThatWillBeReset && coord && tilesThatWillBeReset[coord] && owner !== 2;
 
   let color = theme.colors.primary;
   if (willBeReset) {
@@ -168,7 +163,9 @@ const GameTile: React.FC<GameTileProps> = ({
     },
   });
 
-  const outline = isPlayerIdentity && currentTurn === owner;
+  const outline = game.gameOver
+    ? isPlayerIdentity && game.winner === owner
+    : isPlayerIdentity && currentTurn === owner;
 
   const outlineTransition = useTransition(outline, {
     from: {

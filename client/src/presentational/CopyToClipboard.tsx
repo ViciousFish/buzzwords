@@ -7,8 +7,9 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 interface CopyToClipboardProps {
   text: string;
   label?: string;
+  variant?: React.ComponentProps<typeof Button>['variant']
 }
-const CopyToClipboard: React.FC<CopyToClipboardProps> = ({ text, label }) => {
+const CopyToClipboard: React.FC<CopyToClipboardProps> = ({ text, label, variant }) => {
   const [copied, setCopied] = useState(false);
   const onCopy = useCallback(() => {copy(text); setCopied(true)}, [text]);
   useEffect(() => {
@@ -17,7 +18,7 @@ const CopyToClipboard: React.FC<CopyToClipboardProps> = ({ text, label }) => {
     }, 5000)
   }, [copied])
   return (
-    <Button type="button" onClick={onCopy}>
+    <Button variant={variant || 'light'} type="button" onClick={onCopy}>
       {label || "copy"} {copied && <FontAwesomeIcon icon={faCheck} />}
     </Button>
   );

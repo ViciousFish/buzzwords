@@ -4,7 +4,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faEllipsisV,
   faHistory,
   faPlayCircle,
   faShareSquare,
@@ -12,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import urljoin from "url-join";
+import classNames from "classnames";
 
 import { RootState } from "../../app/store";
 import {
@@ -31,15 +31,15 @@ import CopyToClipboard from "../../presentational/CopyToClipboard";
 import NicknameModal from "../user/NicknameModal";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { nudgeGameById } from "../game/gameActions";
-import classNames from "classnames";
 import Button from "../../presentational/Button";
 import GameStateModal from "../game/GameStateModal";
 import MoveListItem from "./MoveListItem";
-import { getAllUsers, getOpponent } from "../user/userSelectors";
+import { getOpponent } from "../user/userSelectors";
 import { fetchOpponent } from "../user/userActions";
 import { isFullGame } from "../gamelist/gamelistSlice";
+import GameHeader from "./GameHeader";
 
-const getGameUrl = (id: string) => {
+export const getGameUrl = (id: string) => {
   if (import.meta.env.VITE_SHARE_BASEURL) {
     return urljoin(String(import.meta.env.VITE_SHARE_BASEURL), "play", id);
   }
@@ -81,11 +81,6 @@ const Play: React.FC = () => {
   const opponent = useAppSelector((state) =>
     id ? getOpponent(state, id) : null
   );
-
-  const users = useAppSelector(getAllUsers);
-  const p1Nick = game && users[game.users[0]]?.nickname;
-  const p2Nick =
-    game && (game.vsAI ? "Computer" : users[game.users[1]]?.nickname);
 
   const joinGame = useCallback(() => {
     if (id) {
@@ -262,26 +257,7 @@ const Play: React.FC = () => {
 
   return (
     <div>
-      <div className="h-[50px] bg-darkbrown text-white flex px-4">
-        <div className="flex items-center justify-start flex-auto">
-          <span className="text-p1 font-bold">{p1Nick || "You"}</span>
-          <span className="mx-2"> vs </span>
-          <span className="text-p2 font-bold">{p2Nick || "Them"}</span>
-          {game.vsAI && (
-            <span className="text-gray-300 no-underline ml-1">
-              ({game.difficulty})
-            </span>
-          )}
-        </div>
-        <div className="lg:w-[200px] flex items-center justify-end">
-          <button className="mr-2">
-            <FontAwesomeIcon icon={faShareSquare} />
-          </button>
-          <button className="px-2">
-            <FontAwesomeIcon icon={faEllipsisV} />
-          </button>
-        </div>
-      </div>
+      <GameHeader game={game} />
       <div className="flex flex-auto flex-col lg:flex-row">
         {userIndex !== null && (
           <GameBoard id={id} game={game} userIndex={userIndex} />

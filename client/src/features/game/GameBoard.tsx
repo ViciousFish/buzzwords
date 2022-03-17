@@ -82,7 +82,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
         <React.Suspense
           fallback={<Html center>{progress.toFixed(0)} % loaded</Html>}
         >
-          <group position={[0, 22, 0]}>
+          <group position={[0, 21, 0]}>
             <group position={[-10, 0, 0]}>
               <GameTile
                 owner={0}
