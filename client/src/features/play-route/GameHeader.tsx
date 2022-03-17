@@ -107,7 +107,6 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
       >
         Share <FontAwesomeIcon icon={faShareSquare} />
       </Button>
-      <Button type="button">test</Button>
     </div>
   ) : (
     <></>
