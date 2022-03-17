@@ -132,6 +132,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
           isOpen={shareOverlay}
           content={shareOverlayContent}
           containerClassName="z-30"
+          positions={['bottom']}
         >
           <button
             type="button"
@@ -147,6 +148,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
             onClickOutside={() => setMenuOverlay(false)}
             content={<GameMenu id={game.id} />}
             containerClassName="z-30"
+            positions={['bottom']}
           >
             <button
               type="button"
