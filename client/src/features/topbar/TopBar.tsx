@@ -39,7 +39,7 @@ const TopBar: React.FC = () => {
   const gamesLoading = useAppSelector((state) => state.gamelist.gamesLoading);
   const currentGame = useAppSelector((state) => state.game.currentGame);
 
-  const [_authPrompt, setAuthPrompt] = useState(true);
+  const [_authPrompt, setAuthPrompt] = useState(!window.location.toString().match(/play/)); // CQ: temp
   const authPrompt = isLoggedIn === false && _authPrompt;
 
   const isLoading =
@@ -64,7 +64,7 @@ const TopBar: React.FC = () => {
   return (
     <div
       className={classNames(
-        "fixed top-0 z-30 md:bg-black text-darkbrown",
+        "fixed top-0 z-30 text-darkbrown",
         "h-[50px] w-screen shadow-md"
       )}
     >
@@ -104,7 +104,7 @@ const TopBar: React.FC = () => {
             positions={["bottom"]}
             content={<TutorialCard shadow />}
             isOpen={!isOpen && showTutorialCard}
-            containerClassName="z-30 max-w-[300px] w-[50vw]"
+            containerClassName="z-30 max-w-[300px] min-w-[50vw]"
           >
             <button
               onClick={() => {

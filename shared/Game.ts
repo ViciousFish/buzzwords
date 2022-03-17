@@ -8,6 +8,8 @@ export interface Move {
   player: 0 | 1;
   date?: Date;
   shuffle?: boolean;
+  pass?: boolean;
+  forfeit?: boolean;
 }
 
 export default interface Game {
@@ -25,4 +27,4 @@ export default interface Game {
   deleted: boolean;
 }
 
-export type ShallowGame = Omit<Game, 'moves' | 'grid'>;
+export type ShallowGame = Omit<Game, "moves" | "grid">;

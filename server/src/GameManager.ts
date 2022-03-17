@@ -61,8 +61,42 @@ export default class GameManager {
       setCell(this.game.grid, newCapital);
     }
 
+    this.game.moves.push({
+      coords: [],
+      grid: this.game.grid,
+      letters: [],
+      player: this.game.turn,
+      pass: true,
+    });
     const nextTurn = Number(!this.game.turn) as 0 | 1;
     this.game.turn = nextTurn;
+    return this.game;
+  }
+
+  forfeit(userId: string): Game {
+    if (!this.game) {
+      throw new Error("Game Manager has no game!");
+    }
+    if (!this.game.users.includes(userId)) {
+      throw new Error("Not your game");
+    }
+    if (this.game.gameOver) {
+      throw new Error("Game is over");
+    }
+    if (this.game.users.length != 2) {
+      throw new Error("Need another player");
+    }
+
+    const idx = this.game.users.indexOf(userId) as 0 | 1;
+    this.game.winner = Number(!idx) as 0 | 1;
+    this.game.gameOver = true;
+    this.game.moves.push({
+      coords: [],
+      grid: this.game.grid,
+      letters: [],
+      player: idx,
+      forfeit: true,
+    });
     return this.game;
   }
 

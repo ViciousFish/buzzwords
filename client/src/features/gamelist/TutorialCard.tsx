@@ -15,7 +15,7 @@ const TutorialCard: React.FC<{
 }) => {
   const dispatch = useAppDispatch();
   return (
-    <div className={classNames("rounded-xl bg-primary p-4 mx-2", shadow && 'shadow-xl')}>
+    <div className={classNames("rounded-xl bg-primary p-4 mx-2", shadow && 'shadow-xl border border-darkbrown')}>
       <h3 className="text-lg font-bold inline">How to play</h3>
       {!hideDismiss && <div className="float-right text-lg">
         <button

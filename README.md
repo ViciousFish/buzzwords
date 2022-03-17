@@ -11,6 +11,7 @@ https://twitter.com/BuzzwordsGG
 
 ## Running the code for development
 
+0. drop a `.env` file in `./server` with `API_PREFIX=/api`
 1. run `yarn` in this folder
 2. run `yarn dev` in `./server`
 3. simultaneously, run `yarn dev` in `./client`

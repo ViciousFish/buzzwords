@@ -286,3 +286,7 @@ export const refreshActiveGames =
     );
     dispatch(setIsRefreshing(false));
   };
+
+export const forfeitGame = (id: string): AppThunk => async (dispatch) => {
+  const { data } = await Api.post<Game>(getApiUrl("/game", id, 'forfeit'));
+}

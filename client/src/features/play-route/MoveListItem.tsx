@@ -35,24 +35,26 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [dictionaryData, setDictionaryData] = useState(null as any | null);
 
+  let word = move.letters.join("");
+    if (move.forfeit) {
+      word = "resign";
+    }
+
   const openPopover = useCallback(async () => {
     setIsOpen(true);
     try {
       const res = await axios.get(
-        `https://api.dictionaryapi.dev/api/v2/entries/en/${move.letters.join(
-          ""
-        )}`,
+        `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`,
         { withCredentials: false }
       );
       setDictionaryData(res.data);
     } catch (e) {
-      console.log(Object.keys(e));
       setDictionaryData({
         type: "error",
         status: e.response?.status,
       });
     }
-  }, [setIsOpen, move.letters]);
+  }, [setIsOpen, word]);
 
   const popoverContent = (
     <div
@@ -63,7 +65,7 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
     >
       <div className="flex justify-between items-baseline">
         <span className="capitalize text-4xl font-bold mr-2 font-serif">
-          {move.letters.join("")}
+          {word}
         </span>
         <span className="flex-auto"></span>
         {move.date && (
@@ -111,7 +113,7 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
           <FontAwesomeIcon className="animate-spin" icon={faSpinner} />
         </div>
       )}
-      <Button
+      {!move.forfeit ? <Button
         className={classNames(
           "text-sm p-2 m-0 w-full",
           replayState &&
@@ -133,7 +135,7 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
           }
         />
         Replay
-      </Button>
+      </Button> : <div className="text-center font-serif italic p-2 mx-2 border border-darkbrown rounded-xl">Player {move.player + 1} resigned</div>}
     </div>
   );
   return (
@@ -166,7 +168,7 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
             }
           }}
         >
-          {move.letters.join("").toUpperCase()}
+          {word.toUpperCase()}
         </button>
       </li>
     </Popover>

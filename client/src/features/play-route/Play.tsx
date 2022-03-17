@@ -6,11 +6,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHistory,
   faPlayCircle,
-  faShare,
+  faShareSquare,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import urljoin from "url-join";
+import classNames from "classnames";
 
 import { RootState } from "../../app/store";
 import {
@@ -30,15 +31,15 @@ import CopyToClipboard from "../../presentational/CopyToClipboard";
 import NicknameModal from "../user/NicknameModal";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { nudgeGameById } from "../game/gameActions";
-import classNames from "classnames";
 import Button from "../../presentational/Button";
 import GameStateModal from "../game/GameStateModal";
 import MoveListItem from "./MoveListItem";
 import { getOpponent } from "../user/userSelectors";
 import { fetchOpponent } from "../user/userActions";
 import { isFullGame } from "../gamelist/gamelistSlice";
+import GameHeader from "./GameHeader";
 
-const getGameUrl = (id: string) => {
+export const getGameUrl = (id: string) => {
   if (import.meta.env.VITE_SHARE_BASEURL) {
     return urljoin(String(import.meta.env.VITE_SHARE_BASEURL), "play", id);
   }
@@ -215,7 +216,7 @@ const Play: React.FC = () => {
                   });
                 }}
               >
-                Share <FontAwesomeIcon icon={faShare} />{" "}
+                Share <FontAwesomeIcon icon={faShareSquare} />{" "}
               </Button>
             )}
             {id && (
@@ -255,53 +256,61 @@ const Play: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-auto flex-col lg:flex-row">
-      {userIndex !== null && (
-        <GameBoard id={id} game={game} userIndex={userIndex} />
-      )}
-      <div className="m-auto lg:m-0 flex-shrink-0 w-[200px] pt-2 lg:max-h-[calc(100vh-50px)] overflow-y-auto">
-        {showingNudgeButton && (
-          <div className="p-2 rounded-xl bg-primary flex flex-col mr-2">
-            <p>Looks like the AI opponent is taking a long time to move</p>
-            <Button onClick={onNudgeClick} className="text-white bg-darkbrown">
-              Nudge the bot
-            </Button>
-          </div>
+    <div>
+      <GameHeader game={game} />
+      <div className="flex flex-auto flex-col lg:flex-row">
+        {userIndex !== null && (
+          <GameBoard id={id} game={game} userIndex={userIndex} />
         )}
-        <div className="flex flex-shrink-0 items-center text-darkbrown pt-2">
-          <button
-            onClick={() => {
-              if (replayState) {
-                return dispatch(clearReplay());
-              }
-            }}
-          >
-            <FontAwesomeIcon
-              className={classNames(
-                "mx-1 text-xl",
-                replayState && "text-blue-500 hover:text-red-500"
-              )}
-              icon={replayState ? faPlayCircle : faHistory}
-            />
-          </button>
-          <h3 className="flex-auto">
-            <span className="text-2xl font-bold m-0">Turns</span>
-          </h3>
+        <div className="m-auto lg:m-0 flex-shrink-0 w-[200px] pt-2 lg:max-h-[calc(100vh-50px)] overflow-y-auto">
+          {showingNudgeButton && (
+            <div className="p-2 rounded-xl bg-primary flex flex-col mr-2">
+              <p>Looks like the AI opponent is taking a long time to move</p>
+              <Button
+                onClick={onNudgeClick}
+                className="text-white bg-darkbrown"
+              >
+                Nudge the bot
+              </Button>
+            </div>
+          )}
+          <div className="flex flex-shrink-0 items-center text-darkbrown pt-2">
+            <button
+              onClick={() => {
+                if (replayState) {
+                  return dispatch(clearReplay());
+                }
+              }}
+            >
+              <FontAwesomeIcon
+                className={classNames(
+                  "mx-1 text-xl",
+                  replayState && "text-blue-500 hover:text-red-500"
+                )}
+                icon={replayState ? faPlayCircle : faHistory}
+              />
+            </button>
+            <h3 className="flex-auto">
+              <span className="text-2xl font-bold m-0">Turns</span>
+            </h3>
+          </div>
+          <ul className="">
+            {R.reverse(game.moves).map((move, i) => {
+              const index = game.moves.length - i - 1;
+              return <MoveListItem move={move} index={index} key={index} />;
+            })}
+          </ul>
         </div>
-        <ul className="">
-          {R.reverse(game.moves).map((move, i) => {
-            const index = game.moves.length - i - 1;
-            return <MoveListItem move={move} index={index} key={index} />;
-          })}
-        </ul>
+        {nickModal}
+        {gameStateModal && (
+          <GameStateModal
+            {...gameStateModal}
+            onDismiss={() =>
+              dispatch(dequeueOrDismissGameStateModalForGame(id))
+            }
+          />
+        )}
       </div>
-      {nickModal}
-      {gameStateModal && (
-        <GameStateModal
-          {...gameStateModal}
-          onDismiss={() => dispatch(dequeueOrDismissGameStateModalForGame(id))}
-        />
-      )}
     </div>
   );
 };
