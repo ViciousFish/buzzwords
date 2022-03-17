@@ -104,7 +104,7 @@ const TopBar: React.FC = () => {
             positions={["bottom"]}
             content={<TutorialCard shadow />}
             isOpen={!isOpen && showTutorialCard}
-            containerClassName="z-30 max-w-[300px] min-w-[50vw]"
+            containerClassName="z-30 w-full max-w-[300px]"
           >
             <button
               onClick={() => {
