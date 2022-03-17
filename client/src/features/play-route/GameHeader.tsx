@@ -97,7 +97,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
         label="Copy link"
         text={getGameUrl(game.id)}
       />
-      <Button
+      {navigator.share && <Button
         onClick={() =>
           navigator.share?.({
             url: getGameUrl(game.id),
@@ -106,7 +106,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
         variant="dark"
       >
         Share <FontAwesomeIcon icon={faShareSquare} />
-      </Button>
+      </Button>}
     </div>
   ) : (
     <></>
