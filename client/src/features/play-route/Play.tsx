@@ -262,7 +262,7 @@ const Play: React.FC = () => {
         {userIndex !== null && (
           <GameBoard id={id} game={game} userIndex={userIndex} />
         )}
-        <div className="m-auto lg:m-0 flex-shrink-0 w-[200px] pt-2 lg:max-h-[calc(100vh-50px)] overflow-y-auto">
+        <div className="m-auto lg:m-0 flex-shrink-0 w-[200px] pt-2 lg:max-h-[calc(100vh-100px)] overflow-y-auto">
           {showingNudgeButton && (
             <div className="p-2 rounded-xl bg-primary flex flex-col mr-2">
               <p>Looks like the AI opponent is taking a long time to move</p>
