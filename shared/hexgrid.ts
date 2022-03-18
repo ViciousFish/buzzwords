@@ -4,39 +4,85 @@ import { getRandomCharacter } from "./alphaHelpers";
 import Cell, { makeCell } from "./cell";
 import { combinationN, getRandomInt, shuffle } from "./utils";
 
-const QRLookup = (q: number): number => {
-  switch (q) {
-    case -3:
-      return -1;
-    case -2:
-    case -1:
-      return -2;
-    case 0:
-    case 1:
-      return -3;
-    case 2:
-    case 3:
-      return -4;
-
-    default:
-      throw new Error("invalid Q value");
-  }
+const QRLookup: {
+  small: {
+    [key: string]: number;
+  };
+  medium: {
+    [key: string]: number;
+  };
+  large: {
+    [key: string]: number;
+  };
+} = {
+  small: {
+    "-2": -1,
+    "-1": -2,
+    "0": -2,
+    "1": -3,
+    "2": -3,
+  },
+  medium: {
+    "-3": -1,
+    "-2": -2,
+    "-1": -2,
+    "0": -3,
+    "1": -3,
+    "2": -4,
+    "3": -4,
+  },
+  large: {
+    "-4": -1,
+    "-3": -2,
+    "-2": -2,
+    "-1": -3,
+    "0": -3,
+    "1": -4,
+    "2": -4,
+    "3": -5,
+    "4": -5,
+  },
 };
 
 export default interface HexGrid {
   [key: string]: Cell;
 }
 
-export const makeHexGrid = (cellMap?: { [key: string]: Cell }): HexGrid => {
+const boardSettings = {
+  small: {
+    minQ: -2,
+    maxQ: 2,
+    maxR: 4,
+  },
+  medium: {
+    minQ: -3,
+    maxQ: 3,
+    maxR: 6,
+  },
+  large: {
+    minQ: -4,
+    maxQ: 4,
+    maxR: 6,
+  },
+};
+
+export const makeHexGrid = (
+  size: "small" | "medium" | "large" = "medium",
+  cellMap?: { [key: string]: Cell }
+): HexGrid => {
   let cells: {
     [key: string]: Cell;
   } = {};
   if (cellMap) {
     cells = cellMap;
   } else {
-    for (let q = -3; q <= 3; q++) {
-      const rMin = QRLookup(q);
-      const rMax = rMin + (q % 2 == 0 ? 6 : 5);
+    for (let q = boardSettings[size].minQ; q <= boardSettings[size].maxQ; q++) {
+      const rMin = QRLookup[size][q.toString()];
+      const rMax =
+        rMin +
+        (q % 2 == 0
+          ? boardSettings[size].maxR
+          : boardSettings[size].maxR + (size === "medium" ? -1 : 1));
       for (let r = rMin; r <= rMax; r++) {
         const cell = makeCell(q, r);
         cells[`${q},${r}`] = cell;

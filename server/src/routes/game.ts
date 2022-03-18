@@ -75,7 +75,11 @@ export default (io: Server) => {
     }
     const options = req.body;
     const gm = new GameManager(null);
-    const game = gm.createGame(user);
+    let size: "small" | "medium" | "large" = "medium";
+    if (/small|medium|large/.test(options.size)) {
+      size = options.size;
+    }
+    const game = gm.createGame(user, size);
     if (options.vsAI) {
       game.vsAI = true;
       game.users.push("AI");

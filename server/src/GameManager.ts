@@ -295,22 +295,31 @@ export default class GameManager {
     return this.game;
   }
 
-  createGame(userId: string): Game {
+  createGame(userId: string, size: "small" | "medium" | "large"): Game {
     const game: Game = {
       id: nanoid(),
       turn: 0 as 0 | 1,
       users: [userId],
-      grid: makeHexGrid(),
+      grid: makeHexGrid(size),
       gameOver: false,
       winner: null,
       moves: [],
       vsAI: false,
       difficulty: 1,
       deleted: false,
+      size,
     };
     const neighbors = [
-      ...getCellNeighbors(game.grid, -2, -1),
-      ...getCellNeighbors(game.grid, 2, 1),
+      ...getCellNeighbors(
+        game.grid,
+        boardSettings[size].capitals[0].q,
+        boardSettings[size].capitals[0].r
+      ),
+      ...getCellNeighbors(
+        game.grid,
+        boardSettings[size].capitals[1].q,
+        boardSettings[size].capitals[1].r
+      ),
     ];
     const newValues = getNewCellValues([], 12, WordsObject);
     let i = 0;
@@ -319,12 +328,59 @@ export default class GameManager {
       i++;
       game.grid = setCell(game.grid, cell);
     }
-    game.grid["-2,-1"].capital = true;
-    game.grid["-2,-1"].owner = 0;
-    game.grid["2,1"].capital = true;
-    game.grid["2,1"].owner = 1;
+    game.grid[
+      `${boardSettings[size].capitals[0].q},${boardSettings[size].capitals[0].r}`
+    ].capital = true;
+    game.grid[
+      `${boardSettings[size].capitals[0].q},${boardSettings[size].capitals[0].r}`
+    ].owner = 0;
+    game.grid[
+      `${boardSettings[size].capitals[1].q},${boardSettings[size].capitals[1].r}`
+    ].capital = true;
+    game.grid[
+      `${boardSettings[size].capitals[1].q},${boardSettings[size].capitals[1].r}`
+    ].owner = 1;
 
     this.game = game;
     return game;
   }
 }
+
+const boardSettings = {
+  small: {
+    capitals: [
+      {
+        q: -1,
+        r: -1,
+      },
+      {
+        q: 1,
+        r: 1,
+      },
+    ],
+  },
+  medium: {
+    capitals: [
+      {
+        q: -2,
+        r: -1,
+      },
+      {
+        q: 2,
+        r: 1,
+      },
+    ],
+  },
+  large: {
+    capitals: [
+      {
+        q: -3,
+        r: -1,
+      },
+      {
+        q: 3,
+        r: 1,
+      },
+    ],
+  },
+};

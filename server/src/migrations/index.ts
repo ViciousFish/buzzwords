@@ -3,6 +3,7 @@ import getConfig from "../config";
 import Models from "../datalayer/mongo/models";
 
 import Migration0 from "./0";
+import Migration1 from "./1";
 
 /**
  * To add another migration, create the subsequent <number>.ts
@@ -10,7 +11,7 @@ import Migration0 from "./0";
  * Import the function here and add it to the list below
  */
 
-const migrations = [Migration0];
+const migrations = [Migration0, Migration1];
 
 export default () => {
   return new Promise((resolve, reject) => {
