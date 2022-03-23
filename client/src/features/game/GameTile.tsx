@@ -294,7 +294,7 @@ const GameTile: React.FC<GameTileProps> = ({
           <Crown
             rotate
             scale={[2, 2, 2]}
-            position={[-1, 2, 0]}
+            position={[-1.2, 2, 0]}
             rotation={[0, 0, Math.PI / 6]}
           />
         )}
