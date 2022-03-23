@@ -93,14 +93,22 @@ app.post(config.apiPrefix + "/login/google", async (req, res) => {
     return;
   }
 
-  const state = nanoid(40);
+  const stateId = nanoid(40);
 
-  const success = await dl.setAuthTokenState(authToken, state);
+  const success = await dl.setAuthTokenState(authToken, stateId);
   if (!success) {
     res.sendStatus(500);
     return;
   }
 
+  const state = encodeURIComponent(
+    Buffer.from(
+      JSON.stringify({
+        stateId,
+        redirectUrl: req.headers.referer || "/",
+      })
+    ).toString("base64")
+  );
   res.json({
     url:
       "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&scope=profile&flowName=GeneralOAuthFlow&client_id=" +
@@ -120,7 +128,23 @@ app.get(
     failureMessage: true,
   }),
   function (req, res) {
-    res.redirect("/");
+    let redirectUrl: string;
+    try {
+      const res = JSON.parse(
+        Buffer.from(
+          decodeURIComponent(req.query.state as string),
+          "base64"
+        ).toString("utf-8")
+      );
+      redirectUrl = res.redirectUrl;
+    } catch (e) {
+      redirectUrl = "/";
+    }
+    if (typeof redirectUrl === "string") {
+      res.redirect(redirectUrl);
+    } else {
+      res.redirect("/");
+    }
   }
 );
 
@@ -157,8 +181,21 @@ if (config.googleClientId && config.googleClientSecret) {
           return;
         }
 
+        let res: any;
+        try {
+          res = JSON.parse(
+            Buffer.from(decodeURIComponent(state as string), "base64").toString(
+              "utf-8"
+            )
+          );
+        } catch (e) {
+          done("Invalid state param");
+          return;
+        }
+        const { stateId } = res;
+
         const session = await dl.createContext();
-        const authToken = await dl.getAuthTokenByState(state as string, {
+        const authToken = await dl.getAuthTokenByState(stateId as string, {
           session,
         });
         if (!authToken) {
