@@ -35,6 +35,7 @@ import { Sakura } from "../../assets/Sakura";
 import { HexOutlineSolid } from "../../assets/Hexoutlinesolid";
 import { isFullGame } from "../gamelist/gamelistSlice";
 import { willConnectToTerritory } from "buzzwords-shared/gridHelpers";
+import Crown from "../../assets/Crown";
 
 interface GameTileProps {
   position: V3Type;
@@ -164,8 +165,10 @@ const GameTile: React.FC<GameTileProps> = ({
   });
 
   const outline = game.gameOver
-    ? isPlayerIdentity && game.winner === owner
+    ? false
     : isPlayerIdentity && currentTurn === owner;
+
+  const crown = game.gameOver && isPlayerIdentity && game.winner === owner;
 
   const outlineTransition = useTransition(outline, {
     from: {
@@ -287,6 +290,14 @@ const GameTile: React.FC<GameTileProps> = ({
           1: <Sakura />,
         }[owner]}
       <group position={[0, 0, -0.2]}>
+        {crown && (
+          <Crown
+            rotate
+            scale={[2, 2, 2]}
+            position={[-1, 2, 0]}
+            rotation={[0, 0, Math.PI / 6]}
+          />
+        )}
         <HexTile orientation="flat">
           {/* @ts-ignore */}
           <a.meshStandardMaterial color={colorAndScaleSpring.color} />
