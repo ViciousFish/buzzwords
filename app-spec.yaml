@@ -1,0 +1,40 @@
+alerts:
+- rule: DEPLOYMENT_FAILED
+- rule: DOMAIN_FAILED
+name: buzzwords
+region: nyc
+static_sites:
+- dockerfile_path: client/Dockerfile
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: ViciousFish/buzzwords
+  name: buzzwords
+  output_dir: /build/client/dist
+  routes:
+  - path: /
+  source_dir: /
+domains:
+- domain: buzzwords.gg
+  type: PRIMARY
+envs:
+- key: COOKIE_DOMAIN
+  scope: RUN_AND_BUILD_TIME
+  value: buzzwords.gg
+services:
+- dockerfile_path: Dockerfile
+  envs:
+  - key: DB_TYPE
+    scope: RUN_AND_BUILD_TIME
+    value: mongo
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: ViciousFish/buzzwords
+  http_port: 8080
+  instance_count: 1
+  instance_size_slug: basic-xs
+  name: buzzwords-api
+  routes:
+  - path: /api
+  source_dir: /

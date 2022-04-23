@@ -1,4 +1,15 @@
-FROM nginx:1.21
+FROM node:16 as build
 
-COPY ./dist /usr/share/nginx/html
-COPY nginx.stack.conf /etc/nginx/conf.d/default.conf
+WORKDIR /build
+
+COPY package.json yarn.lock ./
+COPY client/package.json ./client/
+COPY shared/package.json ./shared/
+
+RUN yarn
+
+COPY client client
+
+COPY shared shared
+
+RUN cd client && yarn build

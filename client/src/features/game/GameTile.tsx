@@ -5,6 +5,7 @@ import React, {
   useState,
   useCallback,
 } from "react";
+import * as R from "ramda";
 import { Group, Mesh, Vector3 } from "three";
 import {
   ThreeEvent,
@@ -13,7 +14,7 @@ import {
   Vector3 as V3Type,
 } from "@react-three/fiber";
 import { FontLoader } from "three";
-import { useSpring, animated as a } from "@react-spring/three";
+import { useSpring, animated as a, useTransition } from "@react-spring/three";
 import { config as springConfig } from "@react-spring/core";
 
 import HexTile from "../../assets/HexTile";
@@ -25,11 +26,16 @@ import { QRCoord } from "../hexGrid/hexGrid";
 import { toggleTileSelected } from "./gameActions";
 import { GamePlayer } from "./game";
 import { Flower01 } from "../../assets/Flower01";
-import { getOrderedTileSelectionCoords, getTileSelectionInParsedHexCoords } from "./gameSelectors";
+import {
+  getHightlightedCoordsForCurrentReplayState,
+  getTileSelectionInParsedHexCoords,
+  getTilesThatWillBeResetFromCurrentPlay,
+} from "./gameSelectors";
 import { Sakura } from "../../assets/Sakura";
 import { HexOutlineSolid } from "../../assets/Hexoutlinesolid";
-
+import { isFullGame } from "../gamelist/gamelistSlice";
 import { willConnectToTerritory } from "buzzwords-shared/gridHelpers";
+import Crown from "../../assets/Crown";
 
 interface GameTileProps {
   position: V3Type;
@@ -40,19 +46,24 @@ interface GameTileProps {
   userIndex?: number;
   isCapital?: boolean;
   isPlayerIdentity?: boolean;
+  gameOver: boolean;
+  /** disable selection while submission in progress */
+  isSubmitting?: boolean;
 }
 
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
 
 const GameTile: React.FC<GameTileProps> = ({
-  letter,
+  letter: letterProp,
   coord,
   position,
-  owner,
+  owner: ownerProp,
   currentGame,
   userIndex,
-  isCapital,
+  isCapital: isCapitalProp,
   isPlayerIdentity,
+  gameOver,
+  isSubmitting,
 }) => {
   const dispatch = useAppDispatch();
   const font = useLoader(FontLoader, fredokaone);
@@ -71,43 +82,71 @@ const GameTile: React.FC<GameTileProps> = ({
     [font]
   );
 
-  const isSelected = useAppSelector((state) =>
+  const game = useAppSelector((state) => state.gamelist.games[currentGame]);
+
+  const isSelectedState = useAppSelector((state) =>
     coord ? state.game.selectedTiles[coord] : null
   );
-  const currentTurn = useAppSelector(
-    (state) => state.gamelist.games[currentGame].turn
-  );
+  const currentTurn = game.turn;
   const currentMove = useAppSelector(getTileSelectionInParsedHexCoords);
-  const grid = useAppSelector((state) =>
-    currentGame ? state.gamelist.games[currentGame].grid : null
+  const gridState = isFullGame(game) ? game.grid : null;
+  const replayMove = useAppSelector((state) => state.game.replay.move);
+  const replayProgress = useAppSelector(
+    (state) => state.game.replay.playbackState
   );
+  const replayTiles = useAppSelector(
+    getHightlightedCoordsForCurrentReplayState
+  );
+
+  const letter =
+    replayMove && coord ? replayMove.grid[coord]?.value : letterProp;
+  const owner =
+    (replayMove && coord && replayMove.grid[coord].owner) ?? ownerProp;
+  const isCapital =
+    (replayMove && coord && replayMove.grid[coord].capital) ?? isCapitalProp;
+  const selected =
+    replayMove && coord ? Boolean(replayTiles[coord]) : isSelectedState;
+  const turn = replayMove?.player ?? currentTurn;
+  const grid = replayMove?.grid ?? gridState;
+
+  const tilesThatWillBeReset = useAppSelector(
+    (state) =>
+      gridState &&
+      getTilesThatWillBeResetFromCurrentPlay(state, gridState, currentTurn)
+  );
+
+  const willBeReset =
+    tilesThatWillBeReset && coord && tilesThatWillBeReset[coord] && owner !== 2;
+
   let color = theme.colors.primary;
-  if (owner === 0) {
+  if (willBeReset) {
+    color = theme.colors.tile_selected;
+  } else if (owner === 0) {
     color = theme.colors.tile_p1;
   } else if (owner === 1) {
     color = theme.colors.tile_p2;
-  } else if (isSelected && grid && coord) {
-    const [q, r] = coord.split(',');
+  } else if (selected && grid && coord) {
+    const [q, r] = coord.split(",");
     const parsedCoord = {
       q: Number(q),
-      r: Number(r)
+      r: Number(r),
     };
+
     const willConnect = willConnectToTerritory(
       grid,
-      currentMove,
+      replayMove ? R.take(replayProgress, replayMove.coords) : currentMove,
       parsedCoord,
-      currentTurn
+      turn
     );
-    const turnColor = currentTurn === 0 ? theme.colors.tile_p1 : theme.colors.tile_p2;
+    const turnColor = turn === 0 ? theme.colors.tile_p1 : theme.colors.tile_p2;
     if (willConnect) {
-      color = turnColor
+      color = turnColor;
     } else {
-      color = theme.colors.tile_selected
+      color = theme.colors.tile_selected;
     }
-    // take color of current player and blend with base color?
   }
 
-  let scale = owner !== 2 || isSelected ? 1 : 0.9;
+  let scale = owner !== 2 || selected ? 1 : 0.9;
 
   if (isPlayerIdentity && currentTurn === owner) {
     scale = 1;
@@ -121,14 +160,26 @@ const GameTile: React.FC<GameTileProps> = ({
     color,
     config: {
       ...springConfig.stiff,
-      clamp: true
+      clamp: true,
     },
   });
 
-  const outline = isPlayerIdentity && currentTurn === owner;
+  const outline = game.gameOver
+    ? false
+    : isPlayerIdentity && currentTurn === owner;
 
-  const outlineScaleSpring = useSpring({
-    scale: outline ? [1, 1, 1] : [0, 0, 0],
+  const crown = game.gameOver && isPlayerIdentity && game.winner === owner;
+
+  const outlineTransition = useTransition(outline, {
+    from: {
+      scale: [0, 0, 0],
+    },
+    enter: {
+      scale: [1, 1, 1],
+    },
+    leave: {
+      scale: [0, 0, 0],
+    },
   });
 
   const isAnimating = useRef(false);
@@ -199,12 +250,18 @@ const GameTile: React.FC<GameTileProps> = ({
 
   const onTileClick = useCallback(
     (e: ThreeEvent<MouseEvent>) => {
-      if (coord && letter && currentTurn === userIndex) {
+      if (
+        !gameOver &&
+        coord &&
+        letter &&
+        currentTurn === userIndex &&
+        !isSubmitting
+      ) {
         dispatch(toggleTileSelected(coord));
       }
       e.stopPropagation();
     },
-    [coord, dispatch, letter, currentTurn, userIndex]
+    [coord, dispatch, letter, currentTurn, userIndex, gameOver, isSubmitting]
   );
   return (
     // @ts-ignore
@@ -217,13 +274,13 @@ const GameTile: React.FC<GameTileProps> = ({
       {/* <Html>{coord}</Html> */}
       {letter && (
         <mesh ref={characterMesh} position={[0, 0, 0.2]}>
-          <textGeometry args={[letter, fontConfig]} />
+          <textGeometry args={[letter.toUpperCase(), fontConfig]} />
           <meshStandardMaterial color={theme.colors.darkbrown} />
         </mesh>
       )}
       {prevLetter && !letter && (
         <mesh ref={characterMesh} position={[0, 0, 0.2]}>
-          <textGeometry args={[prevLetter, fontConfig]} />
+          <textGeometry args={[prevLetter.toUpperCase(), fontConfig]} />
           <meshStandardMaterial color={theme.colors.darkbrown} />
         </mesh>
       )}
@@ -233,22 +290,35 @@ const GameTile: React.FC<GameTileProps> = ({
           1: <Sakura />,
         }[owner]}
       <group position={[0, 0, -0.2]}>
+        {crown && (
+          <Crown
+            rotate
+            scale={[2, 2, 2]}
+            position={[-1.2, 2, 0]}
+            rotation={[0, 0, Math.PI / 6]}
+          />
+        )}
         <HexTile orientation="flat">
           {/* @ts-ignore */}
-          <a.meshStandardMaterial
-            color={colorAndScaleSpring.color}
-          />
+          <a.meshStandardMaterial color={colorAndScaleSpring.color} />
         </HexTile>
       </group>
       {/* @ts-ignore */}
-      <a.group {...outlineScaleSpring}>
-        {/* <HexOutline /> */}
-        <HexOutlineSolid>
-          <a.meshStandardMaterial
-            color={colorAndScaleSpring.color}
-          />
-        </HexOutlineSolid>
-      </a.group>
+      {outlineTransition(
+        (styles, item) =>
+          item && (
+            // @ts-ignore
+            <a.group {...styles}>
+              {/* <HexOutline /> */}
+              <HexOutlineSolid>
+                <a.meshStandardMaterial
+                  toneMapped={false}
+                  color={colorAndScaleSpring.color}
+                />
+              </HexOutlineSolid>
+            </a.group>
+          )
+      )}
     </a.group>
   );
 };

@@ -35,28 +35,27 @@ const SidebarRightSide: React.FC = ({ children }) => {
     leave: { opacity: 0 },
   });
 
+// CQx: ScreenHeightWrapper?
   return (
-    <ScreenHeightWraper className="w-full">
-      <div
-        className={classNames(
-          "flex-auto overflow-auto h-full",
-          breakcond && "min-w-[100vw]"
-        )}
-      >
-        {children}
-        {transitions(
-          (styles, value) =>
-            value && (
-              <a.div
-                className="absolute top-0 right-0 bottom-0 left-0 bg-black"
-                onClick={onClick}
-                // @ts-ignore
-                style={styles}
-              ></a.div>
-            )
-        )}
-      </div>
-    </ScreenHeightWraper>
+    <div
+      className={classNames(
+        "flex-auto overflow-auto h-full",
+        breakcond && "min-w-[100vw]"
+      )}
+    >
+      {children}
+      {transitions(
+        (styles, value) =>
+          value && (
+            <a.div
+              className="fixed top-[50px] right-0 h-full left-0 bg-black"
+              onClick={onClick}
+              // @ts-ignore
+              style={styles}
+            ></a.div>
+          )
+      )}
+    </div>
   );
 };
 

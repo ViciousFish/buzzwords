@@ -1,6 +1,11 @@
+import * as R from "ramda";
+
 import Game from "buzzwords-shared/Game";
 import { HexCoord } from "buzzwords-shared/types";
-import { getCellsToBeReset, willBecomeOwned } from "buzzwords-shared/gridHelpers";
+import {
+  getCellsToBeReset,
+  willBecomeOwned,
+} from "buzzwords-shared/gridHelpers";
 import { isValidWord } from "buzzwords-shared/alphaHelpers";
 import { nanoid } from "nanoid";
 import HexGrid, {
@@ -8,10 +13,11 @@ import HexGrid, {
   getCell,
   getCellNeighbors,
   setCell,
-  randomizeCellValue,
+  getNewCellValues,
 } from "buzzwords-shared/hexgrid";
 
-export const errors = {};
+import { WordsObject, wordsBySortedLetters } from "./words";
+import Cell from "buzzwords-shared/cell";
 
 export default class GameManager {
   game: Game | null;
@@ -19,9 +25,82 @@ export default class GameManager {
     this.game = game;
   }
 
-  makeMove(userId: string, move: HexCoord[]): Game {
-    console.log("move :", move);
+  pass(userId: string): Game {
+    if (!this.game) {
+      throw new Error("Game Manager has no game!");
+    }
+    if (!this.game.users.includes(userId)) {
+      throw new Error("Not your game");
+    }
+    if (this.game.gameOver) {
+      throw new Error("Game is over");
+    }
+    const turnUser = this.game.users[this.game.turn];
+    if (userId != turnUser) {
+      throw new Error("Not your turn");
+    }
+    if (this.game.users.length != 2) {
+      throw new Error("Need another player");
+    }
 
+    let opponentHasCapital = false;
+    const opponentCells = [];
+    for (const cell of Object.values(this.game.grid)) {
+      if (cell.owner == Number(!this.game.turn)) {
+        opponentCells.push(cell);
+        if (cell.capital) {
+          opponentHasCapital = true;
+        }
+      }
+    }
+
+    if (!opponentHasCapital) {
+      const newCapital =
+        opponentCells[Math.floor(Math.random() * opponentCells.length)];
+      newCapital.capital = true;
+      setCell(this.game.grid, newCapital);
+    }
+
+    this.game.moves.push({
+      coords: [],
+      grid: this.game.grid,
+      letters: [],
+      player: this.game.turn,
+      pass: true,
+    });
+    const nextTurn = Number(!this.game.turn) as 0 | 1;
+    this.game.turn = nextTurn;
+    return this.game;
+  }
+
+  forfeit(userId: string): Game {
+    if (!this.game) {
+      throw new Error("Game Manager has no game!");
+    }
+    if (!this.game.users.includes(userId)) {
+      throw new Error("Not your game");
+    }
+    if (this.game.gameOver) {
+      throw new Error("Game is over");
+    }
+    if (this.game.users.length != 2) {
+      throw new Error("Need another player");
+    }
+
+    const idx = this.game.users.indexOf(userId) as 0 | 1;
+    this.game.winner = Number(!idx) as 0 | 1;
+    this.game.gameOver = true;
+    this.game.moves.push({
+      coords: [],
+      grid: this.game.grid,
+      letters: [],
+      player: idx,
+      forfeit: true,
+    });
+    return this.game;
+  }
+
+  makeMove(userId: string, move: HexCoord[]): Game {
     if (!this.game) {
       throw new Error("Game Manager has no game!");
     }
@@ -53,18 +132,31 @@ export default class GameManager {
       }
     }
     console.log("move received word", word);
-    if (!isValidWord(word)) {
+    if (!isValidWord(word, WordsObject)) {
       console.log("word invalid", word);
       throw new Error("Not a valid word");
     }
 
+    const gridCopy: { [coord: string]: Cell } = {};
+    Object.keys(this.game.grid).forEach((key) => {
+      const cell = this.game && this.game.grid[key];
+      if (cell) {
+        gridCopy[key] = R.omit(["_id"], cell);
+      }
+    });
+
     const gameMove = {
+      grid: gridCopy,
       coords: move,
       letters: move.map(
         (m) => getCell(this.game?.grid as HexGrid, m.q, m.r)?.value ?? ""
       ),
       player: this.game.turn,
+      date: new Date(),
+      shuffle: false,
     };
+
+    const turn = this.game.turn;
 
     let capitalCaptured = false;
 
@@ -77,15 +169,7 @@ export default class GameManager {
     // change whose turn it is
     const toBecomeOwned = willBecomeOwned(this.game.grid, move, this.game.turn);
 
-    for (const tile of resetTiles) {
-      tile.owner = 2;
-      if (tile.capital) {
-        capitalCaptured = true;
-        tile.capital = false;
-      }
-      this.game.grid = randomizeCellValue(this.game.grid, tile.q, tile.r);
-      setCell(this.game.grid, tile);
-    }
+    const toBeReset = R.difference(resetTiles, toBecomeOwned);
 
     for (const cell of toBecomeOwned) {
       cell.owner = this.game.turn;
@@ -94,6 +178,80 @@ export default class GameManager {
       }
 
       setCell(this.game.grid, cell);
+    }
+    const keys = R.difference(
+      R.difference(
+        Object.keys(this.game.grid),
+        toBeReset.map((cell) => `${cell.q},${cell.r}`)
+      ),
+      toBecomeOwned.map((cell) => `${cell.q},${cell.r}`)
+    );
+    const grid = this.game.grid;
+    const letters = keys.map((k) => grid[k].value).filter(Boolean);
+
+    const opponentKeys = Object.entries(this.game.grid)
+      .filter(([k, c]) => c.owner == Number(!turn))
+      .map(([k, c]) => k);
+
+    const gameOver =
+      R.difference(
+        opponentKeys,
+        [...toBeReset, ...toBecomeOwned].map((c) => `${c.q},${c.r}`)
+      ).length === 0;
+
+    if (!gameOver) {
+      try {
+        const newCellValues = getNewCellValues(
+          letters,
+          toBeReset.length,
+          WordsObject
+        );
+        for (let i = 0; i < toBeReset.length; i++) {
+          const tile = toBeReset[i];
+          tile.owner = 2;
+          if (tile.capital) {
+            capitalCaptured = true;
+            tile.capital = false;
+          }
+          tile.value = newCellValues[i];
+          setCell(this.game.grid, tile);
+        }
+      } catch (e) {
+        // No possible combinations. Need to regenerate the whole board!!
+        console.log("No valid letter combinations. Shuffling board...");
+        const newLetterCount = letters.length + toBeReset.length;
+        const newCellValues = getNewCellValues([], newLetterCount, WordsObject);
+        for (const tile of keys
+          .map((k) => grid[k])
+          .filter((k) => Boolean(k.value))) {
+          tile.owner = 2;
+          tile.value = newCellValues[0];
+          newCellValues.splice(0, 1);
+          setCell(this.game.grid, tile);
+        }
+        for (const tile of toBeReset) {
+          tile.owner = 2;
+          if (tile.capital) {
+            capitalCaptured = true;
+            tile.capital = false;
+          }
+          tile.value = newCellValues[0];
+          newCellValues.splice(0, 1);
+          setCell(this.game.grid, tile);
+        }
+        gameMove.shuffle = true;
+      }
+      this.game.moves.push(gameMove);
+    } else {
+      for (const c of toBeReset) {
+        c.value = "";
+        c.owner = 2;
+        setCell(this.game.grid, c);
+      }
+      this.game.moves.push(gameMove);
+      this.game.gameOver = true;
+      this.game.winner = this.game.turn;
+      return this.game;
     }
 
     for (const cell of Object.values(this.game.grid)) {
@@ -115,14 +273,9 @@ export default class GameManager {
         opponentCells.push(cell);
         if (cell.capital) {
           opponentHasCapital = true;
+          break;
         }
       }
-    }
-    // GAME OVER
-    if (opponentCells.length == 0) {
-      this.game.gameOver = true;
-      this.game.winner = this.game.turn;
-      return this.game;
     }
 
     // If opponent has no capital at the end of your turn
@@ -139,7 +292,6 @@ export default class GameManager {
       ? this.game.turn
       : (Number(!this.game.turn) as 0 | 1);
     this.game.turn = nextTurn;
-    this.game.moves.push(gameMove);
     return this.game;
   }
 
@@ -152,20 +304,26 @@ export default class GameManager {
       gameOver: false,
       winner: null,
       moves: [],
+      vsAI: false,
+      difficulty: 1,
+      deleted: false,
     };
+    const neighbors = [
+      ...getCellNeighbors(game.grid, -2, -1),
+      ...getCellNeighbors(game.grid, 2, 1),
+    ];
+    const newValues = getNewCellValues([], 12, WordsObject);
+    let i = 0;
+    for (const cell of neighbors) {
+      cell.value = newValues[i];
+      i++;
+      game.grid = setCell(game.grid, cell);
+    }
     game.grid["-2,-1"].capital = true;
     game.grid["-2,-1"].owner = 0;
-    let neighbors = getCellNeighbors(game.grid, -2, -1);
-    for (const cell of neighbors) {
-      game.grid = randomizeCellValue(game.grid, cell.q, cell.r);
-    }
-
     game.grid["2,1"].capital = true;
     game.grid["2,1"].owner = 1;
-    neighbors = getCellNeighbors(game.grid, 2, 1);
-    for (const cell of neighbors) {
-      game.grid = randomizeCellValue(game.grid, cell.q, cell.r);
-    }
+
     this.game = game;
     return game;
   }

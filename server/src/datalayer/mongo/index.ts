@@ -1,10 +1,12 @@
 import mongoose, { ClientSession } from "mongoose";
 import getConfig from "../../config";
 
-import { DataLayer } from "../../types";
+import { AuthToken, DataLayer, User } from "../../types";
 import { withRetry } from "../../util";
 import Game from "buzzwords-shared/Game";
 import Models from "./models";
+
+import { performance } from "perf_hooks";
 
 interface Options extends Record<string, unknown> {
   session?: ClientSession;
@@ -44,30 +46,420 @@ export default class Mongo implements DataLayer {
     }
   }
 
-  async getGamesByUserId(id: string, options: Options): Promise<Game[]> {
+  async createUser(id: string, options?: Options): Promise<User> {
     if (!this.connected) {
       throw new Error("Db not connected");
     }
     try {
-      const res = await Models.Game.find(
+      const res = await Models.User.create(
+        [
+          {
+            id,
+          },
+        ],
         {
-          users: id,
+          session: options?.session,
+        }
+      );
+      return res[0].toObject();
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async deleteUser(id: string, options?: Options): Promise<boolean> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res = await Models.User.deleteOne(
+        {
+          id,
+        },
+        {
+          session: options?.session,
+        }
+      );
+      return res.deletedCount === 1;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async createAuthToken(
+    token: string,
+    userId: string,
+    options?: Options
+  ): Promise<boolean> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res = await Models.AuthToken.create(
+        [
+          {
+            token,
+            userId,
+          },
+        ],
+        {
+          session: options?.session,
+        }
+      );
+      return true;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async deleteAuthToken(token: string, options?: Options): Promise<boolean> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res = await Models.AuthToken.updateOne(
+        {
+          token,
+        },
+        {
+          deleted: true,
+        },
+        {
+          session: options?.session,
+        }
+      );
+      return true;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async setAuthTokenState(
+    token: string,
+    state: string,
+    options?: Options
+  ): Promise<boolean> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res = await Models.AuthToken.findOneAndUpdate(
+        {
+          token,
+        },
+        {
+          state,
+        },
+        {
+          session: options?.session,
+        }
+      );
+      return true;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async getAuthTokenByState(
+    state: string,
+    options?: Options
+  ): Promise<AuthToken | null> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res = await Models.AuthToken.findOne(
+        {
+          state,
         },
         null,
         {
           session: options?.session,
         }
       );
-      return res.map((d) => {
-        const game = d?.toObject();
-        // @ts-expect-error I promise this works
-        game.grid = Object.fromEntries(game.grid);
-        game.grid = Object.fromEntries(
-          // @ts-expect-error This also works
-          Object.entries(game.grid).map(([k, v]) => [k, v.toObject()])
-        );
-        return game;
-      });
+      return res ? res?.toObject() : null;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async assumeUser(
+    assumeeId: string,
+    assumerId: string,
+    options?: Options
+  ): Promise<boolean> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      await Models.Game.updateMany(
+        {
+          users: assumeeId,
+        },
+        {
+          $set: {
+            "users.$[element]": assumerId,
+          },
+        },
+        {
+          arrayFilters: [
+            {
+              element: {
+                $eq: assumeeId,
+              },
+            },
+          ],
+          session: options?.session,
+        }
+      );
+
+      await Models.AuthToken.updateMany(
+        {
+          userId: assumeeId,
+        },
+        {
+          userId: assumerId,
+        },
+        {
+          session: options?.session,
+        }
+      );
+      return true;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async getUserIdByAuthToken(
+    token: string,
+    options?: Options
+  ): Promise<string | null> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res = await Models.AuthToken.findOne(
+        {
+          token,
+          $or: [
+            {
+              deleted: false,
+            },
+            {
+              deleted: {
+                $exists: false,
+              },
+            },
+          ],
+        },
+        null,
+        {
+          session: options?.session,
+        }
+      );
+      if (!res) {
+        return null;
+      }
+
+      return res?.toObject()?.userId;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async getUserById(id: string, options?: Options): Promise<User | null> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res: any = await Models.User.findOne(
+        {
+          id,
+        },
+        null,
+        {
+          session: options?.session,
+        }
+      );
+      if (!res) {
+        return null;
+      }
+      return res.toObject();
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async getUserByGoogleId(
+    googleId: string,
+    options?: Options
+  ): Promise<User | null> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res: any = await Models.User.findOne(
+        {
+          googleId,
+        },
+        null,
+        {
+          session: options?.session,
+        }
+      );
+      if (!res) {
+        return null;
+      }
+      return res.toObject();
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async setUserGoogleId(
+    id: string,
+    googleId: string,
+    options: Options
+  ): Promise<boolean> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res: any = await Models.User.updateOne(
+        {
+          id,
+        },
+        {
+          id,
+          googleId,
+        },
+        {
+          session: options?.session,
+          upsert: true,
+        }
+      );
+      return res.modifiedCount == 1 || res.upsertedCount == 1;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async setNickName(
+    id: string,
+    nickname: string,
+    options: Options
+  ): Promise<boolean> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res: any = await Models.User.updateOne(
+        {
+          id,
+        },
+        {
+          id,
+          nickname,
+        },
+        {
+          session: options?.session,
+          upsert: true,
+        }
+      );
+      return res.modifiedCount == 1 || res.upsertedCount == 1;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async getNickName(id: string, options: Options): Promise<string | null> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res: any = await Models.User.findOne(
+        {
+          id,
+        },
+        null,
+        {
+          session: options?.session,
+        }
+      );
+      if (!res) {
+        return null;
+      }
+      return res.toObject().nickname;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async getNickNames(
+    ids: string[],
+    options: Options
+  ): Promise<{ [key: string]: string | null }> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const res = await Models.User.find(
+        {
+          id: {
+            $in: ids,
+          },
+        },
+        null,
+        {
+          session: options?.session,
+        }
+      );
+      const nicknames: { [key: string]: string | null } = {};
+      for (const user of res) {
+        nicknames[user.id] = user.nickname || null;
+      }
+      return nicknames;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async getGamesByUserId(id: string, options: Options): Promise<Game[]> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      const qstart = performance.now();
+      const res = await Models.Game.find(
+        {
+          users: id,
+          deleted: false,
+        },
+        {
+          grid: 0,
+          moves: 0,
+        },
+        {
+          session: options?.session,
+          lean: true,
+        }
+      );
+      console.log("[perf] refresh query took", performance.now() - qstart);
+      return res;
     } catch (e) {
       console.log(e);
       throw e;
@@ -90,12 +482,7 @@ export default class Mongo implements DataLayer {
       if (!res) {
         return null;
       }
-      const game = res.toObject();
-      game.grid = Object.fromEntries(game.grid);
-      game.grid = Object.fromEntries(
-        // @ts-expect-error This also works
-        Object.entries(game.grid).map(([k, v]) => [k, v.toObject()])
-      );
+      const game = res.toObject({ flattenMaps: true });
       return game;
     } catch (e) {
       console.log(e);
@@ -121,6 +508,7 @@ export default class Mongo implements DataLayer {
         },
         {
           $push: { users: userId },
+          $set: { updatedDate: new Date() },
         },
         {
           session: options?.session,
@@ -146,6 +534,7 @@ export default class Mongo implements DataLayer {
         },
         {
           $push: { users: userId },
+          $set: { updatedDate: new Date() },
         },
         {
           session: options?.session,
@@ -165,12 +554,12 @@ export default class Mongo implements DataLayer {
     if (!this.connected) {
       return false;
     }
+    game.updatedDate = new Date();
     try {
       const res = await Models.Game.updateOne({ id: gameId }, game, {
         upsert: true,
         session: options?.session,
       });
-      console.log(res);
       return true;
     } catch (e) {
       console.log(e);

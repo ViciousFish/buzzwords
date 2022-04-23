@@ -1,12 +1,22 @@
+import { nanoid } from "@reduxjs/toolkit";
+
+import { Api } from "../../app/Api";
 import { getApiUrl } from "../../app/apiPrefix";
 import { emitSelection } from "../../app/socket";
 import { AppThunk } from "../../app/store";
+import { markGameAsSeen } from "../gamelist/gamelistActions";
 import { QRCoord } from "../hexGrid/hexGrid";
 import { getOrderedTileSelectionCoords } from "./gameSelectors";
 import {
+  advanceReplayPlaybackState,
+  backspaceSelection,
+  clearReplay,
+  newReplay,
   resetSelection,
   selectTile,
   setSelection,
+  setWindowHasFocus,
+  toggleNudgeButton,
   unselectTile,
 } from "./gameSlice";
 // import { getEmptyGame } from "./game";
@@ -38,6 +48,12 @@ export const clearTileSelection = (): AppThunk => (dispatch, getState) => {
   emitSelection({}, currentGame);
 };
 
+export const backspaceTileSelection = (): AppThunk => (dispatch, getState) => {
+  dispatch(backspaceSelection());
+  const { currentGame, selectedTiles } = getState().game;
+  emitSelection(selectedTiles, currentGame);
+}
+
 export const submitMove =
   (gameId: string): AppThunk =>
   async (dispatch, getState) => {
@@ -51,29 +67,18 @@ export const submitMove =
         r: Number(r),
       };
     });
-    console.log("formattedCoords :", formattedCoords);
 
     try {
-      const res = await fetch(getApiUrl('game', gameId, 'move'), {
-        credentials: "include",
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          move: formattedCoords,
-        }),
-      }).then((res) => res.json());
-
-      // const newGame: Game = {
-      //   ...res,
-      //   grid: res.grid.cellMap,
-      // };
-
-      // handled by socket msg now
-      // dispatch(updateGame(newGame));
-      // dispatch(resetSelection());
+      await Api.post(getApiUrl("/game", gameId, "/move"), {
+        move: formattedCoords,
+      });
     } catch (e) {
-      console.log(e);
+      throw e.response?.data ?? e.toString();
     }
+
+    // handled by socket msg now
+    // dispatch(updateGame(newGame));
+    // dispatch(resetSelection());
   };
 
 export const receiveSelectionSocket =
@@ -94,5 +99,98 @@ export const receiveSelectionSocket =
       : null;
     if (currentGame === gameId && currentUserIndex !== turn) {
       dispatch(setSelection(selection));
+    }
+  };
+
+const REPLAY_DELAY = 2000;
+const REPLAY_SPEED = 500;
+const REPLAY_HANG = 2000;
+
+export const initiateReplay =
+  (moveIndex: number, skipInitialDelay?: boolean): AppThunk<Promise<void>> =>
+  async (dispatch, getState) => {
+    const currentGame = getState().game.currentGame;
+    if (!currentGame) {
+      console.error("can't init replay on null game");
+      return;
+    }
+    const move = getState().gamelist.games[currentGame].moves[moveIndex];
+    const poison = nanoid();
+    const delay = skipInitialDelay ? 0 : REPLAY_DELAY;
+
+    dispatch(newReplay({ move, poison, index: moveIndex }));
+    
+    const ticks = move.letters.length;
+    for (let tick = 0; tick < ticks; tick++) {
+      window.setTimeout(() => {
+        if (
+          getState().game.replay.poisonToken === poison &&
+          getState().game.currentGame === currentGame
+        ) {
+          dispatch(advanceReplayPlaybackState());
+        }
+      }, delay + tick * REPLAY_SPEED);
+    }
+    await new Promise<void>((resolve) =>
+      setTimeout(() => {
+        if (
+          getState().game.replay.poisonToken === poison &&
+          getState().game.currentGame === currentGame
+        ) {
+          const nextMove =
+            getState().gamelist.games[currentGame].moves[moveIndex + 1];
+          if (nextMove) {
+            dispatch(newReplay({ move: nextMove, poison, index: moveIndex }));
+            setTimeout(() => {
+              dispatch(clearReplay());
+              resolve();
+            }, REPLAY_HANG);
+          } else {
+            dispatch(clearReplay());
+            resolve();
+          }
+        }
+      }, delay + ticks * REPLAY_SPEED + REPLAY_SPEED)
+    );
+  };
+
+export const handleWindowFocusThunk =
+  (focus: boolean): AppThunk =>
+  (dispatch, getState) => {
+    const state = getState();
+    if (focus && state.game.currentGame) {
+      dispatch(markGameAsSeen(state.game.currentGame));
+    }
+    dispatch(setWindowHasFocus(focus));
+  };
+
+export const maybeShowNudge =
+  (gameId: string, turnNumber: number): AppThunk =>
+  (dispatch, getState) => {
+    const state = getState();
+    const game = state.gamelist.games[gameId];
+    if (
+      state.game.currentGame === gameId &&
+      game &&
+      game.turn === 1 &&
+      game.moves.length === turnNumber &&
+      !game.gameOver
+    ) {
+      dispatch(toggleNudgeButton(true));
+    }
+  };
+
+export const nudgeGameById =
+  (id: string): AppThunk =>
+  async (dispatch, getState) => {
+    const state = getState();
+    const turnNumber = state.gamelist.games[id]?.moves.length;
+    try {
+      await Api.post(getApiUrl("/game", id, "/nudge"));
+      setTimeout(() => {
+        dispatch(maybeShowNudge(id, turnNumber));
+      }, 2500);
+    } catch (e) {
+      throw e.response?.data ?? e.toString();
     }
   };

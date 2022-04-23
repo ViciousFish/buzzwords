@@ -1,12 +1,18 @@
 import { io, Socket } from "socket.io-client";
+import { toast } from "react-toastify";
 
 import { receiveSelectionSocket } from "../features/game/gameActions";
-import { resetSelection } from "../features/game/gameSlice";
 import Game from "buzzwords-shared/Game";
-import { updateGame } from "../features/gamelist/gamelistSlice";
 import { QRCoord } from "../features/hexGrid/hexGrid";
 import { AppDispatch } from "./store";
-import { socketUrl } from "./apiPrefix";
+import { maybeOpponentNicknameUpdated } from "../features/user/userSlice";
+import {
+  receiveGameUpdatedSocket,
+  refreshActiveGames,
+} from "../features/gamelist/gamelistActions";
+import { SOCKET_DOMAIN, SOCKET_PATH } from "./apiPrefix";
+import { setSocketConnected } from "../features/game/gameSlice";
+import { retrieveAuthToken } from "../features/user/userActions";
 
 let socket: Socket | null = null;
 
@@ -17,19 +23,39 @@ interface SelectionEventProps {
 
 // called by getUser
 export const subscribeSocket = (dispatch: AppDispatch) => {
-  socket = io(socketUrl);
+  socket = io(SOCKET_DOMAIN, {
+    path: SOCKET_PATH,
+    extraHeaders: {
+      Authorization: `Bearer ${retrieveAuthToken()}`,
+    },
+  });
+  socket.io.on("close", () => {
+    dispatch(setSocketConnected(false))
+  });
+
+  socket.io.on('open', () => {
+    dispatch(setSocketConnected(true))
+  })
+
+  socket.io.on("reconnect", () => {
+    dispatch(refreshActiveGames());
+    dispatch(setSocketConnected(true))
+  });
+
+  socket.on("error", (e) => {
+    toast("error: " + e, {
+      type: "error",
+    });
+  });
   socket.on("game updated", (game: Game) => {
-    dispatch(
-      updateGame({
-        ...game,
-        grid: game.grid,
-      })
-    );
-    dispatch(resetSelection()); // clear selection
+    dispatch(receiveGameUpdatedSocket(game));
   });
   socket.on("selection", ({ gameId, selection }: SelectionEventProps) => {
     console.log("selection", selection);
     dispatch(receiveSelectionSocket(selection, gameId));
+  });
+  socket.on("nickname updated", (data: { id: string; nickname: string }) => {
+    dispatch(maybeOpponentNicknameUpdated(data));
   });
 };
 
@@ -38,7 +64,7 @@ export const emitSelection = (
   gameId
 ) => {
   if (!socket) {
-    console.error('cannot emit: no socket!');
+    console.error("cannot emit: no socket!");
     return;
   }
   console.log("emitting selection on game", gameId);

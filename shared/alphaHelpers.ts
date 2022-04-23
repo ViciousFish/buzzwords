@@ -1,7 +1,8 @@
-import WordsJSON from "./words.json";
+import * as R from "ramda";
 
-const words = Object.keys(WordsJSON);
-const letters = [
+import { combinationN } from "./utils";
+
+export const letters = [
   "a",
   "b",
   "c",
@@ -36,6 +37,8 @@ const probabilities = [
   5.7351, 6.9509, 3.6308, 1.0074, 1.2899, 0.2902, 1.7779, 0.2722,
 ].map((p) => p / 100);
 
+const cdfObj = R.zipObj(letters, probabilities);
+
 let cdfArray: number[] = [];
 
 let total = 0;
@@ -46,23 +49,88 @@ for (let p of probabilities) {
 
 cdfArray = cdfArray.map((p) => Math.round(p * 100000) / 100000);
 
-export const isValidWord = (word: string): boolean => {
-  if (word.length < 3 || !words.includes(word.toLowerCase())) {
+export const normalize = (
+  num: number,
+  fromMin: number,
+  fromMax: number,
+  toMin: number,
+  toMax: number
+) => {
+  return toMin + ((num - fromMin) / (fromMax - fromMin)) * (toMax - toMin);
+};
+
+export const isValidWord = (
+  word: string,
+  words: {
+    [key: string]: number;
+  }
+): boolean => {
+  if (word.length < 3 || !Boolean(words[word.toLowerCase()])) {
     return false;
   }
 
   return true;
 };
 
-export const getRandomCharacter = (): string => {
+export const getRandomCharacter = (omit?: string[]): string => {
   let n = Math.random();
+  const cdf = R.clone(cdfObj);
+  if (omit && omit.length) {
+    let total = 0;
+    for (let letter of omit) {
+      total += cdf[letter];
+      delete cdf[letter];
+    }
+    n = normalize(n, 0, 1, 0, 1 - total);
+  }
+  const letterArr = Object.keys(cdf);
+  const probArr = Object.values(cdf);
+  let cdfArray: number[] = [];
+
+  let total = 0;
+  for (let p of probArr) {
+    total += p;
+    cdfArray.push(total);
+  }
+
+  cdfArray = cdfArray.map((p) => Math.round(p * 100000) / 100000);
   if (n > 0 && n < cdfArray[0]) {
-    return letters[0];
+    return letterArr[0];
   }
   for (let i = 0; i < cdfArray.length - 1; i++) {
     if (n > cdfArray[i] && n < cdfArray[i + 1]) {
-      return letters[i + 1];
+      return letterArr[i + 1];
     }
   }
-  return letters[letters.length - 1];
+  return letterArr[letterArr.length - 1];
+};
+
+const vowels = ["a", "e", "i", "o", "u", "y"];
+
+export const hasAVowel = (letters: string[]): boolean =>
+  Boolean(letters.map((l) => vowels.includes(l)).filter(Boolean).length);
+
+export const hasTwoConsonants = (letters: string[]): boolean =>
+  letters.map((l) => !vowels.includes(l)).filter(Boolean).length >= 2;
+
+export const getMaxRepeatedLetter = (letters: string[]): number => {
+  // @ts-expect-error don't really know but it works
+  return R.pipe(R.countBy(R.identity), R.values, R.apply(Math.max))(letters);
+};
+
+export const canMakeAValidWord = (
+  letters: string[],
+  wordsBySortedLetters: {
+    [key: string]: number;
+  }
+): boolean => {
+  for (let i = 3; i <= letters.length; i++) {
+    for (let c of combinationN(letters, i)) {
+      const sorted = R.sort(R.descend(R.identity), c);
+      if (wordsBySortedLetters[sorted.join("")]) {
+        return true;
+      }
+    }
+  }
+  return false;
 };

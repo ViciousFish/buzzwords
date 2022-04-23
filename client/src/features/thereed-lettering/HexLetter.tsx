@@ -25,11 +25,19 @@ interface HexLetterProps {
   position: V3Type;
   letter: string;
   index?: number;
+  color?: string;
+  autoSpin?: boolean;
 }
 
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
 
-const HexLetter: React.FC<HexLetterProps> = ({ letter, index, ...props }) => {
+const HexLetter: React.FC<HexLetterProps> = ({
+  letter,
+  index,
+  color,
+  autoSpin,
+  ...props
+}) => {
   const viewport = useThree(({ viewport }) => viewport);
   const size = useThree(({ size }) => size);
   const aspect = size.width / viewport.getCurrentViewport().width;
@@ -77,7 +85,6 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, index, ...props }) => {
 
   useEffect(() => {
     if (index !== undefined) {
-      console.log("here", index);
       rotateSpringApi.set({
         x: Math.PI * 2,
         y: 0,
@@ -91,23 +98,25 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, index, ...props }) => {
         isAnimating.current = true;
       }, index * 80 + 300);
     }
-    let timer = Math.random() * 8000 + 2000;
-    setTimeout(() => {
-      isAnimating.current = true;
-      rotateSpringApi.start({
-        x: Math.PI * 2,
-        y: 0,
-      });
-    }, timer);
-    timer += Math.random() * 5000 + 200;
-    setTimeout(() => {
-      isAnimating.current = true;
-      rotateSpringApi.start({
-        x: 0,
-        y: 0,
-      });
-    }, timer);
-  }, [rotateSpringApi, index]);
+    if (autoSpin) {
+      let timer = Math.random() * 8000 + 2000;
+      setTimeout(() => {
+        isAnimating.current = true;
+        rotateSpringApi.start({
+          x: Math.PI * 2,
+          y: 0,
+        });
+      }, timer);
+      timer += Math.random() * 5000 + 200;
+      setTimeout(() => {
+        isAnimating.current = true;
+        rotateSpringApi.start({
+          x: 0,
+          y: 0,
+        });
+      }, timer);
+    }
+  }, [rotateSpringApi, index, autoSpin]);
 
   const bind = useGesture({
     onDrag: ({ down, movement: [mx, my] }) => {
@@ -147,7 +156,7 @@ const HexLetter: React.FC<HexLetterProps> = ({ letter, index, ...props }) => {
       </mesh>
       <group position={[0, 0, -0.2]}>
         {/* @ts-ignore */}
-        <HexTile orientation="pointy" {...bind()} />
+        <HexTile color={color} orientation="pointy" {...bind()} />
       </group>
     </a.group>
   );

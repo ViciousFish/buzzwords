@@ -9,28 +9,30 @@ export default ({ command, mode }) => {
       proxy: {
         "/api": {
           target: "http://localhost:8080",
+          ws: true,
         },
         "/socket.io": {
           target: "http://localhost:8080",
+          ws: true,
         },
       },
     },
     plugins: [
-      {
-        name: "replace-code",
-        transform(code, id) {
-          if (!/nbind/.test(id)) return;
-          console.log("replace code");
-          code = code.replace(
-            "_a = _typeModule(_typeModule),",
-            "var _a = _typeModule(_typeModule);"
-          );
-          return {
-            code,
-            map: { mappings: "" },
-          };
-        },
-      },
+      // {
+      //   name: "replace-code",
+      //   transform(code, id) {
+      //     if (!/nbind/.test(id)) return;
+      //     console.log("replace code");
+      //     code = code.replace(
+      //       "_a = _typeModule(_typeModule),",
+      //       "var _a = _typeModule(_typeModule);"
+      //     );
+      //     return {
+      //       code,
+      //       map: { mappings: "" },
+      //     };
+      //   },
+      // },
       reactRefresh(),
     ],
     build: {

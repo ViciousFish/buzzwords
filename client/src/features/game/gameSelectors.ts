@@ -1,9 +1,12 @@
 import { createSelector } from "@reduxjs/toolkit";
 import * as R from "ramda";
 import { HexCoord } from "buzzwords-shared/types";
+import HexGrid from "buzzwords-shared/hexgrid";
 
 import { RootState } from "../../app/store";
 import { QRCoord } from "../hexGrid/hexGrid";
+import { getCellsToBeReset } from "buzzwords-shared/gridHelpers";
+import Cell from "buzzwords-shared/cell";
 
 export const getOrderedTileSelectionCoords = createSelector(
   (state: RootState) => state.game.selectedTiles,
@@ -17,15 +20,15 @@ export const getOrderedTileSelectionCoords = createSelector(
 export const getTileSelectionInParsedHexCoords = createSelector(
   getOrderedTileSelectionCoords,
   (selectedTiles) => {
-    return selectedTiles.map(qr => {
-      const [q, r] = qr.split(',')
+    return selectedTiles.map((qr) => {
+      const [q, r] = qr.split(",");
       return {
         q: Number(q),
-        r: Number(r)
-      } as HexCoord
-    })
+        r: Number(r),
+      } as HexCoord;
+    });
   }
-)
+);
 
 export const getGridByGameId = createSelector(
   (state: RootState) => state.gamelist.games,
@@ -40,12 +43,6 @@ export interface willTileTouchTerritoryParams {
   gameId: string;
 }
 
-export const willTileTouchTerritory = createSelector(
-  getOrderedTileSelectionCoords,
-  (_, touchParams: willTileTouchTerritoryParams) => touchParams,
-  () => {}
-)
-
 export const getSelectedWordByGameId = createSelector(
   getOrderedTileSelectionCoords,
   getGridByGameId,
@@ -55,5 +52,41 @@ export const getSelectedWordByGameId = createSelector(
     }
     const letters = tileCoordinates.map((coord) => grid[coord].value);
     return letters.join("").toUpperCase();
+  }
+);
+
+export const getReplayState = (state: RootState) => state.game.replay;
+
+export const getHightlightedCoordsForCurrentReplayState = createSelector(
+  getReplayState,
+  ({ move, playbackState }) => {
+    if (!move) {
+      return {};
+    }
+    const tiles: { [index: QRCoord]: boolean } = R.pipe(
+      R.take(playbackState),
+      R.map(({ q, r }): [QRCoord, boolean] => [`${q},${r}`, true]),
+      R.fromPairs
+    )(move.coords);
+    return tiles;
+  }
+);
+
+export const getTilesThatWillBeResetFromCurrentPlay = createSelector(
+  [
+    getTileSelectionInParsedHexCoords,
+    (state: RootState) => state.game.replay.move,
+    getReplayState,
+    (_state, currentGrid: HexGrid) => currentGrid,
+    (_state, _currentGrid, currentTurn: 0 | 1) => currentTurn,
+  ],
+  (_selection, replayMove, { playbackState }, _currentGrid, _currentTurn) => {
+    const selection = replayMove
+      ? R.take(playbackState, replayMove.coords)
+      : _selection;
+    const grid = replayMove ? replayMove.grid : _currentGrid;
+    const turn = replayMove ? replayMove.player : _currentTurn;
+    const cellsToBeReset = getCellsToBeReset(grid, selection, turn);
+    return R.groupBy((cell: Cell) => `${cell.q},${cell.r}`, cellsToBeReset);
   }
 );

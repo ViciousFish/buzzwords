@@ -1,0 +1,58 @@
+name: Docker image
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  check:
+    name: Check files
+    outputs:
+      run_job: ${{ steps.check_files.outputs.run_job }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+
+      - name: check modified files
+        id: check_files
+        run: |
+          echo "=============== list modified files ==============="
+          git diff --name-only HEAD^ HEAD
+          
+          echo "========== check paths of modified files =========="
+          git diff --name-only HEAD^ HEAD > files.txt
+          while IFS= read -r file
+          do
+            echo $file
+            if [[ $file != client/* ]]; then
+              echo "This modified file is not under the 'client' folder."
+              echo "::set-output name=run_job::true"
+              break
+            fi
+          done < files.txt
+  build:
+    needs: check
+    if: needs.check.outputs.run_job == 'true'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 100
+    - uses: marceloprado/has-changed-path@v1
+      id: changed-server
+      with:
+        paths: shared server
+    - name: Build the Docker image
+      run: docker build . -t buzzwords-server:latest
+    - name: Push to ECR
+      id: ecr
+      uses: jwalton/gh-ecr-push@v1
+      with:
+          access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: us-east-1
+          local-image: buzzwords-server:latest
+          image: buzzwords-server:latest
