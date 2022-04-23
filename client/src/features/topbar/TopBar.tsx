@@ -65,10 +65,10 @@ const TopBar: React.FC = () => {
     <div
       className={classNames(
         "fixed top-0 z-30 text-darkbrown",
-        "h-[50px] w-screen shadow-md"
+        "h-[calc(50px+var(--sat))] w-screen shadow-md p-t-safe"
       )}
     >
-      <div className="topbar rounded-t-xl flex justify-between h-full px-4 items-center">
+      <div className="topbar flex justify-between h-full px-4 items-center">
         <div className="flex">
           <button
             onClick={() => {

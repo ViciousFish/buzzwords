@@ -74,7 +74,7 @@ function App() {
           </React.Suspense>
         </SidebarRightSide>
       </div>
-      <ToastContainer toastClassName="bg-primary text-darkbrown rounded-lg" />
+      <ToastContainer className="p-t-safe" toastClassName="bg-primary text-darkbrown rounded-lg" />
       {showingTutorialModal && <TutorialModal />}
       {!isTouch && <ReactTooltip />}
     </BrowserRouter>
