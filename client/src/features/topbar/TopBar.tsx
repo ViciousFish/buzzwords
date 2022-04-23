@@ -82,7 +82,7 @@ const TopBar: React.FC = () => {
             data-tip="Toggle games list"
           >
             <FontAwesomeIcon icon={faBars} />
-            <span className="absolute text-sm left-[10px] top-1">
+            <span className="absolute text-sm left-[10px] top-[calc(0.25rem+var(--sat))]">
               {hamburgerNotification}
             </span>
           </button>
