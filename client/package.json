@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "watch": "vite build --watch",
+    "watch": "vite build --watch --mode development",
     "typecheck": "tsc",
     "serve": "vite preview",
     "lint": "eslint src --ext .js,.ts,.tsx,.jsx",
