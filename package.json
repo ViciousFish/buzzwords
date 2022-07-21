@@ -10,7 +10,7 @@
     "build": "concurrently \"yarn build-client\" \"yarn build-server\"",
     "docker": "concurrently \"yarn docker-server\" \"yarn docker-client\"",
     "dev:server": "yarn --cwd server dev",
-    "dev:client": "wait-on http://localhost:8080/healthz && yarn --cwd client dev",
+    "dev:client": "yarn --cwd client dev",
     "dev": "concurrently \"yarn dev:server\" \"yarn dev:client\""
   },
   "repository": {
@@ -33,7 +33,6 @@
     "shared"
   ],
   "devDependencies": {
-    "concurrently": "^6.5.1",
-    "wait-on": "^6.0.1"
+    "concurrently": "^6.5.1"
   }
 }
