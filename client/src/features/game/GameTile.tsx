@@ -255,13 +255,23 @@ const GameTile: React.FC<GameTileProps> = ({
         coord &&
         letter &&
         currentTurn === userIndex &&
-        !isSubmitting
+        !isSubmitting &&
+        !replayMove
       ) {
         dispatch(toggleTileSelected(coord));
       }
       e.stopPropagation();
     },
-    [coord, dispatch, letter, currentTurn, userIndex, gameOver, isSubmitting]
+    [
+      coord,
+      dispatch,
+      letter,
+      currentTurn,
+      userIndex,
+      gameOver,
+      isSubmitting,
+      replayMove,
+    ]
   );
   return (
     // @ts-ignore

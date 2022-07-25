@@ -1,4 +1,5 @@
 import { nanoid } from "@reduxjs/toolkit";
+import Game from "buzzwords-shared/Game";
 
 import { Api } from "../../app/Api";
 import { getApiUrl } from "../../app/apiPrefix";
@@ -52,7 +53,7 @@ export const backspaceTileSelection = (): AppThunk => (dispatch, getState) => {
   dispatch(backspaceSelection());
   const { currentGame, selectedTiles } = getState().game;
   emitSelection(selectedTiles, currentGame);
-}
+};
 
 export const submitMove =
   (gameId: string): AppThunk =>
@@ -73,6 +74,11 @@ export const submitMove =
         move: formattedCoords,
       });
     } catch (e) {
+      if (e.response.data === 'Invalid coords') {
+        window.alert("Sorry, something went wrong on our end. Reloading")
+        location.reload();
+      }
+
       throw e.response?.data ?? e.toString();
     }
 
@@ -114,12 +120,14 @@ export const initiateReplay =
       console.error("can't init replay on null game");
       return;
     }
-    const move = getState().gamelist.games[currentGame].moves[moveIndex];
+    const move = (getState().gamelist.games[currentGame] as Game).moves[
+      moveIndex
+    ];
     const poison = nanoid();
     const delay = skipInitialDelay ? 0 : REPLAY_DELAY;
 
     dispatch(newReplay({ move, poison, index: moveIndex }));
-    
+
     const ticks = move.letters.length;
     for (let tick = 0; tick < ticks; tick++) {
       window.setTimeout(() => {
@@ -137,8 +145,8 @@ export const initiateReplay =
           getState().game.replay.poisonToken === poison &&
           getState().game.currentGame === currentGame
         ) {
-          const nextMove =
-            getState().gamelist.games[currentGame].moves[moveIndex + 1];
+          const nextMove = (getState().gamelist.games[currentGame] as Game)
+            .moves[moveIndex + 1];
           if (nextMove) {
             dispatch(newReplay({ move: nextMove, poison, index: moveIndex }));
             setTimeout(() => {
@@ -173,7 +181,7 @@ export const maybeShowNudge =
       state.game.currentGame === gameId &&
       game &&
       game.turn === 1 &&
-      game.moves.length === turnNumber &&
+      (game as Game).moves?.length === turnNumber &&
       !game.gameOver
     ) {
       dispatch(toggleNudgeButton(true));
@@ -184,7 +192,11 @@ export const nudgeGameById =
   (id: string): AppThunk =>
   async (dispatch, getState) => {
     const state = getState();
-    const turnNumber = state.gamelist.games[id]?.moves.length;
+    const turnNumber = (state.gamelist.games[id] as Game | undefined)?.moves
+      .length;
+    if (turnNumber === undefined) {
+      throw new Error("Game not found");
+    }
     try {
       await Api.post(getApiUrl("/game", id, "/nudge"));
       setTimeout(() => {
