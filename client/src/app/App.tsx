@@ -35,7 +35,9 @@ function App() {
     (state) => state.game.showingTutorialModal
   );
 
-  const hasCurrentTurn = Boolean(useAppSelector(getHowManyGamesAreMyTurn));
+  const numberOfGamesWaitingForPlayer = useAppSelector((state) =>
+    getHowManyGamesAreMyTurn(state, null)
+  );
 
   useEffect(() => {
     dispatch(initAction());
@@ -51,14 +53,14 @@ function App() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (hasCurrentTurn) {
+    if (numberOfGamesWaitingForPlayer) {
       FaviconNotification.add();
-      document.title = "[Your turn] Buzzwords";
+      document.title = `[${numberOfGamesWaitingForPlayer}] Buzzwords`;
     } else {
       FaviconNotification.remove();
       document.title = "Buzzwords";
     }
-  }, [hasCurrentTurn]);
+  }, [numberOfGamesWaitingForPlayer]);
 
   return (
     <BrowserRouter>

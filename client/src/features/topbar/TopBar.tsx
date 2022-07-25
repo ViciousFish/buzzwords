@@ -13,9 +13,7 @@ import { Popover } from "react-tiny-popover";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import { setTurnNotificationsMute } from "../game/gameSlice";
-import {
-  getHowManyGamesAreMyTurn,
-} from "../gamelist/gamelistSelectors";
+import { getHowManyGamesAreMyTurn } from "../gamelist/gamelistSelectors";
 import { setShowTutorialCard, toggleIsOpen } from "../gamelist/gamelistSlice";
 import TutorialCard from "../gamelist/TutorialCard";
 import { logout } from "../user/userActions";
@@ -25,7 +23,6 @@ import AuthPrompt from "./AuthPrompt";
 const TopBar: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const currentTurnCount = useAppSelector(getHowManyGamesAreMyTurn);
   const isOpen = useAppSelector((state) => state.gamelist.isOpen);
   const turnNotificationsMuted = useAppSelector(
     (state) => state.game.turnNotificationsMuted
@@ -38,8 +35,13 @@ const TopBar: React.FC = () => {
   const isRefreshing = useAppSelector((state) => state.gamelist.isRefreshing);
   const gamesLoading = useAppSelector((state) => state.gamelist.gamesLoading);
   const currentGame = useAppSelector((state) => state.game.currentGame);
+  const currentTurnCount = useAppSelector((state) =>
+    getHowManyGamesAreMyTurn(state, currentGame)
+  );
 
-  const [_authPrompt, setAuthPrompt] = useState(!window.location.toString().match(/play/)); // CQ: temp
+  const [_authPrompt, setAuthPrompt] = useState(
+    !window.location.toString().match(/play/)
+  ); // CQ: temp
   const authPrompt = isLoggedIn === false && _authPrompt;
 
   const isLoading =
@@ -53,10 +55,7 @@ const TopBar: React.FC = () => {
   if (!isOpen && currentTurnCount) {
     hamburgerNotification = (
       <FontAwesomeIcon
-        className={classNames(
-          "text-blue-500",
-          "drop-shadow"
-        )}
+        className={classNames("text-blue-500", "drop-shadow")}
         icon={faCircle}
       />
     );

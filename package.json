@@ -8,7 +8,10 @@
     "docker-server": "docker buildx build ./server --platform linux/amd64,linux/arm64 --push -t chuckdries/buzzwords-server",
     "docker-client": "docker buildx build ./client --platform linux/amd64,linux/arm64 --push -t chuckdries/buzzwords-web",
     "build": "concurrently \"yarn build-client\" \"yarn build-server\"",
-    "docker": "concurrently \"yarn docker-server\" \"yarn docker-client\""
+    "docker": "concurrently \"yarn docker-server\" \"yarn docker-client\"",
+    "dev:server": "yarn --cwd server dev",
+    "dev:client": "yarn --cwd client dev",
+    "dev": "concurrently \"yarn dev:server\" \"yarn dev:client\""
   },
   "repository": {
     "type": "git",

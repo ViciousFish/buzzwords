@@ -144,7 +144,7 @@ const GameList: React.FC = () => {
             {completedGames.length ? (
               <div className="px-2 ">
                 <button
-                  className="flex items-center text-darkbrown"
+                  className="flex items-center text-darkbrown w-full"
                   onClick={() => dispatch(toggleCompletedGames())}
                 >
                   <FontAwesomeIcon

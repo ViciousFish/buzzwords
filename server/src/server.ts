@@ -38,7 +38,13 @@ const io = new Server(server, {
 });
 const mongoClient = new MongoClient(config.mongoUrl, {});
 
-app.use(morgan("dev"));
+app.use(
+  morgan("dev", {
+    skip: (_, res) => {
+      return res.statusCode < 400;
+    },
+  })
+);
 app.use(
   cors({
     origin: true,
