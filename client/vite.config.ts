@@ -47,7 +47,7 @@ export default ({ command, mode }) => {
           },
         },
         // Enables use of Node.js API in the Renderer-process
-        renderer: {},
+        // renderer: {},
       }) : null,
     ],
     build: {
