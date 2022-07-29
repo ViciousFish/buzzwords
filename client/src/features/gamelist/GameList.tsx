@@ -162,8 +162,6 @@ const GameList: React.FC = () => {
             <a
               className="underline"
               href="https://chuckdries.com"
-              target="_blank"
-              rel="noreferrer"
             >
               Chuck Dries
             </a>{" "}
@@ -171,8 +169,6 @@ const GameList: React.FC = () => {
             <a
               className="underline"
               href="https://www.youtube.com/channel/UCBLK4r69Z_cRr087Jfvt0WQ"
-              target="_blank"
-              rel="noreferrer"
             >
               James Quigley
             </a>
