@@ -115,7 +115,7 @@ const TopBar: React.FC = () => {
               aria-label="display tutorial"
               data-tip="Tutorial"
               className={classNames(
-                "p-2 rounded-md hover:bg-primary hover:bg-opacity-50",
+                "p-2 rounded-md hover:bg-lightbg hover:bg-opacity-50",
                 isOpen && showTutorialCard && "hidden"
               )}
             >
