@@ -23,7 +23,7 @@ import {
 } from "../game/gameSlice";
 import { initiateReplay, maybeShowNudge } from "../game/gameActions";
 
-import chord from "../../../assets/fmajor-pleasant.m4a?url";
+import chord from "../../assets/ding.mp3?url";
 import { batch } from "react-redux";
 import { Api } from "../../app/Api";
 
