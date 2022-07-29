@@ -4,7 +4,7 @@
   "main": "dist/electron/main/index.js",
   "scripts": {
     "dev": "vite",
-    "dev-electron": "cross-env DESKTOP=true vite",
+    "dev-electron": "cross-env DESKTOP=1 vite",
     "build": "vite build",
     "typecheck": "tsc",
     "serve": "vite preview",

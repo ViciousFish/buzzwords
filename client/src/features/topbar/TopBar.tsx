@@ -20,6 +20,8 @@ import { logout } from "../user/userActions";
 import { isUserLoggedIn } from "../user/userSelectors";
 import AuthPrompt from "./AuthPrompt";
 
+const ELECTRON = true;
+
 const TopBar: React.FC = () => {
   const dispatch = useAppDispatch();
 
@@ -67,8 +69,9 @@ const TopBar: React.FC = () => {
         "h-[50px] w-screen shadow-md"
       )}
     >
-      <div className="topbar rounded-t-xl flex justify-between h-full px-4 items-center">
-        <div className="flex">
+      <div className={classNames("flex h-full p-0 items-center topbar", !ELECTRON && "rounded-t-xl")}>
+        <div className="flex h-full gap-2 items-center">
+          {ELECTRON && <div className='h-full bg-darkbrown w-[90px]'/>}
           <button
             onClick={() => {
               dispatch(toggleIsOpen());
@@ -120,6 +123,7 @@ const TopBar: React.FC = () => {
             </button>
           </Popover>
         </div>
+        <div className="h-full flex-auto window-drag" />
         <div className="flex items-baseline">
           {isLoading && (
             <FontAwesomeIcon icon={faSpinner} className="mr-2 animate-spin" />
@@ -138,7 +142,7 @@ const TopBar: React.FC = () => {
               {isLoggedIn ? (
                 <Button
                   variant="quiet"
-                  className="p-2 rounded-md"
+                  className="p-2 mr-2 rounded-md"
                   onClick={() => dispatch(logout())}
                 >
                   Logout
@@ -147,7 +151,7 @@ const TopBar: React.FC = () => {
                 <Button
                   variant="quiet"
                   onClick={() => setAuthPrompt(true)}
-                  className="p-2 rounded-md"
+                  className="p-2 mr-2 rounded-md"
                 >
                   Login
                 </Button>

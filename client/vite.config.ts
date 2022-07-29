@@ -9,6 +9,7 @@ rmSync("dist", { recursive: true, force: true }); // v14.14.0
 
 // https://vitejs.dev/config/
 export default ({ command, mode }) => {
+  console.log('dt', process.env.DESKTOP)
   return defineConfig({
     server: {
       proxy: {

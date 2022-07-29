@@ -34,8 +34,10 @@ const indexHtml = join(ROOT_PATH.dist, 'index.html')
 
 async function createWindow() {
   win = new BrowserWindow({
-    title: 'Main window',
+    title: 'Buzzwords',
     icon: join(ROOT_PATH.public, 'favicon.ico'),
+    titleBarStyle: 'hidden',
+    trafficLightPosition: { x: 18, y: 18 },
     webPreferences: {
       preload,
       // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
