@@ -80,11 +80,11 @@ const TopBar: React.FC = () => {
               }
             }}
             aria-label="toggle games list"
-            className="p-2 hover:bg-lightbg hover:bg-opacity-50 rounded-md"
+            className="relative p-2 hover:bg-lightbg hover:bg-opacity-50 rounded-md"
             data-tip="Toggle games list"
           >
             <FontAwesomeIcon icon={faBars} />
-            <span className="absolute text-sm left-[10px] top-1">
+            <span className="absolute text-sm right-[18px] bottom-[18px]">
               {hamburgerNotification}
             </span>
           </button>
