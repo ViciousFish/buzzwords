@@ -21,6 +21,8 @@ import { isUserLoggedIn } from "../user/userSelectors";
 import AuthPrompt from "./AuthPrompt";
 
 const ELECTRON = window.versions;
+const PLATFORM = window.versions?.platform?.();
+console.log("🚀 ~ file: TopBar.tsx ~ line 25 ~ PLATFORM", PLATFORM)
 
 const TopBar: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -71,7 +73,7 @@ const TopBar: React.FC = () => {
     >
       <div className={classNames("flex h-full p-0 items-center topbar", !ELECTRON && "rounded-t-xl")}>
         <div className="flex h-full gap-2 items-center">
-          {ELECTRON && <div className='h-full bg-[#865511] w-[90px]'/>}
+          {PLATFORM === 'darwin' && <div className='h-full bg-[#865511] w-[90px]'/>}
           <button
             onClick={() => {
               dispatch(toggleIsOpen());
@@ -80,7 +82,7 @@ const TopBar: React.FC = () => {
               }
             }}
             aria-label="toggle games list"
-            className="relative p-2 hover:bg-lightbg hover:bg-opacity-50 rounded-md"
+            className="relative ml-2 p-2 hover:bg-lightbg hover:bg-opacity-50 rounded-md"
             data-tip="Toggle games list"
           >
             <FontAwesomeIcon icon={faBars} />
@@ -158,6 +160,7 @@ const TopBar: React.FC = () => {
               )}
             </Popover>
           )}
+          {PLATFORM === 'win32' && <div className="w-[150px]"></div>}
         </div>
       </div>
     </div>

@@ -37,6 +37,10 @@ async function createWindow() {
     title: "Buzzwords",
     icon: join(ROOT_PATH.public, "favicon.ico"),
     titleBarStyle: "hidden",
+    titleBarOverlay: {
+      color: '#865511',
+      symbolColor: '#ffffff'
+    },
     trafficLightPosition: { x: 18, y: 18 },
     webPreferences: {
       preload,
