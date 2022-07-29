@@ -57,10 +57,10 @@ const GameList: React.FC = () => {
 
   return (
     <a.div
-      className="w-[300px] flex-shrink-0 z-10 bg-darkbg"
+      className="w-[300px] flex-shrink-0 z-10"
       style={containerSpring}
     >
-      <ScreenHeightWraper insetTop={50} className="flex flex-col">
+      <ScreenHeightWraper insetTop={50} className="flex flex-col fixed bg-darkbg w-[300px]">
         <header className="z-10 flex flex-shrink-0 px-2 py-2 space-x-1">
           <a
             className="block p-2 rounded-md hover:bg-primary hover:bg-opacity-50 text-darkbrown"

@@ -10,7 +10,7 @@ const Home: React.FC = () => {
   
   return (
     <>
-      <div className="flex flex-auto no-touch h-[50vh] mt-[20vh] p-12 ">
+      <div className="flex flex-auto no-touch h-[50vh] pt-[20vh] p-12 ">
         <Canvas key="home">
           <React.Suspense
             fallback={<Html center>{progress.toFixed(0)} % loaded</Html>}

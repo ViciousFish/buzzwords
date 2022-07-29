@@ -61,7 +61,7 @@ function useLoading() {
 
 // ----------------------------------------------------------------------
 
-const { appendLoading, removeLoading } = useLoading()
+const { appendLoading, removeLoading } = useLoading() // eslint-disable-line
 domReady().then(appendLoading)
 
 window.onmessage = ev => {

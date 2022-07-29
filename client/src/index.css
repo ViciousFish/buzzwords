@@ -1,10 +1,13 @@
-@import url("https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap");
-
+@font-face {
+  font-family: "fredoka_oneregular";
+  src: url("./assets/fredokaone-regular-webfont.woff2") format("woff2"),
+    url("./assets/fredokaone-regular-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 .no-touch canvas {
   touch-action: none;
 }
@@ -24,7 +27,7 @@
     padding-left: env(safe-area-inset-left);
   }
   .window-drag {
-    -webkit-app-region: drag
+    -webkit-app-region: drag;
   }
   /* .wood-light-x {
     background-image: linear-gradient(
@@ -69,5 +72,9 @@ body {
 }
 
 .topbar {
-  background: linear-gradient(0deg, rgba(233,187,72,1) 0%, rgba(246,197,75,1) 100%);
+  background: linear-gradient(
+    0deg,
+    rgba(233, 187, 72, 1) 0%,
+    rgba(246, 197, 75, 1) 100%
+  );
 }

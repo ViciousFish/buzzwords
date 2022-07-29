@@ -11,6 +11,7 @@ rmSync("dist", { recursive: true, force: true }); // v14.14.0
 export default ({ command, mode }) => {
   console.log('dt', process.env.DESKTOP)
   return defineConfig({
+    assetsInclude: ['**/*.gltf'],
     server: {
       proxy: {
         "/api": {
