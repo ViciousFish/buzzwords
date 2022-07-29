@@ -23,7 +23,11 @@ export const getUser = (): AppThunk => async (dispatch) => {
 export const getGoogleLoginURL = (): AppThunk => async (dispatch) => {
   const { data } = await Api.post<{ url: string }>(getApiUrl("/login/google"));
 
-  window.location.href = data.url;
+  if (window.versions) {
+    window.open(data.url);
+  } else {
+    window.location.href = data.url;
+  }
 };
 
 export const setNickname =

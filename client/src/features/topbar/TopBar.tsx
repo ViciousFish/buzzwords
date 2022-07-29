@@ -124,7 +124,7 @@ const TopBar: React.FC = () => {
           </Popover>
         </div>
         <div className="h-full flex-auto window-drag" />
-        <div className="flex items-baseline">
+        <div className="flex items-baseline pr-2">
           {isLoading && (
             <FontAwesomeIcon icon={faSpinner} className="mr-2 animate-spin" />
           )}
@@ -142,7 +142,7 @@ const TopBar: React.FC = () => {
               {isLoggedIn ? (
                 <Button
                   variant="quiet"
-                  className="p-2 mr-2 rounded-md"
+                  className="p-2 rounded-md"
                   onClick={() => dispatch(logout())}
                 >
                   Logout
@@ -151,7 +151,7 @@ const TopBar: React.FC = () => {
                 <Button
                   variant="quiet"
                   onClick={() => setAuthPrompt(true)}
-                  className="p-2 mr-2 rounded-md"
+                  className="p-2 rounded-md"
                 >
                   Login
                 </Button>

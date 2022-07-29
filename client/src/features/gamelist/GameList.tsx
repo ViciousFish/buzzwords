@@ -56,10 +56,7 @@ const GameList: React.FC = () => {
   });
 
   return (
-    <a.div
-      className="w-[300px] flex-shrink-0 z-10"
-      style={containerSpring}
-    >
+    <a.div className="w-[300px] flex-shrink-0 z-10" style={containerSpring}>
       <ScreenHeightWraper insetTop={50} className="flex flex-col bg-darkbg">
         <header className="z-10 flex flex-shrink-0 px-2 py-2 space-x-1">
           <a
@@ -113,10 +110,7 @@ const GameList: React.FC = () => {
               <div className="bg-primary mx-1 rounded-xl text-center flex items-center p-1">
                 <h3 className="text-xs mr-1">New</h3>
                 <div className="flex space-x-1">
-                  <PlayButtons
-                    mode="icon"
-                    buttonVariant="dark"
-                  />
+                  <PlayButtons mode="icon" buttonVariant="dark" />
                 </div>
               </div>
             </div>
@@ -165,13 +159,20 @@ const GameList: React.FC = () => {
           {showTutorialCard && isOpen && <TutorialCard />}
           <div className="p-2 text-sm text-center text-gray-800">
             by{" "}
-            <a className="underline" href="https://chuckdries.com">
+            <a
+              className="underline"
+              href="https://chuckdries.com"
+              target="_blank"
+              rel="noreferrer"
+            >
               Chuck Dries
             </a>{" "}
             and{" "}
             <a
               className="underline"
               href="https://www.youtube.com/channel/UCBLK4r69Z_cRr087Jfvt0WQ"
+              target="_blank"
+              rel="noreferrer"
             >
               James Quigley
             </a>
