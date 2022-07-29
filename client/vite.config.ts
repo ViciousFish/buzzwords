@@ -9,7 +9,6 @@ rmSync("dist", { recursive: true, force: true }); // v14.14.0
 
 // https://vitejs.dev/config/
 export default ({ command, mode }) => {
-  console.log(mode);
   return defineConfig({
     server: {
       proxy: {
@@ -25,7 +24,7 @@ export default ({ command, mode }) => {
     },
     plugins: [
       reactRefresh(),
-      electron({
+      process.env.DESKTOP ? electron({
         main: {
           entry: "electron/main/index.ts",
           vite: withDebug({
@@ -49,7 +48,7 @@ export default ({ command, mode }) => {
         },
         // Enables use of Node.js API in the Renderer-process
         renderer: {},
-      }),
+      }) : null,
     ],
     build: {
       sourcemap: mode !== "production",
