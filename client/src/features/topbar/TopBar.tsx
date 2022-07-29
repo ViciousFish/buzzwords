@@ -20,7 +20,7 @@ import { logout } from "../user/userActions";
 import { isUserLoggedIn } from "../user/userSelectors";
 import AuthPrompt from "./AuthPrompt";
 
-const ELECTRON = true;
+const ELECTRON = window.versions;
 
 const TopBar: React.FC = () => {
   const dispatch = useAppDispatch();

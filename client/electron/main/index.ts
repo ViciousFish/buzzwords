@@ -43,8 +43,8 @@ async function createWindow() {
       // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
       // Consider using contextBridge.exposeInMainWorld
       // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
-      nodeIntegration: true,
-      contextIsolation: false,
+      // nodeIntegration: true,
+      contextIsolation: true,
     },
   })
 
@@ -91,6 +91,9 @@ app.on('activate', () => {
     createWindow()
   }
 })
+
+ipcMain.handle('ping', () => 'pong')
+
 
 // new window example arg: new windows url
 ipcMain.handle('open-win', (event, arg) => {
