@@ -71,7 +71,7 @@ const TopBar: React.FC = () => {
     >
       <div className={classNames("flex h-full p-0 items-center topbar", !ELECTRON && "rounded-t-xl")}>
         <div className="flex h-full gap-2 items-center">
-          {ELECTRON && <div className='h-full bg-darkbrown w-[90px]'/>}
+          {ELECTRON && <div className='h-full bg-[#865511] w-[90px]'/>}
           <button
             onClick={() => {
               dispatch(toggleIsOpen());
