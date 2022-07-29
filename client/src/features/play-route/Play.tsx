@@ -256,13 +256,13 @@ const Play: React.FC = () => {
   }
 
   return (
-    <div>
+    <div className="flex flex-col overflow-hidden h-[calc(100vh-50px)]">
       <GameHeader game={game} />
-      <div className="flex flex-auto flex-col lg:flex-row">
+      <div className="flex flex-auto flex-col md:flex-row overflow-y-auto">
         {userIndex !== null && (
           <GameBoard id={id} game={game} userIndex={userIndex} />
         )}
-        <div className="m-auto lg:m-0 flex-shrink-0 w-[200px] pt-2 lg:max-h-[calc(100vh-100px)] overflow-y-auto">
+        <div className="m-auto md:m-0 flex-shrink-0 w-[200px] pt-2 md:max-h-[calc(100vh-100px)] overflow-y-auto">
           {showingNudgeButton && (
             <div className="p-2 rounded-xl bg-primary flex flex-col mr-2">
               <p>Looks like the AI opponent is taking a long time to move</p>

@@ -65,7 +65,7 @@ function App() {
   return (
     <BrowserRouter>
       <TopBar />
-      <div style={{ display: 'flex'}} className="App bg-lightbg mt-[50px] overflow-hidden max-w-[100vw] flex-row safe-area-pad min-h-[calc(100vh-50px)]">
+      <div style={{ display: 'flex'}} className="App bg-lightbg mt-[50px] overflow-hidden max-w-[100vw] flex-row safe-area-pad h-[calc(100vh-50px)]">
         <GameList />
         <SidebarRightSide>
           <React.Suspense fallback={<></>}>
