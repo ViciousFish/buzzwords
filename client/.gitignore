@@ -5,3 +5,4 @@ dist-ssr
 !.env
 *.local
 *.log
+release/
