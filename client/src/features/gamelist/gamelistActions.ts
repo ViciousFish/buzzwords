@@ -81,16 +81,17 @@ export const receiveGameUpdatedSocket =
     );
     if (
       userIndex === game.turn &&
-      !game.gameOver &&
-      !state.game.turnNotificationsMuted
+      !game.gameOver
     ) {
-      DingAudio.play();
+      if (!state.game.turnNotificationsMuted) {
+        DingAudio.play();
+      }
       const opponentNick = game.vsAI
         ? "Computer"
         : getAllUsers(state)[game.users[1 - userIndex]].nickname ??
           "Your opponent";
-      const NOTIFICATION_TITLE = opponentNick;
-      const NOTIFICATION_BODY = `It's your turn`;
+      const NOTIFICATION_TITLE = 'Buzzwords';
+      const NOTIFICATION_BODY = `It's your turn against ${opponentNick}`;
       const CLICK_MESSAGE = "Notification clicked!";
 
       new Notification(NOTIFICATION_TITLE, {
