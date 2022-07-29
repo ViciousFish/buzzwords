@@ -115,10 +115,10 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
   return (
     <div className="h-[50px] bg-darkbrown text-white text-lg flex px-4">
       <div className="flex items-center justify-start flex-auto">
-        <span className="text-p1 font-bold">{p1Nick || "You"}</span>
+        <span className="text-p1 font-bold">{p1Nick || "Player 2"}</span>
         <span className="mx-2"> vs </span>
         <span className="text-p2 font-bold">
-          {p2Nick || "Them"}
+          {p2Nick || "Player 1"}
           {game.vsAI && (
             <span className="font-normal text-gray-300 no-underline ml-1">
               ({game.difficulty})

@@ -85,6 +85,18 @@ export const receiveGameUpdatedSocket =
       !state.game.turnNotificationsMuted
     ) {
       DingAudio.play();
+      const opponentNick = game.vsAI
+        ? "Computer"
+        : getAllUsers(state)[game.users[1 - userIndex]].nickname ??
+          "Your opponent";
+      const NOTIFICATION_TITLE = opponentNick;
+      const NOTIFICATION_BODY = `It's your turn`;
+      const CLICK_MESSAGE = "Notification clicked!";
+
+      new Notification(NOTIFICATION_TITLE, {
+        body: NOTIFICATION_BODY,
+        silent: true,
+      }).onclick = () => console.log(CLICK_MESSAGE);
     }
 
     const allKnownPlayersWithNicknames = R.pipe(
@@ -287,6 +299,8 @@ export const refreshActiveGames =
     dispatch(setIsRefreshing(false));
   };
 
-export const forfeitGame = (id: string): AppThunk => async (dispatch) => {
-  const { data } = await Api.post<Game>(getApiUrl("/game", id, 'forfeit'));
-}
+export const forfeitGame =
+  (id: string): AppThunk =>
+  async (dispatch) => {
+    const { data } = await Api.post<Game>(getApiUrl("/game", id, "forfeit"));
+  };

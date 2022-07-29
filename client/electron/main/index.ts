@@ -68,7 +68,7 @@ async function createWindow() {
   });
 
   win.webContents.on("will-navigate", (e, url) => {
-    console.log("url", url); // todo: filter urls to allow internal "navigation" i.e. on windows with back/forward mouse buttons
+    if (url.startsWith("http://127.0.0.1:3000")) return;
     shell.openExternal(url);
     e.preventDefault();
   });
