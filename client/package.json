@@ -15,8 +15,7 @@
     "lint": "eslint src --ext .js,.ts,.tsx,.jsx",
     "pretty": "prettier --write .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder",
-    "postinstall": "electron-builder install-app-deps"
+    "dist": "electron-builder"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",

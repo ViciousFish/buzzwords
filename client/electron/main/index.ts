@@ -71,11 +71,11 @@ async function createWindow() {
     return { action: "deny" };
   });
 
-  win.webContents.on("will-navigate", (e, url) => {
-    if (url.startsWith("http://127.0.0.1:3000")) return;
-    shell.openExternal(url);
-    e.preventDefault();
-  });
+  // win.webContents.on("will-navigate", (e, url) => {
+  //   if (url.startsWith("http://127.0.0.1:3000")) return;
+  //   shell.openExternal(url);
+  //   e.preventDefault();
+  // });
 }
 
 app.whenReady().then(createWindow);
