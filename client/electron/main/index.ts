@@ -54,6 +54,7 @@ async function createWindow() {
 
   if (app.isPackaged) {
     win.loadFile(indexHtml);
+    win.webContents.openDevTools();
   } else {
     win.loadURL(url);
     // Open devTool if the app is not packaged
@@ -70,6 +71,14 @@ async function createWindow() {
     if (url.startsWith("https:")) shell.openExternal(url);
     return { action: "deny" };
   });
+
+  win.webContents.on('before-input-event', (event, input) => {
+    if (input.control && input.key.toLowerCase() === 'i') {
+      win?.webContents.openDevTools();
+      event.preventDefault()
+    }
+  })
+
 
   // win.webContents.on("will-navigate", (e, url) => {
   //   if (url.startsWith("http://127.0.0.1:3000")) return;
