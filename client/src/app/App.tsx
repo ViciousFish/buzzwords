@@ -1,5 +1,5 @@
 import React, { lazy, useEffect } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, MemoryRouter, Route, Routes } from "react-router-dom";
 import { Globals } from "@react-spring/shared";
 import FaviconNotification from "favicon-notification";
 
@@ -28,6 +28,9 @@ FaviconNotification.init({
 
 const HomeLazy = lazy(() => import("../features/home-route/Home"));
 const PlayLazy = lazy(() => import("../features/play-route/Play"));
+
+const ELECTRON = window.versions;
+const Router = ELECTRON ? MemoryRouter : BrowserRouter;
 
 function App() {
   const dispatch = useAppDispatch();
@@ -63,7 +66,7 @@ function App() {
   }, [numberOfGamesWaitingForPlayer]);
 
   return (
-    <BrowserRouter>
+    <Router>
       <TopBar />
       <div style={{ display: 'flex'}} className="App bg-lightbg mt-[50px] overflow-hidden max-w-[100vw] flex-row safe-area-pad h-[calc(100vh-50px)]">
         <GameList />
@@ -79,7 +82,7 @@ function App() {
       <ToastContainer toastClassName="bg-primary text-darkbrown rounded-lg" />
       {showingTutorialModal && <TutorialModal />}
       {!isTouch && <ReactTooltip />}
-    </BrowserRouter>
+    </Router>
   );
 }
 
