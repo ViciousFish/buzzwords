@@ -78,7 +78,7 @@ const TopBar: React.FC = () => {
       >
         <div className="flex h-full gap-1 items-center">
           {PLATFORM === "darwin" && (
-            <div className="wood-dark-x h-full w-[90px]" />
+            <div className="stoplights h-full w-[90px]" />
           )}
           <button
             onClick={() => {
