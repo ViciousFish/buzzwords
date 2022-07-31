@@ -131,13 +131,13 @@ ipcMain.handle("open-win", (event, arg) => {
 
 if (process.platform === "win32") {
   app.setAsDefaultProtocolClient(
-    process.env.VITE_PRIVATE_SCHEME_NAME ?? "x-buzzwords",
+    process.env.VITE_PRIVATE_SCHEME_NAME ?? "buzzwords",
     process.execPath,
     [app.getAppPath()]
   );
 } else {
   app.setAsDefaultProtocolClient(
-    process.env.VITE_PRIVATE_SCHEME_NAME ?? "x-buzzwords"
+    process.env.VITE_PRIVATE_SCHEME_NAME ?? "buzzwords"
   );
 }
 

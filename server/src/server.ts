@@ -107,15 +107,12 @@ app.post(config.apiPrefix + "/login/google", async (req, res) => {
     return;
   }
 
-  const state = encodeURIComponent(
-    Buffer.from(
-      JSON.stringify({
-        stateId,
-        context: req.headers["X-Context"] ?? "web",
-        redirectUrl: req.headers.referer || "/",
-      })
-    ).toString("base64")
-  );
+  const stateString = JSON.stringify({
+    stateId,
+    context: req.headers["x-context"] ?? "web",
+    redirectUrl: req.headers.referer || "/",
+  });
+  const state = encodeURIComponent(Buffer.from(stateString).toString("base64"));
   res.json({
     url:
       "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&scope=profile&flowName=GeneralOAuthFlow&client_id=" +
@@ -136,6 +133,7 @@ app.get(
   }),
   function (req, res) {
     let redirectUrl: string;
+    let context: string;
     try {
       const res = JSON.parse(
         Buffer.from(
@@ -143,10 +141,15 @@ app.get(
           "base64"
         ).toString("utf-8")
       );
-      console.log("context", res.context);
       redirectUrl = res.redirectUrl;
+      context = res.context;
     } catch (e) {
       redirectUrl = "/";
+      context = "web";
+    }
+    if (context === "electron") {
+    res.redirect("buzzwords://loginsuccess"); // TODO: do this client side so we can present a pretty "success" message to the user
+      return;
     }
     if (typeof redirectUrl === "string") {
       res.redirect(redirectUrl);
