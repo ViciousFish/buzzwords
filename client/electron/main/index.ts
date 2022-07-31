@@ -52,6 +52,7 @@ async function createWindow() {
     },
   });
 
+  win.setMenu(null);
   if (app.isPackaged) {
     win.loadFile(indexHtml);
   } else {
