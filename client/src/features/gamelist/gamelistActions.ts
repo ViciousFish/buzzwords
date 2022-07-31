@@ -79,25 +79,25 @@ export const receiveGameUpdatedSocket =
     const userIndex = game.users.findIndex(
       (user) => user === state.user.user?.id
     );
-    if (
-      userIndex === game.turn &&
-      !game.gameOver
-    ) {
+
+    if (userIndex === game.turn && !game.gameOver) {
       if (!state.game.turnNotificationsMuted) {
         DingAudio.play();
       }
-      const opponentNick = game.vsAI
-        ? "Computer"
-        : getAllUsers(state)[game.users[1 - userIndex]].nickname ??
-          "Your opponent";
-      const NOTIFICATION_TITLE = 'Buzzwords';
-      const NOTIFICATION_BODY = `It's your turn against ${opponentNick}`;
-      const CLICK_MESSAGE = "Notification clicked!";
+      if (!state.game.windowHasFocus) {
+        const opponentNick = game.vsAI
+          ? "Computer"
+          : getAllUsers(state)[game.users[1 - userIndex]].nickname ??
+            "Your opponent";
+        const NOTIFICATION_TITLE = "Buzzwords";
+        const NOTIFICATION_BODY = `It's your turn against ${opponentNick}`;
+        const CLICK_MESSAGE = "Notification clicked!";
 
-      new Notification(NOTIFICATION_TITLE, {
-        body: NOTIFICATION_BODY,
-        silent: true,
-      }).onclick = () => console.log(CLICK_MESSAGE);
+        new Notification(NOTIFICATION_TITLE, {
+          body: NOTIFICATION_BODY,
+          silent: true,
+        }).onclick = () => console.log(CLICK_MESSAGE);
+      }
     }
 
     const allKnownPlayersWithNicknames = R.pipe(

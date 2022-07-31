@@ -29,7 +29,7 @@
   .window-drag {
     -webkit-app-region: drag;
   }
-  /* .wood-light-x {
+  .wood-light-x {
     background-image: linear-gradient(
         0deg,
         rgba(233, 200, 103, 0.3) 0%,
@@ -48,7 +48,7 @@
     background-image: url("./assets/texture-seamless-wood-5.jpeg");
     background-repeat: repeat-x;
     background-size: 100px;
-  } */
+  }
 }
 
 body {

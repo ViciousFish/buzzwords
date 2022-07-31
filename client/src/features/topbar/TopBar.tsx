@@ -22,7 +22,6 @@ import AuthPrompt from "./AuthPrompt";
 
 const ELECTRON = window.versions;
 const PLATFORM = window.versions?.platform?.();
-console.log("🚀 ~ file: TopBar.tsx ~ line 25 ~ PLATFORM", PLATFORM)
 
 const TopBar: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -71,9 +70,16 @@ const TopBar: React.FC = () => {
         "h-[50px] w-screen shadow-md"
       )}
     >
-      <div className={classNames("flex h-full p-0 items-center topbar", !ELECTRON && "rounded-t-xl")}>
-        <div className="flex h-full gap-2 items-center">
-          {PLATFORM === 'darwin' && <div className='h-full bg-[#865511] w-[90px]'/>}
+      <div
+        className={classNames(
+          "flex h-full p-0 items-center topbar",
+          !ELECTRON && "rounded-t-xl"
+        )}
+      >
+        <div className="flex h-full gap-1 items-center">
+          {PLATFORM === "darwin" && (
+            <div className="wood-dark-x h-full w-[90px]" />
+          )}
           <button
             onClick={() => {
               dispatch(toggleIsOpen());
@@ -160,7 +166,7 @@ const TopBar: React.FC = () => {
               )}
             </Popover>
           )}
-          {PLATFORM === 'win32' && <div className="w-[150px]"></div>}
+          {PLATFORM === "win32" && <div className="w-[150px]"></div>}
         </div>
       </div>
     </div>
