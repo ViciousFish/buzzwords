@@ -20,14 +20,24 @@ export const getUser = (): AppThunk => async (dispatch) => {
   dispatch(userReceived(R.omit(["authToken"], user)));
 };
 
-export const getGoogleLoginURL = (): AppThunk => async (dispatch) => {
-  const { data } = await Api.post<{ url: string }>(getApiUrl("/login/google"));
+const ELECTRON = Boolean(window.versions);
 
-  // if (window.versions) {
-  //   window.open(data.url);
-  // } else {
+export const getGoogleLoginURL = (): AppThunk => async (dispatch) => {
+  const { data } = await Api.post<{ url: string }>(
+    getApiUrl(`/login/google`),
+    null,
+    {
+      headers: {
+        ['X-Context']: "electron",
+      },
+    }
+  );
+
+  if (ELECTRON) {
+    window.open(data.url);
+  } else {
     window.location.href = data.url;
-  // }
+  }
 };
 
 export const setNickname =

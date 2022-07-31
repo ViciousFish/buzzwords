@@ -111,6 +111,7 @@ app.post(config.apiPrefix + "/login/google", async (req, res) => {
     Buffer.from(
       JSON.stringify({
         stateId,
+        context: req.headers["X-Context"] ?? "web",
         redirectUrl: req.headers.referer || "/",
       })
     ).toString("base64")
@@ -142,6 +143,7 @@ app.get(
           "base64"
         ).toString("utf-8")
       );
+      console.log("context", res.context);
       redirectUrl = res.redirectUrl;
     } catch (e) {
       redirectUrl = "/";
