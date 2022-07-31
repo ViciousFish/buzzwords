@@ -70,7 +70,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   });
 
   useHotkeys("Enter", () => {
-    if (id && game.turn === userIndex) {
+    if (id && selectedWord?.length && game.turn === userIndex) {
       dispatch(onSubmit());
     }
   });
