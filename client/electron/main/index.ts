@@ -38,8 +38,8 @@ async function createWindow() {
     icon: join(ROOT_PATH.public, "favicon.ico"),
     titleBarStyle: "hidden",
     titleBarOverlay: {
-      color: '#865511',
-      symbolColor: '#ffffff'
+      color: "#865511",
+      symbolColor: "#ffffff",
     },
     trafficLightPosition: { x: 18, y: 18 },
     webPreferences: {
@@ -71,13 +71,12 @@ async function createWindow() {
     return { action: "deny" };
   });
 
-  win.webContents.on('before-input-event', (event, input) => {
-    if (input.control && input.key.toLowerCase() === 'i') {
+  win.webContents.on("before-input-event", (event, input) => {
+    if (input.control && input.key.toLowerCase() === "i") {
       win?.webContents.openDevTools();
-      event.preventDefault()
+      event.preventDefault();
     }
-  })
-
+  });
 
   // win.webContents.on("will-navigate", (e, url) => {
   //   if (url.startsWith("http://127.0.0.1:3000")) return;
@@ -114,6 +113,7 @@ ipcMain.handle("ping", () => "pong");
 
 // new window example arg: new windows url
 ipcMain.handle("open-win", (event, arg) => {
+  // CQ: remove! we want a singleton window
   const childWindow = new BrowserWindow({
     webPreferences: {
       preload,
@@ -126,4 +126,24 @@ ipcMain.handle("open-win", (event, arg) => {
     childWindow.loadURL(`${url}/#${arg}`);
     // childWindow.webContents.openDevTools({ mode: "undocked", activate: true })
   }
+});
+
+if (process.platform === "win32") {
+  app.setAsDefaultProtocolClient(
+    process.env.VITE_PRIVATE_SCHEME_NAME ?? "x-buzzwords",
+    process.execPath,
+    [app.getAppPath()]
+  );
+} else {
+  app.setAsDefaultProtocolClient(
+    process.env.VITE_PRIVATE_SCHEME_NAME ?? "x-buzzwords"
+  );
+}
+
+app.on('open-url', function (event, data) {
+  const prefix = `${process.env.VITE_PRIVATE_SCHEME_NAME ?? "x-buzzwords"}://`
+  const url = new URL(data);
+  console.log(url)
+  win?.webContents.send('open-url', data);
+  event.preventDefault();
 });

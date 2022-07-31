@@ -20,6 +20,11 @@ import { getHowManyGamesAreMyTurn } from "../features/gamelist/gamelistSelectors
 //     frameLoop: "always",
 //   });
 
+window.ipc?.handleLink((e, data) => {
+  const url = new URL(data);
+  console.log("url", url);
+});
+
 const isTouch = window.matchMedia("(pointer: coarse)").matches;
 
 FaviconNotification.init({
@@ -68,7 +73,10 @@ function App() {
   return (
     <Router>
       <TopBar />
-      <div style={{ display: 'flex'}} className="App bg-lightbg mt-[50px] overflow-hidden max-w-[100vw] flex-row safe-area-pad h-[calc(100vh-50px)]">
+      <div
+        style={{ display: "flex" }}
+        className="App bg-lightbg mt-[50px] overflow-hidden max-w-[100vw] flex-row safe-area-pad h-[calc(100vh-50px)]"
+      >
         <GameList />
         <SidebarRightSide>
           <React.Suspense fallback={<></>}>

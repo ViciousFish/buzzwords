@@ -81,4 +81,5 @@ contextBridge.exposeInMainWorld('versions', {
 
 contextBridge.exposeInMainWorld('ipc', {
   ping: () => ipcRenderer.invoke('ping'),
+  handleLink: (callback) => ipcRenderer.on('open-url', callback)
 })

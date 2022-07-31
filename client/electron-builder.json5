@@ -24,4 +24,10 @@
     allowToChangeInstallationDirectory: true,
     deleteAppDataOnUninstall: false,
   },
+  "protocols": {
+      "name": "buzzwords-protocol",
+      "schemes": [
+        "x-buzzwords"
+      ]
+    }
 }
