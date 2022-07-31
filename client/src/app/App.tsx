@@ -36,6 +36,7 @@ FaviconNotification.init({
 
 const HomeLazy = lazy(() => import("../features/home-route/Home"));
 const PlayLazy = lazy(() => import("../features/play-route/Play"));
+const AuthSuccessLazy = lazy(() => import('../features/auth-route/AuthSuccess'));
 
 const ELECTRON = window.versions;
 const Router = ELECTRON ? MemoryRouter : BrowserRouter;
@@ -80,12 +81,14 @@ function App() {
         style={{ display: "flex" }}
         className="App bg-lightbg mt-[50px] overflow-hidden max-w-[100vw] flex-row safe-area-pad h-[calc(100vh-50px)]"
       >
+        {/* TODO: don't render gamelist, topbar, etc for /auth/success */}
         <GameList />
         <SidebarRightSide>
           <React.Suspense fallback={<></>}>
             <Routes>
               <Route path="/" element={<HomeLazy />} />
               <Route path="/play/:id" element={<PlayLazy />} />
+              <Route path="/auth/success" element={<AuthSuccessLazy />} />
             </Routes>
           </React.Suspense>
         </SidebarRightSide>

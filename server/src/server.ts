@@ -11,6 +11,7 @@ import { MongoClient } from "mongodb";
 import cors from "cors";
 import passport from "passport";
 import { OAuth2Strategy } from "passport-google-oauth";
+import urljoin from "url-join";
 
 import getConfig from "./config";
 import dl from "./datalayer";
@@ -148,7 +149,7 @@ app.get(
       context = "web";
     }
     if (context === "electron") {
-    res.redirect("buzzwords://loginsuccess"); // TODO: do this client side so we can present a pretty "success" message to the user
+      res.redirect(urljoin(redirectUrl, "/auth/success"));
       return;
     }
     if (typeof redirectUrl === "string") {
