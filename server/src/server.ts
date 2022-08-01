@@ -149,7 +149,12 @@ app.get(
       context = "web";
     }
     if (context === "electron") {
-      res.redirect(urljoin(redirectUrl, "/auth/success"));
+      res.redirect(
+        urljoin(
+          typeof redirectUrl === "string" ? redirectUrl : "/",
+          "/auth/success"
+        )
+      );
       return;
     }
     if (typeof redirectUrl === "string") {
