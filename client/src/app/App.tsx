@@ -1,19 +1,15 @@
-import React, { lazy, Suspense, useEffect } from "react";
+import React, { lazy, useEffect } from "react";
 import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
-import { Globals } from "@react-spring/shared";
+// import { Globals } from "@react-spring/shared";
 import FaviconNotification from "favicon-notification";
 
-import SidebarRightSide from "./SidebarRightSide";
-import GameList from "../features/gamelist/GameList";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { initAction } from "./appActions";
 import { ToastContainer } from "react-toastify";
 import TutorialModal from "../features/game/TutorialModal";
 import { handleWindowFocusThunk } from "../features/game/gameActions";
 import ReactTooltip from "react-tooltip";
-import TopBar from "../features/topbar/TopBar";
 import { getHowManyGamesAreMyTurn } from "../features/gamelist/gamelistSelectors";
-import MainGameStructure from "./MainGameStructure";
 
 // not necessary, as long as there's always a 3d canvas on screen!
 // import.meta.env.PROD &&
@@ -40,6 +36,7 @@ const PlayLazy = lazy(() => import("../features/play-route/Play"));
 const AuthSuccessLazy = lazy(
   () => import("../features/auth-route/AuthSuccess")
 );
+const MainGameStructureLazy = lazy(() => import("./MainGameStructure"));
 
 const ELECTRON = window.versions;
 const Router = ELECTRON ? HashRouter : BrowserRouter;
@@ -81,7 +78,7 @@ function App() {
     <Router>
       <React.Suspense fallback={<></>}>
         <Routes>
-          <Route element={<MainGameStructure />}>
+          <Route element={<MainGameStructureLazy />}>
             <Route
               path="/"
               element={
