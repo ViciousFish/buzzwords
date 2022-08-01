@@ -116,50 +116,44 @@ export const getPotentialWords = (
   return potentialWords;
 };
 
+/**
+ * Iterate over the words dictionary, finding words that
+ * could be made using existing tiles on the board
+ * AND the new tiles we're about to reset.
+ *
+ * E.g. if lettersOnTheBoard is ["c", "a"] and resetTileTotal is 2
+ * we might return ["t", "z"]. The valid word being "cat". "t" completes the word
+ * and "z" is filler
+ */
 export const getNewCellValues = (
-  letters: string[],
-  toBeReset: number,
-  words: {
+  lettersOnTheBoard: string[],
+  resetTileTotal: number,
+  wordsJson: {
     [key: string]: number;
   }
 ): string[] => {
-  if (!toBeReset) {
+  if (!resetTileTotal) {
     return [];
   }
 
-  let w = Object.keys(words);
-  let potentialWords: string[] = [];
-  let combos: string[][] = [];
-  if (!letters.length) {
-    potentialWords = w.filter((word) => word.length <= toBeReset);
-  } else {
-    for (let i = 1; i <= letters.length; i++) {
-      combos = [...combos, ...combinationN(letters, i)];
-    }
-    combos = shuffle(combos);
+  let words = Object.keys(wordsJson);
 
-    for (let combo of combos) {
-      const validWords = w.filter((word) => {
-        const wordLetters = word.split("");
-        for (let letter of combo) {
-          const idx = wordLetters.indexOf(letter);
-          if (idx == -1) {
-            return false;
-          }
-          wordLetters.splice(idx, 1);
-        }
-        return wordLetters.length <= toBeReset;
-      });
-      if (!validWords.length) {
-        continue;
+  const wordsToMissingLetters = words.reduce((acc, word) => {
+    const wordLetters = word.split("");
+    for (let letter of lettersOnTheBoard) {
+      const idx = wordLetters.indexOf(letter);
+      if (idx != -1) {
+        wordLetters.splice(idx, 1);
       }
-      potentialWords = validWords;
-      break;
     }
-    if (!potentialWords.length) {
-      potentialWords = w.filter((word) => word.length <= toBeReset);
+    if (wordLetters.length <= resetTileTotal) {
+      acc[word] = wordLetters;
     }
-  }
+
+    return acc;
+  }, {} as { [key: string]: string[] });
+
+  const potentialWords = Object.keys(wordsToMissingLetters);
 
   if (!potentialWords.length) {
     throw "No possible combinations";
@@ -167,23 +161,14 @@ export const getNewCellValues = (
 
   const word = potentialWords[getRandomInt(0, potentialWords.length)];
 
-  const letters2 = R.clone(letters);
-  const neededLetters = [];
-  for (const letter of word.split("")) {
-    const idx = letters2.indexOf(letter);
-    if (idx === -1) {
-      neededLetters.push(letter);
-      continue;
-    }
-    letters2.splice(idx, 1);
-  }
+  const neededLetters = wordsToMissingLetters[word];
 
-  const fillerLength = toBeReset - neededLetters.length;
+  const fillerLength = resetTileTotal - neededLetters.length;
   let filler: string[] = [];
 
   for (let i = 0; i < fillerLength; i++) {
     const letterCount = R.countBy(R.identity, [
-      ...letters,
+      ...lettersOnTheBoard,
       ...neededLetters,
       ...filler,
     ]);
