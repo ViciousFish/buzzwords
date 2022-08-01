@@ -315,7 +315,7 @@ export default (io: Server) => {
     const move = req.body.move || [];
     for (const m of move) {
       if (typeof m == "object") {
-        if (m.q && typeof m.q == "number" && m.r && typeof m.r == "number") {
+        if (typeof m.q == "number" && typeof m.r == "number") {
           parsedMove.push({
             q: m.q,
             r: m.r,
@@ -336,7 +336,7 @@ export default (io: Server) => {
 
     let newGame: Game;
     try {
-      newGame = gm.makeMove(user, move);
+      newGame = gm.makeMove(user, parsedMove);
     } catch (e: unknown) {
       res.status(400);
       if (e instanceof Error) {
