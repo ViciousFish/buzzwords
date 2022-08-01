@@ -1,6 +1,11 @@
 import { app, BrowserWindow, shell, ipcMain } from "electron";
 import { release } from "os";
 import { join } from "path";
+import contextMenu from 'electron-context-menu';
+
+contextMenu({
+	showSaveImageAs: true
+});
 
 // Disable GPU Acceleration for Windows 7 (came with electron vite template)
 // if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -81,11 +86,17 @@ async function createWindow() {
     }
   });
 
-  // win.webContents.on("will-navigate", (e, url) => {
-  //   if (url.startsWith("http://127.0.0.1:3000")) return;
-  //   shell.openExternal(url);
-  //   e.preventDefault();
-  // });
+  win.webContents.on("will-navigate", (e, url) => {
+    // app loads file:// in prod, but vite uses 127.0.0.1 for hot reloading in dev
+    // all other urls are links and should be opened in the browser
+    if (
+      (app.isPackaged && !url.startsWith("file:")) ||
+      (!app.isPackaged && !url.startsWith("http://127.0.0.1"))
+    ) {
+      shell.openExternal(url);
+      e.preventDefault();
+    }
+  });
 }
 
 app.whenReady().then(createWindow);
@@ -143,10 +154,10 @@ if (process.platform === "win32") {
   );
 }
 
-app.on('open-url', function (event, data) {
-  const prefix = `${process.env.VITE_PRIVATE_SCHEME_NAME ?? "x-buzzwords"}://`
+app.on("open-url", function (event, data) {
+  const prefix = `${process.env.VITE_PRIVATE_SCHEME_NAME ?? "x-buzzwords"}://`;
   const url = new URL(data);
-  console.log(url)
-  win?.webContents.send('open-url', data);
+  console.log(url);
+  win?.webContents.send("open-url", data);
   event.preventDefault();
 });
