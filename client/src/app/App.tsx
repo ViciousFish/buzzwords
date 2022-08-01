@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useEffect } from "react";
-import { BrowserRouter, MemoryRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
 import { Globals } from "@react-spring/shared";
 import FaviconNotification from "favicon-notification";
 
@@ -42,7 +42,7 @@ const AuthSuccessLazy = lazy(
 );
 
 const ELECTRON = window.versions;
-const Router = ELECTRON ? MemoryRouter : BrowserRouter;
+const Router = ELECTRON ? HashRouter : BrowserRouter;
 
 function App() {
   const dispatch = useAppDispatch();
