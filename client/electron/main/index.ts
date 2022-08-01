@@ -42,6 +42,8 @@ async function createWindow() {
       symbolColor: "#ffffff",
     },
     trafficLightPosition: { x: 18, y: 18 },
+    width: 900,
+    height: 750,
     webPreferences: {
       preload,
       // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
