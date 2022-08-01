@@ -2,12 +2,18 @@
   appId: "com.gg.buzzwords.desktop",
   asar: true,
   directories: {
-    output: "release/${version}",
+    output: "release/${version}_${platform}_${arch}",
   },
   files: ["dist"],
   mac: {
-    artifactName: "${productName}_${version}.${ext}",
-    target: ["dmg"],
+    category: "public.app-category.games",
+    artifactName: "${productName}_${version}_${arch}.${ext}",
+    target: [
+      {
+        target: "dmg",
+        arch: ["x64", "arm64", "universal"],
+      },
+    ],
   },
   win: {
     target: [
@@ -24,10 +30,8 @@
     allowToChangeInstallationDirectory: true,
     deleteAppDataOnUninstall: false,
   },
-  "protocols": {
-      "name": "buzzwords-protocol",
-      "schemes": [
-        "x-buzzwords"
-      ]
-    }
+  protocols: {
+    name: "buzzwords-protocol",
+    schemes: ["buzzwords"],
+  },
 }
