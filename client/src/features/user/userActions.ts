@@ -28,7 +28,7 @@ export const getGoogleLoginURL = (): AppThunk => async (dispatch) => {
     null,
     {
       headers: {
-        "x-context": "electron",
+        "x-context": ELECTRON ? "electron" : "web",
       },
     }
   );
