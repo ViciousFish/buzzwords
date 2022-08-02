@@ -3,6 +3,8 @@ import { release } from "os";
 import { join } from "path";
 import contextMenu from 'electron-context-menu';
 
+import './menu';
+
 contextMenu({
 	showSaveImageAs: true
 });
