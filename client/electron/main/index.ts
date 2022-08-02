@@ -49,6 +49,8 @@ async function createWindow() {
       symbolColor: "#ffffff",
     },
     trafficLightPosition: { x: 18, y: 18 },
+    minHeight: 400,
+    minWidth: 400,
     width: 900,
     height: 750,
     webPreferences: {
@@ -67,7 +69,7 @@ async function createWindow() {
   } else {
     win.loadURL(url);
     // Open devTool if the app is not packaged
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
   }
 
   // Test actively push message to the Electron-Renderer

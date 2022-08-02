@@ -21,8 +21,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBackspace, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import useHotkeys from "@reecelucas/react-use-hotkeys";
-import { getAllUsers } from "../user/userSelectors";
-import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
 
 interface GameBoardProps {
   id: string;
@@ -33,10 +31,6 @@ interface GameBoardProps {
 const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   const { progress } = useProgress();
   const dispatch = useDispatch();
-
-  const users = useAppSelector(getAllUsers);
-  const p1Nick = users[game.users[0]]?.nickname;
-  const p2Nick = game.vsAI ? "Computer" : users[game.users[1]]?.nickname;
 
   const selectedWord = useAppSelector((state) =>
     getSelectedWordByGameId(state, id)
@@ -77,7 +71,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   });
 
   return (
-    <div className="h-[80vh] md:h-[calc(100vh-100px)] flex-auto flex-shrink-0 md:flex-shrink overflow-hidden">
+    <div className="flex-auto flex-shrink-0 md:flex-shrink overflow-hidden h-[140vw] max-h-[calc(100vh-150px)]">
       <Canvas key={`play-${id}`}>
         {/* <CameraControls /> */}
         <React.Suspense
