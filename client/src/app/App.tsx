@@ -1,17 +1,14 @@
 import React, { lazy, useEffect } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Globals } from "@react-spring/shared";
+import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
+// import { Globals } from "@react-spring/shared";
 import FaviconNotification from "favicon-notification";
 
-import SidebarRightSide from "./SidebarRightSide";
-import GameList from "../features/gamelist/GameList";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { initAction } from "./appActions";
 import { ToastContainer } from "react-toastify";
 import TutorialModal from "../features/game/TutorialModal";
 import { handleWindowFocusThunk } from "../features/game/gameActions";
 import ReactTooltip from "react-tooltip";
-import TopBar from "../features/topbar/TopBar";
 import { getHowManyGamesAreMyTurn } from "../features/gamelist/gamelistSelectors";
 
 // not necessary, as long as there's always a 3d canvas on screen!
@@ -19,6 +16,14 @@ import { getHowManyGamesAreMyTurn } from "../features/gamelist/gamelistSelectors
 //   Globals.assign({
 //     frameLoop: "always",
 //   });
+
+window.ipc?.handleLink((e, data) => {
+  const url = new URL(data);
+  console.log("url", url);
+  if (url.pathname === "//loginsuccess") {
+    location.reload();
+  }
+});
 
 const isTouch = window.matchMedia("(pointer: coarse)").matches;
 
@@ -28,6 +33,13 @@ FaviconNotification.init({
 
 const HomeLazy = lazy(() => import("../features/home-route/Home"));
 const PlayLazy = lazy(() => import("../features/play-route/Play"));
+const AuthSuccessLazy = lazy(
+  () => import("../features/auth-route/AuthSuccess")
+);
+const MainGameStructureLazy = lazy(() => import("./MainGameStructure"));
+
+const ELECTRON = window.versions;
+const Router = ELECTRON ? HashRouter : BrowserRouter;
 
 function App() {
   const dispatch = useAppDispatch();
@@ -63,23 +75,34 @@ function App() {
   }, [numberOfGamesWaitingForPlayer]);
 
   return (
-    <BrowserRouter>
-      <TopBar />
-      <div className="App bg-lightbg mt-[50px] flex overflow-hidden max-w-[100vw] flex-row safe-area-pad">
-        <GameList />
-        <SidebarRightSide>
-          <React.Suspense fallback={<></>}>
-            <Routes>
-              <Route path="/" element={<HomeLazy />} />
-              <Route path="/play/:id" element={<PlayLazy />} />
-            </Routes>
-          </React.Suspense>
-        </SidebarRightSide>
-      </div>
+    <Router>
+      <React.Suspense fallback={<></>}>
+        <Routes>
+          <Route element={<MainGameStructureLazy />}>
+            <Route
+              path="/"
+              element={
+                <React.Suspense fallback={<></>}>
+                  <HomeLazy />
+                </React.Suspense>
+              }
+            />
+            <Route
+              path="/play/:id"
+              element={
+                <React.Suspense fallback={<></>}>
+                  <PlayLazy />
+                </React.Suspense>
+              }
+            />
+          </Route>
+          <Route path="/auth/success" element={<AuthSuccessLazy />} />
+        </Routes>
+      </React.Suspense>
       <ToastContainer toastClassName="bg-primary text-darkbrown rounded-lg" />
       {showingTutorialModal && <TutorialModal />}
       {!isTouch && <ReactTooltip />}
-    </BrowserRouter>
+    </Router>
   );
 }
 

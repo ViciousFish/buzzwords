@@ -1,15 +1,25 @@
 {
   "version": "1.0.0",
   "name": "buzzwords-client",
+  "productName": "Buzzwords",
+  "author": {
+    "name": "Chuck Dries and James Quigley"
+  },
+  "description": "Hexagonal word game about capturing territory and defeating your opponent",
+  "homepage": "https://buzzwords.gg",
+  "main": "dist/electron/main/index.js",
   "scripts": {
     "dev": "vite",
+    "dev-electron": "cross-env DESKTOP=1 vite",
     "build": "vite build",
+    "build-electron": "cross-env DESKTOP=1 vite build",
     "typecheck": "tsc",
     "serve": "vite preview",
     "lint": "eslint src --ext .js,.ts,.tsx,.jsx",
     "pretty": "prettier --write .",
-    "upload-staging": "rsync -rz --delete dist/ ci@droplet.chuckdries.com:www/buzzwords-staging",
-    "upload": "rsync -rz --delete dist/ ci@droplet.chuckdries.com:www/buzzwords"
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "dist-mac": "CSC_NAME=\"Charles Dries (775SDZM9Q3)\" electron-builder"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
@@ -30,6 +40,7 @@
     "classnames": "^2.3.1",
     "cookie": "^0.4.1",
     "copy-to-clipboard": "^3.3.1",
+    "electron-context-menu": "^3.3.0",
     "favicon-notification": "^0.1.4",
     "formik": "^2.2.9",
     "ramda": "^0.27.1",
@@ -64,6 +75,10 @@
     "@typescript-eslint/parser": "^4.28.0",
     "@vitejs/plugin-react-refresh": "^1.3.1",
     "autoprefixer": "^10.2.6",
+    "cross-env": "^7.0.3",
+    "electron": "19.0.10",
+    "electron-builder": "^23.1.0",
+    "electron-notarize": "^1.2.1",
     "eslint": "^7.29.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react": "^7.24.0",
@@ -72,6 +87,7 @@
     "prettier": "2.3.2",
     "tailwindcss": "^2.2.4",
     "typescript": "^4.3.4",
-    "vite": "^2.3.8"
+    "vite": "^2.3.8",
+    "vite-plugin-electron": "^0.8.3"
   }
 }
