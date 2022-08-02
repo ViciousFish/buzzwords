@@ -34,7 +34,8 @@
     "passport-google-oauth": "^2.0.0",
     "ramda": "^0.27.1",
     "socket.io": "^4.4.0",
-    "ulid": "^2.3.0"
+    "ulid": "^2.3.0",
+    "url-join": "^5.0.0"
   },
   "devDependencies": {
     "@tsconfig/node14": "^1.0.0",
