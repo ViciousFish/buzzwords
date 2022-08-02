@@ -4,7 +4,6 @@ import GameList from "../features/gamelist/GameList";
 import TopBar from "../features/topbar/TopBar";
 import ScreenHeightWraper from "../presentational/ScreenHeightWrapper";
 import SidebarRightSide from "./SidebarRightSide";
-import useDimensions from "react-cool-dimensions";
 
 const MainGameStructure: React.FC = () => {
   // const {observe, height, width} = useDimensions()
