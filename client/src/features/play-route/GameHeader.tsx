@@ -113,7 +113,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
   );
 
   return (
-    <div className="h-[50px] flex-shrink-0 bg-darkbrown text-white text-lg flex px-4">
+    <div className="h-[50px] flex flex-shrink-0 bg-darkbrown text-white text-lg px-4">
       <div className="flex items-center justify-start flex-auto">
         <span className="text-p1 font-bold">{p1Nick || "Player 2"}</span>
         <span className="mx-2"> vs </span>
