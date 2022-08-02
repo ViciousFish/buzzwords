@@ -22,6 +22,7 @@ import { faBackspace, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import useHotkeys from "@reecelucas/react-use-hotkeys";
 import { getAllUsers } from "../user/userSelectors";
+import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
 
 interface GameBoardProps {
   id: string;
