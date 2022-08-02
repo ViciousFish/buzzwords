@@ -20,6 +20,9 @@ import { logout } from "../user/userActions";
 import { isUserLoggedIn } from "../user/userSelectors";
 import AuthPrompt from "./AuthPrompt";
 
+const ELECTRON = window.versions;
+const PLATFORM = window.versions?.platform?.();
+
 const TopBar: React.FC = () => {
   const dispatch = useAppDispatch();
 
@@ -67,8 +70,16 @@ const TopBar: React.FC = () => {
         "h-[50px] w-screen shadow-md"
       )}
     >
-      <div className="topbar rounded-t-xl flex justify-between h-full px-4 items-center">
-        <div className="flex">
+      <div
+        className={classNames(
+          "flex h-full p-0 items-center topbar",
+          !ELECTRON && "rounded-t-xl"
+        )}
+      >
+        <div className="flex h-full gap-1 items-center">
+          {PLATFORM === "darwin" && (
+            <div className="stoplights h-full w-[90px]" />
+          )}
           <button
             onClick={() => {
               dispatch(toggleIsOpen());
@@ -77,11 +88,11 @@ const TopBar: React.FC = () => {
               }
             }}
             aria-label="toggle games list"
-            className="p-2 hover:bg-lightbg hover:bg-opacity-50 rounded-md"
+            className="relative ml-2 p-2 hover:bg-lightbg hover:bg-opacity-50 rounded-md"
             data-tip="Toggle games list"
           >
             <FontAwesomeIcon icon={faBars} />
-            <span className="absolute text-sm left-[10px] top-1">
+            <span className="absolute text-sm right-[18px] bottom-[18px]">
               {hamburgerNotification}
             </span>
           </button>
@@ -112,7 +123,7 @@ const TopBar: React.FC = () => {
               aria-label="display tutorial"
               data-tip="Tutorial"
               className={classNames(
-                "p-2 rounded-md hover:bg-primary hover:bg-opacity-50",
+                "p-2 rounded-md hover:bg-lightbg hover:bg-opacity-50",
                 isOpen && showTutorialCard && "hidden"
               )}
             >
@@ -120,7 +131,8 @@ const TopBar: React.FC = () => {
             </button>
           </Popover>
         </div>
-        <div className="flex items-baseline">
+        <div className="h-full flex-auto window-drag" />
+        <div className="flex items-baseline pr-2">
           {isLoading && (
             <FontAwesomeIcon icon={faSpinner} className="mr-2 animate-spin" />
           )}
@@ -154,6 +166,7 @@ const TopBar: React.FC = () => {
               )}
             </Popover>
           )}
+          {PLATFORM === "win32" && <div className="w-[150px]"></div>}
         </div>
       </div>
     </div>

@@ -5,7 +5,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        fredoka: ['Fredoka\\ One', 'sans'],
+        fredoka: ['fredoka_oneregular', 'sans'],
         // sans: ['Patrick\\ Hand', 'sans']
       },
       colors: {
