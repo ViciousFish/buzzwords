@@ -2,6 +2,9 @@
   "version": "1.0.0",
   "name": "buzzwords-client",
   "productName": "Buzzwords",
+  "author": {
+    "name": "Chuck Dries and James Quigley"
+  },
   "description": "Hexagonal word game about capturing territory and defeating your opponent",
   "homepage": "https://buzzwords.gg",
   "main": "dist/electron/main/index.js",
@@ -15,7 +18,8 @@
     "lint": "eslint src --ext .js,.ts,.tsx,.jsx",
     "pretty": "prettier --write .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "dist-mac": "CSC_NAME=\"Charles Dries (775SDZM9Q3)\" electron-builder"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
@@ -74,6 +78,7 @@
     "cross-env": "^7.0.3",
     "electron": "19.0.10",
     "electron-builder": "^23.1.0",
+    "electron-notarize": "^1.2.1",
     "eslint": "^7.29.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react": "^7.24.0",

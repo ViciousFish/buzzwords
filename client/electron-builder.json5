@@ -6,6 +6,10 @@
   },
   files: ["dist"],
   mac: {
+    hardenedRuntime: true,
+    gatekeeperAssess: false,
+    entitlements: "build/entitlements.mac.plist",
+    entitlementsInherit: "build/entitlements.mac.plist",
     category: "public.app-category.games",
     artifactName: "${productName}_${version}_${arch}.${ext}",
     target: [
@@ -38,4 +42,5 @@
     name: "buzzwords-protocol",
     schemes: ["buzzwords"],
   },
+  afterSign: "scripts/notarize.js",
 }
