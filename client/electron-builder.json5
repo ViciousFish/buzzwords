@@ -29,15 +29,19 @@
         target: "portable",
         arch: ["x64"],
       },
+      {
+        target: "msi",
+        arch: ["x64"]
+      }
     ],
-    artifactName: "${productName}_${version}.${ext}",
+    artifactName: "${productName}_${version}_${arch}.${ext}",
   },
-  nsis: {
-    oneClick: false,
-    perMachine: false,
-    allowToChangeInstallationDirectory: true,
-    deleteAppDataOnUninstall: false,
-  },
+  // nsis: {
+  //   oneClick: false,
+  //   perMachine: false,
+  //   allowToChangeInstallationDirectory: true,
+  //   deleteAppDataOnUninstall: false,
+  // },
   protocols: {
     name: "buzzwords-protocol",
     schemes: ["buzzwords"],
