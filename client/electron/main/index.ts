@@ -84,7 +84,7 @@ async function createWindow() {
 
   win.webContents.on("before-input-event", (event, input) => {
     if (input.control && input.key.toLowerCase() === "i") {
-      win?.webContents.openDevTools();
+      win?.webContents.openDevTools({ mode: 'detach' });
       event.preventDefault();
     }
   });
@@ -109,8 +109,18 @@ app.on("window-all-closed", () => {
   app.quit();
 });
 
-app.on("second-instance", () => {
+app.on("second-instance", (e, argv) => {
   if (win) {
+    // Protocol handler for win32
+    // argv: An array of the second instance’s (command line / deep linked) arguments
+    if (process.platform == "win32") {
+      // Keep only command line / deep linked arguments
+      win?.webContents.executeJavaScript(`console.log('${JSON.stringify(argv)}')`)
+      const deeplinkingUrl = argv.find((arg) => arg.startsWith("buzzwords://"))?.toString();
+      if (deeplinkingUrl) {
+        win?.webContents.send("open-url", deeplinkingUrl);
+      }
+    }
     // Focus on the main window if the user tried to open another
     if (win.isMinimized()) win.restore();
     win.focus();
@@ -137,7 +147,6 @@ ipcMain.handle("open-win", (event, arg) => {
 });
 
 app.on("open-url", function (event, data) {
-  dialog.showErrorBox("debug", data);
   win?.webContents.send("open-url", data);
   event.preventDefault();
 });

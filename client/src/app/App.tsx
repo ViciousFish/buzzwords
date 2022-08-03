@@ -20,7 +20,7 @@ import { getHowManyGamesAreMyTurn } from "../features/gamelist/gamelistSelectors
 window.ipc?.handleLink((e, data) => {
   const url = new URL(data);
   console.log("url", url);
-  if (url.pathname === "//loginsuccess") {
+  if (url.pathname.startsWith("//loginsuccess")) {
     location.reload();
   }
 });
