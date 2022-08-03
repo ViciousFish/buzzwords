@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import * as R from "ramda";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -8,6 +8,7 @@ import {
   faPlayCircle,
   faShareSquare,
   faTrash,
+  faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import urljoin from "url-join";
@@ -38,6 +39,8 @@ import { getOpponent } from "../user/userSelectors";
 import { fetchOpponent } from "../user/userActions";
 import { isFullGame } from "../gamelist/gamelistSlice";
 import GameHeader from "./GameHeader";
+import { Popover } from "react-tiny-popover";
+import NativeAppAd from "../../presentational/NativeAppAd";
 
 export const getGameUrl = (id: string) => {
   if (import.meta.env.VITE_SHARE_BASEURL) {
@@ -49,6 +52,7 @@ export const getGameUrl = (id: string) => {
 
 const Play: React.FC = () => {
   const dispatch = useAppDispatch();
+  const location = useLocation();
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -70,6 +74,7 @@ const Play: React.FC = () => {
 
   const [fourohfour, setFourohfour] = useState(false);
   const [fetchedOpponentName, setFetchedOpponentName] = useState(false);
+  const [appInfoOverlay, setAppInfoOverlay] = useState(false);
 
   const userIndex =
     game && currentUser
@@ -91,6 +96,15 @@ const Play: React.FC = () => {
       });
     }
   }, [id, dispatch]);
+
+  const launchApp = useCallback(() => {
+    const path = location.pathname;
+    // @ts-ignore
+    window.location = urljoin(
+      `${import.meta.env.VITE_PRIVATE_SCHEME_NAME}://`,
+      path
+    );
+  }, [location]);
 
   useEffect(() => {
     if (id) {
@@ -187,7 +201,29 @@ const Play: React.FC = () => {
             has invited you to play Buzzwords
           </h2>
         </div>
-        <Button onClick={joinGame}>Join game</Button>
+        <div className="flex items-start">
+          <Button onClick={joinGame}>Join game here</Button>
+          {!window.ipc && (
+            <div className="text-white bg-darkbrown rounded-full flex justify-center">
+              <Button className="text-black" onClick={launchApp}>
+                Join game in app
+              </Button>
+                <Popover
+                  content={<NativeAppAd />}
+                  isOpen={appInfoOverlay}
+                  onClickOutside={() => setAppInfoOverlay(false)}
+                >
+                  <Button
+                    variant="quiet"
+                    className="ml-0"
+                    onClick={() => setAppInfoOverlay(!appInfoOverlay)}
+                  >
+                    <FontAwesomeIcon icon={faInfoCircle} />
+                  </Button>
+                </Popover>
+            </div>
+          )}
+        </div>
       </div>
     );
   }
