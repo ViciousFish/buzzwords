@@ -10,6 +10,7 @@ import TutorialModal from "../features/game/TutorialModal";
 import { handleWindowFocusThunk } from "../features/game/gameActions";
 import ReactTooltip from "react-tooltip";
 import { getHowManyGamesAreMyTurn } from "../features/gamelist/gamelistSelectors";
+import IPCRoutingComponent from "./IPCRoutingComponent";
 
 // not necessary, as long as there's always a 3d canvas on screen!
 // import.meta.env.PROD &&
@@ -68,6 +69,7 @@ function App() {
 
   return (
     <Router>
+      <IPCRoutingComponent />
       <React.Suspense fallback={<></>}>
         <Routes>
           <Route element={<MainGameStructureLazy />}>
