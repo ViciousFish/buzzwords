@@ -202,7 +202,7 @@ const Play: React.FC = () => {
           </h2>
         </div>
         <div className="flex items-start">
-          <Button onClick={joinGame}>Join game here</Button>
+          <Button onClick={joinGame}>Join game{!window.ipc && ' here'}</Button>
           {!window.ipc && (
             <div className="text-white bg-darkbrown rounded-full flex justify-center">
               <Button className="text-black" onClick={launchApp}>
