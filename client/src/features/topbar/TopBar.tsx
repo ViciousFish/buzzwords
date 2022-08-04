@@ -145,7 +145,7 @@ const TopBar: React.FC = () => {
           )}
           {!isLoading && !socketConnected && (
             <Button
-              onClick={() => location.reload()}
+              onClick={() => window.location.reload()}
               variant="quiet"
               className="mr-2"
             >
