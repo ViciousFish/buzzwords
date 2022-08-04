@@ -5,8 +5,8 @@ import React from "react";
 const NativeAppAd = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
   return (
     <div ref={ref} className="bg-primary p-4 shadow-lg rounded-xl max-w-md">
-      <div className="flex gap-2 mb-2">
-        <img className="drop-shadow" src="/apple-touch-icon.png" style={{ width: 50 }} />
+      <div className="flex gap-2 mb-2 items-center">
+        <img className="drop-shadow" src="/apple-touch-icon.png" style={{ width: 70 }} />
         <div>
           <h3 className="text-xl font-bold">The Buzzwords App</h3>
           <h4 className="italic opacity-80">
