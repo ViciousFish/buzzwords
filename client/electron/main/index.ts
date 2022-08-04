@@ -1,12 +1,11 @@
-import { app, BrowserWindow, shell, ipcMain } from "electron";
-import { release } from "os";
-import { join } from "path";
-import contextMenu from 'electron-context-menu';
+import { app, BrowserWindow, shell, ipcMain, dialog } from "electron";
+import { resolve, join } from "path";
+import contextMenu from "electron-context-menu";
 
-import './menu';
+import "./menu";
 
 contextMenu({
-	showSaveImageAs: true
+  showSaveImageAs: true,
 });
 
 // Disable GPU Acceleration for Windows 7 (came with electron vite template)
@@ -85,7 +84,7 @@ async function createWindow() {
 
   win.webContents.on("before-input-event", (event, input) => {
     if (input.control && input.key.toLowerCase() === "i") {
-      win?.webContents.openDevTools();
+      win?.webContents.openDevTools({ mode: 'detach' });
       event.preventDefault();
     }
   });
@@ -110,8 +109,18 @@ app.on("window-all-closed", () => {
   app.quit();
 });
 
-app.on("second-instance", () => {
+app.on("second-instance", (e, argv) => {
   if (win) {
+    // Protocol handler for win32
+    // argv: An array of the second instance’s (command line / deep linked) arguments
+    if (process.platform == "win32") {
+      // Keep only command line / deep linked arguments
+      win?.webContents.executeJavaScript(`console.log('${JSON.stringify(argv)}')`)
+      const deeplinkingUrl = argv.find((arg) => arg.startsWith("buzzwords://"))?.toString();
+      if (deeplinkingUrl) {
+        win?.webContents.send("open-url", deeplinkingUrl);
+      }
+    }
     // Focus on the main window if the user tried to open another
     if (win.isMinimized()) win.restore();
     win.focus();
@@ -131,37 +140,27 @@ ipcMain.handle("ping", () => "pong");
 
 // new window example arg: new windows url
 ipcMain.handle("open-win", (event, arg) => {
-  // CQ: remove! we want a singleton window
-  const childWindow = new BrowserWindow({
-    webPreferences: {
-      preload,
-    },
-  });
-
-  if (app.isPackaged) {
-    childWindow.loadFile(indexHtml, { hash: arg });
-  } else {
-    childWindow.loadURL(`${url}/#${arg}`);
-    // childWindow.webContents.openDevTools({ mode: "undocked", activate: true })
-  }
+  dialog.showErrorBox(
+    "Something went wrong",
+    "This code shouldn't have been reachable. Please get in touch and let us know how you got here."
+  );
 });
 
-if (process.platform === "win32") {
-  app.setAsDefaultProtocolClient(
-    process.env.VITE_PRIVATE_SCHEME_NAME ?? "buzzwords",
-    process.execPath,
-    [app.getAppPath()]
-  );
+app.on("open-url", function (event, data) {
+  win?.webContents.send("open-url", data);
+  event.preventDefault();
+});
+
+if (process.defaultApp) {
+  if (process.argv.length >= 2) {
+    app.setAsDefaultProtocolClient(
+      process.env.VITE_PRIVATE_SCHEME_NAME ?? "buzzwords",
+      process.execPath,
+      [resolve(process.argv[1])]
+    );
+  }
 } else {
   app.setAsDefaultProtocolClient(
     process.env.VITE_PRIVATE_SCHEME_NAME ?? "buzzwords"
   );
 }
-
-app.on("open-url", function (event, data) {
-  const prefix = `${process.env.VITE_PRIVATE_SCHEME_NAME ?? "x-buzzwords"}://`;
-  const url = new URL(data);
-  console.log(url);
-  win?.webContents.send("open-url", data);
-  event.preventDefault();
-});

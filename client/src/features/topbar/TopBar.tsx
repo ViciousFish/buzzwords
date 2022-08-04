@@ -3,15 +3,18 @@ import {
   faCircle,
   faQuestion,
   faSpinner,
+  faSyncAlt,
   faVolumeMute,
   faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import React, { useCallback, useState } from "react";
+import { useLocation } from "react-router";
 import { Popover } from "react-tiny-popover";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
+import NativeAppAd from "../../presentational/NativeAppAd";
 import { setTurnNotificationsMute } from "../game/gameSlice";
 import { getHowManyGamesAreMyTurn } from "../gamelist/gamelistSelectors";
 import { setShowTutorialCard, toggleIsOpen } from "../gamelist/gamelistSlice";
@@ -25,6 +28,7 @@ const PLATFORM = window.versions?.platform?.();
 
 const TopBar: React.FC = () => {
   const dispatch = useAppDispatch();
+  const location = useLocation();
 
   const isOpen = useAppSelector((state) => state.gamelist.isOpen);
   const turnNotificationsMuted = useAppSelector(
@@ -43,9 +47,12 @@ const TopBar: React.FC = () => {
   );
 
   const [_authPrompt, setAuthPrompt] = useState(
-    !window.location.toString().match(/play/)
-  ); // CQ: temp
+    !location.pathname.match(/play|download/)
+  );
   const authPrompt = isLoggedIn === false && _authPrompt;
+
+  const [nativeAppAd, setNativeAppAd] = useState(false);
+  const showDownloadButton = !window.ipc && !location.pathname.match(/download/)
 
   const isLoading =
     isRefreshing || (currentGame && gamesLoading[currentGame] === "loading");
@@ -132,14 +139,40 @@ const TopBar: React.FC = () => {
           </Popover>
         </div>
         <div className="h-full flex-auto window-drag" />
-        <div className="flex items-baseline pr-2">
+        <div className="flex items-center pr-2">
           {isLoading && (
             <FontAwesomeIcon icon={faSpinner} className="mr-2 animate-spin" />
+          )}
+          {!isLoading && !socketConnected && (
+            <Button
+              onClick={() => window.location.reload()}
+              variant="quiet"
+              className="mr-2"
+            >
+              <FontAwesomeIcon icon={faSyncAlt} />
+            </Button>
           )}
           <FontAwesomeIcon
             className={socketConnected ? "text-green-500" : "text-gray-400"}
             icon={faCircle}
           />
+          {showDownloadButton && (
+            <Popover
+              positions={["bottom"]}
+              containerClassName="z-30 px-2"
+              isOpen={nativeAppAd}
+              content={<NativeAppAd />}
+              onClickOutside={() => setNativeAppAd(false)}
+            >
+              <Button
+                variant="quiet"
+                onClick={() => setNativeAppAd(!nativeAppAd)}
+                className="rounded-md"
+              >
+                Download
+              </Button>
+            </Popover>
+          )}
           {isLoggedIn !== null && (
             <Popover
               positions={["bottom"]}
@@ -150,7 +183,7 @@ const TopBar: React.FC = () => {
               {isLoggedIn ? (
                 <Button
                   variant="quiet"
-                  className="p-2 rounded-md"
+                  className="ml-0 rounded-md"
                   onClick={() => dispatch(logout())}
                 >
                   Logout
@@ -159,7 +192,7 @@ const TopBar: React.FC = () => {
                 <Button
                   variant="quiet"
                   onClick={() => setAuthPrompt(true)}
-                  className="p-2 rounded-md"
+                  className="ml-0 rounded-md"
                 >
                   Login
                 </Button>

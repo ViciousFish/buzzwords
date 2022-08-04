@@ -10,20 +10,14 @@ import TutorialModal from "../features/game/TutorialModal";
 import { handleWindowFocusThunk } from "../features/game/gameActions";
 import ReactTooltip from "react-tooltip";
 import { getHowManyGamesAreMyTurn } from "../features/gamelist/gamelistSelectors";
+import IPCRoutingComponent from "./IPCRoutingComponent";
+import NativeAppAd from "../presentational/NativeAppAd";
 
 // not necessary, as long as there's always a 3d canvas on screen!
 // import.meta.env.PROD &&
 //   Globals.assign({
 //     frameLoop: "always",
 //   });
-
-window.ipc?.handleLink((e, data) => {
-  const url = new URL(data);
-  console.log("url", url);
-  if (url.pathname === "//loginsuccess") {
-    location.reload();
-  }
-});
 
 const isTouch = window.matchMedia("(pointer: coarse)").matches;
 
@@ -76,6 +70,7 @@ function App() {
 
   return (
     <Router>
+      <IPCRoutingComponent />
       <React.Suspense fallback={<></>}>
         <Routes>
           <Route element={<MainGameStructureLazy />}>
@@ -93,6 +88,14 @@ function App() {
                 <React.Suspense fallback={<></>}>
                   <PlayLazy />
                 </React.Suspense>
+              }
+            />
+            <Route
+              path="/download"
+              element={
+                <div className="flex justify-center items-center bg-lightbg h-full">
+                  <NativeAppAd />
+                </div>
               }
             />
           </Route>
