@@ -55,6 +55,14 @@ body {
   @apply bg-black;
 }
 
+*::-webkit-scrollbar-thumb {
+  @apply bg-darkbrown rounded-full;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  background: rgba(0,0,0,.1);
+  @apply rounded-full;
+}
 /* // idk, helps canvas shrink
 *  https://stackoverflow.com/a/59698584
 *  https://stackoverflow.com/a/36247448
