@@ -244,14 +244,6 @@ export const deleteGameById =
     }
   };
 
-export const getTutorialCardSetting = () =>
-  JSON.parse(
-    localStorage.getItem("turnNotificationsMute") || "false"
-  ) as boolean;
-
-export const setTutorialCardSetting = (mute: boolean) =>
-  localStorage.setItem("turnNotificationsMute", JSON.stringify(mute));
-
 export const fetchGameById =
   (id: string): AppThunk<Promise<boolean>> =>
   async (dispatch) => {
