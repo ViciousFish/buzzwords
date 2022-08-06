@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Move } from "buzzwords-shared/Game";
 import { QRCoord } from "../hexGrid/hexGrid";
+import { getTurnNotificationsSetting } from "./gameActions";
 import { GameStateModalProps } from "./GameStateModal";
 
 interface GameState {
@@ -38,7 +39,7 @@ const initialState: GameState = {
   windowHasFocus: document.hasFocus(),
   gameStateModal: null,
   showingNudgeButton: false,
-  turnNotificationsMuted: false,
+  turnNotificationsMuted: getTurnNotificationsSetting(),
   socketConnected: false,
   freezeGameBoard: false,
 };

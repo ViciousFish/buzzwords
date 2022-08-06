@@ -16,19 +16,23 @@ import {
   resetSelection,
   selectTile,
   setSelection,
+  setTurnNotificationsMute,
   setWindowHasFocus,
   toggleNudgeButton,
   unselectTile,
 } from "./gameSlice";
-// import { getEmptyGame } from "./game";
-// import { addGame } from "./gameSlice";
 
-// export const createNewGame =
-//   (userId: string): AppThunk =>
-//   (dispatch) => {
-//     const newGame = getEmptyGame(userId);
-//     dispatch(addGame(newGame));
-//   };
+export const getTurnNotificationsSetting = () =>
+  JSON.parse(
+    localStorage.getItem("turnNotificationsMute") || "false"
+  ) as boolean;
+
+export const setTurnNotificationsSetting =
+  (mute: boolean): AppThunk =>
+  (dispatch) => {
+    localStorage.setItem("turnNotificationsMute", JSON.stringify(mute));
+    dispatch(setTurnNotificationsMute(mute));
+  };
 
 export const toggleTileSelected =
   (tile: QRCoord): AppThunk =>
@@ -74,8 +78,8 @@ export const submitMove =
         move: formattedCoords,
       });
     } catch (e) {
-      if (e.response.data === 'Invalid coords') {
-        window.alert("Sorry, something went wrong on our end. Reloading")
+      if (e.response.data === "Invalid coords") {
+        window.alert("Sorry, something went wrong on our end. Reloading");
         location.reload();
       }
 

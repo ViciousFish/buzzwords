@@ -1,3 +1,4 @@
+import React, { useCallback, useState } from "react";
 import {
   faBars,
   faCircle,
@@ -9,13 +10,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import React, { useCallback, useState } from "react";
 import { useLocation } from "react-router";
 import { Popover } from "react-tiny-popover";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import NativeAppAd from "../../presentational/NativeAppAd";
-import { setTurnNotificationsMute } from "../game/gameSlice";
+import { setTurnNotificationsSetting } from "../game/gameActions";
 import { getHowManyGamesAreMyTurn } from "../gamelist/gamelistSelectors";
 import { setShowTutorialCard, toggleIsOpen } from "../gamelist/gamelistSlice";
 import TutorialCard from "../gamelist/TutorialCard";
@@ -58,7 +58,7 @@ const TopBar: React.FC = () => {
     isRefreshing || (currentGame && gamesLoading[currentGame] === "loading");
 
   const toggleTurnNotificationsMute = useCallback(() => {
-    dispatch(setTurnNotificationsMute(!turnNotificationsMuted));
+    dispatch(setTurnNotificationsSetting(!turnNotificationsMuted));
   }, [dispatch, turnNotificationsMuted]);
 
   let hamburgerNotification;
