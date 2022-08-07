@@ -5,7 +5,7 @@ const wordsPath = resolve(__dirname, "words.json");
 type Name = string;
 type Enabled = 1 | 0;
 interface Words {
-  [word: string]: Enabled;
+  [word: Name]: Enabled;
 }
 
 function sort(words: Words): Words {
@@ -28,7 +28,7 @@ function write(path: string, words: Words): void {
   writeFileSync(path, newWords);
 }
 
-function read(path: string, name: string): Name {
+function read(path: string, name: Name): Name {
   const words = load(path);
   if (words[name] == undefined) {
     throw "word does not exist";
