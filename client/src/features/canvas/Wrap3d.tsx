@@ -1,7 +1,9 @@
 import { Stats, useProgress } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
-import React, { useEffect, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { Box3, Color, Group, PerspectiveCamera } from "three";
+import type { ThreeElements } from '@react-three/fiber'
+
 
 const setZoom = (
   group: Group,
@@ -19,7 +21,7 @@ const setZoom = (
   camera.updateProjectionMatrix();
 };
 
-const Wrap3d: React.FC = ({ children }) => {
+const Wrap3d = ({ children }: { children: ReactNode }) => {
   const { progress } = useProgress();
 
   const groupRef = useRef<Group>();
@@ -37,6 +39,7 @@ const Wrap3d: React.FC = ({ children }) => {
     }
   }, [progress, width, height, groupRef, boundingBox, camera]);
   return (
+    // @ts-ignore
     <group ref={groupRef}>
       <group position={[0, 0, 0]}>
         {/* {!import.meta.env.PROD && <Stats />} */}
