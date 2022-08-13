@@ -19,17 +19,18 @@ jobs:
         with:
           name: release-linux
           path: ./client/release/*/*.snap
-  # build-windows:
-  #   runs-on: windows-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 16
-  #         cache: 'yarn'
-  #     - run: 'yarn'
-  #     - run: yarn build-electron && yarn dist && ls release
-  #       working-directory: ./client
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'yarn'
+      - run: 'yarn'
+      - run: yarn build-electron && yarn dist && ls release
+        working-directory: ./client
+        shell: bash
   build-mac:
     runs-on: macos-latest
     steps:
@@ -51,11 +52,13 @@ jobs:
     needs:
       - build-linux
       - build-mac
-      # - build-windows
+      - build-windows
     steps:
       - uses: actions/download-artifact@v3
+      - run: mkdir -p /tmp/release && cp **/*.dmg /tmp/release/ && cp **/*.snap /tmp/release/
       - name: Display structure of downloaded files
         run: ls -R
+        working-directory: /tmp/release
       # - name: Release
       #   uses: fnkr/github-action-ghr@v1
       #   if: startsWith(github.ref, 'refs/tags/')
