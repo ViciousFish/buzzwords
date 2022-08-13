@@ -12,10 +12,9 @@ jobs:
         with:
           node-version: 16
           cache: 'yarn'
-      - run: cd client
       - run: 'yarn'
-      - run: yarn build-electron
-      - run: yarn dist
+      - run: yarn build-electron && yarn dist
+        working-directory: ./client
 
   # upload:
   #   runs-on: ubuntu-latest
