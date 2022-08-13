@@ -4,6 +4,12 @@ on:
     tags:
       - client-*
 jobs:
+  metadata:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo ${{ github.ref }}
+          echo $GITHUB_REF
   build-linux:
     runs-on: ubuntu-latest
     steps:
@@ -67,13 +73,11 @@ jobs:
       - uses: actions/download-artifact@v3
       - run: |
           mkdir -p build
-          cp build-mac/**/*.dmg build/
-          cp build-linux/**/*.snap build/
-          cp build-windows/**/*.exe build/
+          cp release-mac/**/*.dmg build/
+          cp release-linux/**/*.snap build/
+          cp release-windows/**/*.exe build/
 
           ls build
-          echo ${{ github.ref }}
-          echo $GITHUB_REF
       # - uses: manleydev/butler-publish-itchio-action@master
       #   env:
       #     BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
