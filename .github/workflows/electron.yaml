@@ -13,8 +13,34 @@ jobs:
           node-version: 16
           cache: 'yarn'
       - run: 'yarn'
-      - run: yarn build-electron && yarn dist
+      - run: yarn build-electron && yarn dist && ls -R release
         working-directory: ./client
+  # build-windows:
+  #   runs-on: windows-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 16
+  #         cache: 'yarn'
+  #     - run: 'yarn'
+  #     - run: yarn build-electron && yarn dist && ls release
+  #       working-directory: ./client
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'yarn'
+      - run: 'yarn'
+      - run: yarn build-electron && yarn dist && ls -R release
+        working-directory: ./client
+      - uses: actions/upload-artifact@v3
+        with:
+          name: release-linux
+          path: ./client/release/*/*.dmg
 
   # upload:
   #   runs-on: ubuntu-latest
