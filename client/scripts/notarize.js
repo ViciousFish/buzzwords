@@ -3,7 +3,7 @@ require("dotenv").config();
 const { notarize } = require("electron-notarize");
 
 exports.default = async function notarizing(context) {
-  if (!process.env.CSC_NAME) {
+  if (!(process.env.CSC_NAME || process.env.CSC_LINK)) {
     return;
   }
   const { electronPlatformName, appOutDir } = context;

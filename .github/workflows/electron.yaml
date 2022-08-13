@@ -37,6 +37,9 @@ jobs:
           path: ./client/release/*/*.exe
   build-mac:
     runs-on: macos-latest
+    env:
+      CSC_LINK: ${{ secrets.CSC_LINK }}
+      CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -59,10 +62,14 @@ jobs:
       - build-windows
     steps:
       - uses: actions/download-artifact@v3
-      - run: mkdir -p /tmp/release && cp **/*.dmg /tmp/release/ && cp **/*.snap /tmp/release/
-      - name: Display structure of downloaded files
-        run: ls -R
-        working-directory: /tmp/release
+      - run: |
+          mkdir -p build
+          cp build-mac/**/*.dmg build/
+          cp build-linux/**/*.snap build/
+          cp build-windows/**/*.exe build/
+
+          ls build
+
       # - name: Release
       #   uses: fnkr/github-action-ghr@v1
       #   if: startsWith(github.ref, 'refs/tags/')
