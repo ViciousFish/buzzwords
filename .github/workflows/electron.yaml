@@ -1,8 +1,8 @@
 name: Electron build
-on:
-  push:
-    tags:
-      - v*
+on: [push]
+  # push:
+  #   tags:
+  #     - v*
 jobs:
   build-linux:
     runs-on: ubuntu-latest
