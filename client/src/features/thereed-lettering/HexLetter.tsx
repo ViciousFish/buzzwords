@@ -12,7 +12,7 @@ import {
   useThree,
   Vector3 as V3Type,
 } from "@react-three/fiber";
-import { FontLoader } from "three";
+import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { useSpring, animated as a } from "@react-spring/three";
 import { config as springConfig } from "@react-spring/core";
 import { useGesture } from "@use-gesture/react";
