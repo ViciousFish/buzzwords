@@ -1,8 +1,8 @@
 name: Electron build
-on: [push]
-  # push:
-  #   tags:
-  #     - v*
+on:
+  push:
+    tags:
+      - client-*
 jobs:
   build-linux:
     runs-on: ubuntu-latest
@@ -40,6 +40,9 @@ jobs:
     env:
       CSC_LINK: ${{ secrets.CSC_LINK }}
       CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+      APPLEID: ${{ secrets.APPLEID }}
+      APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
+      APPLETEAMID: ${{ secrets.APPLETEAMID }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -69,7 +72,29 @@ jobs:
           cp build-windows/**/*.exe build/
 
           ls build
-
+          echo ${{ github.ref }}
+          echo $GITHUB_REF
+      # - uses: manleydev/butler-publish-itchio-action@master
+      #   env:
+      #     BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+      #     CHANNEL: windows
+      #     ITCH_GAME: buzzwords
+      #     ITCH_USER: chuckdries
+      #     PACKAGE: build-windows
+      # - uses: manleydev/butler-publish-itchio-action@master
+      #   env:
+      #     BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+      #     CHANNEL: linux
+      #     ITCH_GAME: buzzwords
+      #     ITCH_USER: chuckdries
+      #     PACKAGE: build-linux
+      # - uses: manleydev/butler-publish-itchio-action@master
+      #   env:
+      #     BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+      #     CHANNEL: osx
+      #     ITCH_GAME: buzzwords
+      #     ITCH_USER: chuckdries
+      #     PACKAGE: build-mac
       # - name: Release
       #   uses: fnkr/github-action-ghr@v1
       #   if: startsWith(github.ref, 'refs/tags/')
