@@ -28,9 +28,13 @@ jobs:
           node-version: 16
           cache: 'yarn'
       - run: 'yarn'
-      - run: yarn build-electron && yarn dist && ls release
+      - run: yarn build-electron && yarn dist
         working-directory: ./client
         shell: bash
+      - uses: actions/upload-artifact@v3
+        with:
+          name: release-windows
+          path: ./client/release/*/*.exe
   build-mac:
     runs-on: macos-latest
     steps:
