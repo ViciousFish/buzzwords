@@ -4,12 +4,6 @@ on:
     tags:
       - client-*
 jobs:
-  metadata:
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo ${{ github.ref }}
-          echo $GITHUB_REF
   build-linux:
     runs-on: ubuntu-latest
     steps:
@@ -85,6 +79,7 @@ jobs:
       #     ITCH_GAME: buzzwords
       #     ITCH_USER: chuckdries
       #     PACKAGE: build-windows
+      #     VERSION: 
       # - uses: manleydev/butler-publish-itchio-action@master
       #   env:
       #     BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}

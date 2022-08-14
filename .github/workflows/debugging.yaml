@@ -1,0 +1,12 @@
+name: Testing stuff
+on:
+  push:
+    tags:
+      - debug-*
+jobs:
+  metadata:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          env
+          printenv
