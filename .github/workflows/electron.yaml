@@ -81,7 +81,7 @@ jobs:
           CHANNEL: windows
           ITCH_GAME: buzzwords
           ITCH_USER: chuckdries
-          PACKAGE: build-windows
+          PACKAGE: release-windows
           VERSION: $TAG
       - uses: manleydev/butler-publish-itchio-action@master
         env:
@@ -89,7 +89,7 @@ jobs:
           CHANNEL: linux
           ITCH_GAME: buzzwords
           ITCH_USER: chuckdries
-          PACKAGE: build-linux
+          PACKAGE: release-linux
           VERSION: $TAG
       - uses: manleydev/butler-publish-itchio-action@master
         env:
@@ -97,7 +97,7 @@ jobs:
           CHANNEL: osx
           ITCH_GAME: buzzwords
           ITCH_USER: chuckdries
-          PACKAGE: build-mac
+          PACKAGE: release-mac
           VERSION: $TAG
       - name: Release
         uses: fnkr/github-action-ghr@v1
