@@ -1,7 +1,7 @@
 export const theme = {
   colors: {
-    primary: "#3764B3",
-    darkbrown: "#cccccc",
+    primary: "#142542",
+    darkbrown: "#BCC2D7",
     lightbg: "#fae7b2",
     darkbg: "#f2dc9d",
     tile_p1: '#6F3458',

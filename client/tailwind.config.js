@@ -19,7 +19,7 @@ module.exports = {
           return `rgb(250, 231, 178)`;
         },
         lightbg2: '#f2dc9d',
-        darkbg1: '#334155',
+        darkbg1: '#000000',
         darkbg2: '#1e293b',
         lightprimary: '#F6C54B', // theme.primary on lit tiles
         primary: '#334155', // theme.primary on lit tiles

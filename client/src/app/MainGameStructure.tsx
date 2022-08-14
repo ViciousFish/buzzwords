@@ -8,7 +8,7 @@ import SidebarRightSide from "./SidebarRightSide";
 const MainGameStructure: React.FC = () => {
   // const {observe, height, width} = useDimensions()
   return (
-    <ScreenHeightWraper className="dark flex flex-col">
+    <ScreenHeightWraper className="flex flex-col">
       <TopBar />
       <div
         style={{ display: "flex" }}

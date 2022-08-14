@@ -102,7 +102,7 @@ function App() {
           <Route path="/auth/success" element={<AuthSuccessLazy />} />
         </Routes>
       </React.Suspense>
-      <ToastContainer toastClassName="bg-primary text-darkbrown rounded-lg" />
+      <ToastContainer toastClassName="bg-primary text-darkbrown dark:text-slate-300 rounded-lg" />
       {showingTutorialModal && <TutorialModal />}
       {!isTouch && <ReactTooltip />}
     </Router>
