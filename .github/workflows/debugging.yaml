@@ -10,4 +10,4 @@ jobs:
       - run: |
           export TAG=$(echo $GITHUB_REF_NAME | sed 's/client-//')
           echo "TAG=$TAG" >> $GITHUB_ENV
-      - run: echo $TAG"
+      - run: echo $TAG
