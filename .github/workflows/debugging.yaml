@@ -8,6 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          export TAG=$(echo $GITHUB_REF_NAME | sed 's/client-//')
+          export TAG=$(echo $GITHUB_REF_NAME | sed 's/debug-//')
           echo "TAG=$TAG" >> $GITHUB_ENV
       - run: echo $TAG
