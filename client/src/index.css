@@ -80,11 +80,12 @@ body {
 }
 
 .topbar {
-  background: linear-gradient(
+  /*background: linear-gradient(
     0deg,
     rgba(233, 187, 72, 1) 0%,
     rgba(246, 197, 75, 1) 100%
-  );
+  );*/
+  @apply bg-slate-900;
 }
 
 .stoplights {

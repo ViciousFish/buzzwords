@@ -25,6 +25,8 @@ const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
 const BeeLazy = React.lazy(() => import("../../assets/Bee"));
 const HexWordLazy = React.lazy(() => import("../thereed-lettering/HexWord"));
 
+const HeaderLinkClasses = "block p-2 rounded-md hover:bg-primary hover:bg-opacity-50 text-darkbrown dark:text-gray-200"
+
 const GameList: React.FC = () => {
   const dispatch = useAppDispatch();
 
@@ -57,10 +59,10 @@ const GameList: React.FC = () => {
 
   return (
     <a.div className="w-[300px] flex-shrink-0 z-10" style={containerSpring}>
-      <ScreenHeightWraper insetTop={50} className="flex flex-col bg-darkbg">
+      <ScreenHeightWraper insetTop={50} className="flex flex-col bg-lightbg2 dark:bg-darkbg2">
         <header className="z-10 flex flex-shrink-0 px-2 py-2 space-x-1">
           <a
-            className="block p-2 rounded-md hover:bg-primary hover:bg-opacity-50 text-darkbrown"
+            className={HeaderLinkClasses}
             href="https://github.com/ViciousFish/buzzwords"
             target="_blank"
             rel="noreferrer"
@@ -70,7 +72,7 @@ const GameList: React.FC = () => {
             <FontAwesomeIcon icon={faGithub} />
           </a>
           <a
-            className="block p-2 rounded-md hover:bg-primary hover:bg-opacity-50 text-darkbrown"
+            className={HeaderLinkClasses}
             href="https://twitter.com/BuzzwordsGG"
             target="_blank"
             rel="noreferrer"
@@ -83,7 +85,7 @@ const GameList: React.FC = () => {
               classNames(
                 isActive
                   ? "bg-primary hover:bg-opacity-100"
-                  : "underline text-darkbrown",
+                  : "underline text-darkbrown dark:text-slate-200",
                 "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50"
               )
             }
@@ -106,7 +108,7 @@ const GameList: React.FC = () => {
           </div>
           <div className="flex-auto">
             <div className="z-10 px-2 mt-0 flex items-center">
-              <h2 className="text-2xl font-bold text-darkbrown">Games</h2>
+              <h2 className="text-2xl font-bold text-darkbrown dark:text-slate-200">Games</h2>
               <div className="bg-primary mx-1 rounded-xl text-center flex items-center p-1">
                 <h3 className="text-xs mr-1">New</h3>
                 <div className="flex space-x-1">
@@ -137,7 +139,7 @@ const GameList: React.FC = () => {
             {completedGames.length ? (
               <div className="px-2 ">
                 <button
-                  className="flex items-center text-darkbrown w-full"
+                  className="flex items-center text-darkbrown dark:text-slate-200 w-full"
                   onClick={() => dispatch(toggleCompletedGames())}
                 >
                   <FontAwesomeIcon
@@ -157,7 +159,7 @@ const GameList: React.FC = () => {
             )}
           </div>
           {showTutorialCard && isOpen && <TutorialCard />}
-          <div className="p-2 text-sm text-center text-gray-800">
+          <div className="p-2 text-sm text-center text-gray-800 dark:text-slate-400">
             by{" "}
             <a
               className="underline"

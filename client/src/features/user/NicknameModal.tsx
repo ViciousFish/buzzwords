@@ -45,7 +45,7 @@ const NicknameModal: React.FC = () => {
         status,
       }) => (
         <Modal>
-          <div className="p-8 bg-lightbg rounded-xl text-darkbrown">
+          <div className="p-8 bg-lightbg1 rounded-xl text-darkbrown">
             <h1 className="text-2xl">Pick a nickname</h1>
             <p>
               It doesn&apos;t have to be unique, but you can&apos;t change it
@@ -53,7 +53,7 @@ const NicknameModal: React.FC = () => {
             </p>
             <form
               onSubmit={handleSubmit}
-              className="bg-darkbg p-2 flex items-center rounded-md my-2"
+              className="bg-lightbg2 p-2 flex items-center rounded-md my-2"
             >
               <label htmlFor="nick-input" className="mr-2">
                 nickname

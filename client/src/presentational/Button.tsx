@@ -21,10 +21,10 @@ const Button = React.forwardRef<
     }
   } else {
     if (variant === "dark") {
-      bg = "bg-darkbrown text-white hover:bg-opacity-50";
+      bg = "bg-darkbrown dark:bg-slate-900 text-white hover:bg-opacity-50";
     }
     if (variant === 'quiet') {
-      bg = 'bg-lightbg bg-opacity-0 hover:bg-opacity-50'
+      bg = 'bg-lightbg1 dark:bg-darkbg1 dark:text-slate-300 bg-opacity-0 hover:bg-opacity-50'
       shadow = ''
     }
     if (disabled) {

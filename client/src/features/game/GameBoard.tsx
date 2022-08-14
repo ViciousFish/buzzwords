@@ -2,9 +2,8 @@ import { Html, useProgress } from "@react-three/drei";
 import * as R from "ramda";
 import Game from "buzzwords-shared/Game";
 import React, { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import Canvas from "../canvas/Canvas";
 import { QRCoord } from "../hexGrid/hexGrid";
@@ -30,7 +29,7 @@ interface GameBoardProps {
 
 const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   const { progress } = useProgress();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const selectedWord = useAppSelector((state) =>
     getSelectedWordByGameId(state, id)
@@ -111,7 +110,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                     type="button"
                     className={classNames(
                       "mx-1 text-sm",
-                      submitting ? "text-gray-400" : "text-darkbrown"
+                      submitting ? "text-gray-400" : "text-darkbrown dark:text-slate-300 darK:text-"
                     )}
                   >
                     <FontAwesomeIcon icon={faBackspace} size="2x" />
@@ -126,13 +125,13 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                     type="button"
                     className={classNames(
                       "mx-1 text-sm",
-                      submitting ? "text-gray-400" : "text-darkbrown"
+                      submitting ? "text-gray-400" : "text-darkbrown dark:text-slate-300"
                     )}
                   >
                     <FontAwesomeIcon icon={faTimesCircle} size="2x" />
                   </button>
                 ) : null}
-                <div className="text-[calc(3.5vh+3.5vw)] text-darkbrown font-fredoka">
+                <div className="text-[calc(3.5vh+3.5vw)] text-darkbrown dark:text-slate-300 font-fredoka">
                   {replayLetters
                     ? R.take(replayProgress, replayLetters)
                         .join("")
@@ -146,8 +145,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                     disabled={submitting}
                     type="button"
                     className={classNames(
-                      "font-bold text-lightbg bg-opacity-100 rounded-md p-1 mx-1 text-sm",
-                      submitting ? "bg-gray-400" : "bg-darkbrown"
+                      "font-bold text-lightbg1 dark:text-darkbg1 bg-opacity-100 rounded-md p-1 mx-1 text-sm",
+                      submitting ? "bg-gray-400" : "bg-darkbrown dark:bg-slate-300"
                     )}
                   >
                     Submit

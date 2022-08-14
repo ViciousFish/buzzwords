@@ -17,7 +17,7 @@ const BREAKPOINTS = {
   "2xl": 1536,
 };
 
-const SidebarRightSide: React.FC = ({ children }) => {
+const SidebarRightSide = ({ children }) => {
   const dispatch = useAppDispatch();
   const isSidebarOpen = useAppSelector((state) => state.gamelist.isOpen);
 

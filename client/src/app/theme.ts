@@ -1,12 +1,12 @@
 export const theme = {
   colors: {
-    primary: "#d79e0f",
-    darkbrown: "#59430D",
+    primary: "#3764B3",
+    darkbrown: "#cccccc",
     lightbg: "#fae7b2",
     darkbg: "#f2dc9d",
-    tile_p1: '#d788b8',
-    tile_p2: '#709867',
-    tile_selected: '#9a9a9a',
+    tile_p1: '#6F3458',
+    tile_p2: '#345F2B',
+    tile_selected: '#475569',
     crown: '#fcba03'
   },
 };

@@ -73,7 +73,7 @@ const TopBar: React.FC = () => {
   return (
     <div
       className={classNames(
-        "fixed top-0 z-30 text-darkbrown",
+        "fixed top-0 z-30 text-darkbrown dark:text-slate-300",
         "h-[50px] w-screen shadow-md"
       )}
     >
@@ -95,7 +95,7 @@ const TopBar: React.FC = () => {
               }
             }}
             aria-label="toggle games list"
-            className="relative ml-2 p-2 hover:bg-lightbg hover:bg-opacity-50 rounded-md"
+            className="relative ml-2 p-2 hover:bg-lightbg1 hover:bg-opacity-50 rounded-md"
             data-tip="Toggle games list"
           >
             <FontAwesomeIcon icon={faBars} />
@@ -104,7 +104,7 @@ const TopBar: React.FC = () => {
             </span>
           </button>
           <button
-            className="p-2 rounded-md hover:bg-lightbg hover:bg-opacity-50"
+            className="p-2 rounded-md hover:bg-lightbg1 hover:bg-opacity-50"
             aria-label={`${
               turnNotificationsMuted ? "unmute" : "mute"
             } turn notification`}
@@ -130,7 +130,7 @@ const TopBar: React.FC = () => {
               aria-label="display tutorial"
               data-tip="Tutorial"
               className={classNames(
-                "p-2 rounded-md hover:bg-lightbg hover:bg-opacity-50",
+                "p-2 rounded-md hover:bg-lightbg1 hover:bg-opacity-50",
                 isOpen && showTutorialCard && "hidden"
               )}
             >

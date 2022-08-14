@@ -313,7 +313,6 @@ const GameTile: React.FC<GameTileProps> = ({
           <a.meshStandardMaterial color={colorAndScaleSpring.color} />
         </HexTile>
       </group>
-      {/* @ts-ignore */}
       {outlineTransition(
         (styles, item) =>
           item && (

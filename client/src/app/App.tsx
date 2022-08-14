@@ -93,7 +93,7 @@ function App() {
             <Route
               path="/download"
               element={
-                <div className="flex justify-center items-center bg-lightbg h-full">
+                <div className="flex justify-center items-center bg-lightbg1 h-full">
                   <NativeAppAd />
                 </div>
               }

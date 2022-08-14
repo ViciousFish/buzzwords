@@ -59,7 +59,7 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
   const popoverContent = (
     <div
       className={classNames(
-        "bg-darkbg rounded-xl px-4 py-2 w-[300px] z-30 shadow-lg border-b-4 border-r-4",
+        "bg-lightbg2 rounded-xl px-4 py-2 w-[300px] z-30 shadow-lg border-b-4 border-r-4",
         move.player === 0 ? "border-p1" : "border-p2"
       )}
     >

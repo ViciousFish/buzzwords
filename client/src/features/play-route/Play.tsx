@@ -193,7 +193,7 @@ const Play: React.FC = () => {
   if (game.users.length === 1 && userIndex !== null && userIndex === -1) {
     return (
       <div className="flex flex-auto flex-col overflow-auto lg:h-[calc(100vh-50px)] justify-center items-center py-12 px-4">
-        <div className="max-w-full flex-shrink-0 bg-darkbg flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
+        <div className="max-w-full flex-shrink-0 bg-lightbg2 flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
           <h2 className="text-2xl flex-wrap">
             <span className="font-bold italic">
               {opponent?.nickname || "???"}
@@ -231,7 +231,7 @@ const Play: React.FC = () => {
   if (game.users.length === 1 && userIndex !== null && userIndex > -1) {
     return (
       <div className="flex flex-auto flex-col overflow-auto lg:h-[calc(100vh-50px)] justify-center items-center py-12 px-4">
-        <div className="max-w-full flex-shrink-0 bg-darkbg flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
+        <div className="max-w-full flex-shrink-0 bg-lightbg2 flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
           <h2 className="text-2xl flex-wrap">
             Invite an opponent to start the game
           </h2>
@@ -269,7 +269,7 @@ const Play: React.FC = () => {
             )}
           </div>
         </div>
-        <div className=" bg-darkbg rounded-xl text-center">
+        <div className=" bg-lightbg2 rounded-xl text-center">
           <h2 className="text-2xl">Watch the tutorial</h2>
           <span>in the mean time</span>
           <iframe
@@ -310,7 +310,7 @@ const Play: React.FC = () => {
               </Button>
             </div>
           )}
-          <div className="flex flex-shrink-0 items-center text-darkbrown pt-2">
+          <div className="flex flex-shrink-0 items-center text-darkbrown dark:text-slate-200 pt-2">
             <button
               onClick={() => {
                 if (replayState) {

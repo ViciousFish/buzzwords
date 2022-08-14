@@ -23,7 +23,7 @@ const GameListItem: React.FC<GameListItemProps> = ({ game }) => {
       <NavLink
         className={({ isActive }) =>
           classNames(
-            isActive ? "bg-primary hover:bg-opacity-100" : "text-darkbrown",
+            isActive ? "bg-primary hover:bg-opacity-100 dark:text-slate-200" : "text-darkbrown dark:text-slate-400",
             "p-2 rounded-xl block hover:bg-primary hover:bg-opacity-50 truncate",
             "flex items-center",
             game.turn === selfIndex && game.users.length === 2 && !game.gameOver
