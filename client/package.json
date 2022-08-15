@@ -10,7 +10,7 @@
   "main": "dist/electron/main/index.js",
   "scripts": {
     "dev": "vite",
-    "dev-electron": "cross-env DESKTOP=1 vite",
+    "dev-electron": "cross-env DESKTOP=1 vite --host 127.0.0.1",
     "build": "vite build",
     "build-electron": "cross-env DESKTOP=1 vite build",
     "typecheck": "tsc",
