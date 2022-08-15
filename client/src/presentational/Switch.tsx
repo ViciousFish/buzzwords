@@ -4,7 +4,7 @@ import { useFocusRing, useSwitch, VisuallyHidden } from "react-aria";
 
 export function Switch(props: ToggleProps) {
   let state = useToggleState(props);
-  let ref = React.useRef<HTMLInputElement>(null);
+  let ref = React.useRef<HTMLInputElement>();
   let { inputProps } = useSwitch(props, state, ref);
   let { isFocusVisible, focusProps } = useFocusRing();
 
@@ -22,29 +22,29 @@ export function Switch(props: ToggleProps) {
           <input {...inputProps} {...focusProps} ref={ref} />
         </VisuallyHidden>
         <svg
-          width={80}
-          height={48}
+          width={40}
+          height={24}
           aria-hidden="true"
           style={{ marginRight: 4 }}
         >
           <rect
-            x={8}
-            y={8}
-            width={64}
-            height={32}
-            rx={16}
-            className={state.isSelected ? "fill-darkbrown" : "fill-gray-400"}
+            x={4}
+            y={4}
+            width={32}
+            height={16}
+            rx={8}
+            className={state.isSelected ? "fill-p2" : "fill-gray-400"}
           />
-          <circle cx={state.isSelected ? 56 : 24} cy={24} r={10} fill="white" />
+          <circle cx={state.isSelected ? 28 : 12} cy={12} r={5} fill="white" />
           {isFocusVisible && (
             <rect
-              x={2}
-              y={2}
-              width={76}
-              height={44}
-              rx={22}
+              x={1}
+              y={1}
+              width={38}
+              height={22}
+              rx={11}
               fill="none"
-              stroke="cyan"
+              stroke="orange"
               strokeWidth={2}
             />
           )}

@@ -3,14 +3,13 @@
 import {
   faAngleDown,
   faAngleRight,
-  faCog,
   faHome,
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
 import { animated as a, useSpring } from "@react-spring/web";
 
@@ -20,7 +19,6 @@ import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
 import GameListItem from "./GameListItem";
 import TutorialCard from "./TutorialCard";
 import PlayButtons from "../home-route/PlayButtons";
-import ReactTooltip from "react-tooltip";
 
 // const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
 import Canvas from "../canvas/Canvas";
@@ -77,24 +75,9 @@ const GameList: React.FC = () => {
             target="_blank"
             rel="noreferrer"
           >
-            <FontAwesomeIcon icon={faTwitter} /> Follow us
+            <FontAwesomeIcon icon={faTwitter} /> @BuzzwordsGG
           </a>
           <div className="flex-auto" />
-          <NavLink
-            className={({ isActive }) =>
-              classNames(
-                isActive
-                  ? "bg-primary hover:bg-opacity-100"
-                  : "underline text-darkbrown",
-                "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50"
-              )
-            }
-            to="/settings"
-            aria-label="settings"
-            data-tip="Settings"
-          >
-            <FontAwesomeIcon icon={faCog} />
-          </NavLink>
           <NavLink
             className={({ isActive }) =>
               classNames(

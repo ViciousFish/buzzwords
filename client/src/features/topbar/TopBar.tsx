@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import {
   faBars,
   faCircle,
+  faCog,
   faQuestion,
   faSpinner,
   faSyncAlt,
@@ -22,6 +23,7 @@ import { logout } from "../user/userActions";
 import { isUserLoggedIn } from "../user/userSelectors";
 import AuthPrompt from "./AuthPrompt";
 import { setTurnNotificationsSetting } from "../settings/settingsActions";
+import { SettingsPage } from "../settings/SettingsPage";
 
 const ELECTRON = window.versions;
 const PLATFORM = window.versions?.platform?.();
@@ -30,7 +32,7 @@ const TopBar: React.FC = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
 
-  const isOpen = useAppSelector((state) => state.gamelist.isOpen);
+  const gamelistIsOpen = useAppSelector((state) => state.gamelist.isOpen);
   const turnNotificationsMuted = useAppSelector(
     (state) => state.settings.turnNotificationsMuted
   );
@@ -51,6 +53,8 @@ const TopBar: React.FC = () => {
   );
   const authPrompt = isLoggedIn === false && _authPrompt;
 
+  const [settingsPanel, setSettingsPanel] = useState(false);
+
   const [nativeAppAd, setNativeAppAd] = useState(false);
   const showDownloadButton = !window.ipc && !location.pathname.match(/download/)
 
@@ -62,7 +66,7 @@ const TopBar: React.FC = () => {
   }, [dispatch, turnNotificationsMuted]);
 
   let hamburgerNotification;
-  if (!isOpen && currentTurnCount) {
+  if (!gamelistIsOpen && currentTurnCount) {
     hamburgerNotification = (
       <FontAwesomeIcon
         className={classNames("text-blue-500", "drop-shadow")}
@@ -90,7 +94,7 @@ const TopBar: React.FC = () => {
           <button
             onClick={() => {
               dispatch(toggleIsOpen());
-              if (isOpen) {
+              if (gamelistIsOpen) {
                 dispatch(setShowTutorialCard(false));
               }
             }}
@@ -103,7 +107,7 @@ const TopBar: React.FC = () => {
               {hamburgerNotification}
             </span>
           </button>
-          <button
+          {/* <button
             className="p-2 rounded-md hover:bg-lightbg hover:bg-opacity-50"
             aria-label={`${
               turnNotificationsMuted ? "unmute" : "mute"
@@ -116,11 +120,31 @@ const TopBar: React.FC = () => {
             <FontAwesomeIcon
               icon={turnNotificationsMuted ? faVolumeMute : faVolumeUp}
             />
-          </button>
+          </button> */}
+          <Popover
+            positions={["bottom"]}
+            content={<SettingsPage onDismiss={() => setSettingsPanel(false)} />}
+            isOpen={settingsPanel}
+            containerClassName="z-30 px-2"
+          >
+            <button
+              onClick={() => {
+                setSettingsPanel(true)
+              }}
+              aria-label="display tutorial"
+              data-tip="Tutorial"
+              className={classNames(
+                "p-2 rounded-md hover:bg-lightbg hover:bg-opacity-50",
+                gamelistIsOpen && showTutorialCard && "hidden"
+              )}
+            >
+              <FontAwesomeIcon icon={faCog} />
+            </button>
+          </Popover>
           <Popover
             positions={["bottom"]}
             content={<TutorialCard shadow />}
-            isOpen={!isOpen && showTutorialCard}
+            isOpen={!gamelistIsOpen && showTutorialCard}
             containerClassName="z-30 w-full max-w-[300px]"
           >
             <button
@@ -131,7 +155,7 @@ const TopBar: React.FC = () => {
               data-tip="Tutorial"
               className={classNames(
                 "p-2 rounded-md hover:bg-lightbg hover:bg-opacity-50",
-                isOpen && showTutorialCard && "hidden"
+                gamelistIsOpen && showTutorialCard && "hidden"
               )}
             >
               <FontAwesomeIcon icon={faQuestion} />
