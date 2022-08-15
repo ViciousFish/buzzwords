@@ -113,6 +113,7 @@ function App() {
       </React.Suspense>
       <ToastContainer toastClassName="bg-primary text-darkbrown rounded-lg" />
       {showingTutorialModal && <TutorialModal />}
+      {/* @ts-ignore ????? */}
       {!isTouch && <ReactTooltip />}
     </Router>
   );

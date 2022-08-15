@@ -1,11 +1,18 @@
 import { Stats, useProgress } from "@react-three/drei";
-import { useThree } from "@react-three/fiber";
+import { Object3DNode, useThree } from "@react-three/fiber";
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { Box3, Color, Group, PerspectiveCamera } from "three";
 import type { ThreeElements } from '@react-three/fiber'
 
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
 import { extend } from '@react-three/fiber'
+
+// Add types to ThreeElements elements so primitives pick up on it
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    customElement: Object3DNode<TextGeometry, typeof TextGeometry>
+  }
+}
 
 const setZoom = (
   group: Group,
