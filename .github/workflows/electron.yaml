@@ -74,7 +74,7 @@ jobs:
           mkdir -p win-portable
           mkdir -p win-installer
           cp build/*_portable.exe win-portable/
-          cp build/*_installer.exe win-intaller/
+          cp build/*_installer.exe win-installer/
       - run: |
           export TAG=$(echo $GITHUB_REF_NAME | sed 's/client-//')
           echo "TAG=$TAG" >> $GITHUB_ENV
