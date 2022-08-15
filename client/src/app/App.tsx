@@ -102,7 +102,7 @@ function App() {
             <Route
               path="/settings"
               element={
-                <div className="flex justify-center p-4 bg-lightbg h-full">
+                <div className="flex flex-col items-stretch p-4 bg-lightbg h-full">
                   <SettingsPage />
                 </div>
               }
