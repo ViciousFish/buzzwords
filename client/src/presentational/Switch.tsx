@@ -33,7 +33,7 @@ export function Switch(props: ToggleProps) {
             width={32}
             height={16}
             rx={8}
-            className={state.isSelected ? "fill-p2" : "fill-gray-400"}
+            className={state.isSelected ? "fill-p2" : "fill-p1"}
           />
           <circle cx={state.isSelected ? 28 : 12} cy={12} r={5} fill="white" />
           {isFocusVisible && (
@@ -44,7 +44,7 @@ export function Switch(props: ToggleProps) {
               height={22}
               rx={11}
               fill="none"
-              stroke="orange"
+              className="stroke-darkbrown"
               strokeWidth={2}
             />
           )}

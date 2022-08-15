@@ -6,9 +6,11 @@ import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 
 import hexoutline from "../../assets/hexoutline.glb?url";
-import { theme } from "../app/theme";
+import { useAppSelector } from "../app/hooks";
+import { getTheme } from "../features/settings/settingsSelectors";
 
 export const HexOutline = ({ ...props }) => {
+  const theme = useAppSelector(getTheme);
   const group = useRef();
   // @ts-ignore
   const { nodes } = useGLTF(hexoutline);
@@ -16,7 +18,7 @@ export const HexOutline = ({ ...props }) => {
     <group ref={group} {...props} dispose={null}>
       <group rotation={[Math.PI / 2, Math.PI/2, 0]} position={[0, 0, 0]} scale={[3,3,3]}>
         <mesh geometry={nodes.Circle001.geometry}>
-          <meshStandardMaterial color={theme.colors.primary} />
+          <meshStandardMaterial color={theme.colors.threed.primaryAccent} />
         </mesh>
       </group>
     </group>

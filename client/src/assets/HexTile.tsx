@@ -1,16 +1,25 @@
 import React, { useRef } from "react";
 import { MeshProps, useLoader } from "@react-three/fiber";
-import { theme } from "../app/theme";
 import { useGLTF, PerspectiveCamera } from "@react-three/drei";
 import { Mesh } from "three";
 import hextile from "../../assets/hextile.glb?url";
+import { useAppSelector } from "../app/hooks";
+import { getTheme } from "../features/settings/settingsSelectors";
 
 interface HexTileProps {
-  orientation?: 'flat' | 'pointy'
+  orientation?: "flat" | "pointy";
   color?: string;
 }
 
-const HexTile: React.FC<MeshProps & HexTileProps> = ({ position, rotation, orientation, color, children, ...props }) => {
+const HexTile: React.FC<MeshProps & HexTileProps> = ({
+  position,
+  rotation,
+  orientation,
+  color,
+  children,
+  ...props
+}) => {
+  const theme = useAppSelector(getTheme);
   const group = useRef();
   // @ts-ignore
   const { nodes, materials } = useGLTF(hextile);
@@ -27,14 +36,14 @@ const HexTile: React.FC<MeshProps & HexTileProps> = ({ position, rotation, orien
       rotation={rotation}
     >
       <mesh
-        rotation={[Math.PI / 2, orientation === 'flat' ? Math.PI / 2 : 0, 0]}
+        rotation={[Math.PI / 2, orientation === "flat" ? Math.PI / 2 : 0, 0]}
         visible
         geometry={(nodes.Circle as Mesh).geometry}
         {...props}
       >
-        {!children && <meshStandardMaterial
-          color={theme.colors[color || 'primary']}
-        />}
+        {!children && (
+          <meshStandardMaterial color={theme.colors.threed[color || "primaryAccent"]} />
+        )}
         {children}
       </mesh>
     </group>

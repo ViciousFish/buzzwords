@@ -12,14 +12,15 @@ import {
   useSpringRef,
   config as springConfig,
 } from "@react-spring/core";
-import { animated } from "@react-spring/three";
 import { useGesture } from "@use-gesture/react";
 
 import bee from "../../assets/bee.gltf?url";
-import { theme } from "../app/theme";
+import { useAppSelector } from "../app/hooks";
+import { getTheme } from "../features/settings/settingsSelectors";
 
 // TODO: remove materials from model so we don't load unnecessary data
 const Bee = (props: GroupProps) => {
+  const theme = useAppSelector(getTheme);
   const viewport = useThree(({ viewport }) => viewport);
   const size = useThree(({ size }) => size);
 
@@ -66,11 +67,11 @@ const Bee = (props: GroupProps) => {
       <group rotation={[0, Math.PI / 4, -Math.PI / 1.5]}>
         {/* @ts-ignore */}
         <mesh {...bind()} geometry={nodes.Bee_1.geometry}>
-          <meshStandardMaterial color={theme.colors.primary} />
+          <meshStandardMaterial color={theme.colors.threed.beeYellow} />
         </mesh>
         {/* @ts-ignore */}
         <mesh {...bind()} geometry={nodes.Bee_2.geometry}>
-          <meshStandardMaterial color={theme.colors.darkbrown} />
+          <meshStandardMaterial color={theme.colors.threed.beeBrown} />
         </mesh>
         {/* @ts-ignore */}
         <mesh {...bind()} geometry={nodes.Bee_3.geometry}>
