@@ -1,6 +1,6 @@
 import { useTransition } from "@react-spring/three";
 import classNames from "classnames";
-import React, { useCallback } from "react";
+import React, { ReactNode, useCallback } from "react";
 import useBreakpoint from "use-breakpoint";
 import { animated as a } from "@react-spring/web";
 
@@ -17,7 +17,7 @@ const BREAKPOINTS = {
   "2xl": 1536,
 };
 
-const SidebarRightSide: React.FC = ({ children }) => {
+const SidebarRightSide: React.FC<{ children: ReactNode }> = ({ children }) => {
   const dispatch = useAppDispatch();
   const isSidebarOpen = useAppSelector((state) => state.gamelist.isOpen);
 

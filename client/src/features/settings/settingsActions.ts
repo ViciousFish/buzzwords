@@ -1,5 +1,11 @@
 import { AppThunk } from "../../app/store";
-import { setTurnNotificationsMute } from "./settingsSlice";
+import {
+  ColorScheme,
+  setColorScheme,
+  setPreferredDarkTheme,
+  setTurnNotificationsMute,
+  ThemeNames,
+} from "./settingsSlice";
 
 export const getTurnNotificationsSetting = () =>
   JSON.parse(
@@ -11,4 +17,24 @@ export const setTurnNotificationsSetting =
   (dispatch) => {
     localStorage.setItem("turnNotificationsMute", JSON.stringify(mute));
     dispatch(setTurnNotificationsMute(mute));
+  };
+
+export const getColorSchemeSetting = () =>
+  (localStorage.getItem("colorScheme") as ColorScheme) || ColorScheme.Light;
+
+export const setColorSchemeSetting =
+  (scheme: ColorScheme): AppThunk =>
+  (dispatch) => {
+    localStorage.setItem("colorScheme", scheme);
+    dispatch(setColorScheme(scheme));
+  };
+
+export const getPreferredDarkThemeSetting = () =>
+  (localStorage.getItem("preferredDarkTheme") as ThemeNames) || "dark";
+
+export const setPreferredDarkThemeSetting =
+  (preferredDarkTheme: ThemeNames): AppThunk =>
+  (dispatch) => {
+    localStorage.setItem("preferredDarkTheme", preferredDarkTheme);
+    dispatch(setPreferredDarkTheme(preferredDarkTheme));
   };

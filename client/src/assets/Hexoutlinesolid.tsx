@@ -7,12 +7,14 @@ import { useGLTF } from "@react-three/drei";
 import { GroupProps } from "@react-three/fiber";
 
 import hexoutlinesolid from "../../assets/hexoutlinesolid.glb?url";
-import { theme } from "../app/theme";
+import { useAppSelector } from "../app/hooks";
+import { getTheme } from "../features/settings/settingsSelectors";
 
 export const HexOutlineSolid: React.FC<GroupProps> = ({
   children,
   ...props
 }) => {
+  const theme = useAppSelector(getTheme);
   const group = useRef();
   // @ts-ignore
   const { nodes, materials } = useGLTF(hexoutlinesolid);
@@ -23,7 +25,9 @@ export const HexOutlineSolid: React.FC<GroupProps> = ({
         geometry={nodes.Torus001.geometry}
         rotation={[Math.PI / 2, 0, 0]}
       >
-        {children || <meshStandardMaterial color={theme.colors.primary} />}
+        {children || (
+          <meshStandardMaterial color={theme.colors.threed.primaryAccent} />
+        )}
       </mesh>
     </group>
   );

@@ -230,14 +230,14 @@ const Play: React.FC = () => {
 
   if (game.users.length === 1 && userIndex !== null && userIndex > -1) {
     return (
-      <div className="flex flex-auto flex-col overflow-auto lg:h-[calc(100vh-50px)] justify-center items-center py-12 px-4">
+      <div className="flex flex-auto flex-col overflow-auto lg:h-[calc(100vh-50px)] justify-center items-center py-12 px-4 text-text">
         <div className="max-w-full flex-shrink-0 bg-darkbg flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
           <h2 className="text-2xl flex-wrap">
             Invite an opponent to start the game
           </h2>
           <span>they can use this link to join you</span>
           <a
-            className="underline text-blue-700 text-sm break-words"
+            className="underline text-textLink text-sm break-words"
             href={getGameUrl(id)}
           >
             {getGameUrl(id)}

@@ -5,7 +5,6 @@ Perhaps make a "polygonal prism" component/class?
 import React, { useRef, useState, useMemo } from "react";
 import { MeshProps, useFrame } from "@react-three/fiber";
 import { Mesh, Shape } from "three";
-import { theme } from "../app/theme";
 
 interface PolygonOwnprops {
   radius: number;
@@ -102,7 +101,6 @@ const Polygon: React.FC<PolygonOwnprops & MeshProps> = ({
       />
       <meshBasicMaterial
         toneMapped={false}
-        color={hovered ? theme.colors.darkbrown : theme.colors.primary}
       />
     </mesh>
   );

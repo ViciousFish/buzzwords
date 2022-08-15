@@ -10,9 +10,11 @@ export function Switch(props: ToggleProps) {
 
   return (
     <label
+      className="w-full"
       style={{
         display: "flex",
         alignItems: "center",
+        justifyContent: "stretch",
         opacity: props.isDisabled ? 0.4 : 1,
       }}
     >
@@ -22,7 +24,7 @@ export function Switch(props: ToggleProps) {
           <input {...inputProps} {...focusProps} ref={ref} />
         </VisuallyHidden>
         <svg
-          width={40}
+          width={42}
           height={24}
           aria-hidden="true"
           style={{ marginRight: 4 }}
@@ -33,7 +35,7 @@ export function Switch(props: ToggleProps) {
             width={32}
             height={16}
             rx={8}
-            className={state.isSelected ? "fill-p2" : "fill-gray-400"}
+            className={state.isSelected ? "fill-p2" : "fill-p1"}
           />
           <circle cx={state.isSelected ? 28 : 12} cy={12} r={5} fill="white" />
           {isFocusVisible && (
@@ -44,7 +46,7 @@ export function Switch(props: ToggleProps) {
               height={22}
               rx={11}
               fill="none"
-              stroke="orange"
+              className="stroke-darkbrown"
               strokeWidth={2}
             />
           )}

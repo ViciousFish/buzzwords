@@ -80,7 +80,7 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({
   );
 
   const popoverContent = (
-    <div className="bg-primary rounded-xl p-2 shadow-lg text-center">
+    <div className="bg-primary rounded-xl p-2 shadow-lg text-center text-text">
       <span>Computer Difficulty</span>
       <div className="flex flex-col">
         <DifficultyButton

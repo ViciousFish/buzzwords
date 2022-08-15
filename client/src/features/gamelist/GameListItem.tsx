@@ -23,9 +23,9 @@ const GameListItem: React.FC<GameListItemProps> = ({ game }) => {
       <NavLink
         className={({ isActive }) =>
           classNames(
-            isActive ? "bg-primary hover:bg-opacity-100" : "text-darkbrown",
+            isActive ? "bg-primary hover:bg-opacity-100" : "",
             "p-2 rounded-xl block hover:bg-primary hover:bg-opacity-50 truncate",
-            "flex items-center",
+            "flex items-center text-darkbrown",
             game.turn === selfIndex && game.users.length === 2 && !game.gameOver
               ? "font-bold"
               : ""
@@ -40,7 +40,7 @@ const GameListItem: React.FC<GameListItemProps> = ({ game }) => {
                 {nick1} vs {nick2}
               </span>
               {game.vsAI ? (
-                <span className="text-gray-600 no-underline">
+                <span className="text-textSubtle no-underline">
                   {" "}
                   ({game.difficulty})
                 </span>
