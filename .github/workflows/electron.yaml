@@ -73,6 +73,7 @@ jobs:
 
           mkdir -p win-portable
           mkdir -p win-installer
+          ls release-windows
           cp release-windows/*_portable.exe win-portable/
           cp release-windows/*_installer.exe win-intaller/
 
@@ -80,44 +81,45 @@ jobs:
       - run: |
           export TAG=$(echo $GITHUB_REF_NAME | sed 's/client-//')
           echo "TAG=$TAG" >> $GITHUB_ENV
-      - uses: manleydev/butler-publish-itchio-action@master
-        env:
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-          CHANNEL: windows-installer
-          ITCH_GAME: buzzwords
-          ITCH_USER: chuckdries
-          PACKAGE: win-installer
-          VERSION: ${{ env.TAG }}
-      - uses: manleydev/butler-publish-itchio-action@master
-        env:
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-          CHANNEL: windows-portable
-          ITCH_GAME: buzzwords
-          ITCH_USER: chuckdries
-          PACKAGE: win-portable
-          VERSION: ${{ env.TAG }}
+          echo "TAG=$TAG"
       # - uses: manleydev/butler-publish-itchio-action@master
       #   env:
       #     BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-      #     CHANNEL: linux
+      #     CHANNEL: windows-installer
       #     ITCH_GAME: buzzwords
       #     ITCH_USER: chuckdries
-      #     PACKAGE: release-linux
+      #     PACKAGE: win-installer
       #     VERSION: ${{ env.TAG }}
-      - uses: manleydev/butler-publish-itchio-action@master
-        env:
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-          CHANNEL: osx
-          ITCH_GAME: buzzwords
-          ITCH_USER: chuckdries
-          PACKAGE: release-mac
-          VERSION: ${{ env.TAG }}
-      - name: Release
-        uses: fnkr/github-action-ghr@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        env:
-          GHR_COMPRESS: zip
-          GHR_PATH: build/
-          GHR_DELETE: false
-          GHR_REPLACE: false
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - uses: manleydev/butler-publish-itchio-action@master
+      #   env:
+      #     BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+      #     CHANNEL: windows-portable
+      #     ITCH_GAME: buzzwords
+      #     ITCH_USER: chuckdries
+      #     PACKAGE: win-portable
+      #     VERSION: ${{ env.TAG }}
+      # # - uses: manleydev/butler-publish-itchio-action@master
+      # #   env:
+      # #     BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+      # #     CHANNEL: linux
+      # #     ITCH_GAME: buzzwords
+      # #     ITCH_USER: chuckdries
+      # #     PACKAGE: release-linux
+      # #     VERSION: ${{ env.TAG }}
+      # - uses: manleydev/butler-publish-itchio-action@master
+      #   env:
+      #     BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+      #     CHANNEL: osx
+      #     ITCH_GAME: buzzwords
+      #     ITCH_USER: chuckdries
+      #     PACKAGE: release-mac
+      #     VERSION: ${{ env.TAG }}
+      # - name: Release
+      #   uses: fnkr/github-action-ghr@v1
+      #   if: startsWith(github.ref, 'refs/tags/')
+      #   env:
+      #     GHR_COMPRESS: zip
+      #     GHR_PATH: build/
+      #     GHR_DELETE: false
+      #     GHR_REPLACE: false
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
