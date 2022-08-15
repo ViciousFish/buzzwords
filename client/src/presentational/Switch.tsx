@@ -44,7 +44,7 @@ export function Switch(props: ToggleProps) {
               height={22}
               rx={11}
               fill="none"
-              stroke="orange"
+              className="stroke-darkbrown"
               strokeWidth={2}
             />
           )}
