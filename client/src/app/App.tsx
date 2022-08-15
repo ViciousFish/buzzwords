@@ -1,4 +1,4 @@
-import React, { lazy, useEffect } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
 // import { Globals } from "@react-spring/shared";
 import FaviconNotification from "favicon-notification";
@@ -48,6 +48,8 @@ function App() {
     (state) => state.game.showingTutorialModal
   );
 
+  const [rerender, setRerender] = useState(0);
+
   const numberOfGamesWaitingForPlayer = useAppSelector((state) =>
     getHowManyGamesAreMyTurn(state, null)
   );
@@ -74,6 +76,14 @@ function App() {
       document.title = "Buzzwords";
     }
   }, [numberOfGamesWaitingForPlayer]);
+
+  useEffect(() => {
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", () => {
+        setRerender((x) => x + 1);
+      });
+  }, []);
 
   return (
     <>
