@@ -1,5 +1,6 @@
 declare global {
   const __APP_VERSION__: string;
+  const __COMMIT_HASH__: string;
 }
 
 function iOS() {
@@ -117,7 +118,7 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
         </SettingsPageSection>
       </div>
       <div className="text-xs opacity-75">
-        Buzzwords version {__APP_VERSION__}
+        Buzzwords version {__APP_VERSION__} ({__COMMIT_HASH__})
       </div>
     </div>
   );
