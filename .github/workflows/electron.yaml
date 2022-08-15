@@ -1,8 +1,8 @@
 name: Electron build
 on:
   push:
-    tags:
-      - client-*
+    branches:
+      - CI-fixin
 jobs:
   build-linux:
     runs-on: ubuntu-latest
