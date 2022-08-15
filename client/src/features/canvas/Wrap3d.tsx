@@ -46,6 +46,11 @@ const Wrap3d = ({ children }: { children: ReactNode }) => {
           setZoom(groupRef.current, width, height, boundingBox, camera);
         }
       }, 10);
+      setTimeout(() => {
+        if (groupRef.current) {
+          setZoom(groupRef.current, width, height, boundingBox, camera);
+        }
+      }, 200);
     }
   }, [progress, width, height, groupRef, boundingBox, camera]);
   return (
