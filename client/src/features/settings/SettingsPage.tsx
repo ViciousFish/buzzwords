@@ -18,23 +18,25 @@ function iOS() {
   );
 }
 
-import { faTimes, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPencilAlt,
+  faTimes,
+  faVolumeUp,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { ReactNode, useCallback } from "react";
+import React, { ReactNode, useCallback, useState } from "react";
 import { Item } from "react-stately";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { Select } from "../../presentational/Select";
 import { Switch } from "../../presentational/Switch";
+import { NicknameForm } from "./NicknameForm";
 import {
   setColorSchemeSetting,
   setPreferredDarkThemeSetting,
   setTurnNotificationsSetting,
 } from "./settingsActions";
-import {
-  ColorScheme,
-  ThemeNames,
-} from "./settingsSlice";
+import { ColorScheme, ThemeNames } from "./settingsSlice";
 
 const SettingsPageSection = ({ children }: { children: ReactNode }) => (
   <div className="bg-lightbg p-2 rounded-xl flex flex-col items-center gap-2">
@@ -47,7 +49,11 @@ interface SettingsPageProps {
 }
 
 export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
+  const [nickState, setNickState] = useState<"pristine" | "editing">(
+    "pristine"
+  );
   const dispatch = useAppDispatch();
+
   const turnNotificationsMuted = useAppSelector(
     (state) => state.settings.turnNotificationsMuted
   );
@@ -55,6 +61,7 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
   const preferredDarkTheme = useAppSelector(
     (state) => state.settings.preferredDarkTheme
   );
+  const nickname = useAppSelector((state) => state.user.user.nickname);
 
   const toggleTurnNotificationsMute = useCallback(() => {
     dispatch(setTurnNotificationsSetting(!turnNotificationsMuted));
@@ -82,12 +89,39 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
       </button>
       <h3 className="text-xl font-bold">Settings</h3>
       <div className="flex flex-col gap-2 my-2">
+        {nickname && (
+          <SettingsPageSection>
+            {nickState === "pristine" && (
+              <label className="flex flex-col w-full">
+                <div className="text-left w-full pl-2 text-sm m-0">
+                  Nickname
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setNickState("editing")}
+                  className="text-left p-2 rounded-md bg-input text-text w-full border-2 border-primary flex"
+                >
+                  <span className="flex-auto">{nickname}</span>
+                  <span className="text-primary">
+                    <FontAwesomeIcon icon={faPencilAlt} />
+                  </span>
+                </button>
+              </label>
+            )}
+            {nickState === "editing" && (
+              <NicknameForm
+                afterSubmit={() => setNickState("pristine")}
+                onCancel={() => setNickState("pristine")}
+              />
+            )}
+          </SettingsPageSection>
+        )}
         <SettingsPageSection>
           <Switch
             onChange={toggleTurnNotificationsMute}
             isSelected={!turnNotificationsMuted}
           >
-            <div className="flex flex-col">
+            <div className="flex items-start w-full flex-col">
               <div className="m-0">
                 <FontAwesomeIcon icon={faVolumeUp} /> Ring bell when it&apos;s
                 your turn
@@ -99,7 +133,6 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
           </Switch>
         </SettingsPageSection>
         <SettingsPageSection>
-          {/* <span>Visuals</span> */}
           <Select
             selectedKey={colorScheme}
             onSelectionChange={switchColorScheme}
