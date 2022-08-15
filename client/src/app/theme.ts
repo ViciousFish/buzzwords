@@ -34,6 +34,8 @@ export interface Theme {
       input: string;
       topbar0: string;
       topbar1: string;
+      stoplights0: string;
+      stoplights1: string;
     };
   };
 }
@@ -64,6 +66,8 @@ const dark: Theme = {
       input: "black",
       topbar0: "#0f172a",
       topbar1: "#1e293b",
+      stoplights0: "#0f172a",
+      stoplights1: "#1e293b",
     },
   },
 };
@@ -104,6 +108,8 @@ export const theme: Record<ThemeNames, Theme> = {
         input: "white",
         topbar0: "rgb(233, 187, 72)",
         topbar1: "rgb(246, 197, 75)",
+        stoplights0: "rgba(134, 85, 17, 1)",
+        stoplights1: "rgba(173, 110, 22, 1)"
       },
     },
   },
