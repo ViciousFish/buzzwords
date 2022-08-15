@@ -1,4 +1,4 @@
-import React, { lazy, useEffect, useState } from "react";
+import React, { lazy, useCallback, useEffect, useState } from "react";
 import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
 // import { Globals } from "@react-spring/shared";
 import FaviconNotification from "favicon-notification";
@@ -18,6 +18,10 @@ import {
   getBodyStyleFromTheme,
   getTheme,
 } from "../features/settings/settingsSelectors";
+import {
+  ColorScheme,
+  setCurrentSystemScheme,
+} from "../features/settings/settingsSlice";
 
 // not necessary, as long as there's always a 3d canvas on screen!
 // import.meta.env.PROD &&
@@ -31,6 +35,8 @@ FaviconNotification.init({
   color: "#0000CC",
 });
 
+const MM = window.matchMedia("(prefers-color-scheme: dark)");
+
 const HomeLazy = lazy(() => import("../features/home-route/Home"));
 const PlayLazy = lazy(() => import("../features/play-route/Play"));
 const AuthSuccessLazy = lazy(
@@ -43,12 +49,11 @@ const Router = ELECTRON ? HashRouter : BrowserRouter;
 
 function App() {
   const theme = useAppSelector(getTheme);
+
   const dispatch = useAppDispatch();
   const showingTutorialModal = useAppSelector(
     (state) => state.game.showingTutorialModal
   );
-
-  const [rerender, setRerender] = useState(0);
 
   const numberOfGamesWaitingForPlayer = useAppSelector((state) =>
     getHowManyGamesAreMyTurn(state, null)
@@ -77,13 +82,20 @@ function App() {
     }
   }, [numberOfGamesWaitingForPlayer]);
 
+  const matchMediaCallback = useCallback((event: MediaQueryListEvent) => {
+    dispatch(
+      setCurrentSystemScheme(
+        event.matches ? ColorScheme.Dark : ColorScheme.Light
+      )
+    );
+  }, [dispatch]);
+
   useEffect(() => {
-    window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", () => {
-        setRerender((x) => x + 1);
-      });
-  }, []);
+    MM.addEventListener("change", matchMediaCallback);
+    return () => {
+      MM.removeEventListener("change", matchMediaCallback);
+    };
+  }, [matchMediaCallback]);
 
   return (
     <>
