@@ -53,7 +53,7 @@ const dark: Theme = {
     html: {
       primaryAccent: "#375BA8",
       secondaryAccent: "#DBF5FE",
-      lightbg: "49, 74, 110",
+      lightbg: "33,54,85",
       darkbg: "#243347",
       p1: "#984B86",
       p2: "#668354",

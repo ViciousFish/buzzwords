@@ -115,7 +115,7 @@ const GameList: React.FC = () => {
               </div>
             </div>
             {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
-            <ul className="px-2">
+            <ul className="px-2 text-text">
               {incompleteGames.map((game) => (
                 <GameListItem key={game.id} game={game} />
               ))}

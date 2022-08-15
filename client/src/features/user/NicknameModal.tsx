@@ -59,7 +59,7 @@ const NicknameModal: React.FC = () => {
                 nickname
               </label>
               <input
-                className="p-2 rounded-md flex-auto"
+                className="p-2 rounded-md flex-auto bg-input text-text"
                 id="nick-input"
                 name="nickname"
                 type="text"
