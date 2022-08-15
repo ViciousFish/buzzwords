@@ -7,9 +7,15 @@ import { defineConfig, Plugin, UserConfig } from "vite";
 
 rmSync("dist", { recursive: true, force: true }); // v14.14.0
 
-const commitHash = require('child_process')
-    .execSync('git rev-parse --short HEAD')
+let commitHash = "";
+
+try {
+  commitHash = require("child_process")
+    .execSync("git rev-parse --short HEAD")
     .toString();
+} catch (e) {
+  // do nothing
+}
 
 // https://vitejs.dev/config/
 export default ({ command, mode }) => {
