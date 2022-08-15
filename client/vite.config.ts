@@ -9,9 +9,8 @@ rmSync("dist", { recursive: true, force: true }); // v14.14.0
 
 // https://vitejs.dev/config/
 export default ({ command, mode }) => {
-  console.log('dt', process.env.DESKTOP)
   return defineConfig({
-    assetsInclude: ['**/*.gltf'],
+    assetsInclude: ["**/*.gltf"],
     server: {
       proxy: {
         "/api": {
@@ -26,34 +25,39 @@ export default ({ command, mode }) => {
     },
     plugins: [
       reactRefresh(),
-      process.env.DESKTOP ? electron({
-        main: {
-          entry: "electron/main/index.ts",
-          vite: withDebug({
-            build: {
-              outDir: "dist/electron/main",
+      process.env.DESKTOP
+        ? electron({
+            main: {
+              entry: "electron/main/index.ts",
+              vite: withDebug({
+                build: {
+                  outDir: "dist/electron/main",
+                },
+              }),
             },
-          }),
-        },
-        preload: {
-          input: {
-            // You can configure multiple preload here
-            index: join(__dirname, "electron/preload/index.ts"),
-          },
-          vite: {
-            build: {
-              // For Debug
-              sourcemap: "inline",
-              outDir: "dist/electron/preload",
+            preload: {
+              input: {
+                // You can configure multiple preload here
+                index: join(__dirname, "electron/preload/index.ts"),
+              },
+              vite: {
+                build: {
+                  // For Debug
+                  sourcemap: "inline",
+                  outDir: "dist/electron/preload",
+                },
+              },
             },
-          },
-        },
-        // Enables use of Node.js API in the Renderer-process
-        // renderer: {},
-      }) : null,
+            // Enables use of Node.js API in the Renderer-process
+            // renderer: {},
+          })
+        : null,
     ],
     build: {
       sourcemap: mode !== "production",
+    },
+    define: {
+      __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
     },
   });
 };

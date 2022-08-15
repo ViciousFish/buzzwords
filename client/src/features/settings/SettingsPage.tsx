@@ -19,6 +19,7 @@ export const SettingsPage = () => {
         {/* <span className="flex-auto text-xl">Turn notifications bell</span> */}
         <Switch onChange={toggleTurnNotificationsMute} isSelected={!turnNotificationsMuted}>turn notifications bell enabled</Switch>
       </div>
+      <div>Buzzwords version {__APP_VERSION__}</div>
     </div>
   );
 };
