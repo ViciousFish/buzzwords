@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import * as R from "ramda";
-import { getTurnNotificationsSetting } from "./settingsActions";
+import { getColorSchemeSetting, getPreferredDarkThemeSetting, getTurnNotificationsSetting } from "./settingsActions";
 import { getCurrentSystemScheme } from "./settingsSelectors";
 
 export enum ColorScheme {
@@ -21,8 +21,8 @@ interface SettingsState {
 // Define the initial state using that type
 const initialState: SettingsState = {
   turnNotificationsMuted: getTurnNotificationsSetting(),
-  colorScheme: ColorScheme.System,
-  preferredDarkTheme: "dark",
+  colorScheme: getColorSchemeSetting(),
+  preferredDarkTheme: getPreferredDarkThemeSetting(),
   currentSystemScheme: getCurrentSystemScheme(),
 };
 

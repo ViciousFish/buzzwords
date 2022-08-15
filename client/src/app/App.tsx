@@ -49,6 +49,7 @@ const Router = ELECTRON ? HashRouter : BrowserRouter;
 
 function App() {
   const theme = useAppSelector(getTheme);
+  const colorScheme = useAppSelector(state => state.settings.colorScheme);
 
   const dispatch = useAppDispatch();
   const showingTutorialModal = useAppSelector(
@@ -102,7 +103,7 @@ function App() {
       {/* @ts-ignore */}
       <Helmet>
         {/* @ts-ignore */}
-        <body style={getBodyStyleFromTheme(theme)} />
+        <body className={colorScheme} style={getBodyStyleFromTheme(theme)} />
       </Helmet>
       <Router>
         <IPCRoutingComponent />

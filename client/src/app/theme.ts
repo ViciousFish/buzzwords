@@ -1,3 +1,4 @@
+import { mergeDeepRight } from "ramda";
 import { ThemeNames } from "../features/settings/settingsSlice";
 //
 //
@@ -16,17 +17,20 @@ export interface Theme {
       p2: string;
       selected: string;
       crown: string;
+      beeYellow: string;
+      beeBrown: string;
     };
     html: {
-      primaryAccent: string;
+      primaryAccent: string; // sampled from threed.primaryAccent
       secondaryAccent: string;
       lightbg: string;
       darkbg: string;
-      p1: string;
-      p2: string;
+      p1: string; // sampled from threed.p1
+      p2: string; // sampled from threed.p2
       text: string;
       textSubtle: string;
       textInverse: string;
+      textLink: string;
       input: string;
       topbar0: string;
       topbar1: string;
@@ -34,32 +38,44 @@ export interface Theme {
   };
 }
 
-const dark = {
+const dark: Theme = {
   colors: {
     threed: {
       primaryAccent: "#18478C",
       secondaryAccent: "#ACC8F1",
-      p1: "#660F4D",
+      p1: "#83346D",
       p2: "#49693B",
       selected: "#626262",
       crown: "#fcba03",
+      beeYellow: "#d79e0f",
+      beeBrown: "#59430D",
     },
     html: {
-      primaryAccent: "#18478C",
-      secondaryAccent: "#ACC8F1",
+      primaryAccent: "#375BA8",
+      secondaryAccent: "#DBF5FE",
       lightbg: "49, 74, 110",
-      darkbg: "#475569",
-      p1: "#762961",
+      darkbg: "#243347",
+      p1: "#984B86",
       p2: "#668354",
       text: "white",
       textSubtle: "#333333",
       textInverse: "black",
+      textLink: "#a3e635",
       input: "black",
       topbar0: "#0f172a",
       topbar1: "#1e293b",
     },
   },
 };
+
+const oled = mergeDeepRight(dark, {
+  colors: {
+    html: {
+      lightbg: "black",
+      darkbg: "#243347",
+    },
+  },
+} as Partial<Theme>);
 
 export const theme: Record<ThemeNames, Theme> = {
   light: {
@@ -71,6 +87,8 @@ export const theme: Record<ThemeNames, Theme> = {
         p2: "#709867",
         selected: "#9a9a9a",
         crown: "#fcba03",
+        beeYellow: "#d79e0f",
+        beeBrown: "#59430D",
       },
       html: {
         primaryAccent: "#F6C54B",
@@ -82,6 +100,7 @@ export const theme: Record<ThemeNames, Theme> = {
         text: "black",
         textSubtle: "lightgrey",
         textInverse: "white",
+        textLink: "#0ea5e9",
         input: "white",
         topbar0: "rgb(233, 187, 72)",
         topbar1: "rgb(246, 197, 75)",
@@ -89,5 +108,5 @@ export const theme: Record<ThemeNames, Theme> = {
     },
   },
   dark,
-  oled: dark,
+  oled,
 };

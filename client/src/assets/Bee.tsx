@@ -67,11 +67,11 @@ const Bee = (props: GroupProps) => {
       <group rotation={[0, Math.PI / 4, -Math.PI / 1.5]}>
         {/* @ts-ignore */}
         <mesh {...bind()} geometry={nodes.Bee_1.geometry}>
-          <meshStandardMaterial color={theme.colors.threed.primaryAccent} />
+          <meshStandardMaterial color={theme.colors.threed.beeYellow} />
         </mesh>
         {/* @ts-ignore */}
         <mesh {...bind()} geometry={nodes.Bee_2.geometry}>
-          <meshStandardMaterial color={theme.colors.threed.secondaryAccent} />
+          <meshStandardMaterial color={theme.colors.threed.beeBrown} />
         </mesh>
         {/* @ts-ignore */}
         <mesh {...bind()} geometry={nodes.Bee_3.geometry}>

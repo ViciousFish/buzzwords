@@ -108,7 +108,7 @@ const GameList: React.FC = () => {
             <div className="z-10 px-2 mt-0 flex items-center">
               <h2 className="text-2xl font-bold text-darkbrown">Games</h2>
               <div className="bg-primary mx-1 rounded-xl text-center flex items-center p-1">
-                <h3 className="text-xs mr-1">New</h3>
+                <h3 className="text-xs mr-1 text-text">New</h3>
                 <div className="flex space-x-1">
                   <PlayButtons mode="icon" buttonVariant="dark" />
                 </div>
@@ -157,7 +157,7 @@ const GameList: React.FC = () => {
             )}
           </div>
           {showTutorialCard && isOpen && <TutorialCard />}
-          <div className="p-2 text-sm text-center text-gray-800">
+          <div className="p-2 text-sm text-center text-text opacity-75">
             by{" "}
             <a
               className="underline"

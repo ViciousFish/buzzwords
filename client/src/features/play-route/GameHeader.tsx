@@ -28,7 +28,7 @@ const GameMenu = React.forwardRef<HTMLDivElement, GameMenuProps>(
     return (
       <div
         ref={ref}
-        className="bg-primary rounded-xl p-2 shadow-lg text-center flex flex-col"
+        className="bg-primary rounded-xl p-2 shadow-lg text-center text-text flex flex-col"
       >
         Game options
         {resignState === "unclicked" && (
@@ -44,12 +44,15 @@ const GameMenu = React.forwardRef<HTMLDivElement, GameMenuProps>(
           </Button>
         )}
         {resignState === "unconfirmed" && (
-          <div className="rounded-xl pl-2 border border-red-600">
+          <div className="rounded-xl pl-2 border border-p1">
             <span>Are you sure?</span>
             <Button
-              onClick={() => dispatch(forfeitGame(id))}
-              variant="dark"
-              className="bg-red-600 font-bold"
+              onClick={() => {
+                dispatch(forfeitGame(id));
+                setResignState("unclicked");
+              }}
+              // variant="dark"
+              className="bg-p1 font-bold"
               type="button"
             >
               RESIGN
@@ -97,16 +100,18 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
         label="Copy link"
         text={getGameUrl(game.id)}
       />
-      {navigator.share && <Button
-        onClick={() =>
-          navigator.share?.({
-            url: getGameUrl(game.id),
-          })
-        }
-        variant="dark"
-      >
-        Share <FontAwesomeIcon icon={faShareSquare} />
-      </Button>}
+      {navigator.share && (
+        <Button
+          onClick={() =>
+            navigator.share?.({
+              url: getGameUrl(game.id),
+            })
+          }
+          variant="dark"
+        >
+          Share <FontAwesomeIcon icon={faShareSquare} />
+        </Button>
+      )}
     </div>
   ) : (
     <></>
@@ -132,7 +137,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
           isOpen={shareOverlay}
           content={shareOverlayContent}
           containerClassName="z-30"
-          positions={['bottom']}
+          positions={["bottom"]}
         >
           <button
             type="button"
@@ -148,7 +153,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
             onClickOutside={() => setMenuOverlay(false)}
             content={<GameMenu id={game.id} />}
             containerClassName="z-30"
-            positions={['bottom']}
+            positions={["bottom"]}
           >
             <button
               type="button"

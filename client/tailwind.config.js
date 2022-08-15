@@ -26,6 +26,7 @@ module.exports = {
         text: "var(--text)",
         textSubtle: "var(--textSubtle",
         textInverse: "var(--textInverse)",
+        textLink: "var(--textLink)",
         input: "var(--input)"
       },
     },

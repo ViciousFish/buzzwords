@@ -30,7 +30,7 @@ const NativeAppAd = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
         target="_blank"
         rel="noreferrer"
         href="https://chuckdries.itch.io/buzzwords"
-        className="block text-center bg-darkbrown text-white hover:bg-opacity-50 rounded-full p-2 m-1 transition-all active:transform active:scale-90 active:bg-opacity-100 inset-shadow"
+        className="block text-center bg-darkbrown text-textInverse hover:bg-opacity-50 rounded-full p-2 m-1 transition-all active:transform active:scale-90 active:bg-opacity-100 inset-shadow"
       >
         Download Now <FontAwesomeIcon className="opacity-70" size="sm" icon={faExternalLinkAlt} />
       </a>

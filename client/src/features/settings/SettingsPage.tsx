@@ -26,11 +26,13 @@ import { Item } from "react-stately";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { Select } from "../../presentational/Select";
 import { Switch } from "../../presentational/Switch";
-import { setTurnNotificationsSetting } from "./settingsActions";
+import {
+  setColorSchemeSetting,
+  setPreferredDarkThemeSetting,
+  setTurnNotificationsSetting,
+} from "./settingsActions";
 import {
   ColorScheme,
-  setColorScheme,
-  setPreferredDarkTheme,
   ThemeNames,
 } from "./settingsSlice";
 
@@ -59,13 +61,13 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
   }, [dispatch, turnNotificationsMuted]);
   const switchColorScheme = useCallback(
     (key: string) => {
-      dispatch(setColorScheme(key as ColorScheme));
+      dispatch(setColorSchemeSetting(key as ColorScheme));
     },
     [dispatch]
   );
   const switchDarkTheme = useCallback(
     (key: string) => {
-      dispatch(setPreferredDarkTheme(key as ThemeNames));
+      dispatch(setPreferredDarkThemeSetting(key as ThemeNames));
     },
     [dispatch]
   );
@@ -107,14 +109,16 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
             <Item key="dark">Dark</Item>
             <Item key="system">Follow system preference</Item>
           </Select>
-          {colorScheme !== 'light' && <Select
-            selectedKey={preferredDarkTheme}
-            onSelectionChange={switchDarkTheme}
-            label="Dark mode theme"
-          >
-            <Item key="dark">Subtle Dark</Item>
-            <Item key="oled">OLED Dark</Item>
-          </Select>}
+          {colorScheme !== "light" && (
+            <Select
+              selectedKey={preferredDarkTheme}
+              onSelectionChange={switchDarkTheme}
+              label="Dark mode theme"
+            >
+              <Item key="dark">Subtle Dark</Item>
+              <Item key="oled">OLED Dark</Item>
+            </Select>
+          )}
         </SettingsPageSection>
       </div>
       <div className="text-xs opacity-75">

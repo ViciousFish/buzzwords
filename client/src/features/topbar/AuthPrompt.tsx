@@ -112,7 +112,7 @@ const AuthPrompt: React.FC<AuthPromptProps> = ({ onDismiss }) => {
             <button
               type="button"
               className={classNames(
-                "mt-2 mb-2 flex items-center flex-auto bg-darkbrown text-white p-2 text-sm hover:bg-opacity-50",
+                "mt-2 mb-2 flex items-center flex-auto bg-darkbrown text-textInverse p-2 text-sm hover:bg-opacity-50",
                 "rounded-full inset-shadow transition-all"
               )}
               onClick={() => dispatch(getGoogleLoginURL())}
