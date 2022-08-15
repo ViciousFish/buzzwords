@@ -96,14 +96,14 @@ jobs:
           ITCH_USER: chuckdries
           PACKAGE: win-portable
           VERSION: ${{ env.TAG }}
-      - uses: manleydev/butler-publish-itchio-action@master
-        env:
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-          CHANNEL: linux
-          ITCH_GAME: buzzwords
-          ITCH_USER: chuckdries
-          PACKAGE: release-linux
-          VERSION: ${{ env.TAG }}
+      # - uses: manleydev/butler-publish-itchio-action@master
+      #   env:
+      #     BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+      #     CHANNEL: linux
+      #     ITCH_GAME: buzzwords
+      #     ITCH_USER: chuckdries
+      #     PACKAGE: release-linux
+      #     VERSION: ${{ env.TAG }}
       - uses: manleydev/butler-publish-itchio-action@master
         env:
           BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}

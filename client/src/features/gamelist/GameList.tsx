@@ -21,7 +21,8 @@ import TutorialCard from "./TutorialCard";
 import PlayButtons from "../home-route/PlayButtons";
 import ReactTooltip from "react-tooltip";
 
-const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
+// const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
+import Canvas from "../canvas/Canvas";
 const BeeLazy = React.lazy(() => import("../../assets/Bee"));
 const HexWordLazy = React.lazy(() => import("../thereed-lettering/HexWord"));
 
@@ -98,10 +99,10 @@ const GameList: React.FC = () => {
           <div className="h-[150px] no-touch">
             <h1 style={{ display: "none" }}>Buzzwords</h1>
             <React.Suspense fallback={<></>}>
-              <CanvasLazy>
+              <Canvas>
                 <BeeLazy position={[0, 5, 0]} scale={4} />
                 <HexWordLazy autoSpin position={[0, -6, 0]} text="BUZZWORDS" />
-              </CanvasLazy>
+              </Canvas>
             </React.Suspense>
           </div>
           <div className="flex-auto">
