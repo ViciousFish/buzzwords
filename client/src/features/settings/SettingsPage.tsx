@@ -69,7 +69,7 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
     [dispatch]
   );
   return (
-    <div className="p-4 items-stretch bg-primary rounded-xl border border-darkbrown shadow-lg">
+    <div className="p-4 items-stretch bg-primary rounded-xl border border-darkbrown shadow-lg text-text">
       <button
         aria-label="dismiss login prompt"
         className="float-right hover:opacity-75"

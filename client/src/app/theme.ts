@@ -39,7 +39,7 @@ const dark = {
       lightbg: "51, 65, 85",
       darkbg: "#475569",
       p1: "#660F4D",
-      p2: "#344B2A",
+      p2: "#668354",
       text: "white",
       textInverse: "black",
     },

@@ -83,8 +83,8 @@ const GameList: React.FC = () => {
               classNames(
                 isActive
                   ? "bg-primary hover:bg-opacity-100"
-                  : "underline text-darkbrown",
-                "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50"
+                  : "underline",
+                "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50 text-darkbrown"
               )
             }
             to="/"
