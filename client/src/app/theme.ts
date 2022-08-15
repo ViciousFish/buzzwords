@@ -71,7 +71,7 @@ const dark: Theme = {
 const oled = mergeDeepRight(dark, {
   colors: {
     html: {
-      lightbg: "black",
+      lightbg: "0, 0, 0",
       darkbg: "#243347",
     },
   },
