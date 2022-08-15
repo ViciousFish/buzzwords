@@ -5,7 +5,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        fredoka: ['fredoka_oneregular', 'sans'],
+        fredoka: ["fredoka_oneregular", "sans"],
         // sans: ['Patrick\\ Hand', 'sans']
       },
       colors: {
@@ -18,11 +18,13 @@ module.exports = {
           }
           return `rgb(var(--lightbg))`;
         },
-        darkbg: 'var(--darkbg)',
-        primary: 'var(--primaryAccent)', // theme.primary on lit tiles
-        darkbrown: 'var(--secondaryAccent)',
-        p1: "var(--p1)", // theme.p1 on lit tiles
-        p2: "var(--p2)" // theme.p2 on lit tiles
+        darkbg: "var(--darkbg)",
+        primary: "var(--primaryAccent)", // theme.primary on lit tiles
+        darkbrown: "var(--secondaryAccent)",
+        p1: "var(--p1)",
+        p2: "var(--p2)",
+        text: "var(--text)",
+        textInverse: "var(--textInverse)",
       },
     },
   },
