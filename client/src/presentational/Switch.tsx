@@ -10,9 +10,11 @@ export function Switch(props: ToggleProps) {
 
   return (
     <label
+      className="w-full"
       style={{
         display: "flex",
         alignItems: "center",
+        justifyContent: "stretch",
         opacity: props.isDisabled ? 0.4 : 1,
       }}
     >
