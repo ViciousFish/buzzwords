@@ -107,20 +107,6 @@ const TopBar: React.FC = () => {
               {hamburgerNotification}
             </span>
           </button>
-          {/* <button
-            className="p-2 rounded-md hover:bg-lightbg hover:bg-opacity-50"
-            aria-label={`${
-              turnNotificationsMuted ? "unmute" : "mute"
-            } turn notification`}
-            data-tip={`${
-              turnNotificationsMuted ? "Unmute" : "Mute"
-            } turn notification`}
-            onClick={toggleTurnNotificationsMute}
-          >
-            <FontAwesomeIcon
-              icon={turnNotificationsMuted ? faVolumeMute : faVolumeUp}
-            />
-          </button> */}
           <Popover
             positions={["bottom"]}
             content={<SettingsPage onDismiss={() => setSettingsPanel(false)} />}
@@ -133,10 +119,7 @@ const TopBar: React.FC = () => {
               }}
               aria-label="display tutorial"
               data-tip="Tutorial"
-              className={classNames(
-                "p-2 rounded-md hover:bg-lightbg hover:bg-opacity-50",
-                gamelistIsOpen && showTutorialCard && "hidden"
-              )}
+              className="p-2 rounded-md hover:bg-lightbg hover:bg-opacity-50"
             >
               <FontAwesomeIcon icon={faCog} />
             </button>
