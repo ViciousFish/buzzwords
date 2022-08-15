@@ -17,7 +17,7 @@
     "types": [
       "vite/client"
     ],
-    "strictNullChecks": false
+    "strictNullChecks": true
   },
   "include": ["./src"]
 }

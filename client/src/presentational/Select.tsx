@@ -37,7 +37,7 @@ export function Select<T extends object>(props: AriaSelectProps<T>) {
     <div className="inline-flex flex-col relative w-full">
       <div
         {...labelProps}
-        className="block text-sm font-medium text-text text-left cursor-default"
+        className="block text-sm font-medium text-text text-left cursor-default pl-2"
       >
         {props.label as React.ReactNode}
       </div>

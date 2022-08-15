@@ -24,7 +24,7 @@ export function Switch(props: ToggleProps) {
           <input {...inputProps} {...focusProps} ref={ref} />
         </VisuallyHidden>
         <svg
-          width={40}
+          width={42}
           height={24}
           aria-hidden="true"
           style={{ marginRight: 4 }}

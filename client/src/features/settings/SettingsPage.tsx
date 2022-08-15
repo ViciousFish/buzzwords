@@ -89,6 +89,33 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
       </button>
       <h3 className="text-xl font-bold">Settings</h3>
       <div className="flex flex-col gap-2 my-2">
+        {nickname && (
+          <SettingsPageSection>
+            {nickState === "pristine" && (
+              <label className="flex flex-col w-full">
+                <div className="text-left w-full pl-2 text-sm m-0">
+                  Nickname
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setNickState("editing")}
+                  className="text-left p-2 rounded-md bg-input text-text w-full border-2 border-primary flex"
+                >
+                  <span className="flex-auto">{nickname}</span>
+                  <span className="text-primary">
+                    <FontAwesomeIcon icon={faPencilAlt} />
+                  </span>
+                </button>
+              </label>
+            )}
+            {nickState === "editing" && (
+              <NicknameForm
+                afterSubmit={() => setNickState("pristine")}
+                onCancel={() => setNickState("pristine")}
+              />
+            )}
+          </SettingsPageSection>
+        )}
         <SettingsPageSection>
           <Switch
             onChange={toggleTurnNotificationsMute}
@@ -106,7 +133,6 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
           </Switch>
         </SettingsPageSection>
         <SettingsPageSection>
-          {/* <span>Visuals</span> */}
           <Select
             selectedKey={colorScheme}
             onSelectionChange={switchColorScheme}
@@ -127,29 +153,6 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
             </Select>
           )}
         </SettingsPageSection>
-        {nickname && (
-          <SettingsPageSection>
-            <div className="text-left w-full">Nickname</div>
-            {nickState === "pristine" && (
-              <button
-                type="button"
-                onClick={() => setNickState("editing")}
-                className="text-left p-2 rounded-md bg-input text-text w-full border-2 border-primary flex"
-              >
-                <span className="flex-auto">{nickname}</span>
-                <span className="text-primary">
-                  <FontAwesomeIcon icon={faPencilAlt} />
-                </span>
-              </button>
-            )}
-            {nickState === "editing" && (
-              <NicknameForm
-                afterSubmit={() => setNickState("pristine")}
-                onCancel={() => setNickState("pristine")}
-              />
-            )}
-          </SettingsPageSection>
-        )}
       </div>
       <div className="text-xs opacity-75">
         Buzzwords version {__APP_VERSION__} ({__COMMIT_HASH__})
