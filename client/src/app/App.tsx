@@ -99,20 +99,13 @@ function App() {
                 </div>
               }
             />
-            <Route
-              path="/settings"
-              element={
-                <div className="flex flex-col items-stretch p-4 bg-lightbg h-full">
-                  <SettingsPage />
-                </div>
-              }
-            />
           </Route>
           <Route path="/auth/success" element={<AuthSuccessLazy />} />
         </Routes>
       </React.Suspense>
       <ToastContainer toastClassName="bg-primary text-darkbrown rounded-lg" />
       {showingTutorialModal && <TutorialModal />}
+      {/* @ts-ignore ????? */}
       {!isTouch && <ReactTooltip />}
     </Router>
   );

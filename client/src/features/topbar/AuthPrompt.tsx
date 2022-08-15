@@ -42,6 +42,7 @@ const AuthLogin: React.FC = () => {
                 type="email"
                 name="email"
               />
+              {/* @ts-ignore */}
               <ErrorMessage
                 className="opacity-75 text-sm"
                 name="email"
@@ -56,6 +57,7 @@ const AuthLogin: React.FC = () => {
                 type="password"
                 name="password"
               />
+              {/* @ts-ignore */}
               <ErrorMessage
                 className="opacity-75 text-sm"
                 name="password"

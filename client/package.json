@@ -1,5 +1,5 @@
 {
-  "version": "1.2.0",
+  "version": "1.2.1",
   "name": "buzzwords-client",
   "productName": "Buzzwords",
   "author": {
@@ -68,6 +68,7 @@
     "@types/ramda": "^0.27.60",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
+    "@types/react-tooltip": "^4.2.4",
     "@types/three": "^0.143.0",
     "@types/url-join": "^4.0.1",
     "@types/yup": "^0.29.13",
