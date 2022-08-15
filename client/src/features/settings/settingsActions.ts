@@ -25,6 +25,13 @@ export const getColorSchemeSetting = () =>
 export const setColorSchemeSetting =
   (scheme: ColorScheme): AppThunk =>
   (dispatch) => {
+    try {
+      window.plausible?.("PickScheme", {
+        props: { scheme },
+      });
+    } catch (e) {
+      // do nothing
+    }
     localStorage.setItem("colorScheme", scheme);
     dispatch(setColorScheme(scheme));
   };
@@ -35,6 +42,13 @@ export const getPreferredDarkThemeSetting = () =>
 export const setPreferredDarkThemeSetting =
   (preferredDarkTheme: ThemeNames): AppThunk =>
   (dispatch) => {
+    try {
+      window.plausible?.("PickDarkTheme", {
+        props: { preferredDarkTheme },
+      });
+    } catch (e) {
+      // do nothing
+    }
     localStorage.setItem("preferredDarkTheme", preferredDarkTheme);
     dispatch(setPreferredDarkTheme(preferredDarkTheme));
   };
