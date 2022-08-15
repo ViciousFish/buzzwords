@@ -6,16 +6,11 @@ import { ReactReduxContext } from "react-redux";
 import Wrap3d from "./Wrap3d";
 import classNames from "classnames";
 
-import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
-import { extend } from '@react-three/fiber'
-
-
 const Canvas: React.FC<{
   className?: string;
   children: ReactNode;
 }> = ({ children, className }) => {
   const ReduxProvider = useContextBridge(ReactReduxContext);
-  extend({ TextGeometry })
 
   return (
     <ThreeCanvas

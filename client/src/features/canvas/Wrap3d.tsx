@@ -4,6 +4,8 @@ import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { Box3, Color, Group, PerspectiveCamera } from "three";
 import type { ThreeElements } from '@react-three/fiber'
 
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
+import { extend } from '@react-three/fiber'
 
 const setZoom = (
   group: Group,
@@ -22,6 +24,7 @@ const setZoom = (
 };
 
 const Wrap3d = ({ children }: { children: ReactNode }) => {
+  extend({ TextGeometry })
   const { progress } = useProgress();
 
   const groupRef = useRef<Group>();
