@@ -3,6 +3,7 @@
 import {
   faAngleDown,
   faAngleRight,
+  faCog,
   faHome,
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
@@ -76,9 +77,24 @@ const GameList: React.FC = () => {
             target="_blank"
             rel="noreferrer"
           >
-            <FontAwesomeIcon icon={faTwitter} /> Follow us on Twitter
+            <FontAwesomeIcon icon={faTwitter} /> Follow us
           </a>
           <div className="flex-auto" />
+          <NavLink
+            className={({ isActive }) =>
+              classNames(
+                isActive
+                  ? "bg-primary hover:bg-opacity-100"
+                  : "underline text-darkbrown",
+                "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50"
+              )
+            }
+            to="/settings"
+            aria-label="settings"
+            data-tip="Settings"
+          >
+            <FontAwesomeIcon icon={faCog} />
+          </NavLink>
           <NavLink
             className={({ isActive }) =>
               classNames(

@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Move } from "buzzwords-shared/Game";
 import { QRCoord } from "../hexGrid/hexGrid";
-import { getTurnNotificationsSetting } from "./gameActions";
 import { GameStateModalProps } from "./GameStateModal";
 
 interface GameState {
@@ -20,7 +19,6 @@ interface GameState {
   windowHasFocus: boolean;
   gameStateModal: GameStateModalProps | null;
   showingNudgeButton: boolean;
-  turnNotificationsMuted: boolean;
   socketConnected: boolean;
   freezeGameBoard: boolean;
 }
@@ -39,7 +37,6 @@ const initialState: GameState = {
   windowHasFocus: document.hasFocus(),
   gameStateModal: null,
   showingNudgeButton: false,
-  turnNotificationsMuted: getTurnNotificationsSetting(),
   socketConnected: false,
   freezeGameBoard: false,
 };
@@ -110,9 +107,6 @@ export const gameSlice = createSlice({
     toggleNudgeButton: (state, action: PayloadAction<boolean>) => {
       state.showingNudgeButton = action.payload;
     },
-    setTurnNotificationsMute: (state, action: PayloadAction<boolean>) => {
-      state.turnNotificationsMuted = action.payload;
-    },
     setSocketConnected: (state, action: PayloadAction<boolean>) => {
       state.socketConnected = action.payload;
     },
@@ -136,7 +130,6 @@ export const {
   setWindowHasFocus,
   setGameStateModal,
   toggleNudgeButton,
-  setTurnNotificationsMute,
   setSocketConnected,
   setFreezeGameBoard,
 } = gameSlice.actions;

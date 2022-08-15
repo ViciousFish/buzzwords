@@ -12,6 +12,7 @@ import ReactTooltip from "react-tooltip";
 import { getHowManyGamesAreMyTurn } from "../features/gamelist/gamelistSelectors";
 import IPCRoutingComponent from "./IPCRoutingComponent";
 import NativeAppAd from "../presentational/NativeAppAd";
+import { SettingsPage } from "../features/settings/SettingsPage";
 
 // not necessary, as long as there's always a 3d canvas on screen!
 // import.meta.env.PROD &&
@@ -95,6 +96,14 @@ function App() {
               element={
                 <div className="flex justify-center items-center bg-lightbg h-full">
                   <NativeAppAd />
+                </div>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <div className="flex justify-center p-4 bg-lightbg h-full">
+                  <SettingsPage />
                 </div>
               }
             />
