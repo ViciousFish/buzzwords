@@ -81,7 +81,7 @@ export const receiveGameUpdatedSocket =
     );
 
     if (userIndex === game.turn && !game.gameOver) {
-      if (!state.game.turnNotificationsMuted) {
+      if (!state.settings.turnNotificationsMuted) {
         DingAudio.play();
       }
       if (!state.game.windowHasFocus) {

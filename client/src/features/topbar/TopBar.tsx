@@ -15,13 +15,13 @@ import { Popover } from "react-tiny-popover";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import NativeAppAd from "../../presentational/NativeAppAd";
-import { setTurnNotificationsSetting } from "../game/gameActions";
 import { getHowManyGamesAreMyTurn } from "../gamelist/gamelistSelectors";
 import { setShowTutorialCard, toggleIsOpen } from "../gamelist/gamelistSlice";
 import TutorialCard from "../gamelist/TutorialCard";
 import { logout } from "../user/userActions";
 import { isUserLoggedIn } from "../user/userSelectors";
 import AuthPrompt from "./AuthPrompt";
+import { setTurnNotificationsSetting } from "../settings/settingsActions";
 
 const ELECTRON = window.versions;
 const PLATFORM = window.versions?.platform?.();
@@ -32,7 +32,7 @@ const TopBar: React.FC = () => {
 
   const isOpen = useAppSelector((state) => state.gamelist.isOpen);
   const turnNotificationsMuted = useAppSelector(
-    (state) => state.game.turnNotificationsMuted
+    (state) => state.settings.turnNotificationsMuted
   );
   const showTutorialCard = useAppSelector(
     (state) => state.gamelist.showTutorialCard
@@ -47,7 +47,7 @@ const TopBar: React.FC = () => {
   );
 
   const [_authPrompt, setAuthPrompt] = useState(
-    !location.pathname.match(/play|download/)
+    !location.pathname.match(/play|download|settings/)
   );
   const authPrompt = isLoggedIn === false && _authPrompt;
 
