@@ -13,6 +13,11 @@ import { getHowManyGamesAreMyTurn } from "../features/gamelist/gamelistSelectors
 import IPCRoutingComponent from "./IPCRoutingComponent";
 import NativeAppAd from "../presentational/NativeAppAd";
 import { SettingsPage } from "../features/settings/SettingsPage";
+import { Helmet } from "react-helmet";
+import {
+  getBodyStyleFromTheme,
+  getTheme,
+} from "../features/settings/settingsSelectors";
 
 // not necessary, as long as there's always a 3d canvas on screen!
 // import.meta.env.PROD &&
@@ -37,6 +42,7 @@ const ELECTRON = window.versions;
 const Router = ELECTRON ? HashRouter : BrowserRouter;
 
 function App() {
+  const theme = useAppSelector(getTheme);
   const dispatch = useAppDispatch();
   const showingTutorialModal = useAppSelector(
     (state) => state.game.showingTutorialModal
@@ -70,44 +76,51 @@ function App() {
   }, [numberOfGamesWaitingForPlayer]);
 
   return (
-    <Router>
-      <IPCRoutingComponent />
-      <React.Suspense fallback={<></>}>
-        <Routes>
-          <Route element={<MainGameStructureLazy />}>
-            <Route
-              path="/"
-              element={
-                <React.Suspense fallback={<></>}>
-                  <HomeLazy />
-                </React.Suspense>
-              }
-            />
-            <Route
-              path="/play/:id"
-              element={
-                <React.Suspense fallback={<></>}>
-                  <PlayLazy />
-                </React.Suspense>
-              }
-            />
-            <Route
-              path="/download"
-              element={
-                <div className="flex justify-center items-center bg-lightbg h-full">
-                  <NativeAppAd />
-                </div>
-              }
-            />
-          </Route>
-          <Route path="/auth/success" element={<AuthSuccessLazy />} />
-        </Routes>
-      </React.Suspense>
-      <ToastContainer toastClassName="bg-primary text-darkbrown rounded-lg" />
-      {showingTutorialModal && <TutorialModal />}
-      {/* @ts-ignore ????? */}
-      {!isTouch && <ReactTooltip />}
-    </Router>
+    <>
+      {/* @ts-ignore */}
+      <Helmet>
+        {/* @ts-ignore */}
+        <body style={getBodyStyleFromTheme(theme)} />
+      </Helmet>
+      <Router>
+        <IPCRoutingComponent />
+        <React.Suspense fallback={<></>}>
+          <Routes>
+            <Route element={<MainGameStructureLazy />}>
+              <Route
+                path="/"
+                element={
+                  <React.Suspense fallback={<></>}>
+                    <HomeLazy />
+                  </React.Suspense>
+                }
+              />
+              <Route
+                path="/play/:id"
+                element={
+                  <React.Suspense fallback={<></>}>
+                    <PlayLazy />
+                  </React.Suspense>
+                }
+              />
+              <Route
+                path="/download"
+                element={
+                  <div className="flex justify-center items-center bg-lightbg h-full">
+                    <NativeAppAd />
+                  </div>
+                }
+              />
+            </Route>
+            <Route path="/auth/success" element={<AuthSuccessLazy />} />
+          </Routes>
+        </React.Suspense>
+        <ToastContainer toastClassName="bg-primary text-darkbrown rounded-lg" />
+        {showingTutorialModal && <TutorialModal />}
+        {/* @ts-ignore ????? */}
+        {!isTouch && <ReactTooltip />}
+      </Router>
+    </>
   );
 }
 

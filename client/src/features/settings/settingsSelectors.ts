@@ -1,5 +1,7 @@
+import * as R from 'ramda';
+
 import { RootState } from "../../app/store";
-import { theme } from "../../app/theme";
+import { Theme, theme } from "../../app/theme";
 import { ColorScheme, ThemeNames } from "./settingsSlice";
 
 export const getTheme = (state: RootState) => {
@@ -13,3 +15,11 @@ export const getTheme = (state: RootState) => {
   }
   return theme[_theme];
 };
+
+export const getBodyStyleFromTheme = (theme: Theme) => {
+  return R.pipe(
+    R.toPairs,
+    R.map(([key, val]) => `--${key}: ${val};`),
+    R.join('')
+  )(theme.colors.html)
+}
