@@ -8,8 +8,10 @@ import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 
 import crown from "../../assets/Crown.glb?url";
-import { theme } from "../app/theme";
 import { useFrame } from "@react-three/fiber";
+import { useAppSelector } from "../app/hooks";
+import { getTheme } from "../features/settings/settingsSelectors";
+import { Group } from "three";
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -29,9 +31,10 @@ interface CrownExternalProps {
 type CrownProps = CrownExternalProps & JSX.IntrinsicElements["group"];
 
 export default function Crown(props: CrownProps) {
+  const theme = useAppSelector(getTheme);
   const group = useRef<THREE.Group>();
-  const { nodes, materials } = useGLTF(crown) as GLTFResult;
-  const ref = useRef<JSX.IntrinsicElements["group"]>();
+  const { nodes, materials } = useGLTF(crown) as unknown as GLTFResult;
+  const ref = useRef<Group>();
   useFrame((state, delta) => {
     if (ref.current && ref.current.rotation && props.rotate) {
       // @ts-ignore types are just wrong here
@@ -44,7 +47,7 @@ export default function Crown(props: CrownProps) {
       <group scale={0.89} ref={ref}>
         <mesh geometry={nodes.Crown_1.geometry}>
           <meshStandardMaterial
-            color={theme.colors.crown}
+            color={theme.colors.threed.crown}
             roughness={0.5}
             metalness={0.3}
           />

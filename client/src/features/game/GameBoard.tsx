@@ -2,13 +2,10 @@ import { Html, useProgress } from "@react-three/drei";
 import * as R from "ramda";
 import Game from "buzzwords-shared/Game";
 import React, { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 
-import { useAppSelector } from "../../app/hooks";
-import Button from "../../presentational/Button";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Canvas from "../canvas/Canvas";
 import { QRCoord } from "../hexGrid/hexGrid";
-import { User } from "../user/userSlice";
 import {
   backspaceTileSelection,
   clearTileSelection,
@@ -30,7 +27,7 @@ interface GameBoardProps {
 
 const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   const { progress } = useProgress();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const selectedWord = useAppSelector((state) =>
     getSelectedWordByGameId(state, id)
