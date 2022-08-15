@@ -1,4 +1,11 @@
 import { ThemeNames } from "../features/settings/settingsSlice";
+//
+//
+//
+// CQ: wire up text-textlink to replace text-blue-whatever
+//
+//
+//
 
 export interface Theme {
   colors: {

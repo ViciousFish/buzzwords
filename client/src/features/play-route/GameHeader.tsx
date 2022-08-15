@@ -76,7 +76,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
   const p2Nick = game.vsAI ? "Computer" : users[game.users[1]]?.nickname;
 
   const shareOverlayContent = shareOverlay ? (
-    <div className="bg-primary rounded-xl p-4 shadow-lg border border-darkbrown max-w-[300px]">
+    <div className="bg-primary rounded-xl text-text p-4 shadow-lg border border-darkbrown max-w-[300px]">
       <button
         aria-label="dismiss spectator sharing prompt"
         className="float-right hover:opacity-75"
@@ -87,7 +87,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
       <h3 className="text-lg font-bold">Spectating</h3>
       <p>Share this link with your friends to allow them to see your game.</p>
       <a
-        className="underline text-blue-700 text-sm break-words block"
+        className="underline text-textlink text-sm break-words block"
         href={getGameUrl(game.id)}
       >
         {getGameUrl(game.id)}
@@ -113,7 +113,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
   );
 
   return (
-    <div className="h-[50px] flex flex-shrink-0 bg-darkbrown text-white text-lg px-4">
+    <div className="h-[50px] flex flex-shrink-0 bg-darkbrown text-textInverse text-lg px-4">
       <div className="flex items-center justify-start flex-auto">
         <span className="text-p1 font-bold">{p1Nick || "Player 2"}</span>
         <span className="mx-2 text-textInverse"> vs </span>
