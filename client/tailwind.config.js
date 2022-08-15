@@ -1,7 +1,6 @@
 module.exports = {
   mode: "jit",
   content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
-  darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
       fontFamily: {
@@ -24,7 +23,9 @@ module.exports = {
         p1: "var(--p1)",
         p2: "var(--p2)",
         text: "var(--text)",
+        textSubtle: "var(--textSubtle",
         textInverse: "var(--textInverse)",
+        input: "var(--input)"
       },
     },
   },

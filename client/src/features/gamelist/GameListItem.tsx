@@ -40,7 +40,7 @@ const GameListItem: React.FC<GameListItemProps> = ({ game }) => {
                 {nick1} vs {nick2}
               </span>
               {game.vsAI ? (
-                <span className="text-gray-600 no-underline">
+                <span className="text-textSubtle no-underline">
                   {" "}
                   ({game.difficulty})
                 </span>

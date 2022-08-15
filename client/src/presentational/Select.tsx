@@ -50,14 +50,14 @@ export function Select<T extends object>(props: AriaSelectProps<T>) {
       <button
         {...mergeProps(buttonProps, focusProps)}
         ref={ref}
-        className={`p-1 pl-3 py-1 relative inline-flex flex-row items-center justify-between rounded-md overflow-hidden cursor-default shadow-sm border-2 outline-none ${
+        className={`p-1 pl-3 py-1 relative inline-flex flex-row items-center justify-between rounded-md overflow-hidden cursor-default border-2 outline-none ${
           isFocusVisible ? "border-darkbrown" : "border-primary"
-        } ${state.isOpen ? "bg-gray-100" : "bg-white"}`}
+        } ${state.isOpen ? "bg-input" : "bg-input"}`}
       >
         <span
           {...valueProps}
           className={`text-md ${
-            state.selectedItem ? "text-gray-800" : "text-gray-500"
+            state.selectedItem ? "text-text" : "text-textSubtle"
           }`}
         >
           {state.selectedItem

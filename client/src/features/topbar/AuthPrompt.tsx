@@ -20,7 +20,7 @@ const LoginValidationSchema = yup.object().shape({
 const AuthLogin: React.FC = () => {
   return (
     <>
-      <h3 className="text-lg font-bold m-0">Login</h3>
+      <h3 className="text-lg text-text font-bold m-0">Login</h3>
       <Formik
         initialValues={{
           email: "",
@@ -33,7 +33,7 @@ const AuthLogin: React.FC = () => {
         }}
       >
         {({ isSubmitting }) => (
-          <div className="min-w-[300px]">
+          <div className="min-w-[300px] text-text">
             <div className="flex flex-col">
               <label htmlFor="login-email">Email</label>
               <Field
@@ -93,7 +93,7 @@ const AuthPrompt: React.FC<AuthPromptProps> = ({ onDismiss }) => {
   const dispatch = useAppDispatch();
   const [view, setView] = useState<AuthPromptView>("login-options");
   return (
-    <div className="rounded-xl border border-darkbrown bg-primary shadow-lg p-4">
+    <div className="rounded-xl border border-darkbrown bg-primary shadow-lg p-4 text-text">
       <button
         aria-label="dismiss login prompt"
         className="float-right hover:opacity-75"

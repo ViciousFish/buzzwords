@@ -18,7 +18,11 @@ export interface Theme {
       p1: string;
       p2: string;
       text: string;
+      textSubtle: string;
       textInverse: string;
+      input: string;
+      topbar0: string;
+      topbar1: string;
     };
   };
 }
@@ -36,12 +40,16 @@ const dark = {
     html: {
       primaryAccent: "#18478C",
       secondaryAccent: "#ACC8F1",
-      lightbg: "51, 65, 85",
+      lightbg: "49, 74, 110",
       darkbg: "#475569",
-      p1: "#660F4D",
+      p1: "#762961",
       p2: "#668354",
       text: "white",
+      textSubtle: "#333333",
       textInverse: "black",
+      input: "black",
+      topbar0: "#0f172a",
+      topbar1: "#1e293b",
     },
   },
 };
@@ -65,7 +73,11 @@ export const theme: Record<ThemeNames, Theme> = {
         p1: "#F3ADDF",
         p2: "#96BB87",
         text: "black",
+        textSubtle: "lightgrey",
         textInverse: "white",
+        input: "white",
+        topbar0: "rgb(233, 187, 72)",
+        topbar1: "rgb(246, 197, 75)",
       },
     },
   },
