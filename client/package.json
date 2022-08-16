@@ -23,8 +23,8 @@
     "dist-mac": "CSC_NAME=\"Charles Dries (775SDZM9Q3)\" electron-builder"
   },
   "dependencies": {
-    "@capacitor/core": "^4.0.0",
-    "@capacitor/ios": "^4.0.0",
+    "@capacitor/core": "^4.0.1",
+    "@capacitor/ios": "^4.0.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-brands-svg-icons": "^5.15.4",
     "@fortawesome/free-regular-svg-icons": "^5.15.4",
@@ -69,7 +69,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
-    "@capacitor/cli": "^4.0.0",
+    "@capacitor/cli": "^4.0.1",
     "@types/ramda": "^0.27.60",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",

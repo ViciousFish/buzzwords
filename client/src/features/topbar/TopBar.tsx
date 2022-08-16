@@ -6,8 +6,6 @@ import {
   faQuestion,
   faSpinner,
   faSyncAlt,
-  faVolumeMute,
-  faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
@@ -24,6 +22,7 @@ import { isUserLoggedIn } from "../user/userSelectors";
 import AuthPrompt from "./AuthPrompt";
 import { setTurnNotificationsSetting } from "../settings/settingsActions";
 import { SettingsPage } from "../settings/SettingsPage";
+import { Capacitor } from "@capacitor/core";
 
 const ELECTRON = window.versions;
 const PLATFORM = window.versions?.platform?.();
@@ -48,9 +47,7 @@ const TopBar: React.FC = () => {
     getHowManyGamesAreMyTurn(state, currentGame)
   );
 
-  const [_authPrompt, setAuthPrompt] = useState(
-    !location.pathname.match(/play|download|settings/)
-  );
+  const [_authPrompt, setAuthPrompt] = useState(false); // TODO: set up a timer or something to prompt user for auth
   const authPrompt = isLoggedIn === false && _authPrompt;
 
   const [settingsPanel, setSettingsPanel] = useState(false);
@@ -84,7 +81,7 @@ const TopBar: React.FC = () => {
       <div
         className={classNames(
           "flex h-full p-0 items-center topbar",
-          !ELECTRON && "rounded-t-xl"
+          !ELECTRON && !Capacitor.isNativePlatform() && "rounded-t-xl"
         )}
       >
         <div className="flex h-full gap-1 items-center">
