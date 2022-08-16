@@ -28,7 +28,7 @@ const GameMenu = React.forwardRef<HTMLDivElement, GameMenuProps>(
     return (
       <div
         ref={ref}
-        className="bg-primary rounded-xl p-2 shadow-lg text-center flex flex-col"
+        className="bg-primary rounded-xl p-2 shadow-lg text-center text-text flex flex-col"
       >
         Game options
         {resignState === "unclicked" && (
@@ -44,12 +44,15 @@ const GameMenu = React.forwardRef<HTMLDivElement, GameMenuProps>(
           </Button>
         )}
         {resignState === "unconfirmed" && (
-          <div className="rounded-xl pl-2 border border-red-600">
+          <div className="rounded-xl pl-2 border border-p1">
             <span>Are you sure?</span>
             <Button
-              onClick={() => dispatch(forfeitGame(id))}
-              variant="dark"
-              className="bg-red-600 font-bold"
+              onClick={() => {
+                dispatch(forfeitGame(id));
+                setResignState("unclicked");
+              }}
+              // variant="dark"
+              className="bg-p1 font-bold"
               type="button"
             >
               RESIGN
@@ -76,7 +79,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
   const p2Nick = game.vsAI ? "Computer" : users[game.users[1]]?.nickname;
 
   const shareOverlayContent = shareOverlay ? (
-    <div className="bg-primary rounded-xl p-4 shadow-lg border border-darkbrown max-w-[300px]">
+    <div className="bg-primary rounded-xl text-text p-4 shadow-lg border border-darkbrown max-w-[300px]">
       <button
         aria-label="dismiss spectator sharing prompt"
         className="float-right hover:opacity-75"
@@ -87,7 +90,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
       <h3 className="text-lg font-bold">Spectating</h3>
       <p>Share this link with your friends to allow them to see your game.</p>
       <a
-        className="underline text-blue-700 text-sm break-words block"
+        className="underline text-textlink text-sm break-words block"
         href={getGameUrl(game.id)}
       >
         {getGameUrl(game.id)}
@@ -97,30 +100,32 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
         label="Copy link"
         text={getGameUrl(game.id)}
       />
-      {navigator.share && <Button
-        onClick={() =>
-          navigator.share?.({
-            url: getGameUrl(game.id),
-          })
-        }
-        variant="dark"
-      >
-        Share <FontAwesomeIcon icon={faShareSquare} />
-      </Button>}
+      {navigator.share && (
+        <Button
+          onClick={() =>
+            navigator.share?.({
+              url: getGameUrl(game.id),
+            })
+          }
+          variant="dark"
+        >
+          Share <FontAwesomeIcon icon={faShareSquare} />
+        </Button>
+      )}
     </div>
   ) : (
     <></>
   );
 
   return (
-    <div className="h-[50px] bg-darkbrown text-white text-lg flex px-4">
+    <div className="h-[50px] flex flex-shrink-0 bg-darkbrown text-textInverse text-lg px-4">
       <div className="flex items-center justify-start flex-auto">
-        <span className="text-p1 font-bold">{p1Nick || "You"}</span>
-        <span className="mx-2"> vs </span>
+        <span className="text-p1 font-bold">{p1Nick || "Player 2"}</span>
+        <span className="mx-2 text-textInverse"> vs </span>
         <span className="text-p2 font-bold">
-          {p2Nick || "Them"}
+          {p2Nick || "Player 1"}
           {game.vsAI && (
-            <span className="font-normal text-gray-300 no-underline ml-1">
+            <span className="font-normal text-textInverse opacity-50 no-underline ml-1">
               ({game.difficulty})
             </span>
           )}
@@ -132,7 +137,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
           isOpen={shareOverlay}
           content={shareOverlayContent}
           containerClassName="z-30"
-          positions={['bottom']}
+          positions={["bottom"]}
         >
           <button
             type="button"
@@ -148,7 +153,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
             onClickOutside={() => setMenuOverlay(false)}
             content={<GameMenu id={game.id} />}
             containerClassName="z-30"
-            positions={['bottom']}
+            positions={["bottom"]}
           >
             <button
               type="button"

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Canvas as ThreeCanvas } from "@react-three/fiber";
 import { useContextBridge } from "@react-three/drei";
 import { ReactReduxContext } from "react-redux";
@@ -8,6 +8,7 @@ import classNames from "classnames";
 
 const Canvas: React.FC<{
   className?: string;
+  children: ReactNode;
 }> = ({ children, className }) => {
   const ReduxProvider = useContextBridge(ReactReduxContext);
 
@@ -16,7 +17,7 @@ const Canvas: React.FC<{
       className={classNames("shrinkable", className)}
       camera={{
         position: [0, 0, 20],
-        zoom: 3,
+        zoom: 5,
       }}
       gl={{
         powerPreference: "low-power",

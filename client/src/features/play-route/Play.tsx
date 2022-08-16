@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import * as R from "ramda";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -8,6 +8,7 @@ import {
   faPlayCircle,
   faShareSquare,
   faTrash,
+  faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import urljoin from "url-join";
@@ -38,6 +39,8 @@ import { getOpponent } from "../user/userSelectors";
 import { fetchOpponent } from "../user/userActions";
 import { isFullGame } from "../gamelist/gamelistSlice";
 import GameHeader from "./GameHeader";
+import { Popover } from "react-tiny-popover";
+import NativeAppAd from "../../presentational/NativeAppAd";
 
 export const getGameUrl = (id: string) => {
   if (import.meta.env.VITE_SHARE_BASEURL) {
@@ -49,6 +52,7 @@ export const getGameUrl = (id: string) => {
 
 const Play: React.FC = () => {
   const dispatch = useAppDispatch();
+  const location = useLocation();
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -70,6 +74,7 @@ const Play: React.FC = () => {
 
   const [fourohfour, setFourohfour] = useState(false);
   const [fetchedOpponentName, setFetchedOpponentName] = useState(false);
+  const [appInfoOverlay, setAppInfoOverlay] = useState(false);
 
   const userIndex =
     game && currentUser
@@ -91,6 +96,15 @@ const Play: React.FC = () => {
       });
     }
   }, [id, dispatch]);
+
+  const launchApp = useCallback(() => {
+    const path = location.pathname;
+    // @ts-ignore
+    window.location = urljoin(
+      `${import.meta.env.VITE_PRIVATE_SCHEME_NAME}://`,
+      path
+    );
+  }, [location]);
 
   useEffect(() => {
     if (id) {
@@ -180,28 +194,50 @@ const Play: React.FC = () => {
     return (
       <div className="flex flex-auto flex-col overflow-auto lg:h-[calc(100vh-calc(50px+var(--sat)))] justify-center items-center py-12 px-4">
         <div className="max-w-full flex-shrink-0 bg-darkbg flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
-          <h2 className="text-2xl flex-wrap">
+          <h2 className="text-2xl text-text flex-wrap">
             <span className="font-bold italic">
               {opponent?.nickname || "???"}
             </span>{" "}
             has invited you to play Buzzwords
           </h2>
         </div>
-        <Button onClick={joinGame}>Join game</Button>
+        <div className="flex items-start">
+          <Button onClick={joinGame}>Join game{!window.ipc && ' here'}</Button>
+          {!window.ipc && (
+            <div className="text-white bg-darkbrown rounded-full flex justify-center">
+              <Button className="text-text" onClick={launchApp}>
+                Join game in app
+              </Button>
+                <Popover
+                  content={<NativeAppAd />}
+                  isOpen={appInfoOverlay}
+                  onClickOutside={() => setAppInfoOverlay(false)}
+                >
+                  <Button
+                    variant="quiet"
+                    className="ml-0 text-textInverse"
+                    onClick={() => setAppInfoOverlay(!appInfoOverlay)}
+                  >
+                    <FontAwesomeIcon icon={faInfoCircle} />
+                  </Button>
+                </Popover>
+            </div>
+          )}
+        </div>
       </div>
     );
   }
 
   if (game.users.length === 1 && userIndex !== null && userIndex > -1) {
     return (
-      <div className="flex flex-auto flex-col overflow-auto lg:h-[calc(100vh-50px)] justify-center items-center py-12 px-4">
+      <div className="flex flex-auto flex-col overflow-auto lg:h-[calc(100vh-50px)] justify-center items-center py-12 px-4 text-text">
         <div className="max-w-full flex-shrink-0 bg-darkbg flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
           <h2 className="text-2xl flex-wrap">
             Invite an opponent to start the game
           </h2>
           <span>they can use this link to join you</span>
           <a
-            className="underline text-blue-700 text-sm break-words"
+            className="underline text-textLink text-sm break-words"
             href={getGameUrl(id)}
           >
             {getGameUrl(id)}
@@ -256,13 +292,13 @@ const Play: React.FC = () => {
   }
 
   return (
-    <div>
+    <div className="flex flex-auto h-full flex-col overflow-hidden ">
       <GameHeader game={game} />
-      <div className="flex flex-auto flex-col lg:flex-row">
+      <div className="flex flex-auto flex-col md:flex-row overflow-y-auto">
         {userIndex !== null && (
           <GameBoard id={id} game={game} userIndex={userIndex} />
         )}
-        <div className="m-auto lg:m-0 flex-shrink-0 w-[200px] pt-2 lg:max-h-[calc(100vh-100px)] overflow-y-auto">
+        <div className="m-auto md:m-0 flex-shrink-0 w-[200px] pt-2 md:max-h-[calc(100vh-100px)] overflow-y-auto">
           {showingNudgeButton && (
             <div className="p-2 rounded-xl bg-primary flex flex-col mr-2">
               <p>Looks like the AI opponent is taking a long time to move</p>

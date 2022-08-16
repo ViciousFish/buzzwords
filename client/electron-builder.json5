@@ -1,0 +1,56 @@
+{
+  appId: "com.gg.buzzwords.desktop",
+  asar: true,
+  directories: {
+    output: "release/${version}_${platform}_${arch}",
+  },
+  files: ["dist"],
+  mac: {
+    hardenedRuntime: true,
+    gatekeeperAssess: false,
+    entitlements: "build/entitlements.mac.plist",
+    entitlementsInherit: "build/entitlements.mac.plist",
+    category: "public.app-category.games",
+    artifactName: "${productName}_${version}_${arch}.${ext}",
+    target: [
+      {
+        target: "dmg",
+        arch: [
+          // "x64",
+          // "arm64",
+          "universal",
+        ],
+      },
+    ],
+  },
+  win: {
+    target: [
+      {
+        target: "portable",
+        arch: ["x64"],
+      },
+      {
+        target: "nsis",
+        arch: ["x64"],
+      },
+    ],
+    artifactName: "${productName}_${version}_${arch}.${ext}",
+  },
+  nsis: {
+    artifactName: "${productName}_${version}_${arch}_installer.${ext}",
+  },
+  portable: {
+    artifactName: "${productName}_${version}_${arch}_portable.${ext}",
+  },
+  // nsis: {
+  //   oneClick: false,
+  //   perMachine: false,
+  //   allowToChangeInstallationDirectory: true,
+  //   deleteAppDataOnUninstall: false,
+  // },
+  protocols: {
+    name: "buzzwords-protocol",
+    schemes: ["buzzwords"],
+  },
+  afterSign: "scripts/notarize.js",
+}

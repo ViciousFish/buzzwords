@@ -20,15 +20,7 @@ import {
   toggleNudgeButton,
   unselectTile,
 } from "./gameSlice";
-// import { getEmptyGame } from "./game";
-// import { addGame } from "./gameSlice";
 
-// export const createNewGame =
-//   (userId: string): AppThunk =>
-//   (dispatch) => {
-//     const newGame = getEmptyGame(userId);
-//     dispatch(addGame(newGame));
-//   };
 
 export const toggleTileSelected =
   (tile: QRCoord): AppThunk =>
@@ -74,8 +66,8 @@ export const submitMove =
         move: formattedCoords,
       });
     } catch (e) {
-      if (e.response.data === 'Invalid coords') {
-        window.alert("Sorry, something went wrong on our end. Reloading")
+      if (e.response.data === "Invalid coords") {
+        window.alert("Sorry, something went wrong on our end. Reloading");
         location.reload();
       }
 

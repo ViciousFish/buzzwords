@@ -24,7 +24,7 @@ import {
 } from "../game/gameSlice";
 import { initiateReplay, maybeShowNudge } from "../game/gameActions";
 
-import chord from "../../../assets/fmajor-pleasant.m4a?url";
+import chord from "../../assets/ding.mp3?url";
 import { batch } from "react-redux";
 import { Api } from "../../app/Api";
 
@@ -80,12 +80,25 @@ export const receiveGameUpdatedSocket =
     const userIndex = game.users.findIndex(
       (user) => user === state.user.user?.id
     );
-    if (
-      userIndex === game.turn &&
-      !game.gameOver &&
-      !state.game.turnNotificationsMuted
-    ) {
-      DingAudio.play();
+
+    if (userIndex === game.turn && !game.gameOver) {
+      if (!state.settings.turnNotificationsMuted) {
+        DingAudio.play();
+      }
+      if (!state.game.windowHasFocus) {
+        const opponentNick = game.vsAI
+          ? "Computer"
+          : getAllUsers(state)[game.users[1 - userIndex]].nickname ??
+            "Your opponent";
+        const NOTIFICATION_TITLE = "Buzzwords";
+        const NOTIFICATION_BODY = `It's your turn against ${opponentNick}`;
+        const CLICK_MESSAGE = "Notification clicked!";
+
+        new Notification(NOTIFICATION_TITLE, {
+          body: NOTIFICATION_BODY,
+          silent: true,
+        }).onclick = () => console.log(CLICK_MESSAGE);
+      }
     }
 
     const allKnownPlayersWithNicknames = R.pipe(
@@ -232,14 +245,6 @@ export const deleteGameById =
     }
   };
 
-export const getTutorialCardSetting = () =>
-  JSON.parse(
-    localStorage.getItem("turnNotificationsMute") || "false"
-  ) as boolean;
-
-export const setTutorialCardSetting = (mute: boolean) =>
-  localStorage.setItem("turnNotificationsMute", JSON.stringify(mute));
-
 export const fetchGameById =
   (id: string): AppThunk<Promise<boolean>> =>
   async (dispatch) => {
@@ -288,6 +293,8 @@ export const refreshActiveGames =
     dispatch(setIsRefreshing(false));
   };
 
-export const forfeitGame = (id: string): AppThunk => async (dispatch) => {
-  const { data } = await Api.post<Game>(getApiUrl("/game", id, 'forfeit'));
-}
+export const forfeitGame =
+  (id: string): AppThunk =>
+  async (dispatch) => {
+    const { data } = await Api.post<Game>(getApiUrl("/game", id, "forfeit"));
+  };

@@ -13,13 +13,12 @@ import {
   useLoader,
   Vector3 as V3Type,
 } from "@react-three/fiber";
-import { FontLoader } from "three";
+import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { useSpring, animated as a, useTransition } from "@react-spring/three";
 import { config as springConfig } from "@react-spring/core";
 
 import HexTile from "../../assets/HexTile";
 import fredokaone from "../../../assets/Fredoka One_Regular.json?url";
-import { theme } from "../../app/theme";
 import { usePrevious } from "../../utils/usePrevious";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { QRCoord } from "../hexGrid/hexGrid";
@@ -36,6 +35,7 @@ import { HexOutlineSolid } from "../../assets/Hexoutlinesolid";
 import { isFullGame } from "../gamelist/gamelistSlice";
 import { willConnectToTerritory } from "buzzwords-shared/gridHelpers";
 import Crown from "../../assets/Crown";
+import { getTheme } from "../settings/settingsSelectors";
 
 interface GameTileProps {
   position: V3Type;
@@ -83,6 +83,7 @@ const GameTile: React.FC<GameTileProps> = ({
   );
 
   const game = useAppSelector((state) => state.gamelist.games[currentGame]);
+  const theme = useAppSelector(getTheme);
 
   const isSelectedState = useAppSelector((state) =>
     coord ? state.game.selectedTiles[coord] : null
@@ -118,13 +119,13 @@ const GameTile: React.FC<GameTileProps> = ({
   const willBeReset =
     tilesThatWillBeReset && coord && tilesThatWillBeReset[coord] && owner !== 2;
 
-  let color = theme.colors.primary;
+  let color = theme.colors.threed.primaryAccent;
   if (willBeReset) {
-    color = theme.colors.tile_selected;
+    color = theme.colors.threed.selected;
   } else if (owner === 0) {
-    color = theme.colors.tile_p1;
+    color = theme.colors.threed.p1;
   } else if (owner === 1) {
-    color = theme.colors.tile_p2;
+    color = theme.colors.threed.p2;
   } else if (selected && grid && coord) {
     const [q, r] = coord.split(",");
     const parsedCoord = {
@@ -138,11 +139,11 @@ const GameTile: React.FC<GameTileProps> = ({
       parsedCoord,
       turn
     );
-    const turnColor = turn === 0 ? theme.colors.tile_p1 : theme.colors.tile_p2;
+    const turnColor = turn === 0 ? theme.colors.threed.p1 : theme.colors.threed.p2;
     if (willConnect) {
       color = turnColor;
     } else {
-      color = theme.colors.tile_selected;
+      color = theme.colors.threed.selected;
     }
   }
 
@@ -284,14 +285,16 @@ const GameTile: React.FC<GameTileProps> = ({
       {/* <Html>{coord}</Html> */}
       {letter && (
         <mesh ref={characterMesh} position={[0, 0, 0.2]}>
+          {/* @ts-ignore */}
           <textGeometry args={[letter.toUpperCase(), fontConfig]} />
-          <meshStandardMaterial color={theme.colors.darkbrown} />
+          <meshStandardMaterial color={theme.colors.threed.secondaryAccent} />
         </mesh>
       )}
       {prevLetter && !letter && (
         <mesh ref={characterMesh} position={[0, 0, 0.2]}>
+          {/* @ts-ignore */}
           <textGeometry args={[prevLetter.toUpperCase(), fontConfig]} />
-          <meshStandardMaterial color={theme.colors.darkbrown} />
+          <meshStandardMaterial color={theme.colors.threed.secondaryAccent} />
         </mesh>
       )}
       {(isCapital || (prevCapital && !letter) || isPlayerIdentity) &&

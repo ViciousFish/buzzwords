@@ -8,7 +8,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
     "test": "jest",
-    "test:watch": "jest --watchAll"
+    "test:watch": "jest --watchAll",
+    "words": "node -r ts-node/register words.ts"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.5.1",
@@ -34,7 +35,8 @@
     "passport-google-oauth": "^2.0.0",
     "ramda": "^0.27.1",
     "socket.io": "^4.4.0",
-    "ulid": "^2.3.0"
+    "ulid": "^2.3.0",
+    "url-join": "^4"
   },
   "devDependencies": {
     "@tsconfig/node14": "^1.0.0",

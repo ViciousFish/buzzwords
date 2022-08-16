@@ -9,7 +9,7 @@ import {
 import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
 import { animated as a, useSpring } from "@react-spring/web";
 
@@ -20,9 +20,9 @@ import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
 import GameListItem from "./GameListItem";
 import TutorialCard from "./TutorialCard";
 import PlayButtons from "../home-route/PlayButtons";
-import ReactTooltip from "react-tooltip";
 
-const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
+// const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
+import Canvas from "../canvas/Canvas";
 const BeeLazy = React.lazy(() => import("../../assets/Bee"));
 const HexWordLazy = React.lazy(() => import("../thereed-lettering/HexWord"));
 
@@ -57,11 +57,8 @@ const GameList: React.FC = () => {
   });
 
   return (
-    <a.div
-      className="w-[300px] flex-shrink-0 z-10 bg-darkbg"
-      style={containerSpring}
-    >
-      <ScreenHeightWraper insetTop={50} className="flex flex-col">
+    <a.div className="w-[300px] flex-shrink-0 z-10" style={containerSpring}>
+      <ScreenHeightWraper insetTop={50} className="flex flex-col bg-darkbg">
         <header className="z-10 flex flex-shrink-0 px-2 py-2 space-x-1">
           <a
             className="block p-2 rounded-md hover:bg-primary hover:bg-opacity-50 text-darkbrown"
@@ -79,7 +76,7 @@ const GameList: React.FC = () => {
             target="_blank"
             rel="noreferrer"
           >
-            <FontAwesomeIcon icon={faTwitter} /> Follow us on Twitter
+            <FontAwesomeIcon icon={faTwitter} /> @BuzzwordsGG
           </a>
           <div className="flex-auto" />
           <NavLink
@@ -87,8 +84,8 @@ const GameList: React.FC = () => {
               classNames(
                 isActive
                   ? "bg-primary hover:bg-opacity-100"
-                  : "underline text-darkbrown",
-                "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50"
+                  : "underline",
+                "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50 text-darkbrown"
               )
             }
             to="/"
@@ -102,27 +99,24 @@ const GameList: React.FC = () => {
           <div className="h-[150px] no-touch">
             <h1 style={{ display: "none" }}>Buzzwords</h1>
             <React.Suspense fallback={<></>}>
-              <CanvasLazy>
+              <Canvas>
                 <BeeLazy position={[0, 5, 0]} scale={4} />
                 <HexWordLazy autoSpin position={[0, -6, 0]} text="BUZZWORDS" />
-              </CanvasLazy>
+              </Canvas>
             </React.Suspense>
           </div>
           <div className="flex-auto">
             <div className="z-10 px-2 mt-0 flex items-center">
               <h2 className="text-2xl font-bold text-darkbrown">Games</h2>
               <div className="bg-primary mx-1 rounded-xl text-center flex items-center p-1">
-                <h3 className="text-xs mr-1">New</h3>
+                <h3 className="text-xs mr-1 text-text">New</h3>
                 <div className="flex space-x-1">
-                  <PlayButtons
-                    mode="icon"
-                    buttonVariant="dark"
-                  />
+                  <PlayButtons mode="icon" buttonVariant="dark" />
                 </div>
               </div>
             </div>
             {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
-            <ul className="px-2">
+            <ul className="px-2 text-text">
               {incompleteGames.map((game) => (
                 <GameListItem key={game.id} game={game} />
               ))}
@@ -164,9 +158,12 @@ const GameList: React.FC = () => {
             )}
           </div>
           {showTutorialCard && isOpen && <TutorialCard />}
-          <div className="p-2 text-sm text-center text-gray-800">
+          <div className="p-2 text-sm text-center text-text opacity-75">
             by{" "}
-            <a className="underline" href="https://chuckdries.com">
+            <a
+              className="underline"
+              href="https://chuckdries.com"
+            >
               Chuck Dries
             </a>{" "}
             and{" "}

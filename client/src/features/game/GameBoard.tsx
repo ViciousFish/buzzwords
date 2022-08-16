@@ -2,13 +2,10 @@ import { Html, useProgress } from "@react-three/drei";
 import * as R from "ramda";
 import Game from "buzzwords-shared/Game";
 import React, { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 
-import { useAppSelector } from "../../app/hooks";
-import Button from "../../presentational/Button";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Canvas from "../canvas/Canvas";
 import { QRCoord } from "../hexGrid/hexGrid";
-import { User } from "../user/userSlice";
 import {
   backspaceTileSelection,
   clearTileSelection,
@@ -21,7 +18,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBackspace, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import useHotkeys from "@reecelucas/react-use-hotkeys";
-import { getAllUsers } from "../user/userSelectors";
 
 interface GameBoardProps {
   id: string;
@@ -31,11 +27,7 @@ interface GameBoardProps {
 
 const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   const { progress } = useProgress();
-  const dispatch = useDispatch();
-
-  const users = useAppSelector(getAllUsers);
-  const p1Nick = users[game.users[0]]?.nickname;
-  const p2Nick = game.vsAI ? "Computer" : users[game.users[1]]?.nickname;
+  const dispatch = useAppDispatch();
 
   const selectedWord = useAppSelector((state) =>
     getSelectedWordByGameId(state, id)
@@ -70,13 +62,13 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   });
 
   useHotkeys("Enter", () => {
-    if (id && game.turn === userIndex) {
-      dispatch(onSubmit());
+    if (id && selectedWord?.length && game.turn === userIndex) {
+      onSubmit();
     }
   });
 
   return (
-    <div className="h-[80vh] lg:h-[calc(100vh-100px)] flex-auto overflow-hidden">
+    <div className="flex-auto flex-shrink-0 md:flex-shrink overflow-hidden h-[140vw] max-h-[calc(100vh-120px)]">
       <Canvas key={`play-${id}`}>
         {/* <CameraControls /> */}
         <React.Suspense

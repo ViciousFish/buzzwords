@@ -59,7 +59,7 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
   const popoverContent = (
     <div
       className={classNames(
-        "bg-darkbg rounded-xl px-4 py-2 w-[300px] z-30 shadow-lg border-b-4 border-r-4",
+        "bg-darkbg rounded-xl px-4 py-2 w-[300px] z-30 shadow-lg border-b-4 border-r-4 text-text",
         move.player === 0 ? "border-p1" : "border-p2"
       )}
     >
@@ -155,7 +155,7 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
         <button
           type="button"
           className={classNames(
-            "flex-auto p-1 font-bold text-center rounded-md m-1 hover:bg-opacity-70",
+            "flex-auto p-1 font-bold text-text text-center rounded-md m-1 hover:bg-opacity-70",
             // isOpen && "bg-primary",
             !isOpen && (move.player === 0 ? "bg-p1" : "bg-p2"),
             !isOpen && "inset-shadow"

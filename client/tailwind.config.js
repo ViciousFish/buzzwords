@@ -1,28 +1,33 @@
 module.exports = {
   mode: "jit",
-  purge: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
-  darkMode: false, // or 'media' or 'class'
+  content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
+  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {
-        fredoka: ['Fredoka\\ One', 'sans'],
+        fredoka: ["fredoka_oneregular", "sans"],
         // sans: ['Patrick\\ Hand', 'sans']
       },
       colors: {
         lightbg: ({ opacityVariable, opacityValue }) => {
           if (opacityValue !== undefined) {
-            return `rgba(250, 231, 178, ${opacityValue})`;
+            return `rgba(var(--lightbg), ${opacityValue})`;
           }
           if (opacityVariable !== undefined) {
-            return `rgba(250, 231, 178, var(${opacityVariable}, 1))`;
+            return `rgba(var(--lightbg), var(${opacityVariable}, 1))`;
           }
-          return `rgb(250, 231, 178)`;
+          return `rgb(var(--lightbg))`;
         },
-        darkbg: '#f2dc9d',
-        primary: '#F6C54B', // theme.primary on lit tiles
-        darkbrown: '#59430D',
-        p1: "#F3ADDF", // theme.p1 on lit tiles
-        p2: "#96BB87" // theme.p2 on lit tiles
+        darkbg: "var(--darkbg)",
+        primary: "var(--primaryAccent)", // theme.primary on lit tiles
+        darkbrown: "var(--secondaryAccent)",
+        p1: "var(--p1)",
+        p2: "var(--p2)",
+        text: "var(--text)",
+        textSubtle: "var(--textSubtle",
+        textInverse: "var(--textInverse)",
+        textLink: "var(--textLink)",
+        input: "var(--input)"
       },
     },
   },

@@ -12,14 +12,14 @@ import {
   useThree,
   Vector3 as V3Type,
 } from "@react-three/fiber";
-import { FontLoader } from "three";
+import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { useSpring, animated as a } from "@react-spring/three";
-import { config as springConfig } from "@react-spring/core";
 import { useGesture } from "@use-gesture/react";
 
 import HexTile from "../../assets/HexTile";
 import fredokaone from "../../../assets/Fredoka One_Regular.json?url";
-import { theme } from "../../app/theme";
+import { useAppSelector } from "../../app/hooks";
+import { getTheme } from "../settings/settingsSelectors";
 
 interface HexLetterProps {
   position: V3Type;
@@ -38,6 +38,7 @@ const HexLetter: React.FC<HexLetterProps> = ({
   autoSpin,
   ...props
 }) => {
+  const theme = useAppSelector(getTheme);
   const viewport = useThree(({ viewport }) => viewport);
   const size = useThree(({ size }) => size);
   const aspect = size.width / viewport.getCurrentViewport().width;
@@ -151,8 +152,9 @@ const HexLetter: React.FC<HexLetterProps> = ({
     <a.group ref={group} {...props}>
       {/* @ts-ignore */}
       <mesh ref={mesh} position={[0, 0, 0.2]} {...bind()}>
+        {/* @ts-ignore */}
         <textGeometry args={[letter, fontConfig]} />
-        <meshStandardMaterial color={theme.colors.darkbrown} />
+        <meshStandardMaterial color={theme.colors.threed.secondaryAccent} />
       </mesh>
       <group position={[0, 0, -0.2]}>
         {/* @ts-ignore */}

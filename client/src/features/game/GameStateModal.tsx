@@ -87,14 +87,14 @@ const GameStateModal: React.FC<GameStateModalOwnprops> = ({
           </div>
         )}
         {twoDText && (
-          <div className="w-full max-w-[90vw] text-lg my-2 text-center">
+          <div className="w-full max-w-[90vw] text-lg my-2 text-center text-text">
             <p>{twoDText.body}</p>
           </div>
         )}
         <div className="flex items-end">
           <Button onClick={onDismiss}>Dismiss</Button>
           {(type === "defeat" || type === "victory") && (
-            <div className="mx-2 bg-primary rounded-xl flex flex-col justify-center items-center">
+            <div className="mx-2 bg-primary rounded-xl flex flex-col justify-center items-center text-text">
               <span>Play again?</span>
               <div>
                 <PlayButtons
