@@ -25,6 +25,7 @@
   "dependencies": {
     "@capacitor/core": "^4.0.1",
     "@capacitor/ios": "^4.0.1",
+    "@capacitor/status-bar": "^4.0.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-brands-svg-icons": "^5.15.4",
     "@fortawesome/free-regular-svg-icons": "^5.15.4",
