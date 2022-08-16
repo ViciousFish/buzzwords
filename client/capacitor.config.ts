@@ -1,7 +1,7 @@
 import { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: "com.chuckdries.buzzwords",
+  appId: "com.gg.buzzwords.mobile",
   appName: "Buzzwords",
   webDir: "dist",
   bundledWebRuntime: false,
