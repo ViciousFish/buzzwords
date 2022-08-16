@@ -1,7 +1,7 @@
 module.exports = {
   mode: "jit",
   content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
-  dark: 'class',
+  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {

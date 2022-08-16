@@ -194,7 +194,7 @@ const Play: React.FC = () => {
     return (
       <div className="flex flex-auto flex-col overflow-auto lg:h-[calc(100vh-50px)] justify-center items-center py-12 px-4">
         <div className="max-w-full flex-shrink-0 bg-darkbg flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
-          <h2 className="text-2xl flex-wrap">
+          <h2 className="text-2xl text-text flex-wrap">
             <span className="font-bold italic">
               {opponent?.nickname || "???"}
             </span>{" "}
@@ -205,7 +205,7 @@ const Play: React.FC = () => {
           <Button onClick={joinGame}>Join game{!window.ipc && ' here'}</Button>
           {!window.ipc && (
             <div className="text-white bg-darkbrown rounded-full flex justify-center">
-              <Button className="text-black" onClick={launchApp}>
+              <Button className="text-text" onClick={launchApp}>
                 Join game in app
               </Button>
                 <Popover
@@ -215,7 +215,7 @@ const Play: React.FC = () => {
                 >
                   <Button
                     variant="quiet"
-                    className="ml-0"
+                    className="ml-0 text-textInverse"
                     onClick={() => setAppInfoOverlay(!appInfoOverlay)}
                   >
                     <FontAwesomeIcon icon={faInfoCircle} />
