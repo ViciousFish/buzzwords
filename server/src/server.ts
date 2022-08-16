@@ -11,7 +11,9 @@ import { MongoClient } from "mongodb";
 import cors from "cors";
 import passport from "passport";
 import { OAuth2Strategy } from "passport-google-oauth";
+import AppleStrategy from "passport-apple";
 import urljoin from "url-join";
+import jwt from "jsonwebtoken";
 
 import getConfig from "./config";
 import dl from "./datalayer";
@@ -279,6 +281,108 @@ if (config.googleClientId && config.googleClientSecret) {
             }
           })
           .catch((err) => done(err));
+      }
+    )
+  );
+}
+
+// TODO: change to whatever things for apple
+if (
+  config.appleClientId &&
+  config.appleTeamId &&
+  config.appleKeyId &&
+  config.applePrivateKeyLocation
+) {
+  passport.use(
+    new AppleStrategy(
+      {
+        clientID: config.appleClientId,
+        teamID: config.appleTeamId,
+        callbackURL: config.appleCallbackUrl,
+        keyID: config.appleKeyId,
+        privateKeyLocation: config.applePrivateKeyLocation,
+        passReqToCallback: true,
+      },
+      async function (req, accessToken, refreshToken, idToken, profile, done) {
+        // The idToken returned is encoded. You can use the jsonwebtoken library via jwt.decode(idToken)
+        // to access the properties of the decoded idToken properties which contains the user's
+        // identity information.
+        // Here, check if the idToken.sub exists in your database!
+        // idToken should contains email too if user authorized it but will not contain the name
+        // `profile` parameter is REQUIRED for the sake of passport implementation
+        // it should be profile in the future but apple hasn't implemented passing data
+        // in access token yet https://developer.apple.com/documentation/sign_in_with_apple/tokenresponse
+
+        // TODO: Need to test this. The types say idToken will be decoded, but the docs say it'll be a string that we have to decode
+        // @ts-expect-error tbd based on above TODO
+        const appleData = jwt.decode(idToken);
+
+        const state = req.query.state;
+        if (!state || Array.isArray(state)) {
+          // @ts-expect-error It should accept a string
+          done("Invalid state param");
+          return;
+        }
+
+        let res: any;
+        try {
+          res = JSON.parse(
+            Buffer.from(decodeURIComponent(state as string), "base64").toString(
+              "utf-8"
+            )
+          );
+        } catch (e) {
+          // @ts-expect-error It should accept a string
+          done("Invalid state param");
+          return;
+        }
+        const { stateId } = res;
+
+        const session = await dl.createContext();
+        const authToken = await dl.getAuthTokenByState(stateId as string, {
+          session,
+        });
+        if (!authToken) {
+          dl.commitContext(session).finally(() => {
+            // @ts-expect-error It should accept a string
+            done("Invalid state param");
+          });
+          return;
+        }
+        const userId = authToken.userId;
+        if (!userId) {
+          dl.commitContext(session).finally(() => {
+            // @ts-expect-error It should accept a string
+            done("Invalid state param");
+          });
+          return;
+        }
+        let u = await dl.getUserById(userId, { session });
+        if (!u) {
+          // If user doesn't exist, create one!
+          u = await dl.createUser(userId, { session });
+        }
+
+        const isAnon = u ? isAnonymousUser(u) : true;
+        if (!isAnon) {
+          // You're already logged in. Can't log in twice!
+          dl.commitContext(session).finally(() => {
+            // @ts-expect-error User is an object
+            done(null, u);
+          });
+          return;
+        }
+
+        /**
+         * TODO: Need to lookup user by apple id
+         *
+         * If found, assume the anon user into the user with the apple id
+         * If not, associate the apple id with the anon user
+         *
+         * Can copy the patterns used above for google sign in
+         */
+
+        done(null, idToken);
       }
     )
   );

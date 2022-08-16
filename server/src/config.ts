@@ -11,6 +11,11 @@ interface Config {
   googleClientSecret?: string;
   apiPrefix: string;
   googleCallbackUrl: string;
+  appleClientId?: string;
+  appleTeamId?: string;
+  appleCallbackUrl?: string;
+  appleKeyId?: string;
+  applePrivateKeyLocation?: string;
 }
 
 export const getConfig = (): Config => {
@@ -29,6 +34,13 @@ export const getConfig = (): Config => {
     googleCallbackUrl:
       process.env.GOOGLE_CALLBACK_URL ||
       "https://buzzwords.gg/api/login/google/redirect",
+    appleClientId: process.env.APPLE_CLIENT_ID || "",
+    appleTeamId: process.env.APPLE_TEAM_ID || "",
+    appleCallbackUrl:
+      process.env.APPLE_CALLBACK_URL ||
+      "https://buzzwords.gg/api/login/apple/redirect",
+    appleKeyId: process.env.APPLE_KEY_ID || "",
+    applePrivateKeyLocation: process.env.APPLE_PRIVATE_KEY_LOCATION || "",
   };
 };
 
