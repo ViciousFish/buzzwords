@@ -1,9 +1,6 @@
-import { Capacitor } from "@capacitor/core";
-import classNames from "classnames";
 import React from "react";
-import Div100vh, { use100vh } from "react-div-100vh";
+import { use100vh } from "react-div-100vh";
 
-const useNativeVH = Capacitor.isNativePlatform();
 
 interface ScreenHeightWrapperProps {
   insetTop?: number;
@@ -30,7 +27,7 @@ const ScreenHeightWraper: React.FC<
       style={{
         ...style,
         height: height
-          ? `${height - (safeAreaBottom + safeAreaTop + (insetTop || 0))}px`
+          ? `${height - (safeAreaBottom + safeAreaTop + (insetTop ?? 0))}px`
           : "100vh",
       }}
     >
