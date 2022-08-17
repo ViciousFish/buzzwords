@@ -351,4 +351,4 @@ const Play: React.FC = () => {
   );
 };
 
-export default Play;
+export default React.memo(Play);

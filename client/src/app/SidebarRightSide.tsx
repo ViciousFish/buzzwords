@@ -6,7 +6,7 @@ import { animated as a } from "@react-spring/web";
 
 import { toggleIsOpen } from "../features/gamelist/gamelistSlice";
 import { useAppDispatch, useAppSelector } from "./hooks";
-import ScreenHeightWraper from "../presentational/ScreenHeightWrapper";
+import { ReactDOMAttributes } from "@use-gesture/core/types";
 
 // default tailwind breakpoints
 const BREAKPOINTS = {
@@ -18,7 +18,10 @@ const BREAKPOINTS = {
   "2xl": 1536,
 };
 
-const SidebarRightSide: React.FC<{ children: ReactNode }> = ({ children }) => {
+const SidebarRightSide: React.FC<{ children: ReactNode, bindOverlayArgs: ReactDOMAttributes }> = ({
+  children,
+  bindOverlayArgs,
+}) => {
   const dispatch = useAppDispatch();
   const isSidebarOpen = useAppSelector((state) => state.gamelist.isOpen);
 
@@ -29,13 +32,12 @@ const SidebarRightSide: React.FC<{ children: ReactNode }> = ({ children }) => {
   const breakcond = breakpoint === "xs" || breakpoint === "sm";
   const condition = isSidebarOpen && breakcond;
 
-  const transitions = useTransition(condition, {
+  const rightsideOverlayTransition = useTransition(condition, {
     from: { opacity: 0 },
     enter: { opacity: 0.5 },
     leave: { opacity: 0 },
   });
 
-// CQx: ScreenHeightWrapper?
   return (
     <div
       className={classNames(
@@ -44,14 +46,14 @@ const SidebarRightSide: React.FC<{ children: ReactNode }> = ({ children }) => {
       )}
     >
       {children}
-      {transitions(
+      {rightsideOverlayTransition(
         (styles, value) =>
           value && (
             <a.div
-              className="fixed top-[calc(50px+var(--sat))] right-0 h-full left-0 bg-black"
+              className="fixed top-[calc(50px+var(--sat))] right-0 h-full left-0 bg-black touch-none"
               onClick={onClick}
-              // @ts-ignore
               style={styles}
+              {...bindOverlayArgs}
             ></a.div>
           )
       )}
