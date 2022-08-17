@@ -65,7 +65,7 @@ const MainGameStructure: React.FC = () => {
         Math.min(0, dx + sidebarSpring.marginLeft.get())
       );
     } else {
-      if (x > 100 || (gamelistIsOpen && x < 2)) {
+      if (x > 40 || (gamelistIsOpen && x < 2)) {
         dispatch(toggleIsOpen());
       } else {
         sidebarSpring.marginLeft.start(gamelistIsOpen ? 0 : mlValue)
