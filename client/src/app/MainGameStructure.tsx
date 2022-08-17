@@ -55,8 +55,11 @@ const MainGameStructure: React.FC = () => {
 
   const isDown = useRef(false);
 
-  const bind = useDrag(({ down, distance: [x], delta: [dx] }) => {
+  const bind = useDrag(({ down, distance: [x], delta: [dx], movement: [mx] }) => {
     if (!mobileLayout) {
+      return;
+    }
+    if ((gamelistIsOpen && mx > 0) || (!gamelistIsOpen && mx < 0)) {
       return;
     }
     if (down) {
