@@ -3,7 +3,8 @@ import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
 // import { Globals } from "@react-spring/shared";
 import FaviconNotification from "favicon-notification";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import { Capacitor } from '@capacitor/core';
+import { Capacitor } from "@capacitor/core";
+import { raf } from "@react-spring/shared";
 
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { initAction } from "./appActions";
@@ -27,9 +28,14 @@ import {
 
 // not necessary, as long as there's always a 3d canvas on screen!
 // import.meta.env.PROD &&
-  // Globals.assign({
-  //   frameLoop: "demand",
-  // });
+// Globals.assign({
+//   frameLoop: "demand",
+// });
+
+function frameLoop() {
+  raf.advance();
+  requestAnimationFrame(frameLoop);
+}
 
 const isTouch = window.matchMedia("(pointer: coarse)").matches;
 
@@ -61,6 +67,10 @@ function App() {
   const numberOfGamesWaitingForPlayer = useAppSelector((state) =>
     getHowManyGamesAreMyTurn(state, null)
   );
+
+  useEffect(() => {
+    frameLoop();
+  }, []);
 
   useEffect(() => {
     dispatch(initAction());

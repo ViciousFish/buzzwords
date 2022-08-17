@@ -48,7 +48,7 @@ const MainGameStructure: React.FC = () => {
       setRenderSidebar(gamelistIsOpen);
     },
     onChange: () => {
-      requestAnimationFrame(() => raf.advance())
+      // requestAnimationFrame(() => raf.advance())
       if (!renderSidebar) {
         setRenderSidebar(true);
       }
@@ -56,7 +56,7 @@ const MainGameStructure: React.FC = () => {
   });
 
   useEffect(() => {
-    requestAnimationFrame(() => raf.advance());
+    // requestAnimationFrame(() => raf.advance());
   }, [gamelistIsOpen])
 
   const isDown = useRef(false);
@@ -68,7 +68,7 @@ const MainGameStructure: React.FC = () => {
     if ((gamelistIsOpen && mx > 0) || (!gamelistIsOpen && mx < 0)) {
       return;
     }
-    requestAnimationFrame(() => raf.advance())
+    // requestAnimationFrame(() => raf.advance())
     if (down) {
       isDown.current = true;
       sidebarSpring.marginLeft.set(

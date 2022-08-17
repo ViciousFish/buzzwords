@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
-import { MeshProps, useLoader } from "@react-three/fiber";
-import { useGLTF, PerspectiveCamera } from "@react-three/drei";
+import { MeshProps } from "@react-three/fiber";
+import { useGLTF } from "@react-three/drei";
 import { Mesh } from "three";
 import hextile from "../../assets/hextile.glb?url";
 import { useAppSelector } from "../app/hooks";
@@ -20,7 +20,7 @@ const HexTile: React.FC<MeshProps & HexTileProps> = ({
   ...props
 }) => {
   const theme = useAppSelector(getTheme);
-  const group = useRef();
+  const group = useRef(null);
   // @ts-ignore
   const { nodes, materials } = useGLTF(hextile);
   // https://github.com/pmndrs/@react-three/fiber/blob/master/markdown/api.md#objects-properties-and-constructor-arguments
