@@ -1,11 +1,6 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Outlet } from "react-router";
-import {
-  animated as a,
-  useTransition,
-  useSpringRef,
-  useSpring,
-} from "@react-spring/web";
+import { animated as a, useSpring } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import useBreakpoint from "use-breakpoint";
 
@@ -14,10 +9,7 @@ import TopBar from "../features/topbar/TopBar";
 import ScreenHeightWraper from "../presentational/ScreenHeightWrapper";
 import SidebarRightSide from "./SidebarRightSide";
 import { useAppDispatch, useAppSelector } from "./hooks";
-import {
-  setShowTutorialCard,
-  toggleIsOpen,
-} from "../features/gamelist/gamelistSlice";
+import { toggleIsOpen } from "../features/gamelist/gamelistSlice";
 
 // default tailwind breakpoints
 const BREAKPOINTS = {
@@ -33,6 +25,8 @@ const MainGameStructure: React.FC = () => {
   const dispatch = useAppDispatch();
   const gamelistIsOpen = useAppSelector((state) => state.gamelist.isOpen);
 
+  const [renderSidebar, setRenderSidebar] = useState(gamelistIsOpen);
+
   const { breakpoint } = useBreakpoint(BREAKPOINTS);
   const mobileLayout = breakpoint === "xs" || breakpoint === "sm";
 
@@ -42,35 +36,6 @@ const MainGameStructure: React.FC = () => {
       .replace(/\D/g, "")
   );
   const mlValue = -1 * (300 + safeAreaLeft);
-  const marginLeft = `${mlValue}px`;
-
-  const transRef = useSpringRef();
-  // const springRef = useSpringRef();
-
-  const offset = useRef(0);
-  const sidebarTransition = useTransition(gamelistIsOpen, {
-    ref: transRef,
-    initial: {
-      marginLeft: "0px",
-    },
-    from: {
-      marginLeft,
-    },
-    enter: {
-      marginLeft: "0px",
-    },
-    leave: {
-      marginLeft,
-    },
-    config: {
-      tension: 200,
-      clamp: true,
-    },
-    onRest: () => {
-      console.log("rest");
-      offset.current = 0;
-    },
-  });
 
   const sidebarSpring = useSpring({
     marginLeft: gamelistIsOpen ? 0 : mlValue,
@@ -79,28 +44,16 @@ const MainGameStructure: React.FC = () => {
       clamp: true,
     },
     onRest: () => {
-      console.log("rest");
-      offset.current = 0;
+      setRenderSidebar(gamelistIsOpen);
     },
-    onChange: (arg) => {
-      // offset.current = arg.value
-      console.log(arg.value)
-    }
+    onChange: () => {
+      if (!renderSidebar) {
+        setRenderSidebar(true);
+      }
+    },
   });
 
   const isDown = useRef(false);
-
-  // useEffect(() => {
-  //   if (isDown.current) {
-  //     return;
-  //   }
-  //   // undocumented: you must manually start the animation for useTransition when passing a ref
-  //   if (gamelistIsOpen) {
-  //     transRef.current.filter(transition => transition.item).forEach((transition) => transition.start());
-  //   } else {
-  //     transRef.current.filter(transition => transition.item).forEach((transition) => transition.start());
-  //   }
-  // }, [gamelistIsOpen, transRef]);
 
   const bind = useDrag(({ down, movement: [mx], delta: [dx] }) => {
     if (!mobileLayout) {
@@ -108,45 +61,11 @@ const MainGameStructure: React.FC = () => {
     }
     if (down) {
       isDown.current = true;
-      // transRef.current.forEach(trans => trans.pause())
-      // if (mx > 0 && !gamelistIsOpen) {
-      //   // dispatch(toggleIsOpen());
-      //   offset.current = -1 * mlValue;
-      //   // return;
-      // }
-      // if (!transRef.current[1]) {
-      //   return;
-      // }
-      // transRef.current
-      //   .filter((trans) => trans.item && gamelistIsOpen)
-      //   .forEach((trans) =>
-      //     trans.set({
-      //       marginLeft: `${Math.min(0, mx + offset.current)}px`,
-      //     })
-      //   );
-      offset.current = sidebarSpring.marginLeft.get()
-      sidebarSpring.marginLeft.set(Math.min(0, dx + offset.current));
+      sidebarSpring.marginLeft.set(
+        Math.min(0, dx + sidebarSpring.marginLeft.get())
+      );
     } else {
       dispatch(toggleIsOpen());
-
-      // sidebarSpring.marginLeft.start(gamelistIsOpen ? "0px" : marginLeft)
-      // isDown.current = false;
-      // if (dx > 10) {
-      //   if (mx < 0 && gamelistIsOpen) {
-      //     // finish closing
-      //     dispatch(toggleIsOpen());
-      //     if (gamelistIsOpen) {
-      //       dispatch(setShowTutorialCard(false));
-      //     }
-      //   } else {
-      //     // finish opening
-      //     transRef.current.forEach(
-      //       (transition) => transition.start()
-      //       // .then(() => offset.current = 0)
-      //     );
-      //     // offset.current = 0;
-      //   }
-      // }
     }
   });
 
@@ -157,16 +76,11 @@ const MainGameStructure: React.FC = () => {
         style={{ display: "flex" }}
         className="bg-lightbg mt-[50px] overflow-hidden max-w-[100vw] flex-row safe-area-pad flex-auto"
       >
-        {/* {sidebarTransition(
-          (styles, item) =>
-            item && (
-              <a.div className="w-[300px] flex-shrink-0 z-10" style={styles}>
-                <GameList hideBee={mobileLayout} />
-              </a.div>
-            )
-        )} */}
-        <a.div className="w-[300px] flex-shrink-0 z-10" style={sidebarSpring}>
-          <GameList hideBee={mobileLayout} />
+        <a.div
+          className="w-[300px] flex-shrink-0 z-10"
+          style={{ marginLeft: sidebarSpring.marginLeft }}
+        >
+          {renderSidebar && <GameList hideBee={mobileLayout} />}
         </a.div>
         <SidebarRightSide mobileLayout={mobileLayout} bindDragArgs={bind()}>
           <Outlet />
