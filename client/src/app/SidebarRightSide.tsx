@@ -1,10 +1,8 @@
 import classNames from "classnames";
-import React, { ReactNode, useCallback } from "react";
-import useBreakpoint from "use-breakpoint";
+import React, { ReactNode } from "react";
 import { animated as a, useTransition } from "@react-spring/web";
 
-import { toggleIsOpen } from "../features/gamelist/gamelistSlice";
-import { useAppDispatch, useAppSelector } from "./hooks";
+import { useAppSelector } from "./hooks";
 import { ReactDOMAttributes } from "@use-gesture/core/types";
 
 const SidebarRightSide: React.FC<{
@@ -12,11 +10,7 @@ const SidebarRightSide: React.FC<{
   mobileLayout: boolean;
   bindDragArgs: ReactDOMAttributes;
 }> = ({ children, mobileLayout, bindDragArgs }) => {
-  const dispatch = useAppDispatch();
   const isSidebarOpen = useAppSelector((state) => state.gamelist.isOpen);
-
-
-  const onClick = useCallback(() => dispatch(toggleIsOpen()), [dispatch]);
 
   const condition = isSidebarOpen && mobileLayout;
 
@@ -38,7 +32,6 @@ const SidebarRightSide: React.FC<{
       {rightsideOverlayTransition((styles, value) => (
         value && <a.div
           className="fixed top-[calc(50px+var(--sat))] right-0 h-full left-0 bg-black"
-          onClick={isSidebarOpen ? onClick : undefined}
           style={styles}
         ></a.div>
       ))}
