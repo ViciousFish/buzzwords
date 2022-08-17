@@ -97,11 +97,13 @@ const MainGameStructure: React.FC = () => {
       isDown.current = false;
       if (dx > 10) {
         if (mx < 0 && gamelistIsOpen) {
+          // finish closing
           dispatch(toggleIsOpen());
           if (gamelistIsOpen) {
             dispatch(setShowTutorialCard(false));
           }
         } else {
+          // finish opening
           transRef.current.forEach((transition) =>
             transition.start({ marginLeft: "0px" })
           );
