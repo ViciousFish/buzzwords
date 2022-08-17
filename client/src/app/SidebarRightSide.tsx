@@ -4,7 +4,7 @@ import { animated as a, useTransition } from "@react-spring/web";
 
 import { useAppSelector } from "./hooks";
 import { ReactDOMAttributes } from "@use-gesture/core/types";
-import { raf } from "@react-spring/shared";
+// import { raf } from "@react-spring/shared";
 
 const SidebarRightSide: React.FC<{
   children: ReactNode;
@@ -19,27 +19,35 @@ const SidebarRightSide: React.FC<{
     from: { opacity: 0 },
     enter: { opacity: 0.5 },
     leave: { opacity: 0 },
+    config: {
+      tension: 200,
+      clamp: true,
+    },
     onChange: () => {
       // handled by maingamestructure
       // requestAnimationFrame(() => raf.advance())
-    }
+    },
   });
 
   return (
     <div
       className={classNames(
-        "flex-auto overflow-auto h-full touch-none",
+        "flex-auto overflow-hidden h-full touch-none",
         mobileLayout && "min-w-[100vw]"
       )}
       {...bindDragArgs}
     >
       {children}
-      {rightsideOverlayTransition((styles, value) => (
-        value && <a.div
-          className="fixed top-[calc(50px+var(--sat))] right-0 h-full left-0 bg-black"
-          style={styles}
-        ></a.div>
-      ))}
+      {rightsideOverlayTransition(
+        (styles, value) =>
+          value && (
+            <a.div
+              id="shade"
+              className="fixed top-[calc(50px+var(--sat))] right-0 h-full left-0 bg-black"
+              style={styles}
+            ></a.div>
+          )
+      )}
     </div>
   );
 };

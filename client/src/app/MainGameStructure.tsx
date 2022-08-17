@@ -56,7 +56,6 @@ const MainGameStructure: React.FC = () => {
   });
 
   useEffect(() => {
-    console.log('advance')
     requestAnimationFrame(() => raf.advance());
   }, [gamelistIsOpen])
 
@@ -92,7 +91,7 @@ const MainGameStructure: React.FC = () => {
         className="bg-lightbg mt-[50px] overflow-hidden max-w-[100vw] flex-row safe-area-pad flex-auto"
       >
         <a.div
-          className="w-[300px] flex-shrink-0 z-10"
+          className="w-[300px] flex-shrink-0 z-20"
           style={{ marginLeft: sidebarSpring.marginLeft }}
         >
           {renderSidebar && <GameList hideBee={mobileLayout} />}
