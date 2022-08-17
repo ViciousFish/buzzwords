@@ -23,6 +23,7 @@ const Bee = (props: GroupProps) => {
   const theme = useAppSelector(getTheme);
   const viewport = useThree(({ viewport }) => viewport);
   const size = useThree(({ size }) => size);
+  const invalidate = useThree(({ invalidate }) => invalidate);
 
   const aspect = size.width / viewport.getCurrentViewport().width;
   const group = useRef<Group>();
@@ -41,10 +42,11 @@ const Bee = (props: GroupProps) => {
 
   const bind = useGesture({
     onDrag: ({ down, delta: [mx, my] }) => {
-        rotateSpringApi.set({
-          x: (mx / aspect) + rotateSpring.x.get(),
-        });
-        isDragging.current = down;
+      invalidate();
+      rotateSpringApi.set({
+        x: mx / aspect + rotateSpring.x.get(),
+      });
+      isDragging.current = down;
     },
   });
 
@@ -53,7 +55,7 @@ const Bee = (props: GroupProps) => {
     if (group.current) {
       if (!isDragging.current) {
         rotateSpringApi.set({
-          x: rotateSpring.x.get() + .03,
+          x: rotateSpring.x.get() + 0.03,
         });
       }
       v.set(rotateSpring.y.get(), rotateSpring.x.get(), 0);
@@ -63,6 +65,7 @@ const Bee = (props: GroupProps) => {
     }
   });
   return (
+    // @ts-ignore
     <group ref={group} {...props} dispose={null}>
       <group rotation={[0, Math.PI / 4, -Math.PI / 1.5]}>
         {/* @ts-ignore */}

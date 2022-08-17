@@ -192,7 +192,7 @@ const Play: React.FC = () => {
 
   if (game.users.length === 1 && userIndex !== null && userIndex === -1) {
     return (
-      <div className="flex flex-auto flex-col overflow-auto lg:h-[calc(100vh-50px)] justify-center items-center py-12 px-4">
+      <div className="flex flex-auto flex-col overflow-auto lg:h-[calc(100vh-calc(50px+var(--sat)))] justify-center items-center py-12 px-4">
         <div className="max-w-full flex-shrink-0 bg-darkbg flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
           <h2 className="text-2xl text-text flex-wrap">
             <span className="font-bold italic">
@@ -351,4 +351,4 @@ const Play: React.FC = () => {
   );
 };
 
-export default Play;
+export default React.memo(Play);

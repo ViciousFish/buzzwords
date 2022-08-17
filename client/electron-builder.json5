@@ -1,5 +1,5 @@
 {
-  appId: "com.gg.buzzwords.desktop",
+  appId: "gg.buzzwords.htmlclient",
   asar: true,
   directories: {
     output: "release/${version}_${platform}_${arch}",

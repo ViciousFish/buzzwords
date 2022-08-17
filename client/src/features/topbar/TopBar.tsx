@@ -6,8 +6,6 @@ import {
   faQuestion,
   faSpinner,
   faSyncAlt,
-  faVolumeMute,
-  faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
@@ -22,10 +20,8 @@ import TutorialCard from "../gamelist/TutorialCard";
 import { logout } from "../user/userActions";
 import { isUserLoggedIn } from "../user/userSelectors";
 import AuthPrompt from "./AuthPrompt";
-import { setTurnNotificationsSetting } from "../settings/settingsActions";
 import { SettingsPage } from "../settings/SettingsPage";
 
-const ELECTRON = window.versions;
 const PLATFORM = window.versions?.platform?.();
 
 const TopBar: React.FC = () => {
@@ -48,9 +44,7 @@ const TopBar: React.FC = () => {
     getHowManyGamesAreMyTurn(state, currentGame)
   );
 
-  const [_authPrompt, setAuthPrompt] = useState(
-    !location.pathname.match(/play|download|settings/)
-  );
+  const [_authPrompt, setAuthPrompt] = useState(false); // TODO: set up a timer or something to prompt user for auth
   const authPrompt = isLoggedIn === false && _authPrompt;
 
   const [settingsPanel, setSettingsPanel] = useState(false);
@@ -60,10 +54,6 @@ const TopBar: React.FC = () => {
 
   const isLoading =
     isRefreshing || (currentGame && gamesLoading[currentGame] === "loading");
-
-  const toggleTurnNotificationsMute = useCallback(() => {
-    dispatch(setTurnNotificationsSetting(!turnNotificationsMuted));
-  }, [dispatch, turnNotificationsMuted]);
 
   let hamburgerNotification;
   if (!gamelistIsOpen && currentTurnCount) {
@@ -78,14 +68,11 @@ const TopBar: React.FC = () => {
     <div
       className={classNames(
         "fixed top-0 z-30 text-darkbrown",
-        "h-[50px] w-screen shadow-md"
+        "h-[calc(50px+var(--sat))] w-screen shadow-md p-t-safe"
       )}
     >
       <div
-        className={classNames(
-          "flex h-full p-0 items-center topbar",
-          !ELECTRON && "rounded-t-xl"
-        )}
+        className="flex h-full p-0 items-center topbar"
       >
         <div className="flex h-full gap-1 items-center">
           {PLATFORM === "darwin" && (
@@ -103,7 +90,8 @@ const TopBar: React.FC = () => {
             data-tip="Toggle games list"
           >
             <FontAwesomeIcon icon={faBars} />
-            <span className="absolute text-sm right-[18px] bottom-[18px]">
+            {/* CQ: this top param */}
+            <span className="absolute text-sm left-[10px] top-[calc(0.25rem+var(--sat))]">
               {hamburgerNotification}
             </span>
           </button>
