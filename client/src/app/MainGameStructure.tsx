@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Outlet } from "react-router";
 import { animated as a, useTransition, useSpringRef } from "@react-spring/web";
 
@@ -47,8 +47,12 @@ const MainGameStructure: React.FC = () => {
     },
   });
 
+  const isDown = useRef(false);
   // undocumented: you must manually start the animation for useTransition when passing a ref
   useEffect(() => {
+    if (isDown.current) {
+      return;
+    }
     if (gamelistIsOpen) {
       transRef.current[1].start();
     } else if (transRef.current.length == 2) {
@@ -56,18 +60,35 @@ const MainGameStructure: React.FC = () => {
     }
   }, [gamelistIsOpen, transRef]);
 
-  const bind = useDrag(({ down, movement: [mx, my], direction }) => {
-    if (mx < 0) {
-      if (down) {
-        transRef.current[1].set({
-          marginLeft: `${mx}px`,
-        });
-      } else {
-        dispatch(toggleIsOpen());
-        if (gamelistIsOpen) {
-          dispatch(setShowTutorialCard(false));
-        }
+  const offset = useRef(0);
+  const bind = useDrag(({ down, movement: [mx], distance: [dx] }) => {
+    if (down) {
+      isDown.current = true;
+      if (mx > 0 && !gamelistIsOpen) {
+        dispatch(toggleIsOpen())
+        offset.current = -1 * mlValue;
+        return;
       }
+      if (!transRef.current[1]) {
+        return;
+      }
+      transRef.current[1].set({
+        marginLeft: `${Math.min(0, mx + offset.current)}px`,
+      });
+    } else {
+      isDown.current = false;
+      if (dx > 10) {
+        if (mx < 0 && gamelistIsOpen) {
+          dispatch(toggleIsOpen());
+          if (gamelistIsOpen) {
+            dispatch(setShowTutorialCard(false));
+          }
+        } else {
+          // debugger;
+          transRef.current[1].start({ marginLeft: '0px'});
+          offset.current = 0;
+        }
+      } 
     }
   });
 
@@ -86,7 +107,7 @@ const MainGameStructure: React.FC = () => {
               </a.div>
             )
         )}
-        <SidebarRightSide bindOverlayArgs={bind()}>
+        <SidebarRightSide bindDragArgs={bind()}>
           <Outlet />
         </SidebarRightSide>
       </div>

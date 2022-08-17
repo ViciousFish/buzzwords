@@ -1,8 +1,7 @@
-import { useTransition } from "@react-spring/three";
 import classNames from "classnames";
 import React, { ReactNode, useCallback } from "react";
 import useBreakpoint from "use-breakpoint";
-import { animated as a } from "@react-spring/web";
+import { animated as a, useTransition } from "@react-spring/web";
 
 import { toggleIsOpen } from "../features/gamelist/gamelistSlice";
 import { useAppDispatch, useAppSelector } from "./hooks";
@@ -18,10 +17,10 @@ const BREAKPOINTS = {
   "2xl": 1536,
 };
 
-const SidebarRightSide: React.FC<{ children: ReactNode, bindOverlayArgs: ReactDOMAttributes }> = ({
-  children,
-  bindOverlayArgs,
-}) => {
+const SidebarRightSide: React.FC<{
+  children: ReactNode;
+  bindDragArgs: ReactDOMAttributes;
+}> = ({ children, bindDragArgs }) => {
   const dispatch = useAppDispatch();
   const isSidebarOpen = useAppSelector((state) => state.gamelist.isOpen);
 
@@ -41,22 +40,19 @@ const SidebarRightSide: React.FC<{ children: ReactNode, bindOverlayArgs: ReactDO
   return (
     <div
       className={classNames(
-        "flex-auto overflow-auto h-full",
+        "flex-auto overflow-auto h-full touch-none",
         breakcond && "min-w-[100vw]"
       )}
+      {...bindDragArgs}
     >
       {children}
-      {rightsideOverlayTransition(
-        (styles, value) =>
-          value && (
-            <a.div
-              className="fixed top-[calc(50px+var(--sat))] right-0 h-full left-0 bg-black touch-none"
-              onClick={onClick}
-              style={styles}
-              {...bindOverlayArgs}
-            ></a.div>
-          )
-      )}
+      {rightsideOverlayTransition((styles, value) => (
+        value && <a.div
+          className="fixed top-[calc(50px+var(--sat))] right-0 h-full left-0 bg-black"
+          onClick={isSidebarOpen ? onClick : undefined}
+          style={styles}
+        ></a.div>
+      ))}
     </div>
   );
 };
