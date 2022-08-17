@@ -79,10 +79,7 @@ const TopBar: React.FC = () => {
       )}
     >
       <div
-        className={classNames(
-          "flex h-full p-0 items-center topbar",
-          !ELECTRON && !Capacitor.isNativePlatform() && "rounded-t-xl"
-        )}
+        className="flex h-full p-0 items-center topbar"
       >
         <div className="flex h-full gap-1 items-center">
           {PLATFORM === "darwin" && (
