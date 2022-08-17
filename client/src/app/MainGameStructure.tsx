@@ -10,6 +10,7 @@ import ScreenHeightWraper from "../presentational/ScreenHeightWrapper";
 import SidebarRightSide from "./SidebarRightSide";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { toggleIsOpen } from "../features/gamelist/gamelistSlice";
+import { useThree } from "@react-three/fiber";
 
 // default tailwind breakpoints
 const BREAKPOINTS = {
@@ -22,6 +23,8 @@ const BREAKPOINTS = {
 };
 
 const MainGameStructure: React.FC = () => {
+  // const { invalidate } = useThree()
+
   const dispatch = useAppDispatch();
   const gamelistIsOpen = useAppSelector((state) => state.gamelist.isOpen);
 
@@ -43,10 +46,12 @@ const MainGameStructure: React.FC = () => {
       tension: 200,
       clamp: true,
     },
+    immediate: true,
     onRest: () => {
       setRenderSidebar(gamelistIsOpen);
     },
     onChange: () => {
+      // invalidate();
       if (!renderSidebar) {
         setRenderSidebar(true);
       }

@@ -11,6 +11,7 @@ import {
   ThreeEvent,
   useFrame,
   useLoader,
+  useThree,
   Vector3 as V3Type,
 } from "@react-three/fiber";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
@@ -66,6 +67,8 @@ const GameTile: React.FC<GameTileProps> = ({
   isSubmitting,
 }) => {
   const dispatch = useAppDispatch();
+  const { invalidate } = useThree();
+
   const font = useLoader(FontLoader, fredokaone);
   const fontConfig = useMemo(
     () => ({
@@ -139,7 +142,8 @@ const GameTile: React.FC<GameTileProps> = ({
       parsedCoord,
       turn
     );
-    const turnColor = turn === 0 ? theme.colors.threed.p1 : theme.colors.threed.p2;
+    const turnColor =
+      turn === 0 ? theme.colors.threed.p1 : theme.colors.threed.p2;
     if (willConnect) {
       color = turnColor;
     } else {
@@ -163,6 +167,9 @@ const GameTile: React.FC<GameTileProps> = ({
       ...springConfig.stiff,
       clamp: true,
     },
+    onChange: () => {
+      invalidate();
+    },
   });
 
   const outline = game.gameOver
@@ -181,6 +188,7 @@ const GameTile: React.FC<GameTileProps> = ({
     leave: {
       scale: [0, 0, 0],
     },
+    onChange: () => invalidate()
   });
 
   const isAnimating = useRef(false);
@@ -194,6 +202,7 @@ const GameTile: React.FC<GameTileProps> = ({
       tension: 40,
       friction: 10,
     },
+    onChange: () => invalidate()
   }));
 
   useLayoutEffect(() => {
@@ -275,8 +284,8 @@ const GameTile: React.FC<GameTileProps> = ({
     ]
   );
   return (
-    // @ts-ignore
     <a.group
+    // @ts-ignore
       ref={group}
       position={position}
       onClick={onTileClick}
@@ -284,6 +293,7 @@ const GameTile: React.FC<GameTileProps> = ({
     >
       {/* <Html>{coord}</Html> */}
       {letter && (
+        // @ts-ignore
         <mesh ref={characterMesh} position={[0, 0, 0.2]}>
           {/* @ts-ignore */}
           <textGeometry args={[letter.toUpperCase(), fontConfig]} />
