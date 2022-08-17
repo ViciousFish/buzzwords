@@ -55,7 +55,7 @@ const MainGameStructure: React.FC = () => {
 
   const isDown = useRef(false);
 
-  const bind = useDrag(({ down, movement: [mx], delta: [dx] }) => {
+  const bind = useDrag(({ down, distance: [x], delta: [dx] }) => {
     if (!mobileLayout) {
       return;
     }
@@ -65,7 +65,9 @@ const MainGameStructure: React.FC = () => {
         Math.min(0, dx + sidebarSpring.marginLeft.get())
       );
     } else {
-      dispatch(toggleIsOpen());
+      if (x > 10) {
+        dispatch(toggleIsOpen());
+      }
     }
   });
 
