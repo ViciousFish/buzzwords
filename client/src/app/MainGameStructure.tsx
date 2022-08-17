@@ -1,21 +1,35 @@
 import React, { useEffect, useRef } from "react";
 import { Outlet } from "react-router";
 import { animated as a, useTransition, useSpringRef } from "@react-spring/web";
+import { useDrag } from "@use-gesture/react";
+import useBreakpoint from "use-breakpoint";
 
 import GameList from "../features/gamelist/GameList";
 import TopBar from "../features/topbar/TopBar";
 import ScreenHeightWraper from "../presentational/ScreenHeightWrapper";
 import SidebarRightSide from "./SidebarRightSide";
 import { useAppDispatch, useAppSelector } from "./hooks";
-import { useDrag } from "@use-gesture/react";
 import {
   setShowTutorialCard,
   toggleIsOpen,
 } from "../features/gamelist/gamelistSlice";
 
+// default tailwind breakpoints
+const BREAKPOINTS = {
+  xs: 0,
+  sm: 640,
+  md: 768,
+  lg: 1024,
+  xl: 1280,
+  "2xl": 1536,
+};
+
 const MainGameStructure: React.FC = () => {
   const dispatch = useAppDispatch();
   const gamelistIsOpen = useAppSelector((state) => state.gamelist.isOpen);
+
+  const { breakpoint } = useBreakpoint(BREAKPOINTS);
+  const mobileLayout = breakpoint === "xs" || breakpoint === "sm";
 
   const safeAreaLeft = Number(
     getComputedStyle(document.documentElement)
@@ -48,24 +62,28 @@ const MainGameStructure: React.FC = () => {
   });
 
   const isDown = useRef(false);
-  // undocumented: you must manually start the animation for useTransition when passing a ref
+
   useEffect(() => {
     if (isDown.current) {
       return;
     }
+    // undocumented: you must manually start the animation for useTransition when passing a ref
     if (gamelistIsOpen) {
-      transRef.current[1].start();
-    } else if (transRef.current.length == 2) {
-      transRef.current[1].start();
+      transRef.current.forEach((transition) => transition.start());
+    } else {
+      transRef.current.forEach((transition) => transition.start());
     }
   }, [gamelistIsOpen, transRef]);
 
   const offset = useRef(0);
   const bind = useDrag(({ down, movement: [mx], distance: [dx] }) => {
+    if (!mobileLayout) {
+      return;
+    }
     if (down) {
       isDown.current = true;
       if (mx > 0 && !gamelistIsOpen) {
-        dispatch(toggleIsOpen())
+        dispatch(toggleIsOpen());
         offset.current = -1 * mlValue;
         return;
       }
@@ -84,11 +102,12 @@ const MainGameStructure: React.FC = () => {
             dispatch(setShowTutorialCard(false));
           }
         } else {
-          // debugger;
-          transRef.current[1].start({ marginLeft: '0px'});
+          transRef.current.forEach((transition) =>
+            transition.start({ marginLeft: "0px" })
+          );
           offset.current = 0;
         }
-      } 
+      }
     }
   });
 
@@ -103,11 +122,11 @@ const MainGameStructure: React.FC = () => {
           (styles, item) =>
             item && (
               <a.div className="w-[300px] flex-shrink-0 z-10" style={styles}>
-                <GameList />
+                <GameList hideBee={mobileLayout} />
               </a.div>
             )
         )}
-        <SidebarRightSide bindDragArgs={bind()}>
+        <SidebarRightSide mobileLayout={mobileLayout} bindDragArgs={bind()}>
           <Outlet />
         </SidebarRightSide>
       </div>

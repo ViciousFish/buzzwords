@@ -25,7 +25,7 @@ import Canvas from "../canvas/Canvas";
 const BeeLazy = React.lazy(() => import("../../assets/Bee"));
 const HexWordLazy = React.lazy(() => import("../thereed-lettering/HexWord"));
 
-const GameList: React.FC = () => {
+const GameList: React.FC<{ hideBee: boolean }> = ({ hideBee }) => {
   const dispatch = useAppDispatch();
 
   const games = useAppSelector((state) => state.gamelist.games);
@@ -77,21 +77,22 @@ const GameList: React.FC = () => {
         </NavLink>
       </header>
       <nav className="flex flex-col flex-auto overflow-y-auto">
-        <div className="h-[150px] no-touch">
-          <h1 style={{ display: "none" }}>Buzzwords</h1>
-          <React.Suspense fallback={<></>}>
-            <Canvas>
-              <BeeLazy position={[0, 5, 0]} scale={4} />
-              <HexWordLazy autoSpin position={[0, -6, 0]} text="BUZZWORDS" />
-            </Canvas>
-          </React.Suspense>
-        </div>
+        {!hideBee && (
+          <div className="h-[150px] no-touch">
+            <React.Suspense fallback={<></>}>
+              <Canvas>
+                <BeeLazy position={[0, 5, 0]} scale={4} />
+                <HexWordLazy autoSpin position={[0, -6, 0]} text="BUZZWORDS" />
+              </Canvas>
+            </React.Suspense>
+          </div>
+        )}
         <div className="flex-auto">
           <div className="z-10 px-2 mt-0 flex items-center">
             <h2 className="text-2xl font-bold text-darkbrown">Games</h2>
-            <div className="bg-primary mx-1 rounded-xl text-center flex items-center p-1">
-              <h3 className="text-xs mr-1 text-text">New</h3>
-              <div className="flex space-x-1">
+            <div className="bg-primary mx-2 rounded-xl text-center flex items-center px-2 py-1">
+              <h3 className="text-xs mr-2 text-text">New</h3>
+              <div className="flex gap-1">
                 <PlayButtons mode="icon" buttonVariant="dark" />
               </div>
             </div>
