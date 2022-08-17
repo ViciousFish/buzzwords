@@ -24,7 +24,6 @@ import {
   ColorScheme,
   setCurrentSystemScheme,
 } from "../features/settings/settingsSlice";
-// import { Globals } from "@react-spring/shared";
 
 // not necessary, as long as there's always a 3d canvas on screen!
 // import.meta.env.PROD &&

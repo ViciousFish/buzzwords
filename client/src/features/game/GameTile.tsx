@@ -67,7 +67,7 @@ const GameTile: React.FC<GameTileProps> = ({
   isSubmitting,
 }) => {
   const dispatch = useAppDispatch();
-  const { invalidate } = useThree();
+  const invalidate = useThree(({ invalidate }) => invalidate);
 
   const font = useLoader(FontLoader, fredokaone);
   const fontConfig = useMemo(
@@ -188,7 +188,7 @@ const GameTile: React.FC<GameTileProps> = ({
     leave: {
       scale: [0, 0, 0],
     },
-    onChange: () => invalidate()
+    onChange: () => invalidate(),
   });
 
   const isAnimating = useRef(false);
@@ -202,7 +202,7 @@ const GameTile: React.FC<GameTileProps> = ({
       tension: 40,
       friction: 10,
     },
-    onChange: () => invalidate()
+    onChange: () => invalidate(),
   }));
 
   useLayoutEffect(() => {
@@ -285,7 +285,7 @@ const GameTile: React.FC<GameTileProps> = ({
   );
   return (
     <a.group
-    // @ts-ignore
+      // @ts-ignore
       ref={group}
       position={position}
       onClick={onTileClick}
@@ -301,6 +301,7 @@ const GameTile: React.FC<GameTileProps> = ({
         </mesh>
       )}
       {prevLetter && !letter && (
+        // @ts-ignore
         <mesh ref={characterMesh} position={[0, 0, 0.2]}>
           {/* @ts-ignore */}
           <textGeometry args={[prevLetter.toUpperCase(), fontConfig]} />

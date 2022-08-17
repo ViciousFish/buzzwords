@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Outlet } from "react-router";
 import { animated as a, useSpring } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
@@ -10,7 +10,7 @@ import ScreenHeightWraper from "../presentational/ScreenHeightWrapper";
 import SidebarRightSide from "./SidebarRightSide";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { toggleIsOpen } from "../features/gamelist/gamelistSlice";
-import { useThree } from "@react-three/fiber";
+import { raf } from "@react-spring/shared";
 
 // default tailwind breakpoints
 const BREAKPOINTS = {
@@ -23,8 +23,6 @@ const BREAKPOINTS = {
 };
 
 const MainGameStructure: React.FC = () => {
-  // const { invalidate } = useThree()
-
   const dispatch = useAppDispatch();
   const gamelistIsOpen = useAppSelector((state) => state.gamelist.isOpen);
 
@@ -46,17 +44,21 @@ const MainGameStructure: React.FC = () => {
       tension: 200,
       clamp: true,
     },
-    immediate: true,
     onRest: () => {
       setRenderSidebar(gamelistIsOpen);
     },
     onChange: () => {
-      // invalidate();
+      requestAnimationFrame(() => raf.advance())
       if (!renderSidebar) {
         setRenderSidebar(true);
       }
     },
   });
+
+  useEffect(() => {
+    console.log('advance')
+    requestAnimationFrame(() => raf.advance());
+  }, [gamelistIsOpen])
 
   const isDown = useRef(false);
 
@@ -67,6 +69,7 @@ const MainGameStructure: React.FC = () => {
     if ((gamelistIsOpen && mx > 0) || (!gamelistIsOpen && mx < 0)) {
       return;
     }
+    requestAnimationFrame(() => raf.advance())
     if (down) {
       isDown.current = true;
       sidebarSpring.marginLeft.set(

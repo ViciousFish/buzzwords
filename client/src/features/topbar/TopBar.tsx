@@ -21,9 +21,7 @@ import { logout } from "../user/userActions";
 import { isUserLoggedIn } from "../user/userSelectors";
 import AuthPrompt from "./AuthPrompt";
 import { SettingsPage } from "../settings/SettingsPage";
-import { Capacitor } from "@capacitor/core";
 
-const ELECTRON = window.versions;
 const PLATFORM = window.versions?.platform?.();
 
 const TopBar: React.FC = () => {

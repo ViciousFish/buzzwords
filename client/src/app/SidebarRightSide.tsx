@@ -4,6 +4,7 @@ import { animated as a, useTransition } from "@react-spring/web";
 
 import { useAppSelector } from "./hooks";
 import { ReactDOMAttributes } from "@use-gesture/core/types";
+import { raf } from "@react-spring/shared";
 
 const SidebarRightSide: React.FC<{
   children: ReactNode;
@@ -18,6 +19,10 @@ const SidebarRightSide: React.FC<{
     from: { opacity: 0 },
     enter: { opacity: 0.5 },
     leave: { opacity: 0 },
+    onChange: () => {
+      // handled by maingamestructure
+      // requestAnimationFrame(() => raf.advance())
+    }
   });
 
   return (
