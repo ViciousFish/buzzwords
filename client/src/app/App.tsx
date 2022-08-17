@@ -1,7 +1,10 @@
-import React, { lazy, useCallback, useEffect, useState } from "react";
+import React, { lazy, useCallback, useEffect } from "react";
 import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
 // import { Globals } from "@react-spring/shared";
 import FaviconNotification from "favicon-notification";
+import { StatusBar, Style } from "@capacitor/status-bar";
+import { Capacitor } from "@capacitor/core";
+import { raf } from "@react-spring/shared";
 
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { initAction } from "./appActions";
@@ -25,9 +28,14 @@ import {
 
 // not necessary, as long as there's always a 3d canvas on screen!
 // import.meta.env.PROD &&
-//   Globals.assign({
-//     frameLoop: "always",
-//   });
+// Globals.assign({
+//   frameLoop: "demand",
+// });
+
+function frameLoop() {
+  raf.advance();
+  requestAnimationFrame(frameLoop);
+}
 
 const isTouch = window.matchMedia("(pointer: coarse)").matches;
 
@@ -49,7 +57,7 @@ const Router = ELECTRON ? HashRouter : BrowserRouter;
 
 function App() {
   const theme = useAppSelector(getTheme);
-  const colorScheme = useAppSelector(state => state.settings.colorScheme);
+  const colorScheme = useAppSelector((state) => state.settings.colorScheme);
 
   const dispatch = useAppDispatch();
   const showingTutorialModal = useAppSelector(
@@ -59,6 +67,10 @@ function App() {
   const numberOfGamesWaitingForPlayer = useAppSelector((state) =>
     getHowManyGamesAreMyTurn(state, null)
   );
+
+  useEffect(() => {
+    frameLoop();
+  }, []);
 
   useEffect(() => {
     dispatch(initAction());
@@ -83,13 +95,16 @@ function App() {
     }
   }, [numberOfGamesWaitingForPlayer]);
 
-  const matchMediaCallback = useCallback((event: MediaQueryListEvent) => {
-    dispatch(
-      setCurrentSystemScheme(
-        event.matches ? ColorScheme.Dark : ColorScheme.Light
-      )
-    );
-  }, [dispatch]);
+  const matchMediaCallback = useCallback(
+    (event: MediaQueryListEvent) => {
+      dispatch(
+        setCurrentSystemScheme(
+          event.matches ? ColorScheme.Dark : ColorScheme.Light
+        )
+      );
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     MM.addEventListener("change", matchMediaCallback);
@@ -98,6 +113,20 @@ function App() {
     };
   }, [matchMediaCallback]);
 
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) {
+      return;
+    }
+    if (colorScheme === ColorScheme.Dark) {
+      StatusBar.setStyle({ style: Style.Dark });
+    }
+    if (colorScheme === ColorScheme.Light) {
+      StatusBar.setStyle({ style: Style.Light });
+    }
+    if (colorScheme === ColorScheme.System) {
+      StatusBar.setStyle({ style: Style.Default });
+    }
+  }, [colorScheme]);
   return (
     <>
       {/* @ts-ignore */}
@@ -138,7 +167,10 @@ function App() {
             <Route path="/auth/success" element={<AuthSuccessLazy />} />
           </Routes>
         </React.Suspense>
-        <ToastContainer toastClassName="bg-primary text-darkbrown rounded-lg" />
+        <ToastContainer
+          className="p-t-safe"
+          toastClassName="bg-primary text-darkbrown rounded-lg"
+        />
         {showingTutorialModal && <TutorialModal />}
         {/* @ts-ignore ????? */}
         {!isTouch && <ReactTooltip />}

@@ -21,7 +21,6 @@ import {
   unselectTile,
 } from "./gameSlice";
 
-
 export const toggleTileSelected =
   (tile: QRCoord): AppThunk =>
   (dispatch, getState) => {
@@ -71,7 +70,12 @@ export const submitMove =
         location.reload();
       }
 
-      throw e.response?.data ?? e.toString();
+      throw (
+        e.response?.data ??
+        (e.response?.status
+          ? `Error ${e.response?.status}`
+          : "Something went wrong")
+      );
     }
 
     // handled by socket msg now

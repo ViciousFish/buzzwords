@@ -14,7 +14,7 @@ https://twitter.com/BuzzwordsGG
 0. drop a `.env` file in `./server` with `API_PREFIX=/api`
 1. run `yarn` in this folder
 2. run `yarn dev` in this folder
-4. go to http://localhost:3000 in your browser
+4. go to http://localhost:5173/ in your browser
 
 By default, the server stores all its data in memory only. To use mongo, drop a .env file in `./server` with 
 ```

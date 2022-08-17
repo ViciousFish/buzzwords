@@ -1,0 +1,6 @@
+{
+	"appId": "gg.buzzwords.htmlclient",
+	"appName": "Buzzwords",
+	"webDir": "dist",
+	"bundledWebRuntime": false
+}
