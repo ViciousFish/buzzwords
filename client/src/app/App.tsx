@@ -3,6 +3,7 @@ import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
 // import { Globals } from "@react-spring/shared";
 import FaviconNotification from "favicon-notification";
 import { StatusBar, Style } from "@capacitor/status-bar";
+import { Capacitor } from '@capacitor/core';
 
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { initAction } from "./appActions";
@@ -103,6 +104,9 @@ function App() {
   }, [matchMediaCallback]);
 
   useEffect(() => {
+    if (!Capacitor.isNativePlatform()) {
+      return;
+    }
     if (colorScheme === ColorScheme.Dark) {
       StatusBar.setStyle({ style: Style.Dark });
     }

@@ -20,7 +20,6 @@ import TutorialCard from "../gamelist/TutorialCard";
 import { logout } from "../user/userActions";
 import { isUserLoggedIn } from "../user/userSelectors";
 import AuthPrompt from "./AuthPrompt";
-import { setTurnNotificationsSetting } from "../settings/settingsActions";
 import { SettingsPage } from "../settings/SettingsPage";
 import { Capacitor } from "@capacitor/core";
 
@@ -57,10 +56,6 @@ const TopBar: React.FC = () => {
 
   const isLoading =
     isRefreshing || (currentGame && gamesLoading[currentGame] === "loading");
-
-  const toggleTurnNotificationsMute = useCallback(() => {
-    dispatch(setTurnNotificationsSetting(!turnNotificationsMuted));
-  }, [dispatch, turnNotificationsMuted]);
 
   let hamburgerNotification;
   if (!gamelistIsOpen && currentTurnCount) {
