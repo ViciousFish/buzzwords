@@ -1,6 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { Outlet } from "react-router";
-import { animated as a, useTransition, useSpringRef } from "@react-spring/web";
+import {
+  animated as a,
+  useTransition,
+  useSpringRef,
+  useSpring,
+} from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import useBreakpoint from "use-breakpoint";
 
@@ -36,11 +41,13 @@ const MainGameStructure: React.FC = () => {
       .getPropertyValue("--sal")
       .replace(/\D/g, "")
   );
-  const mlValue = 300 + safeAreaLeft;
-  const marginLeft = `-${mlValue}px`;
+  const mlValue = -1 * (300 + safeAreaLeft);
+  const marginLeft = `${mlValue}px`;
 
   const transRef = useSpringRef();
+  // const springRef = useSpringRef();
 
+  const offset = useRef(0);
   const sidebarTransition = useTransition(gamelistIsOpen, {
     ref: transRef,
     initial: {
@@ -59,57 +66,87 @@ const MainGameStructure: React.FC = () => {
       tension: 200,
       clamp: true,
     },
+    onRest: () => {
+      console.log("rest");
+      offset.current = 0;
+    },
+  });
+
+  const sidebarSpring = useSpring({
+    marginLeft: gamelistIsOpen ? 0 : mlValue,
+    config: {
+      tension: 200,
+      clamp: true,
+    },
+    onRest: () => {
+      console.log("rest");
+      offset.current = 0;
+    },
+    onChange: (arg) => {
+      // offset.current = arg.value
+      console.log(arg.value)
+    }
   });
 
   const isDown = useRef(false);
 
-  useEffect(() => {
-    if (isDown.current) {
-      return;
-    }
-    // undocumented: you must manually start the animation for useTransition when passing a ref
-    if (gamelistIsOpen) {
-      transRef.current.forEach((transition) => transition.start());
-    } else {
-      transRef.current.forEach((transition) => transition.start());
-    }
-  }, [gamelistIsOpen, transRef]);
+  // useEffect(() => {
+  //   if (isDown.current) {
+  //     return;
+  //   }
+  //   // undocumented: you must manually start the animation for useTransition when passing a ref
+  //   if (gamelistIsOpen) {
+  //     transRef.current.filter(transition => transition.item).forEach((transition) => transition.start());
+  //   } else {
+  //     transRef.current.filter(transition => transition.item).forEach((transition) => transition.start());
+  //   }
+  // }, [gamelistIsOpen, transRef]);
 
-  const offset = useRef(0);
-  const bind = useDrag(({ down, movement: [mx], distance: [dx] }) => {
+  const bind = useDrag(({ down, movement: [mx], delta: [dx] }) => {
     if (!mobileLayout) {
       return;
     }
     if (down) {
       isDown.current = true;
-      if (mx > 0 && !gamelistIsOpen) {
-        dispatch(toggleIsOpen());
-        offset.current = -1 * mlValue;
-        return;
-      }
-      if (!transRef.current[1]) {
-        return;
-      }
-      transRef.current[1].set({
-        marginLeft: `${Math.min(0, mx + offset.current)}px`,
-      });
+      // transRef.current.forEach(trans => trans.pause())
+      // if (mx > 0 && !gamelistIsOpen) {
+      //   // dispatch(toggleIsOpen());
+      //   offset.current = -1 * mlValue;
+      //   // return;
+      // }
+      // if (!transRef.current[1]) {
+      //   return;
+      // }
+      // transRef.current
+      //   .filter((trans) => trans.item && gamelistIsOpen)
+      //   .forEach((trans) =>
+      //     trans.set({
+      //       marginLeft: `${Math.min(0, mx + offset.current)}px`,
+      //     })
+      //   );
+      offset.current = sidebarSpring.marginLeft.get()
+      sidebarSpring.marginLeft.set(Math.min(0, dx + offset.current));
     } else {
-      isDown.current = false;
-      if (dx > 10) {
-        if (mx < 0 && gamelistIsOpen) {
-          // finish closing
-          dispatch(toggleIsOpen());
-          if (gamelistIsOpen) {
-            dispatch(setShowTutorialCard(false));
-          }
-        } else {
-          // finish opening
-          transRef.current.forEach((transition) =>
-            transition.start({ marginLeft: "0px" })
-          );
-          offset.current = 0;
-        }
-      }
+      dispatch(toggleIsOpen());
+
+      // sidebarSpring.marginLeft.start(gamelistIsOpen ? "0px" : marginLeft)
+      // isDown.current = false;
+      // if (dx > 10) {
+      //   if (mx < 0 && gamelistIsOpen) {
+      //     // finish closing
+      //     dispatch(toggleIsOpen());
+      //     if (gamelistIsOpen) {
+      //       dispatch(setShowTutorialCard(false));
+      //     }
+      //   } else {
+      //     // finish opening
+      //     transRef.current.forEach(
+      //       (transition) => transition.start()
+      //       // .then(() => offset.current = 0)
+      //     );
+      //     // offset.current = 0;
+      //   }
+      // }
     }
   });
 
@@ -120,14 +157,17 @@ const MainGameStructure: React.FC = () => {
         style={{ display: "flex" }}
         className="bg-lightbg mt-[50px] overflow-hidden max-w-[100vw] flex-row safe-area-pad flex-auto"
       >
-        {sidebarTransition(
+        {/* {sidebarTransition(
           (styles, item) =>
             item && (
               <a.div className="w-[300px] flex-shrink-0 z-10" style={styles}>
                 <GameList hideBee={mobileLayout} />
               </a.div>
             )
-        )}
+        )} */}
+        <a.div className="w-[300px] flex-shrink-0 z-10" style={sidebarSpring}>
+          <GameList hideBee={mobileLayout} />
+        </a.div>
         <SidebarRightSide mobileLayout={mobileLayout} bindDragArgs={bind()}>
           <Outlet />
         </SidebarRightSide>
