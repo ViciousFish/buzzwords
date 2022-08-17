@@ -3,6 +3,7 @@ import classNames from "classnames";
 import React, { ReactNode, useCallback } from "react";
 import useBreakpoint from "use-breakpoint";
 import { animated as a } from "@react-spring/web";
+import { raf } from "@react-spring/shared";
 
 import { toggleIsOpen } from "../features/gamelist/gamelistSlice";
 import { useAppDispatch, useAppSelector } from "./hooks";
@@ -32,6 +33,10 @@ const SidebarRightSide: React.FC<{ children: ReactNode }> = ({ children }) => {
     from: { opacity: 0 },
     enter: { opacity: 0.5 },
     leave: { opacity: 0 },
+    onChange: () => {
+      // handled by maingamestructure
+      requestAnimationFrame(() => raf.advance())
+    }
   });
 
   return (

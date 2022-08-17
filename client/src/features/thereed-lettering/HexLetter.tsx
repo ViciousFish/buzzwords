@@ -41,6 +41,7 @@ const HexLetter: React.FC<HexLetterProps> = ({
   const theme = useAppSelector(getTheme);
   const viewport = useThree(({ viewport }) => viewport);
   const size = useThree(({ size }) => size);
+  const invalidate = useThree(({ invalidate }) => invalidate);
   const aspect = size.width / viewport.getCurrentViewport().width;
   const isAnimating = useRef(false);
 
@@ -138,6 +139,7 @@ const HexLetter: React.FC<HexLetterProps> = ({
   const [v] = useState(() => new Vector3());
   useFrame(() => {
     if (group.current && isAnimating.current) {
+      invalidate();
       v.set(rotateSpring.y.get(), rotateSpring.x.get(), 0);
       const a = v.length();
       v.normalize();

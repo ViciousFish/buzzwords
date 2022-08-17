@@ -25,9 +25,9 @@ import {
 
 // not necessary, as long as there's always a 3d canvas on screen!
 // import.meta.env.PROD &&
-//   Globals.assign({
-//     frameLoop: "always",
-//   });
+  // Globals.assign({
+  //   frameLoop: "demand",
+  // });
 
 const isTouch = window.matchMedia("(pointer: coarse)").matches;
 

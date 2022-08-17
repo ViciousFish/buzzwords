@@ -12,6 +12,7 @@ import classNames from "classnames";
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { animated as a, useSpring } from "@react-spring/web";
+import { raf } from "@react-spring/shared";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { toggleCompletedGames } from "./gamelistSlice";
@@ -53,6 +54,9 @@ const GameList: React.FC = () => {
   const containerSpring = useSpring({
     marginLeft: isOpen ? "0px" : `-${300 + safeAreaLeft}px`,
     config,
+    onChange: () => {
+      requestAnimationFrame(() => raf.advance());
+    }
   });
 
   return (

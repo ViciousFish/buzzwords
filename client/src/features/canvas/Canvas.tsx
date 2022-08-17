@@ -14,6 +14,7 @@ const Canvas: React.FC<{
 
   return (
     <ThreeCanvas
+      frameloop="demand"
       className={classNames("shrinkable", className)}
       camera={{
         position: [0, 0, 20],
