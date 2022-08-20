@@ -6,7 +6,7 @@ import {
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { Move } from "buzzwords-shared/Game";
 import classNames from "classnames";
 import React, { useCallback, useState } from "react";
@@ -147,18 +147,14 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
       onClickOutside={() => setIsOpen(false)}
     >
       <li
-        className={classNames(
-          isOpen && (move.player === 0 ? "bg-p1" : "bg-p2"),
-          "flex"
-        )}
+        className="flex"
       >
         <button
           type="button"
           className={classNames(
-            "flex-auto p-1 font-bold text-text text-center rounded-md m-1 hover:bg-opacity-70",
-            // isOpen && "bg-primary",
-            !isOpen && (move.player === 0 ? "bg-p1" : "bg-p2"),
-            !isOpen && "inset-shadow"
+            "flex-auto p-1 font-bold text-text text-center rounded-md m-1 hover:bg-opacity-70 inset-shadow",
+            isOpen && 'outline-darkbrown outline',
+            (move.player === 0 ? "bg-p1" : "bg-p2"),
           )}
           onClick={() => {
             if (!isOpen) {
