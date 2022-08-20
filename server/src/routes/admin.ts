@@ -24,16 +24,27 @@ export default (): Router => {
     const { date: requestDate } = req.params;
     const tz = req.query.timezone as string | undefined;
 
-    const startCalendarDate = requestDate
-      ? parseDate(requestDate)
-      : today(tz ?? DEFAULT_TZ);
-    const endCalendarDate = startCalendarDate.add({ days: 1 });
+    try {
+      const startCalendarDate = requestDate
+        ? parseDate(requestDate)
+        : today(tz ?? DEFAULT_TZ);
+      const endCalendarDate = startCalendarDate.add({ days: 1 });
 
-    const startDate = startCalendarDate.toDate(tz ?? DEFAULT_TZ);
-    const endDate = endCalendarDate.toDate(tz ?? DEFAULT_TZ);
+      const startDate = startCalendarDate.toDate(tz ?? DEFAULT_TZ);
+      const endDate = endCalendarDate.toDate(tz ?? DEFAULT_TZ);
 
-    const daus = await dl.getActiveUsersBetweenDates(startDate, endDate);
-    res.json({ daus, startDate, endDate });
+      const daus = await dl.getActiveUsersBetweenDates(startDate, endDate);
+      res.json({ daus, startDate, endDate });
+    } catch (e) {
+      if (
+        (e as Error)
+          .toString()
+          .startsWith("Error: Invalid ISO 8601 date string:")
+      ) {
+        return res.status(400).send((e as Error).toString());
+      }
+      return res.status(500).send();
+    }
   });
 
   interface PlayersByDaterangeParams {
@@ -54,18 +65,29 @@ export default (): Router => {
       return;
     }
 
-    const startCalendarDate = parseDate(_startDate);
-    const endCalendarDate = parseDate(_endDate);
+    try {
+      const startCalendarDate = parseDate(_startDate);
+      const endCalendarDate = parseDate(_endDate);
 
-    const startDate = startCalendarDate.toDate(timezone);
-    const endDate = endCalendarDate.toDate(timezone);
+      const startDate = startCalendarDate.toDate(timezone);
+      const endDate = endCalendarDate.toDate(timezone);
 
-    const players = await dl.getActiveUsersBetweenDates(startDate, endDate);
-    res.json({
-      players,
-      startDate,
-      endDate,
-    });
+      const players = await dl.getActiveUsersBetweenDates(startDate, endDate);
+      res.json({
+        players,
+        startDate,
+        endDate,
+      });
+    } catch (e) {
+      if (
+        (e as Error)
+          .toString()
+          .startsWith("Error: Invalid ISO 8601 date string:")
+      ) {
+        return res.status(400).send((e as Error).toString());
+      }
+      return res.status(500).send();
+    }
   });
 
   return adminRouter;
