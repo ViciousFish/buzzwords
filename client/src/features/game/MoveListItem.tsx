@@ -15,8 +15,8 @@ import relativeDate from "tiny-relative-date";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
-import { initiateReplay } from "../game/gameActions";
-import { clearReplay } from "../game/gameSlice";
+import { initiateReplay } from "./gameActions";
+import { clearReplay } from "./gameSlice";
 
 interface MoveListItemProps {
   move: Move;

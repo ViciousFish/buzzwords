@@ -1,46 +1,26 @@
-import React, { useCallback, useEffect, useState } from "react";
-import * as R from "ramda";
-import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
-import { toast } from "react-toastify";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faHistory,
-  faPlayCircle,
-  faShareSquare,
-  faTrash,
-  faInfoCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import urljoin from "url-join";
-import classNames from "classnames";
 
 import { RootState } from "../../app/store";
+import { setCurrentGame, toggleNudgeButton } from "../game/gameSlice";
 import {
-  clearReplay,
-  setCurrentGame,
-  toggleNudgeButton,
-} from "../game/gameSlice";
-import {
-  deleteGameById,
   dequeueOrDismissGameStateModalForGame,
   fetchGameById,
-  joinGameById,
   markGameAsSeen,
 } from "../gamelist/gamelistActions";
 import GameBoard from "../game/GameBoard";
-import CopyToClipboard from "../../presentational/CopyToClipboard";
 import NicknameModal from "../user/NicknameModal";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { nudgeGameById } from "../game/gameActions";
-import Button from "../../presentational/Button";
 import GameStateModal from "../game/GameStateModal";
-import MoveListItem from "./MoveListItem";
 import { getOpponent } from "../user/userSelectors";
 import { fetchOpponent } from "../user/userActions";
 import { isFullGame } from "../gamelist/gamelistSlice";
 import GameHeader from "./GameHeader";
-import { Popover } from "react-tiny-popover";
-import NativeAppAd from "../../presentational/NativeAppAd";
+import { MoveList } from "../game/MoveList";
+import GameInvitation from "./GameInvitation";
+import GameInviteOpponentPrompt from "./GameInviteOpponentPrompt";
 
 export const getGameUrl = (id: string) => {
   if (import.meta.env.VITE_SHARE_BASEURL) {
@@ -52,10 +32,8 @@ export const getGameUrl = (id: string) => {
 
 const Play: React.FC = () => {
   const dispatch = useAppDispatch();
-  const location = useLocation();
 
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const game = useSelector((state: RootState) =>
     id ? state.gamelist.games[id] : null
@@ -65,16 +43,13 @@ const Play: React.FC = () => {
     Boolean(state.game.replay.move)
   );
   const gameStateModal = useAppSelector((state) => state.game.gameStateModal);
-  const showingNudgeButton = useAppSelector(
-    (state) => state.game.showingNudgeButton
-  );
+
   const gameLoadingState = useAppSelector(
     (state) => id && state.gamelist.gamesLoading[id]
   );
 
   const [fourohfour, setFourohfour] = useState(false);
   const [fetchedOpponentName, setFetchedOpponentName] = useState(false);
-  const [appInfoOverlay, setAppInfoOverlay] = useState(false);
 
   const userIndex =
     game && currentUser
@@ -86,25 +61,6 @@ const Play: React.FC = () => {
   const opponent = useAppSelector((state) =>
     id ? getOpponent(state, id) : null
   );
-
-  const joinGame = useCallback(() => {
-    if (id) {
-      dispatch(joinGameById(id)).then((joinedGame) => {
-        if (!joinedGame) {
-          setFourohfour(true);
-        }
-      });
-    }
-  }, [id, dispatch]);
-
-  const launchApp = useCallback(() => {
-    const path = location.pathname;
-    // @ts-ignore
-    window.location = urljoin(
-      `${import.meta.env.VITE_PRIVATE_SCHEME_NAME}://`,
-      path
-    );
-  }, [location]);
 
   useEffect(() => {
     if (id) {
@@ -156,20 +112,6 @@ const Play: React.FC = () => {
     }
   }, [game, opponent, fetchedOpponentName, dispatch, isSpectating]);
 
-  const onNudgeClick = useCallback(() => {
-    if (!id) {
-      return;
-    }
-    try {
-      dispatch(nudgeGameById(id));
-      dispatch(toggleNudgeButton(false));
-    } catch (e) {
-      toast(e, {
-        type: "error",
-      });
-    }
-  }, [dispatch, id]);
-
   const nickModal =
     game && currentUser && !isSpectating && !currentUser.nickname ? (
       <NicknameModal />
@@ -192,152 +134,32 @@ const Play: React.FC = () => {
 
   if (game.users.length === 1 && userIndex !== null && userIndex === -1) {
     return (
-      <div className="flex flex-auto flex-col overflow-auto lg:h-[calc(100vh-calc(50px+var(--sat)))] justify-center items-center py-12 px-4">
-        <div className="max-w-full flex-shrink-0 bg-darkbg flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
-          <h2 className="text-2xl text-text flex-wrap">
-            <span className="font-bold italic">
-              {opponent?.nickname || "???"}
-            </span>{" "}
-            has invited you to play Buzzwords
-          </h2>
-        </div>
-        <div className="flex items-start">
-          <Button onClick={joinGame}>Join game{!window.ipc && ' here'}</Button>
-          {!window.ipc && (
-            <div className="text-white bg-darkbrown rounded-full flex justify-center">
-              <Button className="text-text" onClick={launchApp}>
-                Join game in app
-              </Button>
-                <Popover
-                  content={<NativeAppAd />}
-                  isOpen={appInfoOverlay}
-                  onClickOutside={() => setAppInfoOverlay(false)}
-                >
-                  <Button
-                    variant="quiet"
-                    className="ml-0 text-textInverse"
-                    onClick={() => setAppInfoOverlay(!appInfoOverlay)}
-                  >
-                    <FontAwesomeIcon icon={faInfoCircle} />
-                  </Button>
-                </Popover>
-            </div>
-          )}
-        </div>
-      </div>
+      <GameInvitation
+        id={id}
+        setFourohfour={setFourohfour}
+        opponent={opponent}
+      />
     );
   }
 
   if (game.users.length === 1 && userIndex !== null && userIndex > -1) {
     return (
-      <div className="flex flex-auto flex-col overflow-auto lg:h-[calc(100vh-50px)] justify-center items-center py-12 px-4 text-text">
-        <div className="max-w-full flex-shrink-0 bg-darkbg flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
-          <h2 className="text-2xl flex-wrap">
-            Invite an opponent to start the game
-          </h2>
-          <span>they can use this link to join you</span>
-          <a
-            className="underline text-textLink text-sm break-words"
-            href={getGameUrl(id)}
-          >
-            {getGameUrl(id)}
-          </a>
-          <div>
-            <CopyToClipboard label="Copy link" text={getGameUrl(id)} />
-            {navigator.share && (
-              <Button
-                onClick={() => {
-                  navigator.share?.({
-                    url: getGameUrl(id),
-                  });
-                }}
-              >
-                Share <FontAwesomeIcon icon={faShareSquare} />{" "}
-              </Button>
-            )}
-            {id && (
-              <Button
-                className="bg-red-600 text-white"
-                onClick={() => {
-                  dispatch(deleteGameById(id));
-                  navigate("/");
-                }}
-              >
-                <FontAwesomeIcon className="mr-2" icon={faTrash} />
-                Delete
-              </Button>
-            )}
-          </div>
-        </div>
-        <div className=" bg-darkbg rounded-xl text-center">
-          <h2 className="text-2xl">Watch the tutorial</h2>
-          <span>in the mean time</span>
-          <iframe
-            style={{
-              maxWidth: "100%",
-              width: "560px",
-            }}
-            height="315"
-            src="https://www.youtube.com/embed/MwULUSGQ9oo"
-            title="YouTube video player"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="border-darkbrown border-2 rounded-lg"
-          ></iframe>
-        </div>
+      <>
+        <GameInviteOpponentPrompt id={id} gameUrl={getGameUrl(id)} />
         {nickModal}
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="flex flex-auto h-full flex-col overflow-hidden ">
+    <div className="flex flex-auto h-full flex-col overflow-hidden">
       <GameHeader game={game} />
       {/* CQ: TODO: switch to cool-dimension to set flex direction based on measured available space instead of viewport size */}
-      <div className="flex flex-auto flex-col md:flex-row overflow-y-auto">
+      <div className="flex flex-auto flex-col md:flex-row overflow-hidden">
         {userIndex !== null && (
           <GameBoard id={id} game={game} userIndex={userIndex} />
         )}
-        <div className="m-auto md:m-0 flex-shrink-0 w-[200px] pt-2 md:max-h-[calc(100vh-100px)] overflow-y-auto">
-          {showingNudgeButton && (
-            <div className="p-2 rounded-xl bg-primary flex flex-col mr-2">
-              <p>Looks like the AI opponent is taking a long time to move</p>
-              <Button
-                onClick={onNudgeClick}
-                className="text-white bg-darkbrown"
-              >
-                Nudge the bot
-              </Button>
-            </div>
-          )}
-          <div className="flex flex-shrink-0 items-center text-darkbrown pt-2">
-            <button
-              onClick={() => {
-                if (replayState) {
-                  return dispatch(clearReplay());
-                }
-              }}
-            >
-              <FontAwesomeIcon
-                className={classNames(
-                  "mx-1 text-xl",
-                  replayState && "text-blue-500 hover:text-red-500"
-                )}
-                icon={replayState ? faPlayCircle : faHistory}
-              />
-            </button>
-            <h3 className="flex-auto">
-              <span className="text-2xl font-bold m-0">Turns</span>
-            </h3>
-          </div>
-          <ul className="">
-            {R.reverse(game.moves).map((move, i) => {
-              const index = game.moves.length - i - 1;
-              return <MoveListItem move={move} index={index} key={index} />;
-            })}
-          </ul>
-        </div>
+        <MoveList id={id} />
         {nickModal}
         {gameStateModal && (
           <GameStateModal

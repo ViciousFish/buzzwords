@@ -4,9 +4,16 @@ import React from "react";
 
 const NativeAppAd = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
   return (
-    <div ref={ref} className="bg-primary p-4 shadow-lg rounded-xl max-w-md text-text">
+    <div
+      ref={ref}
+      className="bg-primary p-4 shadow-lg rounded-xl max-w-md text-text"
+    >
       <div className="flex gap-2 mb-2 items-center">
-        <img className="drop-shadow" src="/apple-touch-icon.png" style={{ width: 70 }} />
+        <img
+          className="drop-shadow"
+          src="/apple-touch-icon.png"
+          style={{ width: 70 }}
+        />
         <div>
           <h3 className="text-xl font-bold">The Buzzwords App</h3>
           <h4 className="italic opacity-80">
@@ -32,7 +39,12 @@ const NativeAppAd = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
         href="https://chuckdries.itch.io/buzzwords"
         className="block text-center bg-darkbrown text-textInverse hover:bg-opacity-50 rounded-full p-2 m-1 transition-all active:transform active:scale-90 active:bg-opacity-100 inset-shadow"
       >
-        Download Now <FontAwesomeIcon className="opacity-70" size="sm" icon={faExternalLinkAlt} />
+        Download Now{" "}
+        <FontAwesomeIcon
+          className="opacity-70"
+          size="sm"
+          icon={faExternalLinkAlt}
+        />
       </a>
     </div>
   );
