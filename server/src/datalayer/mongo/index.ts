@@ -567,6 +567,67 @@ export default class Mongo implements DataLayer {
     }
   }
 
+  async getActiveUsersBetweenDates(
+    startDate: Date,
+    endDate: Date
+  ): Promise<number> {
+    const agg = [
+      {
+        $unwind: {
+          path: "$moves",
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $match: {
+          "moves.date": {
+            $gte: startDate,
+            $lt: endDate,
+          },
+        },
+      },
+      {
+        $addFields: {
+          playerId: {
+            $arrayElemAt: ["$users", "$moves.player"],
+          },
+        },
+      },
+      {
+        $project: {
+          playerId: 1,
+          _id: 0,
+        },
+      },
+      {
+        $match: {
+          playerId: {
+            $ne: "AI",
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          uniqueValues: {
+            $addToSet: "$playerId",
+          },
+        },
+      },
+      {
+        $unwind: {
+          path: "$uniqueValues",
+        },
+      },
+      {
+        $count: "uniquePlayers",
+      },
+    ];
+
+    const result = await Models.Game.aggregate(agg);
+    return result[0].uniquePlayers ?? 0;
+  }
+
   async createContext(): Promise<ClientSession> {
     const db = mongoose.connection;
     const session = await db.startSession();

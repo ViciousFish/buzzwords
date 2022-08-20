@@ -11,6 +11,7 @@ interface Config {
   googleClientSecret?: string;
   apiPrefix: string;
   googleCallbackUrl: string;
+  adminApiKey: string;
 }
 
 export const getConfig = (): Config => {
@@ -29,6 +30,7 @@ export const getConfig = (): Config => {
     googleCallbackUrl:
       process.env.GOOGLE_CALLBACK_URL ||
       "https://buzzwords.gg/api/login/google/redirect",
+    adminApiKey: process.env.ADMIN_API_KEY || "CHANGE_ME_IN_PRODUCTION",
   };
 };
 

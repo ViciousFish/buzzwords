@@ -15,13 +15,12 @@ import urljoin from "url-join";
 
 import getConfig from "./config";
 import dl from "./datalayer";
-import { DataLayer, User } from "./types";
-import GameManager from "./GameManager";
-import BannedWords from "./banned_words.json";
-import { isAnonymousUser, removeMongoId } from "./util";
+import { User } from "./types";
+import { isAnonymousUser } from "./util";
 
 import makeUserRouter from "./routes/user";
 import makeGameRouter from "./routes/game";
+import makeAdminRouter from "./routes/admin";
 
 import runMigrations from "./migrations";
 
@@ -77,6 +76,7 @@ app.get(config.apiPrefix + "/", (req, res) => {
 
 app.use(config.apiPrefix + "/user", makeUserRouter(io));
 app.use(config.apiPrefix + "/game", makeGameRouter(io));
+app.use(config.apiPrefix + "/admin", makeAdminRouter());
 
 app.post(config.apiPrefix + "/logout", async (req, res) => {
   res.clearCookie("authToken");
