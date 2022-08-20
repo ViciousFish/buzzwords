@@ -9,7 +9,8 @@ import classNames from "classnames";
 const Canvas: React.FC<{
   className?: string;
   children: ReactNode;
-}> = ({ children, className }) => {
+  isGameboard?: boolean;
+}> = ({ children, className, isGameboard }) => {
   const ReduxProvider = useContextBridge(ReactReduxContext);
 
   return (
@@ -28,7 +29,7 @@ const Canvas: React.FC<{
       flat
     >
       <ReduxProvider>
-        <Wrap3d>{children}</Wrap3d>
+        <Wrap3d isGameboard={isGameboard}>{children}</Wrap3d>
       </ReduxProvider>
     </ThreeCanvas>
   );

@@ -1,27 +1,39 @@
 import { Stats, useProgress } from "@react-three/drei";
 import { Object3DNode, useThree } from "@react-three/fiber";
 import React, { ReactNode, useEffect, useRef, useState } from "react";
-import { Box3, Color, Group, PerspectiveCamera } from "three";
-import type { ThreeElements } from '@react-three/fiber'
+import { Box3, Color, Group, PerspectiveCamera, Vector3 } from "three";
+import type { ThreeElements } from "@react-three/fiber";
 
-import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
-import { extend } from '@react-three/fiber'
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
+import { extend } from "@react-three/fiber";
 
 // Add types to ThreeElements elements so primitives pick up on it
-declare module '@react-three/fiber' {
+declare module "@react-three/fiber" {
   interface ThreeElements {
-    customElement: Object3DNode<TextGeometry, typeof TextGeometry>
+    textGeometry: Object3DNode<TextGeometry, typeof TextGeometry>;
   }
 }
+
+const GAMEBOARD_BOUNDING_POINTS = [
+  new Vector3(-18, 28, 0),
+  new Vector3(18, 28, 0),
+  new Vector3(-18, -25, 0),
+  new Vector3(18, -25, 0),
+];
 
 const setZoom = (
   group: Group,
   width: number,
   height: number,
   boundingBox: Box3,
-  camera: PerspectiveCamera
+  camera: PerspectiveCamera,
+  isGameboard: boolean | undefined,
 ) => {
-  boundingBox.setFromObject(group);
+  if (isGameboard) {
+    boundingBox.setFromPoints(GAMEBOARD_BOUNDING_POINTS);
+  } else {
+    boundingBox.setFromObject(group);
+  }
   const wzoom = width / (boundingBox.max.x - boundingBox.min.x);
   const hzoom = height / (boundingBox.max.y - boundingBox.min.y);
   const zoom = Math.min(wzoom, hzoom);
@@ -30,8 +42,16 @@ const setZoom = (
   camera.updateProjectionMatrix();
 };
 
-const Wrap3d = ({ children }: { children: ReactNode }) => {
-  extend({ TextGeometry })
+interface Wrap3dProps {
+  children: ReactNode;
+  isGameboard: boolean | undefined;
+}
+
+const Wrap3d = ({
+  children,
+  isGameboard,
+}: Wrap3dProps) => {
+  extend({ TextGeometry });
   const { progress } = useProgress();
 
   const groupRef = useRef<Group>();
@@ -43,16 +63,16 @@ const Wrap3d = ({ children }: { children: ReactNode }) => {
     if (progress === 100 && groupRef.current) {
       setTimeout(() => {
         if (groupRef.current) {
-          setZoom(groupRef.current, width, height, boundingBox, camera);
+          setZoom(groupRef.current, width, height, boundingBox, camera, isGameboard);
         }
       }, 10);
       setTimeout(() => {
         if (groupRef.current) {
-          setZoom(groupRef.current, width, height, boundingBox, camera);
+          setZoom(groupRef.current, width, height, boundingBox, camera, isGameboard);
         }
       }, 200);
     }
-  }, [progress, width, height, groupRef, boundingBox, camera]);
+  }, [progress, width, height, groupRef, boundingBox, camera, isGameboard]);
   return (
     // @ts-ignore
     <group ref={groupRef}>
@@ -60,9 +80,9 @@ const Wrap3d = ({ children }: { children: ReactNode }) => {
         {/* {!import.meta.env.PROD && <Stats />} */}
         <ambientLight />
         <directionalLight position={[10, 10, 10]} />
-        {/* {!import.meta.env.PROD && (
+        {!import.meta.env.PROD && (
           <box3Helper args={[boundingBox, new Color(0xff0000)]} />
-        )} */}
+        )}
         {children}
       </group>
     </group>

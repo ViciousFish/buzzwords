@@ -68,8 +68,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   });
 
   return (
-    <div className="flex-auto flex-shrink-0 md:flex-shrink overflow-hidden h-[140vw] max-h-[calc(100vh-120px)]">
-      <Canvas key={`play-${id}`}>
+    <div className="flex-auto md:flex-shrink overflow-hidden h-[140vw] max-h-[calc(100vh-120px)]">
+      <Canvas isGameboard key={`play-${id}`}>
         {/* <CameraControls /> */}
         <React.Suspense
           fallback={<Html center>{progress.toFixed(0)} % loaded</Html>}
@@ -81,9 +81,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 position={[0, 0, 0]}
                 isPlayerIdentity
                 currentGame={id}
-                gameOver={game.gameOver}
               />
-              {/* Modals have z index of 30 */}
             </group>
             <group position={[10, 0, 0]}>
               <GameTile
@@ -92,7 +90,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 position={[0, 0, 0]}
                 isPlayerIdentity
                 currentGame={id}
-                gameOver={game.gameOver}
               />
             </group>
           </group>
@@ -175,7 +172,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                   owner={gridTile.owner}
                   currentGame={id}
                   userIndex={userIndex}
-                  gameOver={game.gameOver}
                 />
               );
             })}
