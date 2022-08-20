@@ -294,6 +294,7 @@ const Play: React.FC = () => {
   return (
     <div className="flex flex-auto h-full flex-col overflow-hidden ">
       <GameHeader game={game} />
+      {/* CQ: TODO: switch to cool-dimension to set flex direction based on measured available space instead of viewport size */}
       <div className="flex flex-auto flex-col md:flex-row overflow-y-auto">
         {userIndex !== null && (
           <GameBoard id={id} game={game} userIndex={userIndex} />
