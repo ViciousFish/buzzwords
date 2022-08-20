@@ -15,7 +15,11 @@ import { getSelectedWordByGameId } from "./gameSelectors";
 import GameTile from "./GameTile";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBackspace, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBackspace,
+  faSpinner,
+  faTimesCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import useHotkeys from "@reecelucas/react-use-hotkeys";
 
@@ -72,9 +76,17 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
       <Canvas isGameboard key={`play-${id}`}>
         {/* <CameraControls /> */}
         <React.Suspense
-          fallback={<Html center>{progress.toFixed(0)} % loaded</Html>}
+          fallback={
+            <Html center>
+              <FontAwesomeIcon
+                icon={faSpinner}
+                size="2x"
+                className="m-4 animate-spin"
+              />
+            </Html>
+          }
         >
-          <group position={[0, 21, 0]}>
+          <group position={[0, 20, 0]}>
             <group position={[-10, 0, 0]}>
               <GameTile
                 owner={0}
@@ -93,8 +105,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
               />
             </group>
           </group>
-          <group position={[0, 15, 0]}>
-            <Html center zIndexRange={[20, 0]} distanceFactor={.06}>
+          <group position={[0, 14, 0]}>
+            <Html center zIndexRange={[20, 0]} distanceFactor={0.075}>
               <div className="flex justify-center items-center">
                 {selectedWord?.length && game.turn === userIndex ? (
                   <button
@@ -126,14 +138,16 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                     <FontAwesomeIcon icon={faTimesCircle} size="2x" />
                   </button>
                 ) : null}
-                <div style={{ height: '70px'}} className="text-[70px] text-darkbrown font-fredoka overflow-hidden">
-                  <span style={{ position: 'relative', top: -20}}>
-
-                  {replayLetters
-                    ? R.take(replayProgress, replayLetters)
-                        .join("")
-                        .toUpperCase()
-                    : selectedWord ?? ""}
+                <div
+                  style={{ height: "60px" }}
+                  className="text-[60px] text-darkbrown font-fredoka overflow-hidden"
+                >
+                  <span style={{ position: "relative", top: -15 }}>
+                    {replayLetters
+                      ? R.take(replayProgress, replayLetters)
+                          .join("")
+                          .toUpperCase()
+                      : selectedWord ?? ""}
                   </span>
                 </div>
                 {selectedWord?.length && game.turn === userIndex ? (
@@ -153,7 +167,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
               </div>
             </Html>
           </group>
-          <group position={[0, -6, 0]}>
+          <group position={[0, -7, 0]}>
             {Object.keys(game.grid).map((coord: QRCoord) => {
               const gridTile = game.grid[coord];
               return (

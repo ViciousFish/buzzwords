@@ -2,7 +2,6 @@ import { Stats, useProgress } from "@react-three/drei";
 import { Object3DNode, useThree } from "@react-three/fiber";
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { Box3, Color, Group, PerspectiveCamera, Vector3 } from "three";
-import type { ThreeElements } from "@react-three/fiber";
 
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { extend } from "@react-three/fiber";
@@ -15,11 +14,12 @@ declare module "@react-three/fiber" {
 }
 
 const GAMEBOARD_BOUNDING_POINTS = [
-  new Vector3(-18, 28, 0),
-  new Vector3(18, 28, 0),
-  new Vector3(-18, -25, 0),
-  new Vector3(18, -25, 0),
+  new Vector3(-17, 27, 0),
+  new Vector3(17, 27, 0),
+  new Vector3(0, -26, 0),
 ];
+
+const PAD_FACTOR = 1
 
 const setZoom = (
   group: Group,
@@ -38,7 +38,8 @@ const setZoom = (
   const hzoom = height / (boundingBox.max.y - boundingBox.min.y);
   const zoom = Math.min(wzoom, hzoom);
   const dpr = Math.max(window.devicePixelRatio, 2);
-  camera.zoom = Math.min(zoom - 1, 25 * dpr);
+  // CQ: TODO: scale pad by screen size? Or do that in CSS?
+  camera.zoom = Math.min(isGameboard ? zoom : zoom - PAD_FACTOR, 25 * dpr);
   camera.updateProjectionMatrix();
 };
 
@@ -61,11 +62,11 @@ const Wrap3d = ({
 
   useEffect(() => {
     if (progress === 100 && groupRef.current) {
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         if (groupRef.current) {
           setZoom(groupRef.current, width, height, boundingBox, camera, isGameboard);
         }
-      }, 10);
+      });
       setTimeout(() => {
         if (groupRef.current) {
           setZoom(groupRef.current, width, height, boundingBox, camera, isGameboard);
