@@ -3,7 +3,6 @@ import {
   faBars,
   faCircle,
   faCog,
-  faQuestion,
   faSpinner,
   faSyncAlt,
 } from "@fortawesome/free-solid-svg-icons";
@@ -11,6 +10,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { useLocation } from "react-router";
 import { Popover } from "react-tiny-popover";
+import { faCircleQuestion } from "@fortawesome/free-regular-svg-icons";
+
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import NativeAppAd from "../../presentational/NativeAppAd";
@@ -91,7 +92,7 @@ const TopBar: React.FC = () => {
           >
             <FontAwesomeIcon icon={faBars} />
             {/* CQ: this top param */}
-            <span className="absolute text-sm left-[10px] top-[calc(0.25rem+var(--sat))]">
+            <span className="absolute text-sm left-[14px] top-[calc(0.25rem+var(--sat))]">
               {hamburgerNotification}
             </span>
           </button>
@@ -129,7 +130,7 @@ const TopBar: React.FC = () => {
                 gamelistIsOpen && showTutorialCard && "hidden"
               )}
             >
-              <FontAwesomeIcon icon={faQuestion} />
+              <FontAwesomeIcon icon={faCircleQuestion} />
             </button>
           </Popover>
         </div>
