@@ -56,6 +56,7 @@ export function MoveList({ id }: MoveListProps) {
   const windowHeight = use100vh() ?? window.innerHeight;
   const drawerHeight =
     listRef.current &&
+    // CQ: this is bugged when you first add a new item to the moves list (i.e. when a move happens)
     listRef.current.scrollHeight > listRef.current.clientHeight
       ? windowHeight
       : (listRef.current?.scrollHeight ?? 0) + 160;
