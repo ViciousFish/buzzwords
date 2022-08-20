@@ -207,6 +207,10 @@ export default class Memory implements DataLayer {
     return true;
   }
 
+  async getActiveUsersBetweenDates(): Promise<number> {
+    return 0;
+  }
+
   async createContext(): Promise<null> {
     return null;
   }
