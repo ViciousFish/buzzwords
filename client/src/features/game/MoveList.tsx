@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import * as R from "ramda";
 import { useSpring } from "@react-spring/three";
 import { toast } from "react-toastify";
@@ -14,6 +14,7 @@ import { useDrag } from "@use-gesture/react";
 import classNames from "classnames";
 import MoveListItem from "./MoveListItem";
 import { isFullGame } from "../gamelist/gamelistSlice";
+import useDimensions from "react-cool-dimensions";
 
 interface MoveListProps {
   id: string;
@@ -49,16 +50,23 @@ export function MoveList({ id }: MoveListProps) {
     }
   }, [dispatch, id]);
 
+  const listRef = useRef<HTMLDivElement>(null);
+
   // CQ: use cool-dimensions to measure game play area space?
-  const fullHeight = use100vh() ?? window.innerHeight;
-  const closedDrawerTop = fullHeight - (50 + 70);
-  const openDrawerTop = 5;
+  const windowHeight = use100vh() ?? window.innerHeight;
+  const drawerHeight =
+    listRef.current &&
+    listRef.current.scrollHeight > listRef.current.clientHeight
+      ? windowHeight
+      : (listRef.current?.scrollHeight ?? 0) + 160;
+  const closedDrawerTop = windowHeight - (70 + 50);
+  const openDrawerTop = windowHeight - drawerHeight + 5;
 
   const drawerSpring = useSpring({
     top: drawerIsOpen ? openDrawerTop : closedDrawerTop,
     config: {
-      clamp: true
-    }
+      clamp: true,
+    },
   });
 
   const bind = useDrag(
@@ -86,15 +94,9 @@ export function MoveList({ id }: MoveListProps) {
           );
           return;
         }
-        // drawerSpring.top.resume();
-        // alert('my: ' + my)
         if (my <= 0) {
-          // alert('opening: ' + my + " / " + openDrawerTop)
-          // drawerSpring.top.start(openDrawerTop);
           setDrawerIsOpen(true);
         } else {
-          // alert('closing: ' + my)
-          // drawerSpring.top.start(closedDrawerTop);
           setDrawerIsOpen(false);
         }
       }
@@ -107,36 +109,60 @@ export function MoveList({ id }: MoveListProps) {
 
   return (
     <>
-      <div className="h-[70px] flex-shrink-0"></div>
+      <div className="h-[70px] w-full flex-shrink-0"></div>
       <a.div
         style={{
           top: drawerSpring.top,
-          height: fullHeight - (50 + 5),
+          height: drawerHeight - (50 + 5),
         }}
-        className="left-2 right-2 rounded-t-xl bg-primary absolute shadow-upward text-text flex flex-col items-center p-b-2"
+        className="left-2 right-2 rounded-t-xl bg-darkbg absolute shadow-upward text-text p-b-2"
       >
-        <div
-          {...bind()}
-          className="touch-none select-none flex-shrink-0 flex flex-col items-center justify-center w-full p-1"
-        >
-          <FontAwesomeIcon icon={faGripLines} />
-          <div className="flex items-center">
-            {replayState ? "Replaying: " : "Last move: "}
-            <div className="w-[200px]">
-              <MoveListItem
-                move={
-                  replayState ? replayState : game.moves[game.moves.length - 1]
-                }
-                index={replayState ? replayIndex : game.moves.length - 1}
-              />
+        <div className="h-full flex flex-col items-center">
+          <div
+            {...bind()}
+            className="touch-none select-none flex-shrink-0 flex flex-col items-center justify-center w-full p-1"
+          >
+            <FontAwesomeIcon icon={faGripLines} />
+            <div className="flex items-center">
+              {replayState ? "Replaying: " : "Last move: "}
+              <div className="w-[200px]">
+                {game.moves.length && (
+                  <MoveListItem
+                    move={
+                      replayState
+                        ? replayState
+                        : game.moves[game.moves.length - 1]
+                    }
+                    index={replayState ? replayIndex : game.moves.length - 1}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+          <h3 className="w-[200px]">
+            <span className="text-2xl font-bold m-0">Moves</span>
+          </h3>
+          <div className="flex-auto w-full overflow-y-auto">
+            <div ref={listRef} className="overflow-y-auto max-h-full">
+              <ul className="w-[200px] mx-auto">
+                {/* @ts-ignore */}
+                {R.reverse(game.moves).map((move, i) => {
+                  const index = game.moves.length - i - 1;
+                  return <MoveListItem move={move} index={index} key={index} />;
+                })}
+              </ul>
             </div>
           </div>
         </div>
-        <h3 className="w-[200px]">
-          <span className="text-2xl font-bold m-0">Moves</span>
-        </h3>
-        {/* <div className="m-auto md:m-0 flex-shrink-0 w-[200px] pt-2 md:max-h-[calc(100vh-100px)] overflow-y-auto"> */}
-        {/* {showingNudgeButton && (
+        {/* </div> */}
+      </a.div>
+    </>
+  );
+}
+
+/* <div className="m-auto md:m-0 flex-shrink-0 w-[200px] pt-2 md:max-h-[calc(100vh-100px)] overflow-y-auto"> */
+{
+  /* {showingNudgeButton && (
             <div className="p-2 rounded-xl bg-primary flex flex-col mr-2">
               <p>Looks like the AI opponent is taking a long time to move</p>
               <Button
@@ -146,9 +172,13 @@ export function MoveList({ id }: MoveListProps) {
                 Nudge the bot
               </Button>
             </div>
-          )} */}
-        {/* <div className="flex flex-shrink-0 items-center text-darkbrown pt-2"> */}
-        {/* <button
+          )} */
+}
+{
+  /* <div className="flex flex-shrink-0 items-center text-darkbrown pt-2"> */
+}
+{
+  /* <button
               onClick={() => {
                 if (replayState) {
                   return dispatch(clearReplay());
@@ -162,20 +192,8 @@ export function MoveList({ id }: MoveListProps) {
                 )}
                 icon={replayState ? faPlayCircle : faHistory}
               />
-            </button> */}
-        {/* </div> */}
-
-        <div className="flex-auto w-full overflow-y-auto">
-          <ul className="w-[200px] mx-auto">
-            {/* @ts-ignore */}
-            {R.reverse(game.moves).map((move, i) => {
-              const index = game.moves.length - i - 1;
-              return <MoveListItem move={move} index={index} key={index} />;
-            })}
-          </ul>
-        </div>
-        {/* </div> */}
-      </a.div>
-    </>
-  );
+            </button> */
+}
+{
+  /* </div> */
 }
