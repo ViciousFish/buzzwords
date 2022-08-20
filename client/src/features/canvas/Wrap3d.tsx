@@ -19,7 +19,7 @@ const GAMEBOARD_BOUNDING_POINTS = [
   new Vector3(0, -26, 0),
 ];
 
-const PAD_FACTOR = 1
+const PAD_FACTOR = 1;
 
 const setZoom = (
   group: Group,
@@ -27,7 +27,7 @@ const setZoom = (
   height: number,
   boundingBox: Box3,
   camera: PerspectiveCamera,
-  isGameboard: boolean | undefined,
+  isGameboard: boolean | undefined
 ) => {
   if (isGameboard) {
     boundingBox.setFromPoints(GAMEBOARD_BOUNDING_POINTS);
@@ -48,10 +48,7 @@ interface Wrap3dProps {
   isGameboard: boolean | undefined;
 }
 
-const Wrap3d = ({
-  children,
-  isGameboard,
-}: Wrap3dProps) => {
+const Wrap3d = ({ children, isGameboard }: Wrap3dProps) => {
   extend({ TextGeometry });
   const { progress } = useProgress();
 
@@ -59,21 +56,47 @@ const Wrap3d = ({
   const { width, height } = useThree((state) => state.size);
   const camera = useThree((state) => state.camera) as PerspectiveCamera;
   const [boundingBox] = useState(() => new Box3());
+  const invalidate = useThree((state) => state.invalidate);
 
   useEffect(() => {
     if (progress === 100 && groupRef.current) {
       requestAnimationFrame(() => {
         if (groupRef.current) {
-          setZoom(groupRef.current, width, height, boundingBox, camera, isGameboard);
+          setZoom(
+            groupRef.current,
+            width,
+            height,
+            boundingBox,
+            camera,
+            isGameboard
+          );
+          invalidate();
         }
       });
       setTimeout(() => {
         if (groupRef.current) {
-          setZoom(groupRef.current, width, height, boundingBox, camera, isGameboard);
+          setZoom(
+            groupRef.current,
+            width,
+            height,
+            boundingBox,
+            camera,
+            isGameboard
+          );
+          invalidate();
         }
       }, 200);
     }
-  }, [progress, width, height, groupRef, boundingBox, camera, isGameboard]);
+  }, [
+    progress,
+    width,
+    height,
+    groupRef,
+    boundingBox,
+    camera,
+    isGameboard,
+    invalidate,
+  ]);
   return (
     // @ts-ignore
     <group ref={groupRef}>
