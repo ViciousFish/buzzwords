@@ -68,7 +68,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   });
 
   return (
-    <div className="flex-auto md:flex-shrink overflow-hidden h-[140vw] max-w-full max-h-[calc(100vh-120px)]">
+    <div className="flex-auto flex-shrink-0 md:flex-shrink overflow-hidden h-[140vw] max-w-full max-h-[calc(100vh-120px)]">
       <Canvas isGameboard key={`play-${id}`}>
         {/* <CameraControls /> */}
         <React.Suspense
@@ -94,7 +94,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
             </group>
           </group>
           <group position={[0, 15, 0]}>
-            <Html center zIndexRange={[20, 0]} distanceFactor={.05}>
+            <Html center zIndexRange={[20, 0]} distanceFactor={.06}>
               <div className="flex justify-center items-center">
                 {selectedWord?.length && game.turn === userIndex ? (
                   <button
@@ -126,7 +126,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                     <FontAwesomeIcon icon={faTimesCircle} size="2x" />
                   </button>
                 ) : null}
-                <div style={{ height: '80px'}} className="text-[80px] text-darkbrown font-fredoka overflow-hidden">
+                <div style={{ height: '70px'}} className="text-[70px] text-darkbrown font-fredoka overflow-hidden">
                   <span style={{ position: 'relative', top: -20}}>
 
                   {replayLetters
