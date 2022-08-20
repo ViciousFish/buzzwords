@@ -625,7 +625,7 @@ export default class Mongo implements DataLayer {
     ];
 
     const result = await Models.Game.aggregate(agg);
-    return result[0].uniquePlayers ?? 0;
+    return result[0]?.uniquePlayers ?? 0;
   }
 
   async createContext(): Promise<ClientSession> {
