@@ -20,7 +20,7 @@ import TutorialCard from "../gamelist/TutorialCard";
 import { logout } from "../user/userActions";
 import { isUserLoggedIn } from "../user/userSelectors";
 import AuthPrompt from "./AuthPrompt";
-import { SettingsPage } from "../settings/SettingsPage";
+import { IS_MOBILE_BROWSER, SettingsPage } from "../settings/SettingsPage";
 
 const PLATFORM = window.versions?.platform?.();
 
@@ -50,7 +50,7 @@ const TopBar: React.FC = () => {
   const [settingsPanel, setSettingsPanel] = useState(false);
 
   const [nativeAppAd, setNativeAppAd] = useState(false);
-  const showDownloadButton = !window.ipc && !location.pathname.match(/download/)
+  const showDownloadButton = !window.ipc && !location.pathname.match(/download/) && !IS_MOBILE_BROWSER;
 
   const isLoading =
     isRefreshing || (currentGame && gamesLoading[currentGame] === "loading");

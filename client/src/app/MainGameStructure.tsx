@@ -84,7 +84,7 @@ const MainGameStructure: React.FC = () => {
   });
 
   return (
-    <ScreenHeightWraper className="flex flex-col">
+    <ScreenHeightWraper className="flex flex-col relative overflow-hidden">
       <TopBar />
       <div
         style={{ display: "flex" }}

@@ -3,7 +3,6 @@ import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import urljoin from "url-join";
 
-import { RootState } from "../../app/store";
 import { setCurrentGame, toggleNudgeButton } from "../game/gameSlice";
 import {
   dequeueOrDismissGameStateModalForGame,
@@ -35,13 +34,11 @@ const Play: React.FC = () => {
 
   const { id } = useParams();
 
-  const game = useSelector((state: RootState) =>
+  const game = useAppSelector((state) =>
     id ? state.gamelist.games[id] : null
   );
-  const currentUser = useSelector((state: RootState) => state.user.user);
-  const replayState = useAppSelector((state) =>
-    Boolean(state.game.replay.move)
-  );
+  const currentUser = useAppSelector((state) => state.user.user);
+
   const gameStateModal = useAppSelector((state) => state.game.gameStateModal);
 
   const gameLoadingState = useAppSelector(
