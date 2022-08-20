@@ -1,37 +1,58 @@
 import { Stats, useProgress } from "@react-three/drei";
 import { Object3DNode, useThree } from "@react-three/fiber";
 import React, { ReactNode, useEffect, useRef, useState } from "react";
-import { Box3, Color, Group, PerspectiveCamera } from "three";
-import type { ThreeElements } from '@react-three/fiber'
+import { Box3, Color, Group, PerspectiveCamera, Vector3 } from "three";
 
-import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
-import { extend } from '@react-three/fiber'
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
+import { extend } from "@react-three/fiber";
 
 // Add types to ThreeElements elements so primitives pick up on it
-declare module '@react-three/fiber' {
+declare module "@react-three/fiber" {
   interface ThreeElements {
-    customElement: Object3DNode<TextGeometry, typeof TextGeometry>
+    textGeometry: Object3DNode<TextGeometry, typeof TextGeometry>;
   }
 }
+
+const GAMEBOARD_BOUNDING_POINTS = [
+  new Vector3(-17, 27, 0),
+  new Vector3(17, 27, 0),
+  new Vector3(0, -26, 0),
+];
+
+const PAD_FACTOR = 1
 
 const setZoom = (
   group: Group,
   width: number,
   height: number,
   boundingBox: Box3,
-  camera: PerspectiveCamera
+  camera: PerspectiveCamera,
+  isGameboard: boolean | undefined,
 ) => {
-  boundingBox.setFromObject(group);
+  if (isGameboard) {
+    boundingBox.setFromPoints(GAMEBOARD_BOUNDING_POINTS);
+  } else {
+    boundingBox.setFromObject(group);
+  }
   const wzoom = width / (boundingBox.max.x - boundingBox.min.x);
   const hzoom = height / (boundingBox.max.y - boundingBox.min.y);
   const zoom = Math.min(wzoom, hzoom);
   const dpr = Math.max(window.devicePixelRatio, 2);
-  camera.zoom = Math.min(zoom - 1, 25 * dpr);
+  // CQ: TODO: scale pad by screen size? Or do that in CSS?
+  camera.zoom = Math.min(isGameboard ? zoom : zoom - PAD_FACTOR, 25 * dpr);
   camera.updateProjectionMatrix();
 };
 
-const Wrap3d = ({ children }: { children: ReactNode }) => {
-  extend({ TextGeometry })
+interface Wrap3dProps {
+  children: ReactNode;
+  isGameboard: boolean | undefined;
+}
+
+const Wrap3d = ({
+  children,
+  isGameboard,
+}: Wrap3dProps) => {
+  extend({ TextGeometry });
   const { progress } = useProgress();
 
   const groupRef = useRef<Group>();
@@ -41,18 +62,18 @@ const Wrap3d = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (progress === 100 && groupRef.current) {
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         if (groupRef.current) {
-          setZoom(groupRef.current, width, height, boundingBox, camera);
+          setZoom(groupRef.current, width, height, boundingBox, camera, isGameboard);
         }
-      }, 10);
+      });
       setTimeout(() => {
         if (groupRef.current) {
-          setZoom(groupRef.current, width, height, boundingBox, camera);
+          setZoom(groupRef.current, width, height, boundingBox, camera, isGameboard);
         }
       }, 200);
     }
-  }, [progress, width, height, groupRef, boundingBox, camera]);
+  }, [progress, width, height, groupRef, boundingBox, camera, isGameboard]);
   return (
     // @ts-ignore
     <group ref={groupRef}>

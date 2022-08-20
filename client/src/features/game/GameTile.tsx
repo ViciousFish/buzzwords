@@ -47,7 +47,6 @@ interface GameTileProps {
   userIndex?: number;
   isCapital?: boolean;
   isPlayerIdentity?: boolean;
-  gameOver: boolean;
   /** disable selection while submission in progress */
   isSubmitting?: boolean;
 }
@@ -63,7 +62,6 @@ const GameTile: React.FC<GameTileProps> = ({
   userIndex,
   isCapital: isCapitalProp,
   isPlayerIdentity,
-  gameOver,
   isSubmitting,
 }) => {
   const dispatch = useAppDispatch();
@@ -87,6 +85,8 @@ const GameTile: React.FC<GameTileProps> = ({
 
   const game = useAppSelector((state) => state.gamelist.games[currentGame]);
   const theme = useAppSelector(getTheme);
+
+  const gameOver = game.gameOver;
 
   const isSelectedState = useAppSelector((state) =>
     coord ? state.game.selectedTiles[coord] : null
@@ -295,7 +295,6 @@ const GameTile: React.FC<GameTileProps> = ({
       {letter && (
         // @ts-ignore
         <mesh ref={characterMesh} position={[0, 0, 0.2]}>
-          {/* @ts-ignore */}
           <textGeometry args={[letter.toUpperCase(), fontConfig]} />
           <meshStandardMaterial color={theme.colors.threed.secondaryAccent} />
         </mesh>
@@ -303,7 +302,6 @@ const GameTile: React.FC<GameTileProps> = ({
       {prevLetter && !letter && (
         // @ts-ignore
         <mesh ref={characterMesh} position={[0, 0, 0.2]}>
-          {/* @ts-ignore */}
           <textGeometry args={[prevLetter.toUpperCase(), fontConfig]} />
           <meshStandardMaterial color={theme.colors.threed.secondaryAccent} />
         </mesh>

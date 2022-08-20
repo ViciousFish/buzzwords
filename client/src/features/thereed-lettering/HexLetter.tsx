@@ -154,7 +154,6 @@ const HexLetter: React.FC<HexLetterProps> = ({
     <a.group ref={group} {...props}>
       {/* @ts-ignore */}
       <mesh ref={mesh} position={[0, 0, 0.2]} {...bind()}>
-        {/* @ts-ignore */}
         <textGeometry args={[letter, fontConfig]} />
         <meshStandardMaterial color={theme.colors.threed.secondaryAccent} />
       </mesh>
