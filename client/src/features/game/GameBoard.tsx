@@ -94,7 +94,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
             </group>
           </group>
           <group position={[0, 15, 0]}>
-            <Html center zIndexRange={[20, 0]}>
+            <Html center zIndexRange={[20, 0]} distanceFactor={.05}>
               <div className="flex justify-center items-center">
                 {selectedWord?.length && game.turn === userIndex ? (
                   <button
@@ -126,12 +126,15 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                     <FontAwesomeIcon icon={faTimesCircle} size="2x" />
                   </button>
                 ) : null}
-                <div className="text-[calc(3.5vh+3.5vw)] text-darkbrown font-fredoka">
+                <div style={{ height: '80px'}} className="text-[80px] text-darkbrown font-fredoka overflow-hidden">
+                  <span style={{ position: 'relative', top: -20}}>
+
                   {replayLetters
                     ? R.take(replayProgress, replayLetters)
                         .join("")
                         .toUpperCase()
                     : selectedWord ?? ""}
+                  </span>
                 </div>
                 {selectedWord?.length && game.turn === userIndex ? (
                   <button

@@ -80,9 +80,9 @@ const Wrap3d = ({
         {/* {!import.meta.env.PROD && <Stats />} */}
         <ambientLight />
         <directionalLight position={[10, 10, 10]} />
-        {!import.meta.env.PROD && (
+        {/* {!import.meta.env.PROD && (
           <box3Helper args={[boundingBox, new Color(0xff0000)]} />
-        )}
+        )} */}
         {children}
       </group>
     </group>
