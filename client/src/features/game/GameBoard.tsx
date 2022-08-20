@@ -68,7 +68,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   });
 
   return (
-    <div className="flex-auto md:flex-shrink overflow-hidden h-[140vw] max-h-[calc(100vh-120px)]">
+    <div className="flex-auto md:flex-shrink overflow-hidden h-[140vw] max-w-full max-h-[calc(100vh-120px)]">
       <Canvas isGameboard key={`play-${id}`}>
         {/* <CameraControls /> */}
         <React.Suspense
