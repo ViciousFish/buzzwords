@@ -56,6 +56,9 @@ export function MoveList({ id }: MoveListProps) {
 
   const drawerSpring = useSpring({
     top: drawerIsOpen ? openDrawerTop : closedDrawerTop,
+    config: {
+      clamp: true
+    }
   });
 
   const bind = useDrag(
@@ -162,13 +165,15 @@ export function MoveList({ id }: MoveListProps) {
             </button> */}
         {/* </div> */}
 
-        <ul className="flex-auto w-[200px] overflow-y-auto">
-          {/* @ts-ignore */}
-          {R.reverse(game.moves).map((move, i) => {
-            const index = game.moves.length - i - 1;
-            return <MoveListItem move={move} index={index} key={index} />;
-          })}
-        </ul>
+        <div className="flex-auto w-full overflow-y-auto">
+          <ul className="w-[200px] mx-auto">
+            {/* @ts-ignore */}
+            {R.reverse(game.moves).map((move, i) => {
+              const index = game.moves.length - i - 1;
+              return <MoveListItem move={move} index={index} key={index} />;
+            })}
+          </ul>
+        </div>
         {/* </div> */}
       </a.div>
     </>
