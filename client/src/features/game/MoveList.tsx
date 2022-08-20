@@ -108,7 +108,7 @@ export function MoveList({ id }: MoveListProps) {
 
   return (
     <>
-      <div className="h-[70px] w-full flex-shrink-0"></div>
+      <div className="h-[70px] w-full flex-shrink-0 block"></div>
       <a.div
         style={{
           top: drawerSpring.top,
