@@ -42,7 +42,6 @@ const Bee = (props: GroupProps) => {
 
   const bind = useGesture({
     onDrag: ({ down, delta: [mx, my] }) => {
-      invalidate();
       rotateSpringApi.set({
         x: mx / aspect + rotateSpring.x.get(),
       });
@@ -62,6 +61,7 @@ const Bee = (props: GroupProps) => {
       const a = v.length();
       v.normalize();
       group.current.setRotationFromAxisAngle(v, a / 2);
+      invalidate();
     }
   });
   return (
