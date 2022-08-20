@@ -8,7 +8,7 @@ module.exports = {
         fredoka: ["fredoka_oneregular", "sans"],
       },
       boxShadow: {
-        'upward': '1px -1px 8px 0px rgba(0,0,0,0.3)',
+        'upward': '0px -1px 5px 0px rgba(0,0,0,0.2)',
       },
       colors: {
         lightbg: ({ opacityVariable, opacityValue }) => {
