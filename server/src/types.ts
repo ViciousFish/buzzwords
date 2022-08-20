@@ -94,4 +94,5 @@ export interface DataLayer {
   ): Promise<boolean>;
   createContext(): Promise<unknown>;
   commitContext(context: unknown): Promise<boolean>;
+  getActiveUsersBetweenDates(startDate: Date, endDate: Date): Promise<number>;
 }

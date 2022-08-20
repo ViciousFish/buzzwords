@@ -1,13 +1,13 @@
 import * as R from "ramda";
-import express from "express";
+import { Router } from "express";
 import { nanoid } from "nanoid";
 import { Server } from "socket.io";
 
 import dl from "../datalayer";
 import BannedWords from "../banned_words.json";
 
-export default (io: Server) => {
-  const userRouter = express.Router();
+export default (io: Server): Router => {
+  const userRouter = Router();
 
   userRouter.get("/", async (req, res) => {
     let userId = res.locals.userId as string;
