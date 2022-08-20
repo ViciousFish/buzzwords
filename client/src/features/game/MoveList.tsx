@@ -83,9 +83,7 @@ export function MoveList({ id }: MoveListProps) {
         // drawerSpring.top.pause();
         const dragPos = drawerSpring.top.get() + dy;
         drawerSpring.top.set(
-          drawerIsOpen
-            ? Math.max(dragPos, openDrawerTop)
-            : Math.min(dragPos, closedDrawerTop)
+          Math.max(Math.min(dragPos, closedDrawerTop), openDrawerTop)
         );
       } else {
         if (y < 50 && vy < 1) {
