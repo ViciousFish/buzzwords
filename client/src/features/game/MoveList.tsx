@@ -110,7 +110,7 @@ export function MoveList({ id }: MoveListProps) {
           top: drawerSpring.top,
           height: fullHeight - (50 + 5),
         }}
-        className="left-2 right-2 rounded-t-xl bg-primary absolute shadow-xl text-text flex flex-col items-center p-b-2"
+        className="left-2 right-2 rounded-t-xl bg-primary absolute shadow-upward text-text flex flex-col items-center p-b-2"
       >
         <div
           {...bind()}
