@@ -3,7 +3,6 @@ import {
   faBars,
   faCircle,
   faCog,
-  faQuestion,
   faSpinner,
   faSyncAlt,
 } from "@fortawesome/free-solid-svg-icons";
@@ -11,6 +10,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { useLocation } from "react-router";
 import { Popover } from "react-tiny-popover";
+import { faCircleQuestion } from "@fortawesome/free-regular-svg-icons";
+
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import NativeAppAd from "../../presentational/NativeAppAd";
@@ -20,7 +21,7 @@ import TutorialCard from "../gamelist/TutorialCard";
 import { logout } from "../user/userActions";
 import { isUserLoggedIn } from "../user/userSelectors";
 import AuthPrompt from "./AuthPrompt";
-import { SettingsPage } from "../settings/SettingsPage";
+import { IS_MOBILE_BROWSER, SettingsPage } from "../settings/SettingsPage";
 
 const PLATFORM = window.versions?.platform?.();
 
@@ -50,7 +51,7 @@ const TopBar: React.FC = () => {
   const [settingsPanel, setSettingsPanel] = useState(false);
 
   const [nativeAppAd, setNativeAppAd] = useState(false);
-  const showDownloadButton = !window.ipc && !location.pathname.match(/download/)
+  const showDownloadButton = !window.ipc && !location.pathname.match(/download/) && !IS_MOBILE_BROWSER;
 
   const isLoading =
     isRefreshing || (currentGame && gamesLoading[currentGame] === "loading");
@@ -91,7 +92,7 @@ const TopBar: React.FC = () => {
           >
             <FontAwesomeIcon icon={faBars} />
             {/* CQ: this top param */}
-            <span className="absolute text-sm left-[10px] top-[calc(0.25rem+var(--sat))]">
+            <span className="absolute text-sm left-[14px] top-[calc(0.25rem+var(--sat))]">
               {hamburgerNotification}
             </span>
           </button>
@@ -129,7 +130,7 @@ const TopBar: React.FC = () => {
                 gamelistIsOpen && showTutorialCard && "hidden"
               )}
             >
-              <FontAwesomeIcon icon={faQuestion} />
+              <FontAwesomeIcon icon={faCircleQuestion} />
             </button>
           </Popover>
         </div>

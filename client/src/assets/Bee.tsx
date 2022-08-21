@@ -42,10 +42,10 @@ const Bee = (props: GroupProps) => {
 
   const bind = useGesture({
     onDrag: ({ down, delta: [mx, my] }) => {
-      invalidate();
       rotateSpringApi.set({
         x: mx / aspect + rotateSpring.x.get(),
       });
+      invalidate();
       isDragging.current = down;
     },
   });

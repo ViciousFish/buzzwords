@@ -6,7 +6,7 @@ import {
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { Move } from "buzzwords-shared/Game";
 import classNames from "classnames";
 import React, { useCallback, useState } from "react";
@@ -15,15 +15,16 @@ import relativeDate from "tiny-relative-date";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
-import { initiateReplay } from "../game/gameActions";
-import { clearReplay } from "../game/gameSlice";
+import { initiateReplay } from "./gameActions";
+import { clearReplay } from "./gameSlice";
 
 interface MoveListItemProps {
   move: Move;
   index: number;
+  onInitiateReplay: () => void;
 }
 
-const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
+const MoveListItem: React.FC<MoveListItemProps> = ({ move, index, onInitiateReplay }) => {
   const dispatch = useAppDispatch();
   const replayState = useAppSelector((state) =>
     Boolean(state.game.replay.move)
@@ -126,6 +127,8 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
             return dispatch(clearReplay());
           }
           dispatch(initiateReplay(index));
+          setIsOpen(false);
+          onInitiateReplay();
         }}
       >
         <FontAwesomeIcon
@@ -147,18 +150,14 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
       onClickOutside={() => setIsOpen(false)}
     >
       <li
-        className={classNames(
-          isOpen && (move.player === 0 ? "bg-p1" : "bg-p2"),
-          "flex"
-        )}
+        className="flex"
       >
         <button
           type="button"
           className={classNames(
-            "flex-auto p-1 font-bold text-text text-center rounded-md m-1 hover:bg-opacity-70",
-            // isOpen && "bg-primary",
-            !isOpen && (move.player === 0 ? "bg-p1" : "bg-p2"),
-            !isOpen && "inset-shadow"
+            "flex-auto p-1 font-bold text-text text-center rounded-md m-1 hover:bg-opacity-70 inset-shadow",
+            isOpen && 'outline-darkbrown outline',
+            (move.player === 0 ? "bg-p1" : "bg-p2"),
           )}
           onClick={() => {
             if (!isOpen) {

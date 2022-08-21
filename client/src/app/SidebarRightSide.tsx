@@ -32,7 +32,7 @@ const SidebarRightSide: React.FC<{
   return (
     <div
       className={classNames(
-        "flex-auto overflow-hidden h-full touch-none",
+        "flex-auto overflow-hidden h-full touch-none relative",
         mobileLayout && "min-w-[100vw]"
       )}
       {...bindDragArgs}
@@ -43,7 +43,7 @@ const SidebarRightSide: React.FC<{
           value && (
             <a.div
               id="shade"
-              className="fixed top-[calc(50px+var(--sat))] right-0 h-full left-0 bg-black"
+              className="fixed top-[calc(50px+var(--sat))] right-0 h-full left-0 bg-black z-20"
               style={styles}
             ></a.div>
           )
