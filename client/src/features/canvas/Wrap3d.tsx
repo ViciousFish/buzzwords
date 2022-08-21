@@ -50,12 +50,12 @@ interface Wrap3dProps {
   height: number;
 }
 
-const Wrap3d = ({ children, isGameboard, width, height }: Wrap3dProps) => {
-  extend({ TextGeometry });
+const Wrap3d = ({ children, isGameboard, _width, _height }: Wrap3dProps) => {
+  // extend({ TextGeometry });
   const { progress } = useProgress();
 
   const groupRef = useRef<Group>();
-  // const { width, height } = useThree((state) => state.size);
+  const { width, height } = useThree((state) => state.size);
   const camera = useThree((state) => state.camera) as PerspectiveCamera;
   const [boundingBox] = useState(() => new Box3());
   const invalidate = useThree((state) => state.invalidate);

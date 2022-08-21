@@ -113,7 +113,7 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
       </h3>
       <div className="flex-auto w-full overflow-y-auto">
         <div ref={listRef} className="overflow-y-auto max-h-full">
-          <ul className="w-[200px] mx-auto">
+          <ul className="max-w-[200px] mx-auto">
             {/* @ts-ignore */}
             {R.reverse(game.moves).map((move, i) => {
               const index = game.moves.length - i - 1;
@@ -134,7 +134,7 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
 
   return (
     <>
-      <div className={classNames(mobileLayout && "h-[70px] block","w-[210px] flex flex-col flex-shrink-0 ")}>
+      <div className={classNames(mobileLayout && "h-[70px] block","w-[200px] flex flex-col flex-shrink-0 ")}>
         {!mobileLayout && moveListContent}
       </div>
       {mobileLayout && (
