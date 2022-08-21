@@ -19,7 +19,7 @@ const Canvas: React.FC<{
     <ThreeCanvas
     ref={observe}
       frameloop="demand"
-      className={classNames("shrinkable", className)}
+      className={classNames("flex-shrink", className)}
       camera={{
         position: [0, 0, 20],
         zoom: 5,

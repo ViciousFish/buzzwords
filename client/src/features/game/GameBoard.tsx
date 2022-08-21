@@ -72,7 +72,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   });
 
   return (
-    <div className="flex-auto flex-shrink max-w-full">
+    <div className="flex-1 max-w-full">
       <Canvas isGameboard key={`play-${id}`}>
         {/* <CameraControls /> */}
         <React.Suspense

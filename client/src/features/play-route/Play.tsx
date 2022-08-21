@@ -159,13 +159,13 @@ const Play: React.FC = () => {
   return (
     <div
       ref={observe}
-      className="flex flex-auto h-full flex-col overflow-hidden"
+      className="flex flex-1 h-full flex-col overflow-hidden"
     >
       <GameHeader game={game} />
       {/* CQ: TODO: switch to cool-dimension to set flex direction based on measured available space instead of viewport size */}
       <div
         className={classNames(
-          "flex flex-auto  overflow-hidden",
+          "flex flex-1",
           currentBreakpoint === "md" ? "flex-row" : "flex-col"
         )}
       >
