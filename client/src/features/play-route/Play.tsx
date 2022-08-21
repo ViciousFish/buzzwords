@@ -119,8 +119,9 @@ const Play: React.FC = () => {
       <NicknameModal />
     ) : null;
 
-  const { observe, currentBreakpoint, width, height } = useDimensions({
+  const { observe, currentBreakpoint } = useDimensions({
     breakpoints: PLAY_BREAKPOINTS,
+    updateOnBreakpointChange: true,
   });
 
   if (!game || !id || !isFullGame(game)) {
@@ -168,12 +169,7 @@ const Play: React.FC = () => {
         ref={observe}
       >
         {userIndex !== null && (
-          <div
-            style={{
-              width: currentBreakpoint === "xs" ? width : width - 200,
-              height: currentBreakpoint === "xs" ? height - 70 : height,
-            }}
-          >
+          <div className="flex-1 flex-shrink min-w-0">
             <GameBoard id={id} game={game} userIndex={userIndex} />
           </div>
         )}
