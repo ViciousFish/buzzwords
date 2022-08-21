@@ -50,6 +50,10 @@ export function MoveList({ id }: MoveListProps) {
     }
   }, [dispatch, id]);
 
+  const onInitiateReplay = useCallback(() => {
+    setDrawerIsOpen(false);
+  }, []);
+
   const listRef = useRef<HTMLDivElement>(null);
 
   const { height: drawerHeight, observe } = useDimensions();
@@ -112,41 +116,49 @@ export function MoveList({ id }: MoveListProps) {
         }}
         className="left-2 right-2 rounded-t-xl bg-darkbg absolute shadow-upward text-text p-b-2 flex flex-col items-center"
       >
-          <div
-            {...bind()}
-            className="touch-none select-none flex-shrink-0 flex flex-col items-center justify-center w-full p-1"
-          >
-            <FontAwesomeIcon icon={faGripLines} />
-            <div className="flex items-center">
-              {replayState ? "Replaying: " : "Last move: "}
-              <div className="w-[200px]">
-                {game.moves.length && (
+        <div
+          {...bind()}
+          className="touch-none select-none flex-shrink-0 flex flex-col items-center justify-center w-full p-1"
+        >
+          <FontAwesomeIcon icon={faGripLines} />
+          <div className="flex items-center">
+            {replayState ? "Replaying: " : "Last move: "}
+            <div className="w-[200px]">
+              {game.moves.length && (
+                <MoveListItem
+                  move={
+                    replayState
+                      ? replayState
+                      : game.moves[game.moves.length - 1]
+                  }
+                  index={replayState ? replayIndex : game.moves.length - 1}
+                  onInitiateReplay={onInitiateReplay}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+        <h3 className="w-[200px]">
+          <span className="text-2xl font-bold m-0">Moves</span>
+        </h3>
+        <div className="flex-auto w-full overflow-y-auto">
+          <div ref={listRef} className="overflow-y-auto max-h-full">
+            <ul className="w-[200px] mx-auto">
+              {/* @ts-ignore */}
+              {R.reverse(game.moves).map((move, i) => {
+                const index = game.moves.length - i - 1;
+                return (
                   <MoveListItem
-                    move={
-                      replayState
-                        ? replayState
-                        : game.moves[game.moves.length - 1]
-                    }
-                    index={replayState ? replayIndex : game.moves.length - 1}
+                    move={move}
+                    index={index}
+                    key={index}
+                    onInitiateReplay={onInitiateReplay}
                   />
-                )}
-              </div>
-            </div>
+                );
+              })}
+            </ul>
           </div>
-          <h3 className="w-[200px]">
-            <span className="text-2xl font-bold m-0">Moves</span>
-          </h3>
-          <div className="flex-auto w-full overflow-y-auto">
-            <div ref={listRef} className="overflow-y-auto max-h-full">
-              <ul className="w-[200px] mx-auto">
-                {/* @ts-ignore */}
-                {R.reverse(game.moves).map((move, i) => {
-                  const index = game.moves.length - i - 1;
-                  return <MoveListItem move={move} index={index} key={index} />;
-                })}
-              </ul>
-            </div>
-          </div>
+        </div>
       </a.div>
     </>
   );

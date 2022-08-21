@@ -21,9 +21,10 @@ import { clearReplay } from "./gameSlice";
 interface MoveListItemProps {
   move: Move;
   index: number;
+  onInitiateReplay: () => void;
 }
 
-const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
+const MoveListItem: React.FC<MoveListItemProps> = ({ move, index, onInitiateReplay }) => {
   const dispatch = useAppDispatch();
   const replayState = useAppSelector((state) =>
     Boolean(state.game.replay.move)
@@ -126,6 +127,8 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index }) => {
             return dispatch(clearReplay());
           }
           dispatch(initiateReplay(index));
+          setIsOpen(false);
+          onInitiateReplay();
         }}
       >
         <FontAwesomeIcon
