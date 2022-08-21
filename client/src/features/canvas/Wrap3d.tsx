@@ -46,19 +46,22 @@ const setZoom = (
 interface Wrap3dProps {
   children: ReactNode;
   isGameboard: boolean | undefined;
+  width: number;
+  height: number;
 }
 
-const Wrap3d = ({ children, isGameboard }: Wrap3dProps) => {
+const Wrap3d = ({ children, isGameboard, width, height }: Wrap3dProps) => {
   extend({ TextGeometry });
   const { progress } = useProgress();
 
   const groupRef = useRef<Group>();
-  const { width, height } = useThree((state) => state.size);
+  // const { width, height } = useThree((state) => state.size);
   const camera = useThree((state) => state.camera) as PerspectiveCamera;
   const [boundingBox] = useState(() => new Box3());
   const invalidate = useThree((state) => state.invalidate);
 
   useEffect(() => {
+    console.log('here')
     if (progress === 100 && groupRef.current) {
       requestAnimationFrame(() => {
         if (groupRef.current) {
@@ -73,19 +76,19 @@ const Wrap3d = ({ children, isGameboard }: Wrap3dProps) => {
           invalidate();
         }
       });
-      setTimeout(() => {
-        if (groupRef.current) {
-          setZoom(
-            groupRef.current,
-            width,
-            height,
-            boundingBox,
-            camera,
-            isGameboard
-          );
-          invalidate();
-        }
-      }, 200);
+      // setTimeout(() => {
+      //   if (groupRef.current) {
+      //     setZoom(
+      //       groupRef.current,
+      //       width,
+      //       height,
+      //       boundingBox,
+      //       camera,
+      //       isGameboard
+      //     );
+      //     invalidate();
+      //   }
+      // }, 200);
     }
   }, [
     progress,

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 import urljoin from "url-join";
+import * as R from "ramda";
 
 import { setCurrentGame, toggleNudgeButton } from "../game/gameSlice";
 import {
@@ -20,6 +20,9 @@ import GameHeader from "./GameHeader";
 import { MoveList } from "../game/MoveList";
 import GameInvitation from "./GameInvitation";
 import GameInviteOpponentPrompt from "./GameInviteOpponentPrompt";
+import useDimensions from "react-cool-dimensions";
+import { BREAKPOINTS } from "../../app/MainGameStructure";
+import classNames from "classnames";
 
 export const getGameUrl = (id: string) => {
   if (import.meta.env.VITE_SHARE_BASEURL) {
@@ -114,6 +117,11 @@ const Play: React.FC = () => {
       <NicknameModal />
     ) : null;
 
+  const { observe, currentBreakpoint } = useDimensions({
+    breakpoints: R.pick(["xs", "md"], BREAKPOINTS),
+    updateOnBreakpointChange: true,
+  });
+
   if (!game || !id || !isFullGame(game)) {
     return null;
   }
@@ -149,14 +157,22 @@ const Play: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-auto h-full flex-col overflow-hidden">
+    <div
+      ref={observe}
+      className="flex flex-auto h-full flex-col overflow-hidden"
+    >
       <GameHeader game={game} />
       {/* CQ: TODO: switch to cool-dimension to set flex direction based on measured available space instead of viewport size */}
-      <div className="flex flex-auto flex-col md:flex-row overflow-hidden">
+      <div
+        className={classNames(
+          "flex flex-auto  overflow-hidden",
+          currentBreakpoint === "md" ? "flex-row" : "flex-col"
+        )}
+      >
         {userIndex !== null && (
           <GameBoard id={id} game={game} userIndex={userIndex} />
         )}
-        <MoveList id={id} />
+        <MoveList mobileLayout={currentBreakpoint === "xs"} id={id} />
         {nickModal}
         {gameStateModal && (
           <GameStateModal
