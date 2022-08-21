@@ -105,8 +105,8 @@ const TopBar: React.FC = () => {
               onClick={() => {
                 setSettingsPanel(true)
               }}
-              aria-label="display tutorial"
-              data-tip="Tutorial"
+              aria-label="toggle game settings"
+              data-tip="Toggle game settings"
               className="p-2 rounded-md hover:bg-lightbg hover:bg-opacity-50"
             >
               <FontAwesomeIcon icon={faCog} />
