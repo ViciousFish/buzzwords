@@ -114,7 +114,8 @@ export function MoveList({ id }: MoveListProps) {
           top: drawerSpring.top,
           maxHeight: windowHeight - (50 + 5),
         }}
-        className="left-2 right-2 rounded-t-xl bg-darkbg absolute shadow-upward text-text p-b-2 flex flex-col items-center"
+        className={`left-2 right-2 z-20 rounded-t-xl bg-darkbg absolute shadow-upward 
+        text-text p-b-2 flex flex-col items-center`}
       >
         <div
           {...bind()}

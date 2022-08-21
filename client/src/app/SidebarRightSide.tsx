@@ -43,7 +43,7 @@ const SidebarRightSide: React.FC<{
           value && (
             <a.div
               id="shade"
-              className="fixed top-[calc(50px+var(--sat))] right-0 h-full left-0 bg-black"
+              className="fixed top-[calc(50px+var(--sat))] right-0 h-full left-0 bg-black z-20"
               style={styles}
             ></a.div>
           )
