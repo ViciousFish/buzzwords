@@ -134,7 +134,7 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
 
   return (
     <>
-      <div className="h-[70px] w-[200px] flex-shrink-0 block">
+      <div className={classNames(mobileLayout && "h-[70px] block","w-[210px] flex flex-col flex-shrink-0 ")}>
         {!mobileLayout && moveListContent}
       </div>
       {mobileLayout && (
