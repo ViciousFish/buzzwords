@@ -45,6 +45,7 @@ const Bee = (props: GroupProps) => {
       rotateSpringApi.set({
         x: mx / aspect + rotateSpring.x.get(),
       });
+      invalidate();
       isDragging.current = down;
     },
   });
@@ -61,7 +62,6 @@ const Bee = (props: GroupProps) => {
       const a = v.length();
       v.normalize();
       group.current.setRotationFromAxisAngle(v, a / 2);
-      invalidate();
     }
   });
   return (
