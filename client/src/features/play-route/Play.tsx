@@ -32,6 +32,8 @@ export const getGameUrl = (id: string) => {
   return window.location.toString();
 };
 
+const PLAY_BREAKPOINTS = R.pick(["xs", "md"], BREAKPOINTS);
+
 const Play: React.FC = () => {
   const dispatch = useAppDispatch();
 
@@ -117,9 +119,8 @@ const Play: React.FC = () => {
       <NicknameModal />
     ) : null;
 
-  const { observe, currentBreakpoint } = useDimensions({
-    breakpoints: R.pick(["xs", "md"], BREAKPOINTS),
-    updateOnBreakpointChange: true,
+  const { observe, currentBreakpoint, width, height } = useDimensions({
+    breakpoints: PLAY_BREAKPOINTS,
   });
 
   if (!game || !id || !isFullGame(game)) {
@@ -157,20 +158,24 @@ const Play: React.FC = () => {
   }
 
   return (
-    <div
-      ref={observe}
-      className="flex flex-1 h-full flex-col overflow-hidden"
-    >
+    <div className="flex flex-1 h-full flex-col items-stretch">
       <GameHeader game={game} />
-      {/* CQ: TODO: switch to cool-dimension to set flex direction based on measured available space instead of viewport size */}
       <div
         className={classNames(
-          "flex flex-1",
-          currentBreakpoint === "md" ? "flex-row" : "flex-col"
+          "flex flex-1 w-full",
+          currentBreakpoint === "xs" ? "flex-col" : "flex-row"
         )}
+        ref={observe}
       >
         {userIndex !== null && (
-          <GameBoard id={id} game={game} userIndex={userIndex} />
+          <div
+            style={{
+              width: currentBreakpoint === "xs" ? width : width - 200,
+              height: currentBreakpoint === "xs" ? height - 70 : height,
+            }}
+          >
+            <GameBoard id={id} game={game} userIndex={userIndex} />
+          </div>
         )}
         <MoveList mobileLayout={currentBreakpoint === "xs"} id={id} />
         {nickModal}

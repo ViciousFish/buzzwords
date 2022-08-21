@@ -61,7 +61,6 @@ const Wrap3d = ({ children, isGameboard, width, height }: Wrap3dProps) => {
   const invalidate = useThree((state) => state.invalidate);
 
   useEffect(() => {
-    console.log('here')
     if (progress === 100 && groupRef.current) {
       requestAnimationFrame(() => {
         if (groupRef.current) {
