@@ -134,10 +134,15 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
 
   return (
     <>
-      <div className={classNames(mobileLayout && "h-[70px] block","w-[200px] flex flex-col flex-shrink-0 ")}>
+      <div
+        className={classNames(
+          mobileLayout && "h-[70px] block",
+          "w-[200px] flex flex-col flex-shrink-0 "
+        )}
+      >
         {!mobileLayout && moveListContent}
       </div>
-      {mobileLayout && (
+      {mobileLayout && game.moves.length ? (
         <a.div
           ref={observe}
           style={{
@@ -155,23 +160,21 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
             <div className="flex items-center">
               {replayState ? "Replaying: " : "Last move: "}
               <div className="w-[200px]">
-                {game.moves.length && (
-                  <MoveListItem
-                    move={
-                      replayState
-                        ? replayState
-                        : game.moves[game.moves.length - 1]
-                    }
-                    index={replayState ? replayIndex : game.moves.length - 1}
-                    onInitiateReplay={onInitiateReplay}
-                  />
-                )}
+                <MoveListItem
+                  move={
+                    replayState
+                      ? replayState
+                      : game.moves[game.moves.length - 1]
+                  }
+                  index={replayState ? replayIndex : game.moves.length - 1}
+                  onInitiateReplay={onInitiateReplay}
+                />
               </div>
             </div>
           </div>
           {moveListContent}
         </a.div>
-      )}
+      ) : null}
     </>
   );
 }
