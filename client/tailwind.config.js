@@ -6,7 +6,9 @@ module.exports = {
     extend: {
       fontFamily: {
         fredoka: ["fredoka_oneregular", "sans"],
-        // sans: ['Patrick\\ Hand', 'sans']
+      },
+      boxShadow: {
+        'upward': '0px -1px 5px 0px rgba(0,0,0,0.2)',
       },
       colors: {
         lightbg: ({ opacityVariable, opacityValue }) => {

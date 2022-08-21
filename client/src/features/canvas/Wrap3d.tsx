@@ -46,10 +46,12 @@ const setZoom = (
 interface Wrap3dProps {
   children: ReactNode;
   isGameboard: boolean | undefined;
+  width: number;
+  height: number;
 }
 
-const Wrap3d = ({ children, isGameboard }: Wrap3dProps) => {
-  extend({ TextGeometry });
+const Wrap3d = ({ children, isGameboard, _width, _height }: Wrap3dProps) => {
+  // extend({ TextGeometry });
   const { progress } = useProgress();
 
   const groupRef = useRef<Group>();
@@ -73,19 +75,19 @@ const Wrap3d = ({ children, isGameboard }: Wrap3dProps) => {
           invalidate();
         }
       });
-      setTimeout(() => {
-        if (groupRef.current) {
-          setZoom(
-            groupRef.current,
-            width,
-            height,
-            boundingBox,
-            camera,
-            isGameboard
-          );
-          invalidate();
-        }
-      }, 200);
+      // setTimeout(() => {
+      //   if (groupRef.current) {
+      //     setZoom(
+      //       groupRef.current,
+      //       width,
+      //       height,
+      //       boundingBox,
+      //       camera,
+      //       isGameboard
+      //     );
+      //     invalidate();
+      //   }
+      // }, 200);
     }
   }, [
     progress,

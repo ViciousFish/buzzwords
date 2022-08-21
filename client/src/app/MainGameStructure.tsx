@@ -13,7 +13,7 @@ import { toggleIsOpen } from "../features/gamelist/gamelistSlice";
 import { raf } from "@react-spring/shared";
 
 // default tailwind breakpoints
-const BREAKPOINTS = {
+export const BREAKPOINTS = {
   xs: 0,
   sm: 640,
   md: 768,
@@ -84,17 +84,17 @@ const MainGameStructure: React.FC = () => {
   });
 
   return (
-    <ScreenHeightWraper className="flex flex-col">
+    <ScreenHeightWraper className="flex flex-col relative overflow-hidden">
       <TopBar />
       <div
         style={{ display: "flex" }}
         className="bg-lightbg mt-[50px] overflow-hidden max-w-[100vw] flex-row safe-area-pad flex-auto"
       >
         <a.div
-          className="w-[300px] flex-shrink-0 z-20"
+          className="w-[300px] flex-shrink-0 z-30"
           style={{ marginLeft: sidebarSpring.marginLeft }}
         >
-          {renderSidebar && <GameList hideBee={mobileLayout} />}
+          <GameList hideBee={mobileLayout} />
         </a.div>
         <SidebarRightSide mobileLayout={mobileLayout} bindDragArgs={bind()}>
           <Outlet />

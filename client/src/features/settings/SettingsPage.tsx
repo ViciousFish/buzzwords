@@ -18,6 +18,12 @@ function iOS() {
   );
 }
 
+function Android() {
+  return /android/i.test(navigator.userAgent);
+}
+
+export const IS_MOBILE_BROWSER = iOS() || Android();
+
 import {
   faPencilAlt,
   faTimes,
@@ -61,7 +67,7 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
   const preferredDarkTheme = useAppSelector(
     (state) => state.settings.preferredDarkTheme
   );
-  const nickname = useAppSelector((state) => state.user.user.nickname);
+  const nickname = useAppSelector((state) => state.user.user?.nickname);
 
   const toggleTurnNotificationsMute = useCallback(() => {
     dispatch(setTurnNotificationsSetting(!turnNotificationsMuted));
