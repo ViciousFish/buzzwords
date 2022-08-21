@@ -52,16 +52,11 @@ export function MoveList({ id }: MoveListProps) {
 
   const listRef = useRef<HTMLDivElement>(null);
 
+  const { height: drawerHeight, observe } = useDimensions();
   // CQ: use cool-dimensions to measure game play area space?
   const windowHeight = use100vh() ?? window.innerHeight;
-  const drawerHeight =
-    listRef.current &&
-    // CQ: this is bugged when you first add a new item to the moves list (i.e. when a move happens)
-    listRef.current.scrollHeight > listRef.current.clientHeight
-      ? windowHeight
-      : (listRef.current?.scrollHeight ?? 0) + 160;
   const closedDrawerTop = windowHeight - (70 + 50);
-  const openDrawerTop = windowHeight - drawerHeight + 5;
+  const openDrawerTop = windowHeight - drawerHeight - 50;
 
   const drawerSpring = useSpring({
     top: drawerIsOpen ? openDrawerTop : closedDrawerTop,
@@ -110,13 +105,13 @@ export function MoveList({ id }: MoveListProps) {
     <>
       <div className="h-[70px] w-full flex-shrink-0 block"></div>
       <a.div
+        ref={observe}
         style={{
           top: drawerSpring.top,
-          height: drawerHeight - (50 + 5),
+          maxHeight: windowHeight - (50 + 5),
         }}
-        className="left-2 right-2 rounded-t-xl bg-darkbg absolute shadow-upward text-text p-b-2"
+        className="left-2 right-2 rounded-t-xl bg-darkbg absolute shadow-upward text-text p-b-2 flex flex-col items-center"
       >
-        <div className="h-full flex flex-col items-center">
           <div
             {...bind()}
             className="touch-none select-none flex-shrink-0 flex flex-col items-center justify-center w-full p-1"
@@ -152,8 +147,6 @@ export function MoveList({ id }: MoveListProps) {
               </ul>
             </div>
           </div>
-        </div>
-        {/* </div> */}
       </a.div>
     </>
   );
