@@ -5,7 +5,6 @@ import { extend, createRoot, events, ReconcilerRoot } from "@react-three/fiber";
 import { useContextBridge } from "@react-three/drei";
 import { ReactReduxContext } from "react-redux";
 import useDimensions from "react-cool-dimensions";
-import useMeasure from "react-use-measure";
 
 import Wrap3d from "./Wrap3d";
 
@@ -28,10 +27,6 @@ export default React.memo(function BaseCanvas({
   const root = React.useRef<ReconcilerRoot<HTMLElement>>(null!);
 
   const { observe, width, height } = useDimensions();
-  // const [containerRef, containerRect] = useMeasure({
-  //   scroll: false,
-  //   debounce: { scroll: 50, resize: 0 },
-  // });
 
   if (canvasRef.current) {
     if (!root.current) {
