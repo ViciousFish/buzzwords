@@ -38,7 +38,6 @@ const setZoom = (
   const hzoom = height / (boundingBox.max.y - boundingBox.min.y);
   const zoom = Math.min(wzoom, hzoom);
   const dpr = Math.max(window.devicePixelRatio, 2);
-  // CQ: TODO: scale pad by screen size? Or do that in CSS?
   camera.zoom = Math.min(isGameboard ? zoom : zoom - PAD_FACTOR, 25 * dpr);
   camera.updateProjectionMatrix();
 };
@@ -46,11 +45,9 @@ const setZoom = (
 interface Wrap3dProps {
   children: ReactNode;
   isGameboard: boolean | undefined;
-  width: number;
-  height: number;
 }
 
-const Wrap3d = ({ children, isGameboard, _width, _height }: Wrap3dProps) => {
+const Wrap3d = ({ children, isGameboard }: Wrap3dProps) => {
   // extend({ TextGeometry });
   const { progress } = useProgress();
 
