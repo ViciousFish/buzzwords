@@ -169,7 +169,7 @@ const Play: React.FC = () => {
         ref={observe}
       >
         {userIndex !== null && (
-          <div className="flex-1 flex-shrink min-w-0">
+          <div className="flex-1 flex-shrink min-w-0 min-h-0">
             <GameBoard id={id} game={game} userIndex={userIndex} />
           </div>
         )}
