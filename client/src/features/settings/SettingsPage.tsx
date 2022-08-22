@@ -39,10 +39,11 @@ import { Switch } from "../../presentational/Switch";
 import { NicknameForm } from "./NicknameForm";
 import {
   setColorSchemeSetting,
+  setLowPowerModeSetting,
   setPreferredDarkThemeSetting,
   setTurnNotificationsSetting,
 } from "./settingsActions";
-import { ColorScheme, setLowPowerMode, ThemeNames } from "./settingsSlice";
+import { ColorScheme, ThemeNames } from "./settingsSlice";
 
 const SettingsPageSection = ({ children }: { children: ReactNode }) => (
   <div className="bg-lightbg p-2 rounded-xl flex flex-col items-center gap-2">
@@ -87,7 +88,7 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
   );
   const toggleLowPowerMode = useCallback(
     (mode: boolean) => {
-      dispatch(setLowPowerMode(mode));
+      dispatch(setLowPowerModeSetting(mode));
     },
     [dispatch]
   );
