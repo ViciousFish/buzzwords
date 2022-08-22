@@ -12,6 +12,7 @@ const SidebarRightSide: React.FC<{
   bindDragArgs: ReactDOMAttributes;
 }> = ({ children, mobileLayout, bindDragArgs }) => {
   const isSidebarOpen = useAppSelector((state) => state.gamelist.isOpen);
+  const lowPowerMode = useAppSelector(({ settings }) => settings.lowPowerMode);
 
   const condition = isSidebarOpen && mobileLayout;
 
@@ -23,10 +24,7 @@ const SidebarRightSide: React.FC<{
       tension: 200,
       clamp: true,
     },
-    onChange: () => {
-      // handled by maingamestructure
-      // requestAnimationFrame(() => raf.advance())
-    },
+    immediate: lowPowerMode,
   });
 
   return (

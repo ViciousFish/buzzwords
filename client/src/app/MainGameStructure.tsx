@@ -25,6 +25,7 @@ export const BREAKPOINTS = {
 const MainGameStructure: React.FC = () => {
   const dispatch = useAppDispatch();
   const gamelistIsOpen = useAppSelector((state) => state.gamelist.isOpen);
+  const lowPowerMode = useAppSelector(({ settings }) => settings.lowPowerMode);
 
   const [renderSidebar, setRenderSidebar] = useState(gamelistIsOpen);
 
@@ -53,6 +54,7 @@ const MainGameStructure: React.FC = () => {
         setRenderSidebar(true);
       }
     },
+    immediate: lowPowerMode,
   });
 
   useEffect(() => {

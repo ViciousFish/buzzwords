@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import * as R from "ramda";
-import { getColorSchemeSetting, getPreferredDarkThemeSetting, getTurnNotificationsSetting } from "./settingsActions";
+import { getColorSchemeSetting, getLowPowerModeSetting, getPreferredDarkThemeSetting, getTurnNotificationsSetting } from "./settingsActions";
 import { getCurrentSystemScheme } from "./settingsSelectors";
 
 export enum ColorScheme {
@@ -16,6 +15,7 @@ interface SettingsState {
   colorScheme: ColorScheme;
   preferredDarkTheme: ThemeNames;
   currentSystemScheme: ColorScheme.Dark | ColorScheme.Light;
+  lowPowerMode: boolean;
 }
 
 // Define the initial state using that type
@@ -24,6 +24,7 @@ const initialState: SettingsState = {
   colorScheme: getColorSchemeSetting(),
   preferredDarkTheme: getPreferredDarkThemeSetting(),
   currentSystemScheme: getCurrentSystemScheme(),
+  lowPowerMode: getLowPowerModeSetting(),
 };
 
 export const settingsSlice = createSlice({
@@ -45,6 +46,9 @@ export const settingsSlice = createSlice({
     ) => {
       state.currentSystemScheme = action.payload;
     },
+    setLowPowerMode: (state, action: PayloadAction<boolean>) => {
+      state.lowPowerMode = action.payload;
+    }
   },
 });
 
@@ -54,6 +58,7 @@ export const {
   setColorScheme,
   setPreferredDarkTheme,
   setCurrentSystemScheme,
+  setLowPowerMode,
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;
