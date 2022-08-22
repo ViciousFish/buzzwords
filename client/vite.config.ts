@@ -1,4 +1,4 @@
-import react from '@vitejs/plugin-react'
+import reactRefresh from "@vitejs/plugin-react-refresh";
 import electron from "vite-plugin-electron";
 import { rmSync } from "fs";
 import { join } from "path";
@@ -34,7 +34,7 @@ export default ({ command, mode }) => {
       },
     },
     plugins: [
-      react(),
+      reactRefresh(),
       process.env.DESKTOP
         ? electron({
             main: {
