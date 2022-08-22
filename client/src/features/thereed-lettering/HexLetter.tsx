@@ -39,6 +39,8 @@ const HexLetter: React.FC<HexLetterProps> = ({
   ...props
 }) => {
   const theme = useAppSelector(getTheme);
+  const lowPowerMode = useAppSelector(({ settings }) => settings.lowPowerMode);
+
   const viewport = useThree(({ viewport }) => viewport);
   const size = useThree(({ size }) => size);
   const invalidate = useThree(({ invalidate }) => invalidate);
@@ -73,6 +75,7 @@ const HexLetter: React.FC<HexLetterProps> = ({
       tension: 40,
       friction: 10,
     },
+    immediate: lowPowerMode,
   }));
 
   useLayoutEffect(() => {
@@ -86,6 +89,9 @@ const HexLetter: React.FC<HexLetterProps> = ({
   }, [letter]);
 
   useEffect(() => {
+    if (lowPowerMode) {
+      return;
+    }
     if (index !== undefined) {
       rotateSpringApi.set({
         x: Math.PI * 2,
@@ -118,7 +124,7 @@ const HexLetter: React.FC<HexLetterProps> = ({
         });
       }, timer);
     }
-  }, [rotateSpringApi, index, autoSpin]);
+  }, [rotateSpringApi, index, autoSpin, lowPowerMode]);
 
   const bind = useGesture({
     onDrag: ({ down, movement: [mx, my] }) => {
