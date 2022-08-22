@@ -104,7 +104,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
             />
           </group>
         </group>
-        <group position={[0, 10.5, 0]}>
+        <group position={[0, 14, 0]}>
           <Html center zIndexRange={[20, 0]} distanceFactor={0.075}>
             <div className="flex justify-center items-center">
               {selectedWord?.length && game.turn === userIndex ? (
