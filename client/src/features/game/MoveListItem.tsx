@@ -95,12 +95,17 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index, onInitiateRepl
                 return (
                   <li key={index} className="mb-2">
                     <p className="font-serif inline-block opacity-75">
-                      <span className="italic mr-2 opacity-75">
+                      <span className="italic mr-2 opacity-75 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                         {meaning.partOfSpeech}
                       </span>
+                      <ul className="divide-y divide-gray-200">
                       {meaning.definitions
-                        .map((def) => def.definition)
-                        .join("/")}
+                        .map((def) => (
+                          <div className="ml-3">
+                            <p className="text-sm text-gray-500">{def.definition}</p>
+                          </div>
+                        ))}
+                      </ul>
                     </p>
                   </li>
                 );
