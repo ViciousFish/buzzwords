@@ -23,6 +23,7 @@ interface MoveListProps {
 
 export function MoveList({ id, mobileLayout }: MoveListProps) {
   const dispatch = useAppDispatch();
+  const lowPowerMode = useAppSelector(({ settings }) => settings.lowPowerMode);
   const showingNudgeButton = useAppSelector(
     (state) => state.game.showingNudgeButton
   );
@@ -68,6 +69,7 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
     config: {
       clamp: true,
     },
+    immediate: lowPowerMode,
   });
 
   const bind = useDrag(
