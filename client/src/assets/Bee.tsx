@@ -25,6 +25,8 @@ const Bee = (props: GroupProps) => {
   const size = useThree(({ size }) => size);
   const invalidate = useThree(({ invalidate }) => invalidate);
 
+  const lowPowerMode = useAppSelector(({ settings }) => settings.lowPowerMode);
+
   const aspect = size.width / viewport.getCurrentViewport().width;
   const group = useRef<Group>();
   const isDragging = useRef(false);
@@ -52,7 +54,7 @@ const Bee = (props: GroupProps) => {
 
   const [v] = useState(() => new Vector3());
   useFrame(({ clock }) => {
-    if (group.current) {
+    if (group.current && !lowPowerMode) {
       if (!isDragging.current) {
         rotateSpringApi.set({
           x: rotateSpring.x.get() + 0.03,
@@ -62,6 +64,7 @@ const Bee = (props: GroupProps) => {
       const a = v.length();
       v.normalize();
       group.current.setRotationFromAxisAngle(v, a / 2);
+      invalidate();
     }
   });
   return (

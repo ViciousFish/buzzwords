@@ -39,6 +39,7 @@ import { Switch } from "../../presentational/Switch";
 import { NicknameForm } from "./NicknameForm";
 import {
   setColorSchemeSetting,
+  setLowPowerModeSetting,
   setPreferredDarkThemeSetting,
   setTurnNotificationsSetting,
 } from "./settingsActions";
@@ -61,13 +62,14 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
   const dispatch = useAppDispatch();
 
   const turnNotificationsMuted = useAppSelector(
-    (state) => state.settings.turnNotificationsMuted
+    ({ settings }) => settings.turnNotificationsMuted
   );
-  const colorScheme = useAppSelector((state) => state.settings.colorScheme);
+  const colorScheme = useAppSelector(({ settings }) => settings.colorScheme);
   const preferredDarkTheme = useAppSelector(
     (state) => state.settings.preferredDarkTheme
   );
-  const nickname = useAppSelector((state) => state.user.user?.nickname);
+  const nickname = useAppSelector(({ user }) => user.user?.nickname);
+  const lowPowerMode = useAppSelector(({ settings }) => settings.lowPowerMode);
 
   const toggleTurnNotificationsMute = useCallback(() => {
     dispatch(setTurnNotificationsSetting(!turnNotificationsMuted));
@@ -84,6 +86,13 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
     },
     [dispatch]
   );
+  const toggleLowPowerMode = useCallback(
+    (mode: boolean) => {
+      dispatch(setLowPowerModeSetting(mode));
+    },
+    [dispatch]
+  );
+
   return (
     <div className="p-4 items-stretch bg-primary rounded-xl border border-darkbrown shadow-lg text-text">
       <button
@@ -123,11 +132,19 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
           </SettingsPageSection>
         )}
         <SettingsPageSection>
+          <Switch onChange={toggleLowPowerMode} isSelected={lowPowerMode}>
+            <div className="flex items-start w-full flex-col pl-2">
+              <div className="m-0">Low power mode</div>
+              <span className="text-xs opacity-75">Disables animations</span>
+            </div>
+          </Switch>
+        </SettingsPageSection>
+        <SettingsPageSection>
           <Switch
             onChange={toggleTurnNotificationsMute}
             isSelected={!turnNotificationsMuted}
           >
-            <div className="flex items-start w-full flex-col">
+            <div className="flex items-start w-full flex-col pl-2">
               <div className="m-0">
                 <FontAwesomeIcon icon={faVolumeUp} /> Ring bell when it&apos;s
                 your turn

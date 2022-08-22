@@ -2,6 +2,7 @@ import { AppThunk } from "../../app/store";
 import {
   ColorScheme,
   setColorScheme,
+  setLowPowerMode,
   setPreferredDarkTheme,
   setTurnNotificationsMute,
   ThemeNames,
@@ -17,6 +18,25 @@ export const setTurnNotificationsSetting =
   (dispatch) => {
     localStorage.setItem("turnNotificationsMute", JSON.stringify(mute));
     dispatch(setTurnNotificationsMute(mute));
+  };
+
+function getPrefersReducedMotion() {
+  const QUERY = "(prefers-reduced-motion: no-preference)";
+  const mediaQueryList = window.matchMedia(QUERY);
+  const prefersReducedMotion = !mediaQueryList.matches;
+  return prefersReducedMotion;
+}
+
+export const getLowPowerModeSetting = () => {
+  const setting = localStorage.getItem("lowPowerMode")
+  return setting === null ? getPrefersReducedMotion() : JSON.parse(setting); 
+}
+
+export const setLowPowerModeSetting =
+  (mode: boolean): AppThunk =>
+  (dispatch) => {
+    localStorage.setItem("lowPowerMode", JSON.stringify(mode));
+    dispatch(setLowPowerMode(mode));
   };
 
 export const getColorSchemeSetting = () =>

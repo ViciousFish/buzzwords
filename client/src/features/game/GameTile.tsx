@@ -67,6 +67,8 @@ const GameTile: React.FC<GameTileProps> = ({
   const dispatch = useAppDispatch();
   const invalidate = useThree(({ invalidate }) => invalidate);
 
+  const lowPowerMode = useAppSelector(({ settings }) => settings.lowPowerMode);
+
   const font = useLoader(FontLoader, fredokaone);
   const fontConfig = useMemo(
     () => ({
@@ -170,6 +172,7 @@ const GameTile: React.FC<GameTileProps> = ({
     onChange: () => {
       invalidate();
     },
+    immediate: lowPowerMode,
   });
 
   const outline = game.gameOver
@@ -189,6 +192,7 @@ const GameTile: React.FC<GameTileProps> = ({
       scale: [0, 0, 0],
     },
     onChange: () => invalidate(),
+    immediate: lowPowerMode,
   });
 
   const isAnimating = useRef(false);
@@ -203,6 +207,7 @@ const GameTile: React.FC<GameTileProps> = ({
       friction: 10,
     },
     onChange: () => invalidate(),
+    immediate: lowPowerMode,
   }));
 
   useLayoutEffect(() => {
@@ -219,6 +224,7 @@ const GameTile: React.FC<GameTileProps> = ({
   const prevLetter = usePrevious(letter);
   const prevCapital = usePrevious(isCapital);
   useLayoutEffect(() => {
+    // CQ: TODO: low power mode
     if (
       (letter?.length || isCapital) &&
       (prevLetter !== letter || isCapital !== prevCapital) &&
@@ -229,21 +235,41 @@ const GameTile: React.FC<GameTileProps> = ({
         y: 0,
       });
       isAnimating.current = true;
-      setTimeout(() => {
-        rotateSpringApi.start({
-          x: 0,
-          y: 0,
-        });
-      }, 150 + Number(coord.split(",")[0]) * 50 + Math.random() * 150);
+      setTimeout(
+        () => {
+          const to = { x: 0, y: 0 };
+          if (lowPowerMode) {
+            rotateSpringApi.set(to);
+          } else {
+            rotateSpringApi.start(to);
+          }
+        },
+        lowPowerMode
+          ? 0
+          : 150 + Number(coord.split(",")[0]) * 50 + Math.random() * 150
+      );
     }
     if ((prevLetter?.length && !letter) || (prevCapital && !isCapital)) {
-      rotateSpringApi.start({
+      const to = {
         x: Math.PI * 2,
         y: 0,
-      });
+      };
+      if (lowPowerMode) {
+        rotateSpringApi.set(to);
+      } else {
+        rotateSpringApi.start(to);
+      }
       isAnimating.current = true;
     }
-  }, [letter, prevLetter, rotateSpringApi, isCapital, prevCapital, coord]);
+  }, [
+    letter,
+    prevLetter,
+    rotateSpringApi,
+    isCapital,
+    prevCapital,
+    coord,
+    lowPowerMode,
+  ]);
 
   const [v] = useState(() => new Vector3());
   useFrame(() => {
