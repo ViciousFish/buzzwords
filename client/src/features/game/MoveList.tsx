@@ -110,9 +110,7 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
 
   const moveListContent = (
     <>
-      <h3 className="w-[200px]">
-        <span className="text-2xl font-bold m-0">Moves</span>
-      </h3>
+      <h3 className="w-[200px] text-text text-2xl font-bold m-0 pt-2">Moves</h3>
       <div className="flex-auto w-full overflow-y-auto">
         <div ref={listRef} className="overflow-y-auto max-h-full">
           <ul className="max-w-[200px] mx-auto">
