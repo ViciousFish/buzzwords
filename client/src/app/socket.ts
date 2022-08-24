@@ -30,19 +30,24 @@ export const subscribeSocket = (dispatch: AppDispatch) => {
     },
   });
   socket.io.on("close", () => {
-    dispatch(setSocketConnected(false))
+    dispatch(setSocketConnected(false));
   });
 
-  socket.io.on('open', () => {
-    dispatch(setSocketConnected(true))
-  })
+  socket.io.on("open", () => {
+    dispatch(setSocketConnected(true));
+  });
 
   socket.io.on("reconnect", () => {
     dispatch(refreshActiveGames());
-    dispatch(setSocketConnected(true))
+    dispatch(setSocketConnected(true));
   });
 
   socket.on("error", (e) => {
+    if (typeof e === "string" && e.startsWith("rejected socket connection:")) {
+      alert("Sorry, something went wrong on our end. Reloading");
+      location.reload();
+      return;
+    }
     toast("error: " + e, {
       type: "error",
     });
