@@ -24,7 +24,11 @@ interface MoveListItemProps {
   onInitiateReplay: () => void;
 }
 
-const MoveListItem: React.FC<MoveListItemProps> = ({ move, index, onInitiateReplay }) => {
+const MoveListItem: React.FC<MoveListItemProps> = ({
+  move,
+  index,
+  onInitiateReplay,
+}) => {
   const dispatch = useAppDispatch();
   const replayState = useAppSelector((state) =>
     Boolean(state.game.replay.move)
@@ -37,9 +41,9 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index, onInitiateRepl
   const [dictionaryData, setDictionaryData] = useState(null as any | null);
 
   let word = move.letters.join("");
-    if (move.forfeit) {
-      word = "resign";
-    }
+  if (move.forfeit) {
+    word = "resign";
+  }
 
   const openPopover = useCallback(async () => {
     setIsOpen(true);
@@ -114,31 +118,39 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index, onInitiateRepl
           <FontAwesomeIcon className="animate-spin" icon={faSpinner} />
         </div>
       )}
-      {!move.forfeit ? <Button
-        className={classNames(
-          "text-sm p-2 m-0 w-full",
-          replayState &&
-            currentReplayIndex === index &&
-            "bg-blue-400 text-white",
-          replayState && "bg-gray-300 hover:bg-red-500"
-        )}
-        onClick={() => {
-          if (replayState) {
-            return dispatch(clearReplay());
-          }
-          dispatch(initiateReplay(index));
-          setIsOpen(false);
-          onInitiateReplay();
-        }}
-      >
-        <FontAwesomeIcon
-          className="mr-2"
-          icon={
-            replayState && currentReplayIndex === index ? faPlay : faPlayCircle
-          }
-        />
-        Replay
-      </Button> : <div className="text-center font-serif italic p-2 mx-2 border border-darkbrown rounded-xl">Player {move.player + 1} resigned</div>}
+      {!move.forfeit ? (
+        <Button
+          className={classNames(
+            "text-sm p-2 m-0 w-full",
+            replayState &&
+              currentReplayIndex === index &&
+              "bg-blue-400 text-white",
+            replayState && "bg-gray-300 hover:bg-red-500"
+          )}
+          onClick={() => {
+            if (replayState) {
+              return dispatch(clearReplay());
+            }
+            dispatch(initiateReplay(index));
+            setIsOpen(false);
+            onInitiateReplay();
+          }}
+        >
+          <FontAwesomeIcon
+            className="mr-2"
+            icon={
+              replayState && currentReplayIndex === index
+                ? faPlay
+                : faPlayCircle
+            }
+          />
+          Replay
+        </Button>
+      ) : (
+        <div className="text-center font-serif italic p-2 mx-2 border border-darkbrown rounded-xl">
+          Player {move.player + 1} resigned
+        </div>
+      )}
     </div>
   );
   return (
@@ -149,15 +161,13 @@ const MoveListItem: React.FC<MoveListItemProps> = ({ move, index, onInitiateRepl
       content={popoverContent}
       onClickOutside={() => setIsOpen(false)}
     >
-      <li
-        className="flex"
-      >
+      <li className="flex">
         <button
           type="button"
           className={classNames(
             "flex-auto p-1 font-bold text-text text-center rounded-md m-1 hover:bg-opacity-70 inset-shadow",
-            isOpen && 'outline-darkbrown outline',
-            (move.player === 0 ? "bg-p1" : "bg-p2"),
+            isOpen && "outline-darkbrown outline",
+            move.player === 0 ? "bg-p1" : "bg-p2"
           )}
           onClick={() => {
             if (!isOpen) {

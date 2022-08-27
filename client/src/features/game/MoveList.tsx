@@ -132,6 +132,8 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
     </>
   );
 
+  const topMove = replayState ? replayState : game.moves[game.moves.length - 1];
+
   return (
     <>
       <div
@@ -142,7 +144,7 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
       >
         {!mobileLayout && moveListContent}
       </div>
-      {mobileLayout && game.moves.length ? (
+      {mobileLayout && topMove ? (
         <a.div
           ref={observe}
           style={{
@@ -161,11 +163,8 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
               {replayState ? "Replaying: " : "Last move: "}
               <div className="w-[200px]">
                 <MoveListItem
-                  move={
-                    replayState
-                      ? replayState
-                      : game.moves[game.moves.length - 1]
-                  }
+                  key={topMove.letters.join()}
+                  move={topMove}
                   index={replayState ? replayIndex : game.moves.length - 1}
                   onInitiateReplay={onInitiateReplay}
                 />
