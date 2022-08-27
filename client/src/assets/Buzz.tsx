@@ -33,7 +33,7 @@ const Wing: React.FC<MeshProps> = (props) => {
 };
 
 export const Buzz: React.FC<GroupProps> = (props) => {
-  const groupRef = useRef<Group>();
+  const groupRef = useRef<Group>(null);
   useFrame(({ clock }) => {
     if (groupRef.current) {
       groupRef.current.rotation.y = -1 * clock.getElapsedTime();

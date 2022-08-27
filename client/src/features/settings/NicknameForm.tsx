@@ -16,7 +16,7 @@ interface NicknameFormProps {
 
 export const NicknameForm = ({ afterSubmit, onCancel }: NicknameFormProps) => {
   const dispatch = useAppDispatch();
-  const currentNickname = useAppSelector(state => state.user.user.nickname)
+  const currentNickname = useAppSelector(state => state.user.user?.nickname)
   return (
     <Formik
       initialValues={{ nickname: currentNickname ?? "" }}

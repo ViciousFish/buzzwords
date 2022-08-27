@@ -15,7 +15,7 @@ export const HexOutlineSolid: React.FC<GroupProps> = ({
   ...props
 }) => {
   const theme = useAppSelector(getTheme);
-  const group = useRef();
+  const group = useRef(null);
   // @ts-ignore
   const { nodes, materials } = useGLTF(hexoutlinesolid);
   return (

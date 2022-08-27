@@ -49,7 +49,7 @@ export default React.memo(function BaseCanvas({
     });
     root.current.render(
       <ReduxProvider>
-        <Wrap3d isGameboard={isGameboard} width={width} height={height}>
+        <Wrap3d isGameboard={isGameboard}>
           {children}
         </Wrap3d>
       </ReduxProvider>

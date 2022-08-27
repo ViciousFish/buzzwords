@@ -8,7 +8,7 @@ import { useGLTF } from "@react-three/drei";
 import flower02 from "../../assets/Flower02.glb?url";
 
 export const Flower02 = ({ ...props }) => {
-  const group = useRef();
+  const group = useRef(null);
   // @ts-ignore
   const { nodes, materials } = useGLTF(flower02);
   return (

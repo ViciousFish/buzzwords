@@ -11,7 +11,7 @@ import { getTheme } from "../features/settings/settingsSelectors";
 
 export const HexOutline = ({ ...props }) => {
   const theme = useAppSelector(getTheme);
-  const group = useRef();
+  const group = useRef(null);
   // @ts-ignore
   const { nodes } = useGLTF(hexoutline);
   return (
