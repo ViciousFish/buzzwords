@@ -2,3 +2,12 @@
 node_modules
 .data
 *.local
+
+# yarn upgrade
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
