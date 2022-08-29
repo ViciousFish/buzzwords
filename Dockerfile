@@ -6,7 +6,7 @@ COPY package.json yarn.lock ./
 COPY ./server/package.json ./server/
 COPY ./shared/package.json ./shared/
 
-RUN yarn
+RUN yarn install
 
 COPY . .
 
@@ -20,7 +20,7 @@ COPY ./server/package.json ./
 
 ENV NODE_ENV=production
 
-RUN yarn
+RUN yarn install
 
 COPY ./server/words.json .
 
