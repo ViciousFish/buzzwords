@@ -27,6 +27,7 @@ import {
   ColorScheme,
   setCurrentSystemScheme,
 } from "../features/settings/settingsSlice";
+import MobileRoutingComponent from "./MobileRoutingComponent";
 
 // not necessary, as long as there's always a 3d canvas on screen!
 // import.meta.env.PROD &&
@@ -138,6 +139,7 @@ function App() {
       </Helmet>
       <Router>
         <IPCRoutingComponent />
+        <MobileRoutingComponent />
         <React.Suspense fallback={<></>}>
           <Routes>
             <Route element={<MainGameStructureLazy />}>
