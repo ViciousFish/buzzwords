@@ -6,11 +6,15 @@ COPY package.json yarn.lock ./
 COPY ./server/package.json ./server/
 COPY ./shared/package.json ./shared/
 
-RUN yarn
+RUN yarn install
 
 COPY . .
 
-RUN cd server && yarn build
+WORKDIR /build/server
+
+RUN yarn install
+
+RUN yarn build
 
 FROM node:16-slim as app
 
@@ -20,7 +24,7 @@ COPY ./server/package.json ./
 
 ENV NODE_ENV=production
 
-RUN yarn
+RUN yarn install
 
 COPY ./server/words.json .
 
