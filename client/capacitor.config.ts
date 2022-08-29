@@ -1,7 +1,7 @@
 import { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: "gg.buzzwords.htmlclient",
+  appId: "gg.buzzwords.mobile",
   appName: "Buzzwords",
   webDir: "dist",
   bundledWebRuntime: false,
