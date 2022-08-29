@@ -34,5 +34,6 @@
   "devDependencies": {
     "concurrently": "^6.5.1"
   },
-  "packageManager": "yarn@3.2.3"
+  "packageManager": "yarn@3.2.3",
+  "private": true
 }
