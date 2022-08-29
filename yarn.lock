@@ -1551,6 +1551,45 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@logtail/browser@npm:^0.1.12":
+  version: 0.1.12
+  resolution: "@logtail/browser@npm:0.1.12"
+  dependencies:
+    "@logtail/core": ^0.1.12
+    "@logtail/tools": ^0.1.12
+    cross-fetch: ^3.0.4
+  checksum: 1d0255c425212d5d1abbbb69e7649da2188c4c8905f7d7edb26ff61b8b0bf359497222f077c46ececedeab3e2cb98476f008b2f04ebd934723ce5a53eb166217
+  languageName: node
+  linkType: hard
+
+"@logtail/core@npm:^0.1.12":
+  version: 0.1.12
+  resolution: "@logtail/core@npm:0.1.12"
+  dependencies:
+    "@logtail/tools": ^0.1.12
+    "@logtail/types": ^0.1.12
+  checksum: c79487b29cf8e7c4c55213b875a1f189ae0040922df336804bbffc1ef137f84075da2ba26c2266e14bce184ba26480abee7f2edccc83a08e891f5f2dd6b2ed5d
+  languageName: node
+  linkType: hard
+
+"@logtail/tools@npm:^0.1.12":
+  version: 0.1.12
+  resolution: "@logtail/tools@npm:0.1.12"
+  dependencies:
+    "@logtail/types": ^0.1.12
+  checksum: 0518e283522399df2a678cd4a58281dfb909590e177dd79ace27a67c41d2cf5cb54e61b31fef11ee1610f73a38a4879357d0fc38da96bccc799d46d9d40f2a8b
+  languageName: node
+  linkType: hard
+
+"@logtail/types@npm:^0.1.12":
+  version: 0.1.12
+  resolution: "@logtail/types@npm:0.1.12"
+  dependencies:
+    js: ^0.1.0
+  checksum: cb40db2794f31cd45bceb0d598da3defd0923e3269b2cb0b9569323c48b8e9d079f6881a3bcb890c4e1406621a5b63f4bac6a5bb9c02c13d153585a4ce365d3f
+  languageName: node
+  linkType: hard
+
 "@malept/cross-spawn-promise@npm:^1.1.0":
   version: 1.1.1
   resolution: "@malept/cross-spawn-promise@npm:1.1.1"
@@ -5952,6 +5991,7 @@ __metadata:
     "@fortawesome/free-regular-svg-icons": ^6.1.2
     "@fortawesome/free-solid-svg-icons": ^6.1.2
     "@fortawesome/react-fontawesome": ^0.2.0
+    "@logtail/browser": ^0.1.12
     "@react-spring/three": ^9.5.2
     "@react-spring/web": ^9.5.2
     "@react-three/drei": ^9.21.0
@@ -6501,6 +6541,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"commander@npm:~1.1.1":
+  version: 1.1.1
+  resolution: "commander@npm:1.1.1"
+  dependencies:
+    keypress: 0.1.x
+  checksum: a27db3772327d1d8a8abaa7d3834c2b4f14067bc9467a113de96834fd6bfcabd0e3a18ca64aa6b4560804d4923c2424b5471409cc85bd929f2a28f8738760d19
+  languageName: node
+  linkType: hard
+
 "compare-version@npm:^0.1.2":
   version: 0.1.2
   resolution: "compare-version@npm:0.1.2"
@@ -6709,6 +6758,15 @@ __metadata:
     cross-env: src/bin/cross-env.js
     cross-env-shell: src/bin/cross-env-shell.js
   checksum: 26f2f3ea2ab32617f57effb70d329c2070d2f5630adc800985d8b30b56e8bf7f5f439dd3a0358b79cee6f930afc23cf8e23515f17ccfb30092c6b62c6b630a79
+  languageName: node
+  linkType: hard
+
+"cross-fetch@npm:^3.0.4":
+  version: 3.1.5
+  resolution: "cross-fetch@npm:3.1.5"
+  dependencies:
+    node-fetch: 2.6.7
+  checksum: f6b8c6ee3ef993ace6277fd789c71b6acf1b504fd5f5c7128df4ef2f125a429e29cd62dc8c127523f04a5f2fa4771ed80e3f3d9695617f441425045f505cf3bb
   languageName: node
   linkType: hard
 
@@ -10379,6 +10437,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"js@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "js@npm:0.1.0"
+  dependencies:
+    commander: ~1.1.1
+  bin:
+    js: ./bin/js
+  checksum: c2967be06de24caace5044d7cd6d9571034cdaae3da5a0a19602a2791d0654e9c87c53fed00283ae861a055c1db82ff0bda26ad9381aa915f3f06205c3f91c7c
+  languageName: node
+  linkType: hard
+
 "jsdom@npm:^16.6.0":
   version: 16.7.0
   resolution: "jsdom@npm:16.7.0"
@@ -10545,6 +10614,13 @@ __metadata:
   version: 2.3.4
   resolution: "kareem@npm:2.3.4"
   checksum: e12d05e120515c0ded270eb47792e7b1eb3d2656f74a57050e59c8d0a21212c02c7dc5e0acfaa75f89637c5b13d3dfef53218be33c4d3c7d531ef44a68df7478
+  languageName: node
+  linkType: hard
+
+"keypress@npm:0.1.x":
+  version: 0.1.0
+  resolution: "keypress@npm:0.1.0"
+  checksum: 3a7e9dc0354dc6e5cfd4a507263dee4d736381d1bf40b59b73ed9972aef9b5e5be3ce6df24ca67d1530c9fe9cf90b913c6d2cc49f610b4077af379933a2968a5
   languageName: node
   linkType: hard
 
@@ -11347,7 +11423,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.1":
+"node-fetch@npm:2.6.7, node-fetch@npm:^2.6.1":
   version: 2.6.7
   resolution: "node-fetch@npm:2.6.7"
   dependencies:

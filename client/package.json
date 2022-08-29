@@ -31,6 +31,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.1.2",
     "@fortawesome/free-solid-svg-icons": "^6.1.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@logtail/browser": "^0.1.12",
     "@react-spring/three": "^9.5.2",
     "@react-spring/web": "^9.5.2",
     "@react-three/drei": "^9.21.0",

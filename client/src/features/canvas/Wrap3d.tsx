@@ -1,10 +1,10 @@
 import { Stats, useProgress } from "@react-three/drei";
 import { Object3DNode, useThree } from "@react-three/fiber";
 import React, { ReactNode, useEffect, useRef, useState } from "react";
-import { Box3, Color, Group, PerspectiveCamera, Vector3 } from "three";
+import { Box3, Group, PerspectiveCamera, Vector3 } from "three";
 
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
-import { extend } from "@react-three/fiber";
+import { logtail } from "../../app/App";
 
 // Add types to ThreeElements elements so primitives pick up on it
 declare module "@react-three/fiber" {
@@ -30,11 +30,11 @@ const setZoom = (
   isGameboard: boolean | undefined
 ): number => {
   if (height === 0 || height === 0) {
-    console.error('zoom error: parameter out of bounds', {
+    console.error("zoom error: parameter out of bounds", {
       width,
       height,
-      isGameboard
-    })
+      isGameboard,
+    });
     return -1;
   }
   if (isGameboard) {
@@ -51,13 +51,20 @@ const setZoom = (
     25 * dpr
   );
   if (appliedZoom < 0) {
-    console.log('zoom out of bounds', appliedZoom);
-    // debugger;
+    logtail.warn("zoom out of bounds", {
+      path: window.location.pathname,
+      appliedZoom,
+      dpr,
+      width,
+      height,
+      min: {x: boundingBox.min.x, y: boundingBox.min.y},
+      max: {x: boundingBox.max.x, y: boundingBox.max.y},
+    });
   } else {
-    console.log('zoom normal', appliedZoom)
+    console.log("zoom normal", appliedZoom);
+    camera.zoom = appliedZoom;
+    camera.updateProjectionMatrix();
   }
-  camera.zoom = appliedZoom;
-  camera.updateProjectionMatrix();
   return appliedZoom;
 };
 
@@ -71,7 +78,6 @@ const Wrap3d = ({ children, isGameboard }: Wrap3dProps) => {
 
   const groupRef = useRef<Group>(null);
   const { width, height } = useThree((state) => state.size);
-  console.log("🚀 ~ file: Wrap3d.tsx ~ line 74 ~ Wrap3d ~ { width, height }", { width, height })
   const camera = useThree((state) => state.camera) as PerspectiveCamera;
   const [boundingBox] = useState(() => new Box3());
   const invalidate = useThree((state) => state.invalidate);
