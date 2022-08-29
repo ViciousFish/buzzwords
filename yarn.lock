@@ -717,6 +717,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@capacitor/app@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "@capacitor/app@npm:4.0.1"
+  peerDependencies:
+    "@capacitor/core": ^4.0.0
+  checksum: c4004030198852e3e70eca79eb1f473df880726ac79b2f186dbff62eb3185f015893d11b540a2912f234ae237dc291e55baf7b32290465757edc2aae7f8e3c8e
+  languageName: node
+  linkType: hard
+
 "@capacitor/cli@npm:^4.0.1":
   version: 4.0.1
   resolution: "@capacitor/cli@npm:4.0.1"
@@ -5982,6 +5991,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "buzzwords-client@workspace:client"
   dependencies:
+    "@capacitor/app": ^4.0.1
     "@capacitor/cli": ^4.0.1
     "@capacitor/core": ^4.0.1
     "@capacitor/ios": ^4.0.1
