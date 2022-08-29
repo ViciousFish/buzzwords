@@ -4,7 +4,7 @@ import { useFocusRing, useSwitch, VisuallyHidden } from "react-aria";
 
 export function Switch(props: ToggleProps) {
   let state = useToggleState(props);
-  let ref = React.useRef<HTMLInputElement>();
+  let ref = React.useRef<HTMLInputElement>(null);
   let { inputProps } = useSwitch(props, state, ref);
   let { isFocusVisible, focusProps } = useFocusRing();
 

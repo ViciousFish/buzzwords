@@ -5,6 +5,9 @@ import FaviconNotification from "favicon-notification";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { Capacitor } from "@capacitor/core";
 import { raf } from "@react-spring/shared";
+import { Logtail } from "@logtail/browser";
+
+export const logtail = new Logtail("bTQ9NZVDhbZj4XmQsXbKDRmw");
 
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { initAction } from "./appActions";
@@ -15,7 +18,6 @@ import ReactTooltip from "react-tooltip";
 import { getHowManyGamesAreMyTurn } from "../features/gamelist/gamelistSelectors";
 import IPCRoutingComponent from "./IPCRoutingComponent";
 import NativeAppAd from "../presentational/NativeAppAd";
-import { SettingsPage } from "../features/settings/SettingsPage";
 import { Helmet } from "react-helmet";
 import {
   getBodyStyleFromTheme,

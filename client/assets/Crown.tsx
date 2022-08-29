@@ -19,7 +19,8 @@ type GLTFResult = GLTF & {
 }
 
 export default function Model(props: JSX.IntrinsicElements['group']) {
-  const group = useRef<THREE.Group>()
+  const group = useRef<THREE.Group>(null)
+  // @ts-ignore
   const { nodes, materials } = useGLTF('/Crown.glb') as GLTFResult
   return (
     <group ref={group} {...props} dispose={null}>

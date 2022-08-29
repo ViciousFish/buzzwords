@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import * as THREE from "three";
+import { Group, Mesh, MeshBasicMaterial, MeshStandardMaterial, DirectionalLight, AmbientLight } from "three";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { extend, createRoot, events, ReconcilerRoot } from "@react-three/fiber";
 import { useContextBridge } from "@react-three/drei";
@@ -9,7 +9,12 @@ import useDimensions from "react-cool-dimensions";
 import Wrap3d from "./Wrap3d";
 
 extend({
-  ...THREE,
+  Group,
+  Mesh,
+  MeshBasicMaterial,
+  MeshStandardMaterial,
+  DirectionalLight,
+  AmbientLight,
   TextGeometry,
 });
 interface BaseCanvasProps {
@@ -49,9 +54,7 @@ export default React.memo(function BaseCanvas({
     });
     root.current.render(
       <ReduxProvider>
-        <Wrap3d isGameboard={isGameboard} width={width} height={height}>
-          {children}
-        </Wrap3d>
+        <Wrap3d isGameboard={isGameboard}>{children}</Wrap3d>
       </ReduxProvider>
     );
   }

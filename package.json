@@ -26,7 +26,6 @@
   "dependencies": {
     "typescript": "^4.4.2"
   },
-  "private": "true",
   "workspaces": [
     "client",
     "server",
@@ -34,5 +33,6 @@
   ],
   "devDependencies": {
     "concurrently": "^6.5.1"
-  }
+  },
+  "packageManager": "yarn@3.2.3"
 }
