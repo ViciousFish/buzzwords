@@ -10,7 +10,7 @@ RUN yarn install
 
 COPY . .
 
-RUN cd server && yarn build
+RUN cd server && yarn && yarn build
 
 FROM node:16-slim as app
 
