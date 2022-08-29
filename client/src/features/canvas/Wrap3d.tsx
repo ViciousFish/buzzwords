@@ -28,7 +28,15 @@ const setZoom = (
   boundingBox: Box3,
   camera: PerspectiveCamera,
   isGameboard: boolean | undefined
-) => {
+): number => {
+  if (height === 0 || height === 0) {
+    console.error('zoom error: parameter out of bounds', {
+      width,
+      height,
+      isGameboard
+    })
+    return -1;
+  }
   if (isGameboard) {
     boundingBox.setFromPoints(GAMEBOARD_BOUNDING_POINTS);
   } else {
@@ -38,8 +46,19 @@ const setZoom = (
   const hzoom = height / (boundingBox.max.y - boundingBox.min.y);
   const zoom = Math.min(wzoom, hzoom);
   const dpr = Math.max(window.devicePixelRatio, 2);
-  camera.zoom = Math.min(isGameboard ? zoom : zoom - PAD_FACTOR, 25 * dpr);
+  const appliedZoom = Math.min(
+    isGameboard ? zoom : zoom - PAD_FACTOR,
+    25 * dpr
+  );
+  if (appliedZoom < 0) {
+    console.log('zoom out of bounds', appliedZoom);
+    // debugger;
+  } else {
+    console.log('zoom normal', appliedZoom)
+  }
+  camera.zoom = appliedZoom;
   camera.updateProjectionMatrix();
+  return appliedZoom;
 };
 
 interface Wrap3dProps {
@@ -48,11 +67,11 @@ interface Wrap3dProps {
 }
 
 const Wrap3d = ({ children, isGameboard }: Wrap3dProps) => {
-  // extend({ TextGeometry });
   const { progress } = useProgress();
 
-  const groupRef = useRef<Group>();
+  const groupRef = useRef<Group>(null);
   const { width, height } = useThree((state) => state.size);
+  console.log("🚀 ~ file: Wrap3d.tsx ~ line 74 ~ Wrap3d ~ { width, height }", { width, height })
   const camera = useThree((state) => state.camera) as PerspectiveCamera;
   const [boundingBox] = useState(() => new Box3());
   const invalidate = useThree((state) => state.invalidate);
@@ -70,21 +89,24 @@ const Wrap3d = ({ children, isGameboard }: Wrap3dProps) => {
             isGameboard
           );
           invalidate();
+          // if (zoom <= 0) {
+          //   setTimeout(() => {
+          //     if (groupRef.current) {
+          //       console.log('zoom was out of bounds, running again')
+          //       setZoom(
+          //         groupRef.current,
+          //         width,
+          //         height,
+          //         boundingBox,
+          //         camera,
+          //         isGameboard
+          //       );
+          //       invalidate();
+          //     }
+          //   }, 200);
+          // }
         }
       });
-      // setTimeout(() => {
-      //   if (groupRef.current) {
-      //     setZoom(
-      //       groupRef.current,
-      //       width,
-      //       height,
-      //       boundingBox,
-      //       camera,
-      //       isGameboard
-      //     );
-      //     invalidate();
-      //   }
-      // }, 200);
     }
   }, [
     progress,
@@ -97,7 +119,6 @@ const Wrap3d = ({ children, isGameboard }: Wrap3dProps) => {
     invalidate,
   ]);
   return (
-    // @ts-ignore
     <group ref={groupRef}>
       <group position={[0, 0, 0]}>
         {/* {!import.meta.env.PROD && <Stats />} */}
