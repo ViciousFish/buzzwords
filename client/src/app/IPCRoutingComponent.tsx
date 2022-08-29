@@ -5,7 +5,6 @@ export const useHandleIPCLink = () => {
   const navigate = useNavigate()
   window.ipc?.handleLink((e, data) => {
     const url = new URL(data);
-    console.log("url", url);
     const path = url.pathname.replace("//", "/");
     if (/^\/loginsuccess[\/]?$/.test(path)) {
       location.reload();

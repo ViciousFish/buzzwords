@@ -23,6 +23,7 @@
     "dist-mac": "CSC_NAME=\"Charles Dries (775SDZM9Q3)\" electron-builder"
   },
   "dependencies": {
+    "@capacitor/app": "^4.0.1",
     "@capacitor/core": "^4.0.1",
     "@capacitor/ios": "^4.0.1",
     "@capacitor/status-bar": "^4.0.1",
