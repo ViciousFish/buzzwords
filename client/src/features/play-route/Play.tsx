@@ -23,6 +23,7 @@ import GameInviteOpponentPrompt from "./GameInviteOpponentPrompt";
 import useDimensions from "react-cool-dimensions";
 import { BREAKPOINTS } from "../../app/MainGameStructure";
 import classNames from "classnames";
+import { Switch } from "../../presentational/Switch";
 
 export const getGameUrl = (id: string) => {
   if (import.meta.env.VITE_SHARE_BASEURL) {
@@ -124,6 +125,11 @@ const Play: React.FC = () => {
     updateOnBreakpointChange: true,
   });
 
+  const [reveal, setReveal] = useState(false);
+  const [showCoords, setCoords] = useState(false);
+
+  const debug = (new URL(window.location.toString())).searchParams.get('debug') === "true"
+
   if (!game || !id || !isFullGame(game)) {
     return null;
   }
@@ -161,6 +167,14 @@ const Play: React.FC = () => {
   return (
     <div className="flex flex-1 h-full flex-col items-stretch">
       <GameHeader game={game} />
+      {debug && <div className="bg-darkbg w-[150px]">
+        <Switch isSelected={reveal} onChange={setReveal}>
+          reveal
+        </Switch>
+        <Switch isSelected={showCoords} onChange={setCoords}>
+          coords
+        </Switch>
+      </div>}
       <div
         className={classNames(
           "flex flex-1 w-full",
@@ -170,7 +184,13 @@ const Play: React.FC = () => {
       >
         {userIndex !== null && (
           <div className="flex-1 flex-shrink min-w-0 min-h-0 lg:p-2">
-            <GameBoard id={id} game={game} userIndex={userIndex} />
+            <GameBoard
+              showCoords={debug ? showCoords : false}
+              id={id}
+              game={game}
+              userIndex={userIndex}
+              reveal={debug ? reveal : undefined}
+            />
           </div>
         )}
         <MoveList mobileLayout={currentBreakpoint === "xs"} id={id} />

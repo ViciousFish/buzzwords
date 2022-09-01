@@ -19,6 +19,16 @@ import HexGrid, {
 import { WordsObject, wordsBySortedLetters } from "./words";
 import Cell from "buzzwords-shared/cell";
 
+const HARD_CODED_CELLS = {
+  "-3,0": "h",
+  "-2,0": "e",
+  "-1,-1": "l",
+  "-1,-2": "l",
+  "-2,-2": "o",
+} as {
+  [qr: `${number},${number}`]: string;
+};
+
 export default class GameManager {
   game: Game | null;
   constructor(game: Game | null) {
@@ -316,6 +326,9 @@ export default class GameManager {
     let i = 0;
     for (const cell of neighbors) {
       cell.value = newValues[i];
+      if (HARD_CODED_CELLS[`${cell.q},${cell.r}`]) {
+        cell.value = HARD_CODED_CELLS[`${cell.q},${cell.r}`];
+      }
       i++;
       game.grid = setCell(game.grid, cell);
     }

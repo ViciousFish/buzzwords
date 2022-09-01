@@ -1,4 +1,4 @@
-import { Html, useProgress } from "@react-three/drei";
+import { Html } from "@react-three/drei";
 import * as R from "ramda";
 import Game from "buzzwords-shared/Game";
 import React, { useCallback, useEffect, useState } from "react";
@@ -27,10 +27,17 @@ interface GameBoardProps {
   id: string;
   game: Game;
   userIndex: number;
+  reveal: boolean | undefined;
+  showCoords: boolean;
 }
 
-const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
-  const { progress } = useProgress();
+const GameBoard: React.FC<GameBoardProps> = ({
+  id,
+  game,
+  userIndex,
+  reveal,
+  showCoords,
+}) => {
   const dispatch = useAppDispatch();
 
   const selectedWord = useAppSelector((state) =>
@@ -43,8 +50,10 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
     (state) => state.game.replay.playbackState
   );
 
-  const [revealLetters, setRevealLetters] = useState(false);
+  const [_revealLetters, setRevealLetters] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  const revealLetters = reveal === undefined ? _revealLetters : reveal;
 
   const onSubmit = useCallback(async () => {
     try {
@@ -188,6 +197,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 owner={gridTile.owner}
                 currentGame={id}
                 userIndex={userIndex}
+                showCoords={showCoords}
               />
             );
           })}

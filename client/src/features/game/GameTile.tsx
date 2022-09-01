@@ -37,6 +37,7 @@ import { isFullGame } from "../gamelist/gamelistSlice";
 import { willConnectToTerritory } from "buzzwords-shared/gridHelpers";
 import Crown from "../../assets/Crown";
 import { getTheme } from "../settings/settingsSelectors";
+import { Html } from "@react-three/drei";
 
 interface GameTileProps {
   position: V3Type;
@@ -49,6 +50,7 @@ interface GameTileProps {
   isPlayerIdentity?: boolean;
   /** disable selection while submission in progress */
   isSubmitting?: boolean;
+  showCoords?: boolean;
 }
 
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
@@ -63,6 +65,7 @@ const GameTile: React.FC<GameTileProps> = ({
   isCapital: isCapitalProp,
   isPlayerIdentity,
   isSubmitting,
+  showCoords,
 }) => {
   const dispatch = useAppDispatch();
   const invalidate = useThree(({ invalidate }) => invalidate);
@@ -204,7 +207,7 @@ const GameTile: React.FC<GameTileProps> = ({
     y: 0,
     config: {
       tension: 40,
-      friction: 10,
+      friction: 12,
     },
     onChange: () => invalidate(),
     immediate: lowPowerMode,
@@ -317,7 +320,7 @@ const GameTile: React.FC<GameTileProps> = ({
       onClick={onTileClick}
       {...colorAndScaleSpring}
     >
-      {/* <Html>{coord}</Html> */}
+      {showCoords && <Html><span className="text-xs bg-white opacity-75">{coord}</span></Html>}
       {letter && (
         // @ts-ignore
         <mesh ref={characterMesh} position={[0, 0, 0.2]}>
