@@ -167,12 +167,12 @@ const Play: React.FC = () => {
   return (
     <div className="flex flex-1 h-full flex-col items-stretch">
       <GameHeader game={game} />
-      {debug && <div className="bg-darkbg w-[150px]">
+      {debug && <div className="flex h-[50px] text-textInverse w-[150px] left-1/2 absolute">
         <Switch isSelected={reveal} onChange={setReveal}>
-          reveal
+          r
         </Switch>
         <Switch isSelected={showCoords} onChange={setCoords}>
-          coords
+          c
         </Switch>
       </div>}
       <div
