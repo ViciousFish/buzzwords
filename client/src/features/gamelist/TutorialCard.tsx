@@ -43,9 +43,7 @@ const TutorialCard: React.FC<{
         <li>
           <h4 className="font-bold">Capture tiles</h4>
           <p>
-            You&apos;ll capture any letters you play that touch your territory,
-            or form a chain back to your territory. Letters will turn your color
-            instead of grey when you select them if they will be captured!
+            You&apos;ll capture chains of letters that touch your territory
           </p>
         </li>
         <li>
