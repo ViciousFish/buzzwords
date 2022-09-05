@@ -326,9 +326,10 @@ export default class GameManager {
     let i = 0;
     for (const cell of neighbors) {
       cell.value = newValues[i];
-      if (HARD_CODED_CELLS[`${cell.q},${cell.r}`]) {
-        cell.value = HARD_CODED_CELLS[`${cell.q},${cell.r}`];
-      }
+      // TODO: accept "game templates" for interactive tutorial
+      // if (HARD_CODED_CELLS[`${cell.q},${cell.r}`]) {
+      //   cell.value = HARD_CODED_CELLS[`${cell.q},${cell.r}`];
+      // }
       i++;
       game.grid = setCell(game.grid, cell);
     }
