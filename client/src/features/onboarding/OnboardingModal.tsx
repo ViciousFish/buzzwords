@@ -5,7 +5,7 @@ import Modal from "../../presentational/Modal";
 import { toggleTutorialModal } from "../game/gameSlice";
 import { NicknameForm } from "../settings/NicknameForm";
 
-const NicknameModal: React.FC = () => {
+const OnboardingModal: React.FC = () => {
   const dispatch = useAppDispatch();
   const gamesList = useAppSelector((state) => state.gamelist.games);
   return (
@@ -28,4 +28,4 @@ const NicknameModal: React.FC = () => {
   );
 };
 
-export default NicknameModal;
+export default OnboardingModal;

@@ -10,7 +10,7 @@ import ScreenHeightWraper from "../presentational/ScreenHeightWrapper";
 import SidebarRightSide from "./PlayAreaContainer";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { toggleIsOpen } from "../features/gamelist/gamelistSlice";
-import SidebarOrFullscreen from "./SidebarOrFullscreen";
+import RightSidebar from "../features/rightSidebar/RightSidebar";
 
 // default tailwind breakpoints
 export const BREAKPOINTS = {
@@ -101,7 +101,7 @@ const MainGameStructure: React.FC = () => {
         <SidebarRightSide mobileLayout={mobileLayout} bindDragArgs={bind()}>
           <Outlet />
         </SidebarRightSide>
-        <SidebarOrFullscreen mobileLayout={mobileLayout} open />
+        <RightSidebar mobileLayout={mobileLayout} open />
       </div>
     </ScreenHeightWraper>
   );
