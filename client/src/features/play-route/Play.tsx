@@ -24,6 +24,7 @@ import useDimensions from "react-cool-dimensions";
 import { BREAKPOINTS } from "../../app/MainGameStructure";
 import classNames from "classnames";
 import { Switch } from "../../presentational/Switch";
+import SidebarOrFullscreen from "../../app/SidebarOrFullscreen";
 
 export const getGameUrl = (id: string) => {
   if (import.meta.env.VITE_SHARE_BASEURL) {

@@ -7,10 +7,10 @@ import useBreakpoint from "use-breakpoint";
 import GameList from "../features/gamelist/GameList";
 import TopBar from "../features/topbar/TopBar";
 import ScreenHeightWraper from "../presentational/ScreenHeightWrapper";
-import SidebarRightSide from "./SidebarRightSide";
+import SidebarRightSide from "./PlayAreaContainer";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { toggleIsOpen } from "../features/gamelist/gamelistSlice";
-import { raf } from "@react-spring/shared";
+import SidebarOrFullscreen from "./SidebarOrFullscreen";
 
 // default tailwind breakpoints
 export const BREAKPOINTS = {
@@ -101,6 +101,7 @@ const MainGameStructure: React.FC = () => {
         <SidebarRightSide mobileLayout={mobileLayout} bindDragArgs={bind()}>
           <Outlet />
         </SidebarRightSide>
+        <SidebarOrFullscreen mobileLayout={mobileLayout} open />
       </div>
     </ScreenHeightWraper>
   );

@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import * as R from "ramda";
 
 export interface User {
   id: string;
