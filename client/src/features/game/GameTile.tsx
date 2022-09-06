@@ -44,7 +44,7 @@ interface GameTileProps {
   letter?: string | null;
   coord?: QRCoord;
   owner: GamePlayer;
-  currentGame: string;
+  currentGame: string | null;
   userIndex?: number;
   isCapital?: boolean;
   isPlayerIdentity?: boolean;
@@ -88,17 +88,17 @@ const GameTile: React.FC<GameTileProps> = ({
     [font]
   );
 
-  const game = useAppSelector((state) => state.gamelist.games[currentGame]);
+  const game = useAppSelector((state) => currentGame ? state.gamelist.games[currentGame] : null);
   const theme = useAppSelector(getTheme);
 
-  const gameOver = game.gameOver;
+  const gameOver = game?.gameOver;
 
   const isSelectedState = useAppSelector((state) =>
     coord ? state.game.selectedTiles[coord] : null
   );
-  const currentTurn = game.turn;
+  const currentTurn = game?.turn;
   const currentMove = useAppSelector(getTileSelectionInParsedHexCoords);
-  const gridState = isFullGame(game) ? game.grid : null;
+  const gridState = game && isFullGame(game) ? game.grid : null;
   const replayMove = useAppSelector((state) => state.game.replay.move);
   const replayProgress = useAppSelector(
     (state) => state.game.replay.playbackState
@@ -120,7 +120,7 @@ const GameTile: React.FC<GameTileProps> = ({
 
   const tilesThatWillBeReset = useAppSelector(
     (state) =>
-      gridState &&
+      gridState && currentTurn !== undefined &&
       getTilesThatWillBeResetFromCurrentPlay(state, gridState, currentTurn)
   );
 
@@ -141,12 +141,12 @@ const GameTile: React.FC<GameTileProps> = ({
       r: Number(r),
     };
 
-    const willConnect = willConnectToTerritory(
+    const willConnect = turn !== undefined ? willConnectToTerritory(
       grid,
       replayMove ? R.take(replayProgress, replayMove.coords) : currentMove,
       parsedCoord,
       turn
-    );
+    ) : false;
     const turnColor =
       turn === 0 ? theme.colors.threed.p1 : theme.colors.threed.p2;
     if (willConnect) {
@@ -178,11 +178,11 @@ const GameTile: React.FC<GameTileProps> = ({
     immediate: lowPowerMode,
   });
 
-  const outline = game.gameOver
+  const outline = game?.gameOver
     ? false
     : isPlayerIdentity && currentTurn === owner;
 
-  const crown = game.gameOver && isPlayerIdentity && game.winner === owner;
+  const crown = game?.gameOver && isPlayerIdentity && game?.winner === owner;
 
   const outlineTransition = useTransition(outline, {
     from: {
