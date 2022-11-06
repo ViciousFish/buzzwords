@@ -71,6 +71,12 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
     }
   });
 
+  useHotkeys("Backspace", () => {
+    if (selectedWord?.length && game.turn === userIndex) {
+      dispatch(backspaceTileSelection());
+    }
+  });
+
   return (
     <Canvas isGameboard key={`play-${id}`}>
       {/* <CameraControls /> */}
