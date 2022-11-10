@@ -5,6 +5,7 @@ import {
   faAngleRight,
   faHome,
   faSpinner,
+  faTrophy,
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,6 +23,7 @@ import PlayButtons from "../home-route/PlayButtons";
 
 // const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
 import Canvas from "../canvas/Canvas";
+import GameListLink from "./GameListLink";
 const BeeLazy = React.lazy(() => import("../../assets/Bee"));
 const HexWordLazy = React.lazy(() => import("../thereed-lettering/HexWord"));
 
@@ -62,19 +64,6 @@ const GameList: React.FC<{ hideBee: boolean }> = ({ hideBee }) => {
           <FontAwesomeIcon icon={faTwitter} /> @BuzzwordsGG
         </a>
         <div className="flex-auto" />
-        <NavLink
-          className={({ isActive }) =>
-            classNames(
-              isActive ? "bg-primary hover:bg-opacity-100" : "underline",
-              "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50 text-darkbrown"
-            )
-          }
-          to="/"
-          aria-label="home"
-          data-tip="Home"
-        >
-          <FontAwesomeIcon icon={faHome} />
-        </NavLink>
       </header>
       <nav className="flex flex-col flex-auto overflow-y-auto">
         {!hideBee && (
@@ -88,6 +77,14 @@ const GameList: React.FC<{ hideBee: boolean }> = ({ hideBee }) => {
           </div>
         )}
         <div className="flex-auto">
+          <ul className="px-2 text-text">
+            <GameListLink to="/">
+              <FontAwesomeIcon className="mr-2" icon={faHome} /> Home
+            </GameListLink>
+            <GameListLink to="/achievements">
+              <FontAwesomeIcon className="mr-2" icon={faTrophy} /> Achievements
+            </GameListLink>
+          </ul>
           <div className="z-10 px-2 mt-0 flex items-center">
             <h2 className="text-2xl font-bold text-darkbrown">Games</h2>
             <div className="bg-primary mx-2 rounded-xl text-center flex items-center px-2 py-1">

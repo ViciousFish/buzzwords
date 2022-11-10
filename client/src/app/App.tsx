@@ -28,6 +28,7 @@ import {
   setCurrentSystemScheme,
 } from "../features/settings/settingsSlice";
 import MobileRoutingComponent from "./MobileRoutingComponent";
+import Achievements from "../features/achievements/Achievements";
 
 // not necessary, as long as there's always a 3d canvas on screen!
 // import.meta.env.PROD &&
@@ -159,6 +160,7 @@ function App() {
                   </React.Suspense>
                 }
               />
+              <Route path="/achievements" element={<Achievements />} />
               <Route
                 path="/download"
                 element={
