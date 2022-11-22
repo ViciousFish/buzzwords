@@ -12,6 +12,7 @@ import cors from "cors";
 import passport from "passport";
 import { OAuth2Strategy } from "passport-google-oauth";
 import urljoin from "url-join";
+import { PrismaClient } from "@prisma/client";
 
 import getConfig from "./config";
 import dl from "./datalayer";
@@ -20,9 +21,12 @@ import { isAnonymousUser } from "./util";
 
 import makeUserRouter from "./routes/user";
 import makeGameRouter from "./routes/game";
+import makePrismaGameRouter from "./routes/prismaGame";
 import makeAdminRouter from "./routes/admin";
 
 import runMigrations from "./migrations";
+
+const prisma = new PrismaClient();
 
 const COLLECTION = "socket.io-adapter-events";
 
@@ -59,7 +63,23 @@ app.use(async (req, res, next) => {
   const cookies = req.signedCookies || {};
   const bearerToken = req.headers.authorization?.split(" ")[1] ?? null;
   const authToken: string | null = bearerToken || cookies.authToken || null;
-  const userId = authToken ? await dl.getUserIdByAuthToken(authToken) : null;
+  let userId: string | null;
+  if (config.dbType === "prisma") {
+    userId = authToken
+      ? (
+          await prisma.authToken.findUnique({
+            where: {
+              token: authToken,
+            },
+            include: {
+              user: true,
+            },
+          })
+        )?.userId ?? null
+      : null;
+  } else {
+    userId = authToken ? await dl.getUserIdByAuthToken(authToken) : null;
+  }
 
   res.locals.userId = userId;
   res.locals.authToken = authToken;
@@ -75,15 +95,35 @@ app.get(config.apiPrefix + "/", (req, res) => {
 });
 
 app.use(config.apiPrefix + "/user", makeUserRouter(io));
-app.use(config.apiPrefix + "/game", makeGameRouter(io));
+app.use(
+  config.apiPrefix + "/game",
+  config.dbType === "prisma" ? makePrismaGameRouter(io) : makeGameRouter(io)
+);
 app.use(config.apiPrefix + "/admin", makeAdminRouter());
 
 app.post(config.apiPrefix + "/logout", async (req, res) => {
   res.clearCookie("authToken");
   const authToken = res.locals.authToken;
-  const success = await dl.deleteAuthToken(authToken);
-  res.sendStatus(success ? 200 : 500);
-  return;
+  const config = getConfig();
+  if (config.dbType === "prisma") {
+    try {
+      const result = await prisma.authToken.delete({
+        where: {
+          token: authToken,
+        },
+      });
+      const success = Boolean(result.token.length);
+      res.sendStatus(success ? 200 : 500);
+      return;
+    } catch (e) {
+      res.sendStatus(500);
+      return;
+    }
+  } else {
+    const success = await dl.deleteAuthToken(authToken);
+    res.sendStatus(success ? 200 : 500);
+    return;
+  }
 });
 
 app.get(
@@ -102,10 +142,26 @@ app.post(config.apiPrefix + "/login/google", async (req, res) => {
 
   const stateId = nanoid(40);
 
-  const success = await dl.setAuthTokenState(authToken, stateId);
-  if (!success) {
-    res.sendStatus(500);
-    return;
+  if (config.dbType === "prisma") {
+    try {
+      await prisma.authToken.update({
+        where: {
+          token: authToken,
+        },
+        data: {
+          state: stateId,
+        },
+      });
+    } catch (e) {
+      res.sendStatus(500);
+      return;
+    }
+  } else {
+    const success = await dl.setAuthTokenState(authToken, stateId);
+    if (!success) {
+      res.sendStatus(500);
+      return;
+    }
   }
 
   const stateString = JSON.stringify({
@@ -173,13 +229,28 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser((id: string, done) => {
   console.log("DESERIALIZE", id);
-  dl.getUserById(id)
-    .then((user) => {
-      done(null, user);
-    })
-    .catch((err) => {
-      done(err);
-    });
+  if (config.dbType === "prisma") {
+    prisma.user
+      .findUnique({
+        where: {
+          id,
+        },
+      })
+      .then((user) => {
+        done(null, user);
+      })
+      .catch((err) => {
+        done(err);
+      });
+  } else {
+    dl.getUserById(id)
+      .then((user) => {
+        done(null, user);
+      })
+      .catch((err) => {
+        done(err);
+      });
+  }
 });
 
 if (config.googleClientId && config.googleClientSecret) {
@@ -211,74 +282,182 @@ if (config.googleClientId && config.googleClientSecret) {
         }
         const { stateId } = res;
 
-        const session = await dl.createContext();
-        const authToken = await dl.getAuthTokenByState(stateId as string, {
-          session,
-        });
-        if (!authToken) {
-          dl.commitContext(session).finally(() => {
-            done("Invalid state param");
-          });
-          return;
-        }
-        const userId = authToken.userId;
-        if (!userId) {
-          dl.commitContext(session).finally(() => {
-            done("Invalid state param");
-          });
-          return;
-        }
-        let u = await dl.getUserById(userId, { session });
-        if (!u) {
-          // If user doesn't exist, create one!
-          u = await dl.createUser(userId, { session });
-        }
+        if (config.dbType === "prisma") {
+          prisma.$transaction(async (tx) => {
+            const authToken = await tx.authToken.findUnique({
+              where: {
+                state: stateId,
+              },
+              include: {
+                user: true,
+              },
+            });
+            let u = authToken?.user;
+            if (!authToken || !authToken.userId) {
+              done("Invalid state param");
+              throw new Error("Bad auth token");
+            }
 
-        const isAnon = u ? isAnonymousUser(u) : true;
-        if (!isAnon) {
-          // You're already logged in. Can't log in twice!
-          dl.commitContext(session).finally(() => {
-            done(null, u);
-          });
-          return;
-        }
-        dl.getUserByGoogleId(profile.id)
-          .then(async (user) => {
+            if (!u) {
+              u = await tx.user.create({
+                data: {
+                  id: authToken?.userId,
+                },
+              });
+            }
+
+            const isAnon = u ? isAnonymousUser(u) : true;
+            if (!isAnon) {
+              done(null, u);
+              return;
+            }
+
+            let user = await tx.user.findFirst({
+              where: {
+                googleId: profile.id,
+              },
+            });
             if (!user) {
-              let success = await dl.setUserGoogleId(userId, profile.id, {
-                session,
+              user =
+                (await tx.user
+                  .update({
+                    where: {
+                      id: authToken.userId,
+                    },
+                    data: {
+                      googleId: profile.id,
+                    },
+                  })
+                  .catch((err) => {
+                    done(err);
+                  })) || null;
+
+              if (!user) {
+                done("Something went wrong");
+                return;
+              }
+              await tx.gameUser.updateMany({
+                where: {
+                  user_id: authToken.userId,
+                },
+                data: {
+                  user_id: user.id,
+                },
               });
 
-              if (!success) {
-                done({ message: "error setting google id on user" });
-              }
-              const result = await dl.getUserById(userId, {
-                session,
+              await tx.authToken.updateMany({
+                where: {
+                  userId: authToken.userId,
+                },
+                data: {
+                  userId: user.id,
+                },
               });
-              user = result;
-              await dl.assumeUser(userId, (user as unknown as User).id, {
-                session,
-              });
-              success = await dl.commitContext(session);
-              if (!success) {
-                done({
-                  message: "error committing transaction for google login",
-                });
-              }
               done(null, user);
             } else {
-              await dl.assumeUser(userId, user.id, { session });
-              await dl.deleteUser(userId, { session });
-              const success = await dl.commitContext(session);
-              if (!success) {
-                done({
-                  message: "error committing transaction for google login",
+              await tx.gameUser.updateMany({
+                where: {
+                  user_id: authToken.userId,
+                },
+                data: {
+                  user_id: user.id,
+                },
+              });
+
+              await tx.authToken.updateMany({
+                where: {
+                  userId: authToken.userId,
+                },
+                data: {
+                  userId: user.id,
+                },
+              });
+
+              await tx.user
+                .delete({
+                  where: {
+                    id: authToken.userId,
+                  },
+                })
+                .catch((err) => {
+                  done(err);
+                  return;
                 });
-              }
+
               done(null, user);
+              return;
             }
-          })
-          .catch((err) => done(err));
+          });
+        } else {
+          const session = await dl.createContext();
+          const authToken = await dl.getAuthTokenByState(stateId as string, {
+            session,
+          });
+          if (!authToken) {
+            dl.commitContext(session).finally(() => {
+              done("Invalid state param");
+            });
+            return;
+          }
+          const userId = authToken.userId;
+          if (!userId) {
+            dl.commitContext(session).finally(() => {
+              done("Invalid state param");
+            });
+            return;
+          }
+          let u = await dl.getUserById(userId, { session });
+          if (!u) {
+            // If user doesn't exist, create one!
+            u = await dl.createUser(userId, { session });
+          }
+
+          const isAnon = u ? isAnonymousUser(u) : true;
+          if (!isAnon) {
+            // You're already logged in. Can't log in twice!
+            dl.commitContext(session).finally(() => {
+              done(null, u);
+            });
+            return;
+          }
+          dl.getUserByGoogleId(profile.id)
+            .then(async (user) => {
+              if (!user) {
+                let success = await dl.setUserGoogleId(userId, profile.id, {
+                  session,
+                });
+
+                if (!success) {
+                  done({ message: "error setting google id on user" });
+                }
+                const result = await dl.getUserById(userId, {
+                  session,
+                });
+                user = result;
+                await dl.assumeUser(userId, (user as unknown as User).id, {
+                  session,
+                });
+                success = await dl.commitContext(session);
+                if (!success) {
+                  done({
+                    message: "error committing transaction for google login",
+                  });
+                }
+                done(null, user);
+              } else {
+                await dl.assumeUser(userId, user.id, { session });
+                await dl.deleteUser(userId, { session });
+                const success = await dl.commitContext(session);
+                if (!success) {
+                  done({
+                    message: "error committing transaction for google login",
+                  });
+                }
+                done(null, user);
+              }
+            })
+            .catch((err) => done(err));
+        }
       }
     )
   );
@@ -300,28 +479,75 @@ io.on("connection", async (socket) => {
     return;
   }
 
-  const userId = await dl.getUserIdByAuthToken(authToken);
-
-  if (!userId) {
-    console.log("rejected socket connection: couldn't find userId from token");
-    socket.emit("error", "rejected socket connection: couldn't find userId");
-    return;
-  }
-  socket.join(userId);
-  console.log("a user connected", userId);
-  socket.on("selection", async ({ selection, gameId }: SelectionEventProps) => {
-    const game = await dl.getGameById(gameId);
-    if (!game) {
-      console.log("no game", gameId);
+  if (config.dbType === "prisma") {
+    const userId = (
+      await prisma.authToken.findUnique({
+        where: {
+          token: authToken,
+        },
+      })
+    )?.userId;
+    if (!userId) {
+      console.log(
+        "rejected socket connection: couldn't find userId from token"
+      );
+      socket.emit("error", "rejected socket connection: couldn't find userId");
       return;
     }
-    game.users.forEach((user) => {
-      io.to(user).emit("selection", { selection, gameId });
+    socket.join(userId);
+    console.log("a user connected", userId);
+    socket.on(
+      "selection",
+      async ({ selection, gameId }: SelectionEventProps) => {
+        const game = await prisma.game.findUnique({
+          where: {
+            id: gameId,
+          },
+          include: {
+            users: true,
+          },
+        });
+        if (!game) {
+          console.log("no game", gameId);
+          return;
+        }
+        game.users.forEach((user) => {
+          io.to(user.user_id).emit("selection", { selection, gameId });
+        });
+      }
+    );
+    socket.on("disconnect", (reason) => {
+      console.log(`user ${userId} disconnected: ${reason}`);
     });
-  });
-  socket.on("disconnect", (reason) => {
-    console.log(`user ${userId} disconnected: ${reason}`);
-  });
+  } else {
+    const userId = await dl.getUserIdByAuthToken(authToken);
+
+    if (!userId) {
+      console.log(
+        "rejected socket connection: couldn't find userId from token"
+      );
+      socket.emit("error", "rejected socket connection: couldn't find userId");
+      return;
+    }
+    socket.join(userId);
+    console.log("a user connected", userId);
+    socket.on(
+      "selection",
+      async ({ selection, gameId }: SelectionEventProps) => {
+        const game = await dl.getGameById(gameId);
+        if (!game) {
+          console.log("no game", gameId);
+          return;
+        }
+        game.users.forEach((user) => {
+          io.to(user).emit("selection", { selection, gameId });
+        });
+      }
+    );
+    socket.on("disconnect", (reason) => {
+      console.log(`user ${userId} disconnected: ${reason}`);
+    });
+  }
 });
 
 const main = async () => {
@@ -340,6 +566,18 @@ const main = async () => {
       .db(config.mongoDbName)
       .collection(COLLECTION);
     io.adapter(createAdapter(mongoCollection));
+  }
+  if (config.dbType === "prisma") {
+    await prisma.user.upsert({
+      where: {
+        id: "AI",
+      },
+      create: {
+        id: "AI",
+        nickname: "Computer",
+      },
+      update: {},
+    });
   }
   server.listen(config.port, () => {
     console.log("Server listening on port", config.port);

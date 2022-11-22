@@ -1,39 +1,46 @@
 import Game from "buzzwords-shared/Game";
 import { AuthToken, DataLayer, User } from "../types";
 
-export default class Memory implements DataLayer {
-  games: {
-    [key: string]: Game;
-  };
-  users: {
-    [key: string]: User;
-  };
-  authTokens: {
-    [key: string]: AuthToken;
-  } = {};
-  constructor() {
-    this.games = {};
-    this.users = {};
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
+export default class Prisma implements DataLayer {
+  async createContext(): Promise<unknown> {
+    prisma.$transaction(async (tx) => {});
+  }
+
+  async commitContext(context): Promise<boolean> {
+    return true;
   }
 
   async createUser(
     id: string,
     option?: Record<string, unknown>
   ): Promise<User> {
-    this.users[id] = {
-      id,
-      nickname: null,
-      googleId: null,
-    };
-    return this.users[id];
+    const result = await prisma.user.create({
+      data: {
+        id,
+      },
+    });
+
+    return result;
   }
 
   async deleteUser(
     id: string,
     option?: Record<string, unknown>
   ): Promise<boolean> {
-    delete this.users[id];
-    return true;
+    try {
+      const result = await prisma.user.delete({
+        where: {
+          id,
+        },
+      });
+      return result?.id.length > 0;
+    } catch (e) {
+      return false;
+    }
   }
 
   async createAuthToken(
@@ -41,25 +48,35 @@ export default class Memory implements DataLayer {
     userId: string,
     options?: Record<string, unknown>
   ): Promise<boolean> {
-    this.authTokens[token] = {
-      token,
-      userId,
-      createdDate: new Date(),
-      deleted: false,
-      state: null,
-    };
-    return true;
+    try {
+      await prisma.authToken.create({
+        data: {
+          token,
+          userId,
+          createdDate: new Date(),
+          deleted: false,
+        },
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   async deleteAuthToken(
     token: string,
     options?: Record<string, unknown>
   ): Promise<boolean> {
-    this.authTokens[token] = {
-      ...(this.authTokens[token] || {}),
-      deleted: true,
-    };
-    return true;
+    try {
+      const result = await prisma.authToken.delete({
+        where: {
+          token,
+        },
+      });
+      return result?.token.length > 0;
+    } catch (e) {
+      return false;
+    }
   }
 
   async setAuthTokenState(
@@ -67,20 +84,31 @@ export default class Memory implements DataLayer {
     state: string,
     options?: Record<string, unknown>
   ): Promise<boolean> {
-    this.authTokens[token] = {
-      ...this.authTokens[token],
-      state,
-    };
-    return true;
+    try {
+      const result = await prisma.authToken.update({
+        where: {
+          token,
+        },
+        data: {
+          state,
+        },
+      });
+      return result.state == state;
+    } catch (e) {
+      return false;
+    }
   }
 
   async getAuthTokenByState(
     state: string,
     options?: Record<string, unknown>
   ): Promise<AuthToken | null> {
-    return (
-      Object.values(this.authTokens).find((t) => t.state === state) || null
-    );
+    const result = await prisma.authToken.findUnique({
+      where: {
+        state,
+      },
+    });
+    return result;
   }
 
   async assumeUser(
