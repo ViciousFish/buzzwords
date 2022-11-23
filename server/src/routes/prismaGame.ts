@@ -199,103 +199,173 @@ export default (io: Server) => {
     const userId = res.locals.userId as string;
     const gameId = req.params.id;
 
-    await prisma.$transaction(async (tx) => {
-      const game = await tx.game.findUnique({
-        where: {
-          id: gameId,
-        },
-        include: {
-          users: true,
-        },
-      });
+    await prisma
+      .$transaction(async (tx) => {
+        const game = await tx.game.findUnique({
+          where: {
+            id: gameId,
+          },
+          include: {
+            users: true,
+          },
+        });
 
-      if (!game || !game.users.find((u) => u.user_id === userId)) {
-        res.sendStatus(404);
-        return;
-      }
-      if (game.users.length > 1) {
-        res.sendStatus(400);
-        return;
-      }
+        if (!game || !game.users.find((u) => u.user_id === userId)) {
+          res.sendStatus(404);
+          return;
+        }
+        if (game.users.length > 1) {
+          res.sendStatus(400);
+          return;
+        }
 
-      if (game.deleted) {
+        if (game.deleted) {
+          res.sendStatus(201);
+          return;
+        }
+
+        await tx.game.update({
+          where: {
+            id: gameId,
+          },
+          data: {
+            deleted: true,
+          },
+        });
+
         res.sendStatus(201);
-        return;
-      }
-
-      await tx.game.update({
-        where: {
-          id: gameId,
-        },
-        data: {
-          deleted: true,
-        },
-      });
-
-      res.sendStatus(201);
-    });
+      })
+      .catch((e) => res.sendStatus(500));
   });
 
   router.post("/:id/join", async (req, res) => {
     const userId = res.locals.userId as string;
     const gameId = req.params.id;
 
-    prisma.$transaction(async (tx) => {
-      const gameUsers = await tx.gameUser.findMany({
-        where: {
-          game_id: gameId,
-        },
-      });
-
-      if (gameUsers.length != 1 || gameUsers[0].user_id == userId) {
-        res.sendStatus(404);
-        return;
-      }
-      await tx.gameUser.create({
-        data: {
-          game_id: gameId,
-          user_id: userId,
-          player_number: 1,
-        },
-      });
-
-      const prismaGame = await tx.game.findUnique({
-        where: {
-          id: gameId,
-        },
-        include: {
-          cells: {
-            where: {
-              move_id: null,
-            },
+    await prisma
+      .$transaction(async (tx) => {
+        const gameUsers = await tx.gameUser.findMany({
+          where: {
+            game_id: gameId,
           },
-          users: {
-            include: {
-              user: true,
-            },
-          },
-          moves: {
-            include: {
-              cells: true,
-              coords: true,
-            },
-          },
-        },
-      });
-      if (prismaGame) {
-        const game = prismaGameToAPIGame(prismaGame);
-        game.users.forEach((user) => {
-          io.to(user).emit("game updated", game);
         });
-        res.sendStatus(201);
+
+        if (gameUsers.length != 1 || gameUsers[0].user_id == userId) {
+          res.sendStatus(404);
+          return;
+        }
+        await tx.gameUser.create({
+          data: {
+            game_id: gameId,
+            user_id: userId,
+            player_number: 1,
+          },
+        });
+
+        const prismaGame = await tx.game.findUnique({
+          where: {
+            id: gameId,
+          },
+          include: {
+            cells: {
+              where: {
+                move_id: null,
+              },
+            },
+            users: {
+              include: {
+                user: true,
+              },
+            },
+            moves: {
+              include: {
+                cells: true,
+                coords: true,
+              },
+            },
+          },
+        });
+        if (prismaGame) {
+          const game = prismaGameToAPIGame(prismaGame);
+          game.users.forEach((user) => {
+            io.to(user).emit("game updated", game);
+          });
+          res.sendStatus(201);
+        } else {
+          res.sendStatus(404);
+        }
+      })
+      .catch((e) => res.sendStatus(500));
+  });
+
+  router.post("/join", async (req, res) => {
+    const userId = res.locals.userId as string;
+    await prisma.$transaction(async (tx) => {
+      const result = await tx.gameUser.groupBy({
+        by: ["game_id"],
+        where: {
+          user_id: {
+            not: userId,
+          },
+        },
+        _count: {
+          user_id: true,
+        },
+        orderBy: {
+          _count: {
+            user_id: "asc",
+          },
+        },
+        take: 1,
+      });
+
+      const gameId = result[0]?.game_id;
+
+      if (gameId) {
+        await tx.gameUser.create({
+          data: {
+            game_id: gameId,
+            user_id: userId,
+            player_number: 1,
+          },
+        });
+
+        const prismaGame = await tx.game.findUnique({
+          where: {
+            id: gameId,
+          },
+          include: {
+            cells: {
+              where: {
+                move_id: null,
+              },
+            },
+            users: {
+              include: {
+                user: true,
+              },
+            },
+            moves: {
+              include: {
+                cells: true,
+                coords: true,
+              },
+            },
+          },
+        });
+        if (prismaGame) {
+          const game = prismaGameToAPIGame(prismaGame);
+          game.users.forEach((user) => {
+            io.to(user).emit("game updated", game);
+          });
+          res.sendStatus(201);
+        } else {
+          res.sendStatus(404);
+        }
       } else {
         res.sendStatus(404);
       }
     });
-  });
-
-  router.post("/join", async (req, res) => {
-    res.sendStatus(404);
   });
 
   const pass = async (
