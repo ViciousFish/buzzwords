@@ -12,57 +12,37 @@ import GameManager from "../GameManager";
 import { WordsObject, BannedWordsObject } from "../words";
 import { removeMongoId } from "../util";
 
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
-
 export default (io: Server) => {
   const router = express.Router();
   router.get("/", async (req, res) => {
     const user = res.locals.userId as string;
-    const config = getConfig();
-    if (config.dbType === "prisma") {
-      const games = await prisma.game.findMany({
-        where: {
-          users: {
-            every: {
-              user_id: user,
-            },
-          },
-        },
-        include: {
-          users: true,
-        },
-      });
-    } else {
-      const games = await dl.getGamesByUserId(user);
-      const userIds: string[] = R.pipe(
-        R.map(R.prop("users")),
-        R.flatten,
-        R.uniq
-      )(games);
+    const games = await dl.getGamesByUserId(user);
+    const userIds: string[] = R.pipe(
+      R.map(R.prop("users")),
+      R.flatten,
+      R.uniq
+    )(games);
 
-      const nicknames = await dl.getNickNames(userIds);
+    const nicknames = await dl.getNickNames(userIds);
 
-      const users: {
-        [key: string]: {
-          id: string;
-          nickname: string | null;
-        };
-      } = {};
+    const users: {
+      [key: string]: {
+        id: string;
+        nickname: string | null;
+      };
+    } = {};
 
-      for (const [id, nickname] of Object.entries(nicknames)) {
-        users[id] = {
-          id,
-          nickname,
-        };
-      }
-
-      res.send({
-        games,
-        users,
-      });
+    for (const [id, nickname] of Object.entries(nicknames)) {
+      users[id] = {
+        id,
+        nickname,
+      };
     }
+
+    res.send({
+      games,
+      users,
+    });
   });
 
   router.get("/:id", async (req, res) => {
@@ -214,7 +194,7 @@ export default (io: Server) => {
     });
     await dl.commitContext(session);
     newGame.users.forEach((user) => {
-      io.to(user).emit("game updated", newGame);
+      io.to(user).emit("game updated", game);
     });
   };
 
