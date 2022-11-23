@@ -25,6 +25,9 @@ export default (io: Server) => {
     const gameUsers = await prisma.gameUser.findMany({
       where: {
         user_id: userId,
+        game: {
+          deleted: false,
+        },
       },
       include: {
         game: {
@@ -109,81 +112,87 @@ export default (io: Server) => {
 
   router.post("/", async (req, res) => {
     const userId = res.locals.userId as string;
-    const activeGames = await prisma.gameUser.count({
-      where: {
-        user_id: userId,
-        game: {
-          deleted: false,
-          game_over: false,
-        },
-      },
-    });
+    await prisma
+      .$transaction(async (tx) => {
+        const activeGames = await tx.gameUser.count({
+          where: {
+            user_id: userId,
+            game: {
+              deleted: false,
+              game_over: false,
+            },
+          },
+        });
 
-    const maxGames = getConfig().maxActiveGames;
-    if (activeGames >= maxGames) {
-      res.status(400).json({
-        message: `Max ${maxGames} games supported.`,
-      });
-      return;
-    }
-
-    const options = req.body;
-    const gm = new GameManager(null);
-    const game = gm.createGame(userId);
-    if (options.vsAI) {
-      game.vsAI = true;
-      game.users.push("AI");
-      let difficulty = 1;
-      if (options.difficulty) {
-        difficulty =
-          typeof options.difficulty == "number"
-            ? options.difficulty
-            : parseInt(options.difficulty);
-        if (
-          typeof difficulty != "number" ||
-          isNaN(difficulty) ||
-          difficulty < 1 ||
-          difficulty > 10
-        ) {
+        const maxGames = getConfig().maxActiveGames;
+        if (activeGames >= maxGames) {
           res.status(400).json({
-            message: "Difficulty must be a number 1-10",
+            message: `Max ${maxGames} games supported.`,
           });
           return;
         }
-      }
-      game.difficulty = difficulty;
-    }
 
-    await prisma.game.create({
-      data: {
-        id: game.id,
-        turn: game.turn,
-        game_over: game.gameOver,
-        deleted: game.deleted,
-        winner: game.winner,
-        vs_ai: game.vsAI,
-        difficulty: game.difficulty,
-        users: {
-          create: game.users.map((u, idx) => ({
-            user_id: u,
-            player_number: idx,
-          })),
-        },
-        cells: {
-          create: Object.values(game.grid).map((cell) => ({
-            q: cell.q,
-            r: cell.r,
-            value: cell.value,
-            capital: cell.capital,
-            owner: cell.owner,
-            move_id: null,
-          })),
-        },
-        createdDate: new Date(),
-      },
-    });
-    res.send(game.id);
-    return;
+        const options = req.body;
+        const gm = new GameManager(null);
+        const game = gm.createGame(userId);
+        if (options.vsAI) {
+          game.vsAI = true;
+          game.users.push("AI");
+          let difficulty = 1;
+          if (options.difficulty) {
+            difficulty =
+              typeof options.difficulty == "number"
+                ? options.difficulty
+                : parseInt(options.difficulty);
+            if (
+              typeof difficulty != "number" ||
+              isNaN(difficulty) ||
+              difficulty < 1 ||
+              difficulty > 10
+            ) {
+              res.status(400).json({
+                message: "Difficulty must be a number 1-10",
+              });
+              return;
+            }
+          }
+          game.difficulty = difficulty;
+        }
+
+        await tx.game.create({
+          data: {
+            id: game.id,
+            turn: game.turn,
+            game_over: game.gameOver,
+            deleted: game.deleted,
+            winner: game.winner,
+            vs_ai: game.vsAI,
+            difficulty: game.difficulty,
+            users: {
+              create: game.users.map((u, idx) => ({
+                user_id: u,
+                player_number: idx,
+              })),
+            },
+            cells: {
+              create: Object.values(game.grid).map((cell) => ({
+                q: cell.q,
+                r: cell.r,
+                value: cell.value,
+                capital: cell.capital,
+                owner: cell.owner,
+                move_id: null,
+              })),
+            },
+            createdDate: new Date(),
+          },
+        });
+        res.send(game.id);
+        return;
+      })
+      .catch((e) => {
+        res.sendStatus(500);
+      });
   });
 
   router.post("/:id/delete", async (req, res) => {
@@ -214,7 +223,7 @@ export default (io: Server) => {
         return;
       }
 
-      tx.game.update({
+      await tx.game.update({
         where: {
           id: gameId,
         },
