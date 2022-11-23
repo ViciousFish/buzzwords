@@ -300,72 +300,76 @@ export default (io: Server) => {
 
   router.post("/join", async (req, res) => {
     const userId = res.locals.userId as string;
-    await prisma.$transaction(async (tx) => {
-      const result = await tx.gameUser.groupBy({
-        by: ["game_id"],
-        where: {
-          user_id: {
-            not: userId,
-          },
-        },
-        _count: {
-          user_id: true,
-        },
-        orderBy: {
-          _count: {
-            user_id: "asc",
-          },
-        },
-        take: 1,
-      });
-
-      const gameId = result[0]?.game_id;
-
-      if (gameId) {
-        await tx.gameUser.create({
-          data: {
-            game_id: gameId,
-            user_id: userId,
-            player_number: 1,
-          },
-        });
-
-        const prismaGame = await tx.game.findUnique({
+    await prisma
+      .$transaction(async (tx) => {
+        const result = await tx.gameUser.groupBy({
+          by: ["game_id"],
           where: {
-            id: gameId,
-          },
-          include: {
-            cells: {
-              where: {
-                move_id: null,
-              },
-            },
-            users: {
-              include: {
-                user: true,
-              },
-            },
-            moves: {
-              include: {
-                cells: true,
-                coords: true,
-              },
+            user_id: {
+              not: userId,
             },
           },
+          _count: {
+            user_id: true,
+          },
+          orderBy: {
+            _count: {
+              user_id: "asc",
+            },
+          },
+          take: 1,
         });
-        if (prismaGame) {
-          const game = prismaGameToAPIGame(prismaGame);
-          game.users.forEach((user) => {
-            io.to(user).emit("game updated", game);
+
+        const gameId = result[0]?.game_id;
+
+        if (gameId) {
+          await tx.gameUser.create({
+            data: {
+              game_id: gameId,
+              user_id: userId,
+              player_number: 1,
+            },
           });
-          res.sendStatus(201);
+
+          const prismaGame = await tx.game.findUnique({
+            where: {
+              id: gameId,
+            },
+            include: {
+              cells: {
+                where: {
+                  move_id: null,
+                },
+              },
+              users: {
+                include: {
+                  user: true,
+                },
+              },
+              moves: {
+                include: {
+                  cells: true,
+                  coords: true,
+                },
+              },
+            },
+          });
+          if (prismaGame) {
+            const game = prismaGameToAPIGame(prismaGame);
+            game.users.forEach((user) => {
+              io.to(user).emit("game updated", game);
+            });
+            res.sendStatus(201);
+          } else {
+            res.sendStatus(404);
+          }
         } else {
           res.sendStatus(404);
         }
-      } else {
-        res.sendStatus(404);
-      }
-    });
+      })
+      .catch((e) => {
+        res.sendStatus(500);
+      });
   });
 
   const pass = async (
@@ -517,135 +521,137 @@ export default (io: Server) => {
   });
 
   const doBotMoves = async (gameId: string): Promise<void> => {
-    await prisma.$transaction(async (tx) => {
-      const prismaGame = await tx.game.findUnique({
-        where: {
-          id: gameId,
-        },
-        include: {
-          cells: {
-            where: {
-              move_id: null,
-            },
-          },
-          users: {
-            include: {
-              user: true,
-            },
-          },
-          moves: {
-            include: {
-              cells: true,
-              coords: true,
-            },
-          },
-        },
-      });
-
-      if (!prismaGame) {
-        return;
-      }
-      let game = prismaGameToAPIGame(prismaGame);
-      const gm = new GameManager(game);
-      let lastMessage = Date.now();
-
-      while (!game.gameOver && game.vsAI && game.turn) {
-        let botMove: HexCoord[];
-        try {
-          botMove = getBotMove(game.grid, {
-            words: WordsObject,
-            difficulty: game.difficulty,
-            bannedWords: BannedWordsObject,
-          });
-        } catch (e) {
-          console.log("BOT FAILED TO FIND MOVE. PASSING");
-          pass(game.id, "AI", tx);
-          return;
-        }
-        console.log("Bot move", botMove);
-        const word = botMove
-          .map((c) => game.grid[`${c.q},${c.r}`].value)
-          .join("");
-        game = gm.makeMove("AI", botMove);
-
-        await tx.game.update({
+    await prisma
+      .$transaction(async (tx) => {
+        const prismaGame = await tx.game.findUnique({
           where: {
             id: gameId,
           },
-          data: {
-            turn: game.turn,
-            game_over: game.gameOver,
-            deleted: game.deleted,
-            winner: game.winner,
-            vs_ai: game.vsAI,
-            difficulty: game.difficulty,
+          include: {
+            cells: {
+              where: {
+                move_id: null,
+              },
+            },
+            users: {
+              include: {
+                user: true,
+              },
+            },
+            moves: {
+              include: {
+                cells: true,
+                coords: true,
+              },
+            },
           },
         });
-        for (const cell of Object.values(game.grid)) {
-          await tx.cell.updateMany({
+
+        if (!prismaGame) {
+          return;
+        }
+        let game = prismaGameToAPIGame(prismaGame);
+        const gm = new GameManager(game);
+        let lastMessage = Date.now();
+
+        while (!game.gameOver && game.vsAI && game.turn) {
+          let botMove: HexCoord[];
+          try {
+            botMove = getBotMove(game.grid, {
+              words: WordsObject,
+              difficulty: game.difficulty,
+              bannedWords: BannedWordsObject,
+            });
+          } catch (e) {
+            console.log("BOT FAILED TO FIND MOVE. PASSING");
+            pass(game.id, "AI", tx);
+            return;
+          }
+          console.log("Bot move", botMove);
+          const word = botMove
+            .map((c) => game.grid[`${c.q},${c.r}`].value)
+            .join("");
+          game = gm.makeMove("AI", botMove);
+
+          await tx.game.update({
             where: {
-              game_id: game.id,
-              q: cell.q,
-              r: cell.r,
+              id: gameId,
             },
             data: {
-              capital: cell.capital,
-              owner: cell.owner,
-              value: cell.value,
+              turn: game.turn,
+              game_over: game.gameOver,
+              deleted: game.deleted,
+              winner: game.winner,
+              vs_ai: game.vsAI,
+              difficulty: game.difficulty,
             },
           });
+          for (const cell of Object.values(game.grid)) {
+            await tx.cell.updateMany({
+              where: {
+                game_id: game.id,
+                q: cell.q,
+                r: cell.r,
+              },
+              data: {
+                capital: cell.capital,
+                owner: cell.owner,
+                value: cell.value,
+              },
+            });
+          }
+          const move = await tx.move.findFirst({
+            where: {
+              game_id: gameId,
+            },
+            orderBy: {
+              move_number: "desc",
+            },
+            take: 1,
+          });
+
+          const moveNumber = (move?.move_number ?? 0) + 1;
+          await tx.move.create({
+            data: {
+              date: new Date(),
+              pass: false,
+              forfeit: false,
+              shuffle: false,
+              game_id: gameId,
+              user_id: "AI",
+              move_number: moveNumber,
+              word,
+              cells: {
+                create: Object.values(game.grid).map((c) => ({
+                  game_id: gameId,
+                  q: c.q,
+                  r: c.r,
+                  value: c.value,
+                  capital: c.capital,
+                  owner: c.owner,
+                })),
+              },
+              coords: {
+                create: botMove.map(({ q, r }, index) => ({
+                  index,
+                  q,
+                  r,
+                })),
+              },
+            },
+          });
+
+          const delay = 2000 - (Date.now() - lastMessage);
+          game.users.forEach((user) => {
+            const copy = R.clone(removeMongoId(game));
+            setTimeout(() => {
+              io.to(user).emit("game updated", copy);
+            }, delay);
+          });
+          lastMessage = Date.now() + delay;
         }
-        const move = await tx.move.findFirst({
-          where: {
-            game_id: gameId,
-          },
-          orderBy: {
-            move_number: "desc",
-          },
-          take: 1,
-        });
-
-        const moveNumber = (move?.move_number ?? 0) + 1;
-        await tx.move.create({
-          data: {
-            date: new Date(),
-            pass: false,
-            forfeit: false,
-            shuffle: false,
-            game_id: gameId,
-            user_id: "AI",
-            move_number: moveNumber,
-            word,
-            cells: {
-              create: Object.values(game.grid).map((c) => ({
-                game_id: gameId,
-                q: c.q,
-                r: c.r,
-                value: c.value,
-                capital: c.capital,
-                owner: c.owner,
-              })),
-            },
-            coords: {
-              create: botMove.map(({ q, r }, index) => ({
-                index,
-                q,
-                r,
-              })),
-            },
-          },
-        });
-
-        const delay = 2000 - (Date.now() - lastMessage);
-        game.users.forEach((user) => {
-          const copy = R.clone(removeMongoId(game));
-          setTimeout(() => {
-            io.to(user).emit("game updated", copy);
-          }, delay);
-        });
-        lastMessage = Date.now() + delay;
-      }
-    });
+      })
+      .catch();
   };
 
   router.post("/:id/nudge", async (req, res) => {
@@ -714,129 +720,131 @@ export default (io: Server) => {
       }
     }
 
-    await prisma.$transaction(async (tx) => {
-      const prismaGame = await tx.game.findUnique({
-        where: {
-          id: gameId,
-        },
-        include: {
-          cells: {
-            where: {
-              move_id: null,
-            },
-          },
-          users: {
-            include: {
-              user: true,
-            },
-          },
-          moves: {
-            include: {
-              cells: true,
-              coords: true,
-            },
-          },
-        },
-      });
-
-      if (prismaGame == null || prismaGame == undefined) {
-        res.sendStatus(404);
-        return;
-      }
-      const game = prismaGameToAPIGame(prismaGame);
-      const gm = new GameManager(game);
-
-      let newGame: Game;
-      try {
-        newGame = gm.makeMove(userId, parsedMove);
-      } catch (e: unknown) {
-        res.status(400);
-        if (e instanceof Error) {
-          res.send(e.message);
-        } else {
-          res.send();
-        }
-        return;
-      }
-      await tx.game.update({
-        where: {
-          id: gameId,
-        },
-        data: {
-          turn: newGame.turn,
-          game_over: newGame.gameOver,
-          deleted: newGame.deleted,
-          winner: newGame.winner,
-          vs_ai: newGame.vsAI,
-          difficulty: newGame.difficulty,
-        },
-      });
-      for (const cell of Object.values(newGame.grid)) {
-        await tx.cell.updateMany({
+    await prisma
+      .$transaction(async (tx) => {
+        const prismaGame = await tx.game.findUnique({
           where: {
-            game_id: newGame.id,
-            q: cell.q,
-            r: cell.r,
+            id: gameId,
           },
-          data: {
-            capital: cell.capital,
-            owner: cell.owner,
-            value: cell.value,
+          include: {
+            cells: {
+              where: {
+                move_id: null,
+              },
+            },
+            users: {
+              include: {
+                user: true,
+              },
+            },
+            moves: {
+              include: {
+                cells: true,
+                coords: true,
+              },
+            },
           },
         });
-      }
-      const move = await tx.move.findFirst({
-        where: {
-          game_id: gameId,
-        },
-        orderBy: {
-          move_number: "desc",
-        },
-        take: 1,
-      });
 
-      const moveNumber = (move?.move_number ?? 0) + 1;
-      await tx.move.create({
-        data: {
-          date: new Date(),
-          pass: false,
-          forfeit: false,
-          shuffle: false,
-          game_id: gameId,
-          user_id: userId,
-          move_number: moveNumber,
-          word: game.moves[game.moves.length - 1].letters.join(""),
-          cells: {
-            create: Object.values(game.grid).map((c) => ({
-              game_id: gameId,
-              q: c.q,
-              r: c.r,
-              value: c.value,
-              capital: c.capital,
-              owner: c.owner,
-            })),
-          },
-          coords: {
-            create: parsedMove.map(({ q, r }, index) => ({
-              index,
-              q,
-              r,
-            })),
-          },
-        },
-      });
-      res.status(201);
-      res.send(newGame);
-      newGame.users.forEach((user) => {
-        io.to(user).emit("game updated", newGame);
-      });
+        if (prismaGame == null || prismaGame == undefined) {
+          res.sendStatus(404);
+          return;
+        }
+        const game = prismaGameToAPIGame(prismaGame);
+        const gm = new GameManager(game);
 
-      try {
-        doBotMoves(gameId);
-      } catch (e) {
-        // maybe do something eventually
-      }
-    });
+        let newGame: Game;
+        try {
+          newGame = gm.makeMove(userId, parsedMove);
+        } catch (e: unknown) {
+          res.status(400);
+          if (e instanceof Error) {
+            res.send(e.message);
+          } else {
+            res.send();
+          }
+          return;
+        }
+        await tx.game.update({
+          where: {
+            id: gameId,
+          },
+          data: {
+            turn: newGame.turn,
+            game_over: newGame.gameOver,
+            deleted: newGame.deleted,
+            winner: newGame.winner,
+            vs_ai: newGame.vsAI,
+            difficulty: newGame.difficulty,
+          },
+        });
+        for (const cell of Object.values(newGame.grid)) {
+          await tx.cell.updateMany({
+            where: {
+              game_id: newGame.id,
+              q: cell.q,
+              r: cell.r,
+            },
+            data: {
+              capital: cell.capital,
+              owner: cell.owner,
+              value: cell.value,
+            },
+          });
+        }
+        const move = await tx.move.findFirst({
+          where: {
+            game_id: gameId,
+          },
+          orderBy: {
+            move_number: "desc",
+          },
+          take: 1,
+        });
+
+        const moveNumber = (move?.move_number ?? 0) + 1;
+        await tx.move.create({
+          data: {
+            date: new Date(),
+            pass: false,
+            forfeit: false,
+            shuffle: false,
+            game_id: gameId,
+            user_id: userId,
+            move_number: moveNumber,
+            word: game.moves[game.moves.length - 1].letters.join(""),
+            cells: {
+              create: Object.values(game.grid).map((c) => ({
+                game_id: gameId,
+                q: c.q,
+                r: c.r,
+                value: c.value,
+                capital: c.capital,
+                owner: c.owner,
+              })),
+            },
+            coords: {
+              create: parsedMove.map(({ q, r }, index) => ({
+                index,
+                q,
+                r,
+              })),
+            },
+          },
+        });
+        res.status(201);
+        res.send(newGame);
+        newGame.users.forEach((user) => {
+          io.to(user).emit("game updated", newGame);
+        });
+
+        try {
+          doBotMoves(gameId);
+        } catch (e) {
+          // maybe do something eventually
+        }
+      })
+      .catch((e) => res.sendStatus(500));
   });
 
   router.post("/:id/forfeit", async (req, res) => {
