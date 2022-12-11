@@ -2,8 +2,8 @@ import Game, { ShallowGame } from "buzzwords-shared/Game";
 
 export interface User {
   id: string;
-  nickname?: string;
-  googleId?: string;
+  nickname: string | null;
+  googleId: string | null;
 }
 
 export interface AuthToken {
@@ -11,7 +11,7 @@ export interface AuthToken {
   userId: string;
   createdDate: Date;
   deleted?: boolean;
-  state?: string;
+  state: string | null;
 }
 
 export interface DataLayer {
