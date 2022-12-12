@@ -5,7 +5,7 @@
 Buzzwords currently supports three storage types:
 
 - In Memory (memory)
-- SQLite (sqlite)
+- SQLite (prisma)
 - Mongodb (mongo)
 
 This can be controlled via the `DB_TYPE` environment variable.
