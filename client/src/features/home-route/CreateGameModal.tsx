@@ -31,22 +31,25 @@ const DIFFICULTY_LABELS = [
 ];
 
 export function CreateGameModal({ onCancel }: PlayModalProps) {
-  const hasAccount = useAppSelector((state) => Boolean(state.user.user?.googleId));
-  const isOffline = useAppSelector(state => state.settings.offline);
+  const hasAccount = useAppSelector((state) =>
+    Boolean(state.user.user?.googleId)
+  );
+  const isOffline = useAppSelector((state) => state.settings.offline);
 
   const [mode, setMode] = useState<string | null>(null);
+  const [difficulty, setDifficulty] = useState(4);
   const [_cloud, setCloud] = useState(false);
 
-  let cloudSubtext = 'Store games in the cloud.'
+  let cloudSubtext = "Store games in the cloud.";
   let cloud = _cloud;
 
-  if (mode === 'online-human') {
-    cloudSubtext = "Online PVP games are always cloud synced"
+  if (mode === "online-human") {
+    cloudSubtext = "Online PVP games are always cloud synced";
     cloud = true;
   } else if (isOffline) {
-    cloudSubtext += " Unavailable offline."
+    cloudSubtext += " Unavailable offline.";
   } else if (!hasAccount) {
-    cloudSubtext += " Log in to sync bot games."
+    cloudSubtext += " Log in to sync bot games.";
   }
 
   return (
@@ -99,21 +102,29 @@ export function CreateGameModal({ onCancel }: PlayModalProps) {
             </ListBox>
           </div>
           <div className="p-2 rounded-md mt-2">
-            <Switch isSelected={cloud} onChange={setCloud} isDisabled={mode?.endsWith('human') || isOffline || !hasAccount}>
+            <Switch
+              isSelected={cloud}
+              onChange={setCloud}
+              isDisabled={mode?.endsWith("human") || isOffline || !hasAccount}
+            >
               <div className="flex flex-col">
-              <strong>Cloud sync</strong>
-              <span>{cloudSubtext}</span>
+                <strong>Cloud sync</strong>
+                <span>{cloudSubtext}</span>
               </div>
             </Switch>
           </div>
           <div className="p-2 flex justify-center mt-2">
-            {mode && mode === 'bot' && (
+            {mode && mode === "bot" && (
               <Slider
                 customValueFormatter={(value) => (
                   <>
                     {DIFFICULTY_LABELS[value - 1]} ({value})
                   </>
                 )}
+                value={difficulty}
+                onChange={(val) =>
+                  setDifficulty(Array.isArray(val) ? val[0] : val)
+                }
                 minValue={1}
                 maxValue={10}
                 step={1}
@@ -122,7 +133,7 @@ export function CreateGameModal({ onCancel }: PlayModalProps) {
             )}
           </div>
         </div>
-        <div>
+        <div className="flex justify-center">
           <Button onClick={onCancel}>Cancel</Button>
           <Button>Create</Button>
         </div>
