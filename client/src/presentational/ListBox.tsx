@@ -1,15 +1,22 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
-import * as React from "react";
-import type { AriaListBoxOptions } from "@react-aria/listbox";
-import type { ListState } from "react-stately";
-import type { Node } from "@react-types/shared";
-import { useListBox, useListBoxSection, useOption } from "react-aria";
+import React from "react";
+import type { AriaListBoxProps } from "react-aria";
+import { useListState, ListState } from "react-stately";
+import {
+  mergeProps,
+  useFocusRing,
+  useListBox,
+  useOption,
+  useListBoxSection,
+  useSeparator,
+  AriaListBoxOptions,
+} from "react-aria";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { Node } from "@react-types/shared";
 
-interface ListBoxProps extends AriaListBoxOptions<unknown> {
+interface ListBoxProps<T extends Object> extends AriaListBoxOptions<T> {
   listBoxRef?: React.RefObject<HTMLUListElement>;
-  state: ListState<unknown>;
+  state: ListState<T>;
 }
 
 interface SectionProps {
@@ -22,46 +29,75 @@ interface OptionProps {
   state: ListState<unknown>;
 }
 
-export function ListBox(props: ListBoxProps) {
+export function ListBox<T extends object>(props: AriaListBoxProps<T>) {
+  // Create state based on the incoming props
+  const state = useListState(props);
+  return <ListBoxInternal {...props} state={state} />;
+}
+
+export function ListBoxInternal<T extends Object>(props: ListBoxProps<T>) {
+  // Get props for the listbox element
   let ref = React.useRef<HTMLUListElement>(null);
   let { listBoxRef = ref, state } = props;
-  let { listBoxProps } = useListBox(props, state, listBoxRef);
+  let { listBoxProps, labelProps } = useListBox(props, state, listBoxRef);
 
   return (
-    <ul
-      {...listBoxProps}
-      ref={listBoxRef}
-      className="max-h-72 overflow-auto outline-none"
-    >
-      {[...state.collection].map((item) =>
-        item.type === "section" ? (
-          <ListBoxSection key={item.key} section={item} state={state} />
-        ) : (
-          <Option key={item.key} item={item} state={state} />
-        )
-      )}
-    </ul>
+    <>
+      <div {...labelProps}>{props.label}</div>
+      <ul
+        {...listBoxProps}
+        ref={listBoxRef}
+        className="max-h-72 overflow-auto outline-none"
+      >
+        {[...state.collection].map((item) =>
+          item.type === "section" ? (
+            <ListBoxSection key={item.key} section={item} state={state} />
+          ) : (
+            <Option key={item.key} item={item} state={state} />
+          )
+        )}
+      </ul>
+    </>
   );
 }
 
-function ListBoxSection({ section, state }: SectionProps) {
+function ListBoxSection({ section, state }) {
   let { itemProps, headingProps, groupProps } = useListBoxSection({
     heading: section.rendered,
     "aria-label": section["aria-label"],
   });
 
+  let { separatorProps } = useSeparator({
+    elementType: "li",
+  });
+
+  // If the section is not the first, add a separator element.
+  // The heading is rendered inside an <li> element, which contains
+  // a <ul> with the child items.
   return (
     <>
-      <li {...itemProps} className="pt-2">
+      {/* {section.key !== state.collection.getFirstKey() && (
+        <li
+          {...separatorProps}
+          className="mx-2 border-t border-text"
+        />
+      )} */}
+      <li {...itemProps}>
         {section.rendered && (
           <span
             {...headingProps}
-            className="text-xs font-bold uppercase text-gray-500 mx-3"
+            className="font-bold text-text opacity-70 mx-2"
           >
-            {section.rendered as React.ReactNode}
+            {section.rendered}
           </span>
         )}
-        <ul {...groupProps}>
+        <ul
+          {...groupProps}
+          style={{
+            padding: 0,
+            listStyle: "none",
+          }}
+        >
           {[...section.childNodes].map((node) => (
             <Option key={node.key} item={node} state={state} />
           ))}
@@ -71,35 +107,37 @@ function ListBoxSection({ section, state }: SectionProps) {
   );
 }
 
-function Option({ item, state }: OptionProps) {
-  let ref = React.useRef<HTMLLIElement>(null);
-  let { optionProps, isDisabled, isSelected, isFocused } = useOption(
-    {
-      key: item.key,
-    },
+function Option({ item, state }) {
+  // Get props for the option element
+  let ref = React.useRef(null);
+  let { optionProps, isSelected, isDisabled, isFocused } = useOption(
+    { key: item.key },
     state,
     ref
   );
 
-  let text = "text-darkbrown";
-  // if (isFocused || isSelected) {
-  //   text = "text-pink-600";
-  // } else if (isDisabled) {
-  //   text = "text-gray-200";
-  // }
+  // Determine whether we should show a keyboard
+  // focus ring for accessibility
+  // let { isFocusVisible, focusProps } = useFocusRing();
 
   return (
     <li
+      // {...mergeProps(optionProps, focusProps)}
       {...optionProps}
+      className={`m-1 rounded-md py-2 px-2 text-sm outline-none cursor-default flex items-center justify-between 
+      text-darkbrown ${isFocused ? "bg-primary" : ""} ${
+        isSelected ? "font-bold" : ""
+      }`}
       ref={ref}
-      className={`m-1 rounded-md py-2 px-2 text-sm outline-none cursor-default flex items-center justify-between ${text} ${
-        isFocused ? "bg-primary" : ""
-      } ${isSelected ? "font-bold" : ""}`}
     >
       <>
         {item.rendered}
         {isSelected && (
-          <FontAwesomeIcon icon={faCheck} aria-hidden="true" className="w-5 h-5 text-p2" />
+          <FontAwesomeIcon
+            icon={faCheck}
+            aria-hidden="true"
+            className="w-5 h-5 text-p2"
+          />
         )}
       </>
     </li>

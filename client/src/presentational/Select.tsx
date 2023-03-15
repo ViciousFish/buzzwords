@@ -9,7 +9,7 @@ import {
   useFocusRing
 } from "react-aria";
 
-import { ListBox } from "./ListBox";
+import { ListBox, ListBoxInternal } from "./ListBox";
 import { Popover } from "./Popover";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronCircleDown } from "@fortawesome/free-solid-svg-icons";
@@ -72,7 +72,7 @@ export function Select<T extends object>(props: AriaSelectProps<T>) {
       </button>
       {state.isOpen && (
         <Popover isOpen={state.isOpen} onClose={state.close}>
-          <ListBox {...menuProps} state={state} />
+          <ListBoxInternal {...menuProps} state={state} />
         </Popover>
       )}
     </div>

@@ -37,6 +37,8 @@ const GameList: React.FC<{ hideBee: boolean }> = ({ hideBee }) => {
   const showTutorialCard = useAppSelector(
     (state) => state.gamelist.showTutorialCard
   );
+  const offline = useAppSelector((state) => state.settings.offline);
+
   const incompleteGames = Object.values(games).filter((game) => !game.gameOver);
   const completedGames = Object.values(games).filter((game) => game.gameOver);
 
@@ -104,7 +106,7 @@ const GameList: React.FC<{ hideBee: boolean }> = ({ hideBee }) => {
             ))}
             {(Object.keys(games).length === 0 || !gamesLoaded) && (
               <div className="p-2">
-                {!gamesLoaded && (
+                {!gamesLoaded && !offline && (
                   <>
                     <FontAwesomeIcon
                       className="mr-2 animate-spin"
@@ -114,6 +116,12 @@ const GameList: React.FC<{ hideBee: boolean }> = ({ hideBee }) => {
                   </>
                 )}
                 {gamesLoaded && <>No games</>}
+                {offline && (
+                  <div className="border-orange-400 rounded border">
+                    <div className="bg-orange-700 text-white p-2">Offline</div>
+                    <div className="p-2">Only local games are available offline</div>
+                  </div>
+                )}
               </div>
             )}
           </ul>

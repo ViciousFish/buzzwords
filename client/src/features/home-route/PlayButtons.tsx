@@ -1,7 +1,12 @@
 import React, { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { faRobot, faSkull, faSpinner, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faRobot,
+  faSkull,
+  faSpinner,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { Popover } from "react-tiny-popover";
@@ -9,6 +14,7 @@ import { Popover } from "react-tiny-popover";
 import { useAppDispatch } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import { createNewAIGame, createNewGame } from "../gamelist/gamelistActions";
+import { CreateGameModal } from "./CreateGameModal";
 
 const DifficultyButton: React.FC<{
   difficultyNumber: number;
@@ -21,7 +27,7 @@ const DifficultyButton: React.FC<{
     variant="dark"
     onClick={onPlayAIClick(difficultyNumber)}
     aria-label={`create ${difficultyName} difficulty game vs bot`}
-    className='px-3 mt-0'
+    className="px-3 mt-0"
   >
     {difficultyName}
     <span className="opacity-75 text-sm ml-1">({difficultyNumber})</span>
@@ -42,6 +48,7 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  const [modalOpen, setModalOpen] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState<false | "bot" | "human">(
     false
@@ -79,64 +86,64 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({
     [navigate, dispatch]
   );
 
-  const popoverContent = (
-    <div className="bg-primary rounded-xl p-2 shadow-lg text-center text-text">
-      <span>Computer Difficulty</span>
-      <div className="flex flex-col">
-        <DifficultyButton
-          autoFocus
-          difficultyName="Beginner"
-          difficultyNumber={1}
-          onPlayAIClick={onPlayAIClick}
-        />
-        <DifficultyButton
-          autoFocus
-          difficultyName="Easy"
-          difficultyNumber={3}
-          onPlayAIClick={onPlayAIClick}
-        />
-        <DifficultyButton
-          autoFocus
-          difficultyName="Medium"
-          difficultyNumber={5}
-          onPlayAIClick={onPlayAIClick}
-        />
-        <DifficultyButton
-          autoFocus
-          difficultyName="Hard"
-          difficultyNumber={6}
-          onPlayAIClick={onPlayAIClick}
-        />
-        <DifficultyButton
-          autoFocus
-          difficultyName="Harder"
-          difficultyNumber={7}
-          onPlayAIClick={onPlayAIClick}
-        />
-        <DifficultyButton
-          autoFocus
-          difficultyName="Expert"
-          difficultyNumber={8}
-          onPlayAIClick={onPlayAIClick}
-        />
-        <DifficultyButton
-          autoFocus
-          difficultyName="Expert+"
-          difficultyNumber={9}
-          onPlayAIClick={onPlayAIClick}
-        />
-        <DifficultyButton
-          autoFocus
-          difficultyName={<><FontAwesomeIcon icon={faSkull} /> Impossible</>}
-          difficultyNumber={10}
-          onPlayAIClick={onPlayAIClick}
-        />
-      </div>
-    </div>
-  );
+  // const popoverContent = (
+  //   <div className="bg-primary rounded-xl p-2 shadow-lg text-center text-text">
+  //     <span>Computer Difficulty</span>
+  //     <div className="flex flex-col">
+  //       <DifficultyButton
+  //         autoFocus
+  //         difficultyName="Beginner"
+  //         difficultyNumber={1}
+  //         onPlayAIClick={onPlayAIClick}
+  //       />
+  //       <DifficultyButton
+  //         autoFocus
+  //         difficultyName="Easy"
+  //         difficultyNumber={3}
+  //         onPlayAIClick={onPlayAIClick}
+  //       />
+  //       <DifficultyButton
+  //         autoFocus
+  //         difficultyName="Medium"
+  //         difficultyNumber={5}
+  //         onPlayAIClick={onPlayAIClick}
+  //       />
+  //       <DifficultyButton
+  //         autoFocus
+  //         difficultyName="Hard"
+  //         difficultyNumber={6}
+  //         onPlayAIClick={onPlayAIClick}
+  //       />
+  //       <DifficultyButton
+  //         autoFocus
+  //         difficultyName="Harder"
+  //         difficultyNumber={7}
+  //         onPlayAIClick={onPlayAIClick}
+  //       />
+  //       <DifficultyButton
+  //         autoFocus
+  //         difficultyName="Expert"
+  //         difficultyNumber={8}
+  //         onPlayAIClick={onPlayAIClick}
+  //       />
+  //       <DifficultyButton
+  //         autoFocus
+  //         difficultyName="Expert+"
+  //         difficultyNumber={9}
+  //         onPlayAIClick={onPlayAIClick}
+  //       />
+  //       <DifficultyButton
+  //         autoFocus
+  //         difficultyName={<><FontAwesomeIcon icon={faSkull} /> Impossible</>}
+  //         difficultyNumber={10}
+  //         onPlayAIClick={onPlayAIClick}
+  //       />
+  //     </div>
+  //   </div>
+  // );
   return (
     <>
-      <Button
+      {/* <Button
         variant={buttonVariant}
         className={classNames(
           mode === "text" || mode === "shorttext"
@@ -184,7 +191,9 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({
           {mode === "text" && <span className="ml-2">Play vs computer</span>}
           {mode === "shorttext" && <span className="ml-2">Computer</span>}
         </Button>
-      </Popover>
+          </Popover> */}
+      <Button onClick={() => setModalOpen(true)}>New Game</Button>
+      {modalOpen && <CreateGameModal onCancel={() => setModalOpen(false)} />}
     </>
   );
 };

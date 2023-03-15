@@ -16,6 +16,7 @@ interface SettingsState {
   preferredDarkTheme: ThemeNames;
   currentSystemScheme: ColorScheme.Dark | ColorScheme.Light;
   lowPowerMode: boolean;
+  offline: boolean;
 }
 
 // Define the initial state using that type
@@ -25,6 +26,7 @@ const initialState: SettingsState = {
   preferredDarkTheme: getPreferredDarkThemeSetting(),
   currentSystemScheme: getCurrentSystemScheme(),
   lowPowerMode: getLowPowerModeSetting(),
+  offline: false,
 };
 
 export const settingsSlice = createSlice({
@@ -48,6 +50,9 @@ export const settingsSlice = createSlice({
     },
     setLowPowerMode: (state, action: PayloadAction<boolean>) => {
       state.lowPowerMode = action.payload;
+    },
+    setOffline: (state, action: PayloadAction<boolean>) => {
+      state.offline = action.payload;
     }
   },
 });
@@ -59,6 +64,7 @@ export const {
   setPreferredDarkTheme,
   setCurrentSystemScheme,
   setLowPowerMode,
+  setOffline,
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;
