@@ -104,6 +104,7 @@ app.use(config.apiPrefix + "/admin", makeAdminRouter());
 app.post(config.apiPrefix + "/logout", async (req, res) => {
   res.clearCookie("authToken");
   const authToken = res.locals.authToken;
+  console.log("🚀 ~ file: server.ts:107 ~ app.post ~ authToken:", authToken);
   const config = getConfig();
   if (config.dbType === "prisma") {
     try {

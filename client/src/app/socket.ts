@@ -13,6 +13,7 @@ import {
 import { SOCKET_DOMAIN, SOCKET_PATH } from "./apiPrefix";
 import { setSocketConnected } from "../features/game/gameSlice";
 import { retrieveAuthToken } from "../features/user/userActions";
+import { logtail } from "./App";
 
 let socket: Socket | null = null;
 
@@ -44,6 +45,8 @@ export const subscribeSocket = (dispatch: AppDispatch) => {
 
   socket.on("error", (e) => {
     if (typeof e === "string" && e.startsWith("rejected socket connection:")) {
+      logtail.error(e);
+      console.error('rejected socket connection:', e)
       alert("Sorry, something went wrong on our end. Reloading");
       location.reload();
       return;
