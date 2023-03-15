@@ -32,12 +32,12 @@ export function Slider({
   );
 
   return (
-    <div {...groupProps} className={`slider ${state.orientation} text-text`}>
+    <div {...groupProps} className={`slider ${state.orientation}`}>
       {/* Create a container for the label and output element. */}
       {props.label && (
         <div className="label-container">
-          <label {...labelProps} className="font-bold text-text">{props.label}</label>
-          <output {...outputProps}>
+          <label {...labelProps} className="font-bold text-text text-sm">{props.label}</label>
+          <output {...outputProps} className="text-text text-sm">
             {customValueFormatter
               ? customValueFormatter(state.values[0])
               : state.getThumbValueLabel(0)}

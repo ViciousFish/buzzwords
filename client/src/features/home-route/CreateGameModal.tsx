@@ -33,11 +33,17 @@ const DIFFICULTY_LABELS = [
 export function CreateGameModal({ onCancel }: PlayModalProps) {
   const hasAccount = useAppSelector((state) => Boolean(state.user.user?.googleId));
   const isOffline = useAppSelector(state => state.settings.offline);
+
   const [mode, setMode] = useState<string | null>(null);
+  const [_cloud, setCloud] = useState(false);
 
   let cloudSubtext = 'Store games in the cloud.'
+  let cloud = _cloud;
 
-  if (isOffline) {
+  if (mode === 'online-human') {
+    cloudSubtext = "Online PVP games are always cloud synced"
+    cloud = true;
+  } else if (isOffline) {
     cloudSubtext += " Unavailable offline."
   } else if (!hasAccount) {
     cloudSubtext += " Log in to sync bot games."
@@ -60,6 +66,7 @@ export function CreateGameModal({ onCancel }: PlayModalProps) {
                 // @ts-expect-error we know we're only using strings
                 keys && setMode(Array.from(keys)[0])
               }
+              disabledKeys={isOffline ? ["online-human"] : []}
             >
               {/* <Section title="Online"> */}
               <Item key="online-human" textValue="Play online vs a human">
@@ -91,15 +98,15 @@ export function CreateGameModal({ onCancel }: PlayModalProps) {
               {/* </Section> */}
             </ListBox>
           </div>
-          <div className="p-2">
-            <Switch isDisabled={mode?.endsWith('human') || isOffline || !hasAccount}>
+          <div className="p-2 rounded-md mt-2">
+            <Switch isSelected={cloud} onChange={setCloud} isDisabled={mode?.endsWith('human') || isOffline || !hasAccount}>
               <div className="flex flex-col">
               <strong>Cloud sync</strong>
               <span>{cloudSubtext}</span>
               </div>
             </Switch>
           </div>
-          <div className="p-2">
+          <div className="p-2 flex justify-center mt-2">
             {mode && mode === 'bot' && (
               <Slider
                 customValueFormatter={(value) => (

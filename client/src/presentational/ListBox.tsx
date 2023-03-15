@@ -137,6 +137,8 @@ function Option({ item, state }) {
       } 
       ${isSelected ? "bg-primary" : ""} ${
         isSelected && !isComplex ? "font-bold" : ""
+      } ${
+        isDisabled ? "opacity-50" : ""
       }`}
       ref={ref}
     >

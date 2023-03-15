@@ -10,7 +10,7 @@ export function Switch(props: ToggleProps) {
 
   return (
     <label
-      className="w-full"
+      className="w-full text-sm"
       style={{
         display: "flex",
         alignItems: "center",

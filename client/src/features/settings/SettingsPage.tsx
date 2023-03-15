@@ -134,7 +134,7 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
         <SettingsPageSection>
           <Switch onChange={toggleLowPowerMode} isSelected={lowPowerMode}>
             <div className="flex items-start w-full flex-col pl-2">
-              <div className="m-0">Low power mode</div>
+              <strong className="m-0">Low power mode</strong>
               <span className="text-xs opacity-75">Disables animations</span>
             </div>
           </Switch>
