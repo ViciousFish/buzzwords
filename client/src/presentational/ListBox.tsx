@@ -110,28 +110,44 @@ function ListBoxSection({ section, state }) {
 function Option({ item, state }) {
   // Get props for the option element
   let ref = React.useRef(null);
-  let { optionProps, isSelected, isDisabled, isFocused } = useOption(
-    { key: item.key },
-    state,
-    ref
-  );
+  let {
+    optionProps,
+    labelProps,
+    descriptionProps,
+    isSelected,
+    isDisabled,
+    isFocused,
+  } = useOption({ key: item.key }, state, ref);
 
   // Determine whether we should show a keyboard
   // focus ring for accessibility
   // let { isFocusVisible, focusProps } = useFocusRing();
+
+  const [title, description] =
+    typeof item.rendered[Symbol.iterator] === "function" ? item.rendered : [];
+  const isComplex = Array.isArray(item.rendered);
 
   return (
     <li
       // {...mergeProps(optionProps, focusProps)}
       {...optionProps}
       className={`m-1 rounded-md py-2 px-2 text-sm outline-none cursor-default flex items-center justify-between 
-      text-darkbrown ${isFocused ? "bg-primary" : ""} ${
-        isSelected ? "font-bold" : ""
+      text-darkbrown border-2 ${
+        isFocused ? "border-primary" : "border-transparent"
+      } 
+      ${isSelected ? "bg-primary" : ""} ${
+        isSelected && !isComplex ? "font-bold" : ""
       }`}
       ref={ref}
     >
       <>
-        {item.rendered}
+        {!isComplex && item.rendered}
+        {isComplex && (
+          <div className="flex flex-col">
+            {title && React.cloneElement(title, labelProps)}
+            {description && React.cloneElement(description, descriptionProps)}
+          </div>
+        )}
         {isSelected && (
           <FontAwesomeIcon
             icon={faCheck}

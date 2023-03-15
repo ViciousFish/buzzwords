@@ -36,7 +36,7 @@ export function Slider({
       {/* Create a container for the label and output element. */}
       {props.label && (
         <div className="label-container">
-          <label {...labelProps}>{props.label}</label>
+          <label {...labelProps} className="font-bold text-text">{props.label}</label>
           <output {...outputProps}>
             {customValueFormatter
               ? customValueFormatter(state.values[0])

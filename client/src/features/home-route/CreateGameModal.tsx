@@ -6,6 +6,7 @@ import { ListBox } from "../../presentational/ListBox";
 import { Item, Section } from "@react-stately/collections";
 import Button from "../../presentational/Button";
 import { Slider } from "../../presentational/Slider";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSkull } from "@fortawesome/free-solid-svg-icons";
 
@@ -30,41 +31,57 @@ const DIFFICULTY_LABELS = [
 
 export function CreateGameModal({ onCancel }: PlayModalProps) {
   const [mode, setMode] = useState<string | null>(null);
-  console.log("🚀 ~ file: PlayModal.tsx:33 ~ PlayModal ~ mode:", mode)
+  console.log("🚀 ~ file: PlayModal.tsx:33 ~ PlayModal ~ mode:", mode);
   return (
     <Modal>
       <div className="rounded-xl bg-lightbg flex-shrink-0 flex flex-col items-stretch overflow-hidden">
-        <div className="p-2 bg-darkbrown text-textInverse">Create Game</div>
+        <div className="p-3 text-xl font-bold">Create Game</div>
         <div className="p-2">
-          <div className="w-[300px]">
-            <ListBox
-              selectionMode="single"
-              selectedKeys={mode ? [mode] : []}
-              onSelectionChange={(keys) => keys && setMode(Array.from(keys)[0])}
-            >
-              <Section title="Online">
-                <Item key="online-human" textValue="Play online vs a human">
-                  Play vs a human
-                </Item>
-                <Item key="online-bot" textValue="Play online vs a bot">
-                  Play vs a bot
-                </Item>
-              </Section>
-              <Section title="Offline">
-                <Item
-                  key="offline-hotseat"
-                  textValue="Play offline vs a human (hotseat)"
-                >
-                  Play vs a human
-                </Item>
-                <Item key="offline-bot" textValue="Play offline vs a bot">
-                  Play vs a bot
-                </Item>
-              </Section>
-            </ListBox>
+          <label>
+            Pick a game type
+            <div className="w-[310px] rounded border border-black">
+              <ListBox
+                selectionMode="single"
+                selectedKeys={mode ? [mode] : []}
+                // @ts-expect-error we know we're only using strings
+                onSelectionChange={(keys) =>
+                  keys && setMode(Array.from(keys)[0])
+                }
+              >
+                <Section title="Online">
+                  <Item key="online-human" textValue="Play online vs a human">
+                    <strong>Play vs a human</strong>
+                    <span>Send your opponent an invite link</span>
+                  </Item>
+                  <Item key="online-bot" textValue="Play online vs a bot">
+                    <strong>Play vs a bot</strong>
+                    <></>
+                  </Item>
+                </Section>
+                <Section title="Offline">
+                  <Item
+                    key="offline-hotseat"
+                    textValue="Play offline vs a human (hotseat)"
+                  >
+                    <strong>Play vs a human</strong>
+                    <span>hotseat on this device</span>
+                  </Item>
+                  <Item key="offline-bot" textValue="Play offline vs a bot">
+                    <strong>Play vs a bot</strong>
+                    <></>
+                  </Item>
+                </Section>
+              </ListBox>
+            </div>
+          </label>
+          <div className="p-2">
             {mode && mode.endsWith("-bot") && (
               <Slider
-                customValueFormatter={(value) => DIFFICULTY_LABELS[value - 1]}
+                customValueFormatter={(value) => (
+                  <>
+                    {DIFFICULTY_LABELS[value - 1]} ({value})
+                  </>
+                )}
                 minValue={1}
                 maxValue={10}
                 step={1}
