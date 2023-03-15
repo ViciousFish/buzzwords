@@ -91,6 +91,8 @@ app.use(async (req, res, next) => {
 
   res.locals.userId = userId;
   res.locals.authToken = authToken;
+  // @ts-expect-error not set
+  req.test = "foo";
   next();
 });
 
@@ -477,12 +479,14 @@ interface SelectionEventProps {
 }
 
 io.on("connection", async (socket) => {
-  const cookies = cookie.parse(socket.handshake.headers.cookie || "");
-  const authToken: string | undefined =
-    socket.handshake.headers.authorization?.split(" ")[1] ?? cookies?.authToken;
+  const cookies = cookie.parse(socket.handshake.auth.cookie ?? "");
+  const authToken = cookieParser.signedCookie(
+    cookies.authToken,
+    config.cookieSecret
+  );
 
   if (!authToken) {
-    console.log("socket missing authorization header");
+    console.log("socket missing authToken");
     socket.emit("error", "rejected socket connection: no authToken provided");
     return;
   }
@@ -532,7 +536,8 @@ io.on("connection", async (socket) => {
 
     if (!userId) {
       console.log(
-        "rejected socket connection: couldn't find userId from token"
+        "rejected socket connection: couldn't find userId from token",
+        authToken
       );
       socket.emit("error", "rejected socket connection: couldn't find userId");
       return;

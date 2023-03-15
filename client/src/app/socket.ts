@@ -25,9 +25,12 @@ interface SelectionEventProps {
 export const subscribeSocket = (dispatch: AppDispatch) => {
   socket = io(SOCKET_DOMAIN, {
     path: SOCKET_PATH,
-    extraHeaders: {
-      Authorization: `Bearer ${retrieveAuthToken()}`,
+    auth: {
+      cookie: document.cookie
     },
+    // extraHeaders: {
+    //   Authorization: `Bearer ${retrieveAuthToken()}`,
+    // },
   });
   socket.io.on("close", () => {
     dispatch(setSocketConnected(false));
@@ -45,7 +48,7 @@ export const subscribeSocket = (dispatch: AppDispatch) => {
   socket.on("error", (e) => {
     if (typeof e === "string" && e.startsWith("rejected socket connection:")) {
       alert("Sorry, something went wrong on our end. Reloading");
-      location.reload();
+      // location.reload();
       return;
     }
     toast("error: " + e, {
