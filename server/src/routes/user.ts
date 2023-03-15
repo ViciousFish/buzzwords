@@ -38,9 +38,13 @@ export default (io: Server): Router => {
       res.locals.userId = userId;
     }
     // migrate cookie users to local by echoing back their authToken
-    if (!req.headers.authorization && req.signedCookies.authToken) {
-      authToken = req.signedCookies.authToken;
-    }
+    // if (!req.headers.authorization && req.signedCookies.authToken) {
+    //   authToken = req.signedCookies.authToken;
+    // }
+    res.cookie("authToken", authToken, {
+      expires: new Date(253402300000000),
+      signed: true,
+    });
     const user =
       getConfig().dbType === "prisma"
         ? await prisma.user.findUnique({
@@ -52,7 +56,6 @@ export default (io: Server): Router => {
     res.send({
       id: userId,
       ...user,
-      authToken,
     });
   });
 

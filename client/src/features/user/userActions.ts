@@ -13,11 +13,7 @@ interface ApiUser extends User {
 export const getUser = (): AppThunk => async (dispatch) => {
   const { data: user } = await Api.get<ApiUser>(getApiUrl("/user"));
 
-  if (user.authToken) {
-    storeAuthToken(user.authToken);
-  }
-
-  dispatch(userReceived(R.omit(["authToken"], user)));
+  dispatch(userReceived(user));
 };
 
 const ELECTRON = Boolean(window.versions);

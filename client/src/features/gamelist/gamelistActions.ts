@@ -27,6 +27,7 @@ import { initiateReplay, maybeShowNudge } from "../game/gameActions";
 import chord from "../../assets/ding.mp3?url";
 import { batch } from "react-redux";
 import { Api } from "../../app/Api";
+import { AxiosError } from "axios";
 
 const gameUpdateEventGetGameStateModalType = (
   game: Game,
@@ -67,7 +68,12 @@ export const refresh = (): AppThunk => async (dispatch, getState) => {
     );
     dispatch(refreshReceived(gamesById));
   } catch (e) {
-    toast(e.response?.data?.message ?? e.toString(), { type: "error" });
+    toast(
+      (e as AxiosError).response?.data?.message ??
+        (e as AxiosError).response?.status ??
+        "something went wrong refreshing",
+      { type: "error" }
+    );
   }
 };
 

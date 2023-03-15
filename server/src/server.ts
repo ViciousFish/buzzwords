@@ -81,6 +81,14 @@ app.use(async (req, res, next) => {
     userId = authToken ? await dl.getUserIdByAuthToken(authToken) : null;
   }
 
+  // upgrade user's localstorage auth to cookie auth
+  if (authToken && !cookies.authToken) {
+    res.cookie("authToken", authToken, {
+      expires: new Date(253402300000000),
+      signed: true,
+    });
+  }
+
   res.locals.userId = userId;
   res.locals.authToken = authToken;
   next();
