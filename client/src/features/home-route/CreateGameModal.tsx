@@ -9,6 +9,7 @@ import { Slider } from "../../presentational/Slider";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSkull } from "@fortawesome/free-solid-svg-icons";
+import { useAppSelector } from "../../app/hooks";
 
 interface PlayModalProps {
   onCancel: () => void;
@@ -30,52 +31,76 @@ const DIFFICULTY_LABELS = [
 ];
 
 export function CreateGameModal({ onCancel }: PlayModalProps) {
+  const hasAccount = useAppSelector((state) => Boolean(state.user.user?.googleId));
+  const isOffline = useAppSelector(state => state.settings.offline);
   const [mode, setMode] = useState<string | null>(null);
-  console.log("🚀 ~ file: PlayModal.tsx:33 ~ PlayModal ~ mode:", mode);
+
+  let cloudSubtext = 'Store games in the cloud.'
+
+  if (isOffline) {
+    cloudSubtext += " Unavailable offline."
+  } else if (!hasAccount) {
+    cloudSubtext += " Log in to sync bot games."
+  }
+
   return (
     <Modal>
       <div className="rounded-xl bg-lightbg flex-shrink-0 flex flex-col items-stretch overflow-hidden">
         <div className="p-3 text-xl font-bold">Create Game</div>
         <div className="p-2">
-          <label>
+          {/* <label className="ml-2" htmlFor="game-picker">
             Pick a game type
-            <div className="w-[310px] rounded border border-black">
-              <ListBox
-                selectionMode="single"
-                selectedKeys={mode ? [mode] : []}
+          </label> */}
+          <div className="min-w-[310px] rounded-md border border-black/50">
+            <ListBox
+              id="game-picker"
+              selectionMode="single"
+              selectedKeys={mode ? [mode] : []}
+              onSelectionChange={(keys) =>
                 // @ts-expect-error we know we're only using strings
-                onSelectionChange={(keys) =>
-                  keys && setMode(Array.from(keys)[0])
-                }
+                keys && setMode(Array.from(keys)[0])
+              }
+            >
+              {/* <Section title="Online"> */}
+              <Item key="online-human" textValue="Play online vs a human">
+                <strong>Online against a human</strong>
+                <span>Send your opponent an invite link</span>
+              </Item>
+              <Item
+                key="offline-human"
+                textValue="Play offline vs a human (hotseat)"
               >
-                <Section title="Online">
-                  <Item key="online-human" textValue="Play online vs a human">
-                    <strong>Play vs a human</strong>
-                    <span>Send your opponent an invite link</span>
-                  </Item>
-                  <Item key="online-bot" textValue="Play online vs a bot">
-                    <strong>Play vs a bot</strong>
-                    <></>
-                  </Item>
-                </Section>
-                <Section title="Offline">
-                  <Item
-                    key="offline-hotseat"
-                    textValue="Play offline vs a human (hotseat)"
-                  >
-                    <strong>Play vs a human</strong>
-                    <span>hotseat on this device</span>
-                  </Item>
-                  <Item key="offline-bot" textValue="Play offline vs a bot">
-                    <strong>Play vs a bot</strong>
-                    <></>
-                  </Item>
-                </Section>
-              </ListBox>
-            </div>
-          </label>
+                <strong>Offline against a human</strong>
+                <span>Hotseat on this device</span>
+              </Item>
+              <Item key="bot" textValue="Play online vs a bot">
+                <strong>Against a bot</strong>
+                <span></span>
+              </Item>
+              {/* <Item key="online-bot" textValue="Play online vs a bot">
+                  <strong>Offline against a bot</strong>
+                  <span>Play locally</span>
+                </Item> */}
+              {/* </Section>
+                <Section title="Offline"> */}
+
+              {/* <Item key="offline-bot" textValue="Play offline vs a bot">
+                  <strong>Play vs a bot</strong>
+                  <></>
+                </Item> */}
+              {/* </Section> */}
+            </ListBox>
+          </div>
           <div className="p-2">
-            {mode && mode.endsWith("-bot") && (
+            <Switch isDisabled={mode?.endsWith('human') || isOffline || !hasAccount}>
+              <div className="flex flex-col">
+              <strong>Cloud sync</strong>
+              <span>{cloudSubtext}</span>
+              </div>
+            </Switch>
+          </div>
+          <div className="p-2">
+            {mode && mode === 'bot' && (
               <Slider
                 customValueFormatter={(value) => (
                   <>
