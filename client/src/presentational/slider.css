@@ -4,7 +4,7 @@
 
 .slider.horizontal {
   flex-direction: column;
-  width: 300px;
+  width: 320px;
 }
 
 .slider.vertical {
@@ -26,7 +26,7 @@
   content: attr(x);
   display: block;
   position: absolute;
-  background: gray;
+  background: var(--secondaryAccent);
 }
 
 .slider.horizontal .track:before {
@@ -52,11 +52,12 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: gray;
+  background: var(--primaryAccent);
+  border: 2px solid var(--lightbg);
 }
 
 .thumb.dragging {
-  background: dimgray;
+  box-shadow: 1px 1px 2px rgba(0,0,0,.3);
 }
 
 .thumb.focus {
