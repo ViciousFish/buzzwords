@@ -1,5 +1,6 @@
 import reactRefresh from "@vitejs/plugin-react-refresh";
 import electron from "vite-plugin-electron";
+import { VitePWA } from "vite-plugin-pwa";
 import { rmSync } from "fs";
 import { join } from "path";
 import { defineConfig, Plugin, UserConfig } from "vite";
@@ -21,20 +22,26 @@ rmSync("dist", { recursive: true, force: true }); // v14.14.0
 export default ({ command, mode }) => {
   return defineConfig({
     assetsInclude: ["**/*.gltf"],
-    server: {
-      proxy: {
-        "/api": {
-          target: "http://localhost:8080",
-          ws: true,
-        },
-        "/socket.io": {
-          target: "http://localhost:8080",
-          ws: true,
-        },
-      },
-    },
+    // server: {
+    //   proxy: {
+    //     "/api": {
+    //       target: "http://localhost:8080",
+    //       ws: true,
+    //     },
+    //     "/socket.io": {
+    //       target: "http://localhost:8080",
+    //       ws: true,
+    //     },
+    //   },
+    // },
     plugins: [
       reactRefresh(),
+      VitePWA({
+        registerType: "autoUpdate",
+        devOptions: {
+          enabled: true, // disable
+        },
+      }),
       process.env.DESKTOP
         ? electron({
             main: {
