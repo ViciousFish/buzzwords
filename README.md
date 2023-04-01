@@ -17,7 +17,13 @@ API_PREFIX=/api
 DB_TYPE=prisma
 ```
 1. run `yarn` in this folder
-2. run `yarn dev` in this folder
+2. in `./server`, run the following commands
+```
+yarn prisma generate # only needed first time
+yarn prisma db push  # only needed first time
+yarn dev
+```   
+3. simultaneously, run `yarn dev` in `./client`
 4. go to http://localhost:5173/ in your browser
 
 If `DB_TYPE` is not provided, the server stores all its data in memory only. 

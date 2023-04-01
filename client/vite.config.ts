@@ -22,18 +22,18 @@ rmSync("dist", { recursive: true, force: true }); // v14.14.0
 export default ({ command, mode }) => {
   return defineConfig({
     assetsInclude: ["**/*.gltf"],
-    // server: {
-    //   proxy: {
-    //     "/api": {
-    //       target: "http://localhost:8080",
-    //       ws: true,
-    //     },
-    //     "/socket.io": {
-    //       target: "http://localhost:8080",
-    //       ws: true,
-    //     },
-    //   },
-    // },
+    server: {
+      proxy: {
+        "/api": {
+          target: "http://localhost:8080",
+          ws: true,
+        },
+        "/socket.io": {
+          target: "http://localhost:8080",
+          ws: true,
+        },
+      },
+    },
     plugins: [
       reactRefresh(),
       VitePWA({
