@@ -11,17 +11,22 @@ https://twitter.com/BuzzwordsGG
 
 ## Running the code for development
 
-0. drop a `.env` file in `./server` with `API_PREFIX=/api`
+0. drop a `.env` file in `./server` with the following contents
+```
+API_PREFIX=/api
+DB_TYPE=prisma
+```
 1. run `yarn` in this folder
 2. run `yarn dev` in this folder
 4. go to http://localhost:5173/ in your browser
 
-By default, the server stores all its data in memory only. To use mongo, drop a .env file in `./server` with 
+If `DB_TYPE` is not provided, the server stores all its data in memory only. 
+
+To use mongo, edit the server `.env` file like this
 ```
 DB_TYPE=mongo
 MONGO_URL=<your connection string>
 ```
-
 Because we're using transactions, your mongo must be a replica set. We're using Atlas for this reason.
 
 
