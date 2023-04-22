@@ -12,9 +12,11 @@ import cors from "cors";
 import passport from "passport";
 import { OAuth2Strategy } from "passport-google-oauth";
 import urljoin from "url-join";
+import { createClient } from "edgedb";
 import { PrismaClient } from "@prisma/client";
+import e from "../dbschema/edgeql-js";
 
-import getConfig from "./config";
+import getConfig, { DbType } from "./config";
 import dl from "./datalayer";
 import { User } from "./types";
 import { isAnonymousUser } from "./util";
@@ -41,6 +43,7 @@ const io = new Server(server, {
   },
 });
 const mongoClient = new MongoClient(config.mongoUrl, {});
+const client = createClient();
 
 app.use(
   morgan("dev", {
@@ -64,7 +67,7 @@ app.use(async (req, res, next) => {
   const bearerToken = req.headers.authorization?.split(" ")[1] ?? null;
   const authToken: string | null = bearerToken || cookies.authToken || null;
   let userId: string | null;
-  if (config.dbType === "prisma") {
+  if (config.dbType === DbType.Prisma) {
     userId = authToken
       ? (
           await prisma.authToken.findUnique({
@@ -97,7 +100,9 @@ app.get(config.apiPrefix + "/", (req, res) => {
 app.use(config.apiPrefix + "/user", makeUserRouter(io));
 app.use(
   config.apiPrefix + "/game",
-  config.dbType === "prisma" ? makePrismaGameRouter(io) : makeGameRouter(io)
+  config.dbType === DbType.Prisma
+    ? makePrismaGameRouter(io)
+    : makeGameRouter(io)
 );
 app.use(config.apiPrefix + "/admin", makeAdminRouter());
 
@@ -105,7 +110,7 @@ app.post(config.apiPrefix + "/logout", async (req, res) => {
   res.clearCookie("authToken");
   const authToken = res.locals.authToken;
   const config = getConfig();
-  if (config.dbType === "prisma") {
+  if (config.dbType === DbType.Prisma) {
     try {
       const result = await prisma.authToken.delete({
         where: {
@@ -142,7 +147,7 @@ app.post(config.apiPrefix + "/login/google", async (req, res) => {
 
   const stateId = nanoid(40);
 
-  if (config.dbType === "prisma") {
+  if (config.dbType === DbType.Prisma) {
     try {
       await prisma.authToken.update({
         where: {
@@ -229,17 +234,17 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser((id: string, done) => {
   console.log("DESERIALIZE", id);
-  if (config.dbType === "prisma") {
+  if (config.dbType === DbType.Prisma) {
     prisma.user
       .findUnique({
         where: {
           id,
         },
       })
-      .then((user) => {
+      .then((user: any) => {
         done(null, user);
       })
-      .catch((err) => {
+      .catch((err: any) => {
         done(err);
       });
   } else {
@@ -282,8 +287,8 @@ if (config.googleClientId && config.googleClientSecret) {
         }
         const { stateId } = res;
 
-        if (config.dbType === "prisma") {
-          prisma.$transaction(async (tx) => {
+        if (config.dbType === DbType.Prisma) {
+          prisma.$transaction(async (tx: any) => {
             const authToken = await tx.authToken.findUnique({
               where: {
                 state: stateId,
@@ -328,7 +333,7 @@ if (config.googleClientId && config.googleClientSecret) {
                       googleId: profile.id,
                     },
                   })
-                  .catch((err) => {
+                  .catch((err: any) => {
                     done(err);
                   })) || null;
 
@@ -379,7 +384,7 @@ if (config.googleClientId && config.googleClientSecret) {
                     id: authToken.userId,
                   },
                 })
-                .catch((err) => {
+                .catch((err: any) => {
                   done(err);
                   return;
                 });
@@ -479,7 +484,7 @@ io.on("connection", async (socket) => {
     return;
   }
 
-  if (config.dbType === "prisma") {
+  if (config.dbType === DbType.Prisma) {
     const userId = (
       await prisma.authToken.findUnique({
         where: {
@@ -551,7 +556,7 @@ io.on("connection", async (socket) => {
 });
 
 const main = async () => {
-  if (config.dbType === "mongo") {
+  if (config.dbType === DbType.Mongo) {
     await runMigrations();
     await mongoClient.connect();
     try {
@@ -567,7 +572,7 @@ const main = async () => {
       .collection(COLLECTION);
     io.adapter(createAdapter(mongoCollection));
   }
-  if (config.dbType === "prisma") {
+  if (config.dbType === DbType.Prisma) {
     await prisma.user.upsert({
       where: {
         id: "AI",
@@ -579,6 +584,24 @@ const main = async () => {
       update: {},
     });
   }
+  // const userInsertion = e.insert(e.User, {
+  //   nickname: "chuck",
+  //   id: "QARA1hAlyIG7OVTnP0754",
+  // });
+  // const query = e.select(e.User, () => ({
+  //   id: true,
+  //   nickname: true,
+  // }));
+  // client.transaction(async (tx) => {
+  //   await userInsertion.run(tx);
+  //   const result = await query.run(tx);
+  //   console.log("result", result);
+  // });
+  const q = e.select(e.User, () => ({
+    ...e.User["*"],
+  }));
+  const result = await q.run(client);
+  console.log("result", result);
   server.listen(config.port, () => {
     console.log("Server listening on port", config.port);
   });

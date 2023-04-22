@@ -6,7 +6,7 @@ import { PrismaClient } from "@prisma/client";
 
 import dl from "../datalayer";
 import BannedWords from "../banned_words.json";
-import getConfig from "../config";
+import getConfig, { DbType } from "../config";
 
 const prisma = new PrismaClient();
 
@@ -19,7 +19,7 @@ export default (io: Server): Router => {
     if (!userId) {
       userId = nanoid();
       authToken = nanoid(40);
-      if (getConfig().dbType === "prisma") {
+      if (getConfig().dbType === DbType.Prisma) {
         await prisma.authToken.create({
           data: {
             token: authToken,
@@ -42,7 +42,7 @@ export default (io: Server): Router => {
       authToken = req.signedCookies.authToken;
     }
     const user =
-      getConfig().dbType === "prisma"
+      getConfig().dbType === DbType.Prisma
         ? await prisma.user.findUnique({
             where: {
               id: userId,
@@ -71,7 +71,7 @@ export default (io: Server): Router => {
       });
       return;
     }
-    if (getConfig().dbType === "prisma") {
+    if (getConfig().dbType === DbType.Prisma) {
       await prisma.user
         .update({
           where: {
@@ -103,7 +103,7 @@ export default (io: Server): Router => {
 
   userRouter.get("/:id", async (req, res) => {
     const nickname =
-      getConfig().dbType === "prisma"
+      getConfig().dbType === DbType.Prisma
         ? (await prisma.user.findUnique({ where: { id: req.params.id } }))
             ?.nickname
         : await dl.getNickName(req.params.id);

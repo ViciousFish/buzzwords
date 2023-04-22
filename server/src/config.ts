@@ -1,7 +1,15 @@
 import dotenv from "dotenv";
+
+export enum DbType {
+  Mongo,
+  Memory,
+  Edgedb,
+  Prisma,
+}
+
 interface Config {
   port: string;
-  dbType: string;
+  dbType: DbType;
   mongoUrl: string;
   mongoDbName: string;
   cookieSecret: string;
@@ -14,11 +22,26 @@ interface Config {
   adminApiKey: string;
 }
 
+function getDbType(db_string: string) {
+  switch (db_string) {
+    case "mongo":
+      return DbType.Mongo;
+    case "memory":
+      return DbType.Memory;
+    case "prisma":
+      return DbType.Prisma;
+    case "edgedb":
+      return DbType.Edgedb;
+    default:
+      throw "invalid db type";
+  }
+}
+
 export const getConfig = (): Config => {
   dotenv.config();
   return {
     port: process.env.PORT || "8080",
-    dbType: process.env.DB_TYPE || "memory",
+    dbType: getDbType(process.env.DB_TYPE || "memory"),
     mongoUrl: process.env.MONGO_URL || "mongodb://localhost/dev",
     mongoDbName: process.env.MONGO_DB_NAME || "buzzwords",
     cookieSecret: process.env.COOKIE_SECRET || "CHANGE_ME_IN_PRODUCTION",

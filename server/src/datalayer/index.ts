@@ -1,6 +1,6 @@
 import Memory from "./memory";
 import Mongo from "./mongo";
-import getConfig from "../config";
+import getConfig, { DbType } from "../config";
 
 import { DataLayer } from "../types";
 
@@ -8,15 +8,20 @@ const config = getConfig();
 
 let dl: DataLayer;
 switch (config.dbType) {
-  case "memory":
+  case DbType.Memory:
     dl = new Memory();
     break;
 
-  case "mongo":
+  case DbType.Mongo:
     dl = new Mongo();
     break;
 
-  case "prisma":
+  case DbType.Edgedb:
+    console.log("edge!");
+    dl = new Memory();
+    break;
+
+  case DbType.Prisma:
     dl = new Memory();
     break;
 
