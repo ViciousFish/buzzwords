@@ -46,6 +46,13 @@
       data-domain="buzzwords.gg"
       src="https://analytics.chuckdries.com/js/plausible.local.js"
     ></script>
+    <script>
+      window.plausible =
+        window.plausible ||
+        function () {
+          (window.plausible.q = window.plausible.q || []).push(arguments);
+        };
+    </script>
   </head>
   <body>
     <div id="root"></div>

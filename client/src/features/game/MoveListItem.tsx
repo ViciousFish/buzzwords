@@ -132,6 +132,11 @@ const MoveListItem: React.FC<MoveListItemProps> = ({
               return dispatch(clearReplay());
             }
             dispatch(initiateReplay(index));
+            try {
+              window.plausible('Replay');
+            } catch (e) {
+              // do nothing
+            }
             setIsOpen(false);
             onInitiateReplay();
           }}
