@@ -54,13 +54,13 @@ export function CreateGameModal({ onCancel }: PlayModalProps) {
 
   return (
     <Modal>
-      <div className="rounded-xl bg-lightbg flex-shrink-0 flex flex-col items-stretch overflow-hidden">
+      <div className="w-[min(400px,99vw)] rounded-xl bg-lightbg flex-shrink-0 flex flex-col items-stretch overflow-hidden">
         <div className="p-3 text-xl font-bold">Create Game</div>
         <div className="p-2">
           {/* <label className="ml-2" htmlFor="game-picker">
             Pick a game type
           </label> */}
-          <div className="min-w-[310px] rounded-md border border-black/50">
+          <div className="rounded-md border border-black/50">
             <ListBox
               id="game-picker"
               selectionMode="single"

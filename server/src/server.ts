@@ -62,7 +62,7 @@ app.use(cookieParser(config.cookieSecret));
 app.use(async (req, res, next) => {
   const cookies = req.signedCookies || {};
   const bearerToken = req.headers.authorization?.split(" ")[1] ?? null;
-  const authToken: string | null = bearerToken || cookies.authToken || null;
+  const authToken: string | null = cookies.authToken || bearerToken || null;
   let userId: string | null;
   if (config.dbType === "prisma") {
     userId = authToken

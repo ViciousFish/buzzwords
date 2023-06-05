@@ -4,6 +4,7 @@ import { VitePWA } from "vite-plugin-pwa";
 import { rmSync } from "fs";
 import { join } from "path";
 import { defineConfig, Plugin, UserConfig } from "vite";
+import { theme } from "./src/app/theme";
 // import pkg from "./package.json";
 
 rmSync("dist", { recursive: true, force: true }); // v14.14.0
@@ -37,9 +38,52 @@ export default ({ command, mode }) => {
     plugins: [
       reactRefresh(),
       VitePWA({
-        registerType: "autoUpdate",
-        devOptions: {
-          enabled: true, // disable
+        // CQ TODO: figure out what these do
+        // registerType: "autoUpdate",
+        // devOptions: {
+        //   enabled: true, // disable
+        // },
+
+        // all below are from https://adueck.github.io/blog/caching-everything-for-totally-offline-pwa-vite-react/
+        // add this to cache all the imports
+        workbox: {
+          globPatterns: ["**/*"],
+        },
+        // add this to cache all the
+        // static assets in the public folder
+        includeAssets: ["**/*"],
+        manifest: {
+          theme_color: theme.light.colors.html.primaryAccent,
+          background_color: theme.light.colors.html.primaryAccent,
+          display: "standalone",
+          scope: "/",
+          start_url: "/",
+          short_name: "Buzzwords",
+          description: "Hexagonal word game",
+          name: "Buzzwords.gg",
+          // CQ TODO: do icons
+          // icons: [
+          //   {
+          //     src: "/icon-192x192.png",
+          //     sizes: "192x192",
+          //     type: "image/png",
+          //   },
+          //   {
+          //     src: "/icon-256x256.png",
+          //     sizes: "256x256",
+          //     type: "image/png",
+          //   },
+          //   {
+          //     src: "/icon-384x384.png",
+          //     sizes: "384x384",
+          //     type: "image/png",
+          //   },
+          //   {
+          //     src: "/icon-512x512.png",
+          //     sizes: "512x512",
+          //     type: "image/png",
+          //   },
+          // ],
         },
       }),
       process.env.DESKTOP

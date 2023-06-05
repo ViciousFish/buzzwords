@@ -22,6 +22,18 @@ export default (io: Server) => {
   const router = express.Router();
   router.get("/", async (req, res) => {
     const userId = res.locals.userId as string;
+    if (userId === null) {
+      console.log(
+        "userId is null when attempted to fetch games. authToken:",
+        res.locals.authToken
+      );
+      res.status(500);
+      res.send({
+        message:
+          "Something went wrong fetching games: 'userId is null'. Please file a github issue.",
+      });
+      return;
+    }
     const gameUsers = await prisma.gameUser.findMany({
       where: {
         user_id: userId,
