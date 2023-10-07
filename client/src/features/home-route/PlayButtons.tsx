@@ -9,6 +9,10 @@ import { Popover } from "react-tiny-popover";
 import { useAppDispatch } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import { createNewAIGame, createNewGame } from "../gamelist/gamelistActions";
+import Canvas from "../canvas/Canvas";
+import { IconWatch01 } from "../../assets/IconWatch01";
+import { SMIconTick01 } from "../../assets/SM_Icon_Tick_01";
+import { TimerButton } from "./TimerButton";
 
 const DifficultyButton: React.FC<{
   difficultyNumber: number;
@@ -41,6 +45,8 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const [isTimerEnabled, setIsTimerEnabled] = useState(true);
 
   const [showOptions, setShowOptions] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState<false | "bot" | "human">(
@@ -185,6 +191,8 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({
           {mode === "shorttext" && <span className="ml-2">Computer</span>}
         </Button>
       </Popover>
+
+      <TimerButton value={isTimerEnabled} onChange={setIsTimerEnabled} />
     </>
   );
 };

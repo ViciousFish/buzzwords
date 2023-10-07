@@ -6,6 +6,7 @@ import HexWord from "../thereed-lettering/HexWord";
 import PlayButtons from "./PlayButtons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { IconWatch01 } from "../../assets/IconWatch01";
 
 const Home: React.FC = () => {
   const { progress } = useProgress();
@@ -25,7 +26,7 @@ const Home: React.FC = () => {
           </React.Suspense>
         </Canvas>
       </div>
-      <div className="flex justify-center items-start text-2xl">
+      <div className="flex justify-center items-center text-2xl">
         <PlayButtons mode="text" buttonClasses="p-4"/>
       </div>
     </>
