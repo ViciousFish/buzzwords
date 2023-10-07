@@ -12,7 +12,7 @@ import Button from "../../presentational/Button";
 import CopyToClipboard from "../../presentational/CopyToClipboard";
 import { forfeitGame } from "../gamelist/gamelistActions";
 import { getAllUsers } from "../user/userSelectors";
-import { getGameUrl } from "./Play";
+import { getGameUrl } from "./PlayGame";
 
 interface GameMenuProps {
   id: string;

@@ -49,7 +49,7 @@ FaviconNotification.init({
 const MM = window.matchMedia("(prefers-color-scheme: dark)");
 
 const HomeLazy = lazy(() => import("../features/home-route/Home"));
-const PlayLazy = lazy(() => import("../features/play-route/Play"));
+const PlayLazy = lazy(() => import("../features/play-game-route/PlayGame"));
 const AuthSuccessLazy = lazy(
   () => import("../features/auth-route/AuthSuccess")
 );

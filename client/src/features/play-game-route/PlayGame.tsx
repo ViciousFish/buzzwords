@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import urljoin from "url-join";
 import * as R from "ramda";
 
@@ -34,10 +34,11 @@ export const getGameUrl = (id: string) => {
 
 const PLAY_BREAKPOINTS = R.pick(["xs", "md"], BREAKPOINTS);
 
-const Play: React.FC = () => {
+const PlayGame: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const game = useAppSelector((state) =>
     id ? state.gamelist.games[id] : null
@@ -66,14 +67,17 @@ const Play: React.FC = () => {
 
   useEffect(() => {
     if (id) {
-      console.log("set current game", id);
+      console.log('id!', id)
       dispatch(setCurrentGame(id));
       dispatch(markGameAsSeen(id));
+    } else {
+      alert("no id!")
+      navigate('/')
     }
     return () => {
       dispatch(setCurrentGame(null));
     };
-  }, [dispatch, id]);
+  }, [dispatch, navigate, id]);
 
   useEffect(() => {
     if (!gameLoadingState && id) {
@@ -188,4 +192,4 @@ const Play: React.FC = () => {
   );
 };
 
-export default React.memo(Play);
+export default React.memo(PlayGame);
