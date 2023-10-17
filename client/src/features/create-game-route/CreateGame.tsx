@@ -39,25 +39,30 @@ function GameType({
     <Item
       id={value}
       aria-label={title}
-      className={({ isSelected, isDisabled, isFocusVisible }) =>
+      className={({ isSelected, isDisabled, isFocusVisible, isFocused }) =>
         classNames(
+          isFocused && "outline",
           isFocusVisible && "outline",
-          isSelected ? "bg-primary" : "bg-white/30",
-          isDisabled && "opacity-40",
-          "flex justify-between items-center p-8 rounded-xl shadow-lg overflow-hidden",
+          isSelected ? "bg-primary" : "bg-white/40",
+          isDisabled && "opacity-50",
+          "flex box-border justify-between items-center p-8 rounded-xl shadow-lg overflow-hidden",
           "my-8 first:mt-0 last:mb-0"
         )
       }
     >
-      <div className="flex flex-col">
-        <Text slot="label" className="text-2xl font-bold">
-          {title}
-        </Text>
-        <Text slot="description">{subtitle}</Text>
-      </div>
-      <div className="flex flex-row flex-nowrap shrink-0 ml-2 gap-2 opacity-60">
-        {icon}
-      </div>
+      {({ isSelected }) => (
+        <>
+          <div className="flex flex-col">
+            <Text slot="label" className={classNames(isSelected && "underline","text-2xl font-bold")}>
+              {title}
+            </Text>
+            <Text slot="description">{subtitle}</Text>
+          </div>
+          <div className="flex flex-row flex-nowrap shrink-0 ml-2 gap-2 opacity-60">
+            {icon}
+          </div>
+        </>
+      )}
     </Item>
   );
 }
@@ -80,7 +85,7 @@ const DifficultyLabels = [
 const PLAY_BREAKPOINTS = pick(["xs", "lg"], BREAKPOINTS);
 
 function CreateGame() {
-  const [selectedMode, setSelectedMode] = useState<string | null>(null);
+  const [selectedMode, setSelectedMode] = useState<string>("offline-bot");
   const [difficulty, setDifficulty] = useState(5);
   const loggedIn = useAppSelector((state) =>
     Boolean(state.user.user?.googleId)
@@ -120,8 +125,18 @@ function CreateGame() {
             }
             aria-label="Pick a game type"
             selectionMode="single"
+            selectedKeys={[selectedMode]}
             disabledKeys={!loggedIn ? ["online-bot"] : []}
           >
+            <GameType
+              value="offline-bot"
+              title="Offline against a bot"
+              icon={
+                <>
+                  <FontAwesomeIcon size="2x" icon={faRobot} />
+                </>
+              }
+            />
             <GameType
               value="online-pvp"
               title="Online against a human"
@@ -158,15 +173,6 @@ function CreateGame() {
                 </>
               }
             />
-            <GameType
-              value="offline-bot"
-              title="Offline against a bot"
-              icon={
-                <>
-                  <FontAwesomeIcon size="2x" icon={faRobot} />
-                </>
-              }
-            />
           </ListBox>
         </div>
         <div
@@ -175,44 +181,53 @@ function CreateGame() {
             currentBreakpoint === "lg" && "w-full ml-0"
           )}
         >
-          {selectedMode && selectedMode.endsWith("bot") && (
-            <div className="mx-1 relative self-stretch bg-white/30 p-3 rounded-xl shadow-lg">
-              <Slider
-                value={difficulty}
-                // @ts-ignore
-                onChange={setDifficulty}
-                minValue={1}
-                maxValue={10}
-                className="w-full p-2 flex flex-col gap-2"
-              >
-                <div className="flex justify-between">
-                  <Label>Difficulty</Label>
-                  <SliderOutput>
-                    {({ state }) =>
-                      state.values.map((val) => (
-                        <>
-                          {val} {DifficultyLabels[val - 1]}
-                        </>
-                      ))
-                    }
-                  </SliderOutput>
-                </div>
-                <SliderTrack className="border border-gray-900 mt-2">
-                  <SliderThumb
-                    className={({ isFocusVisible }) =>
-                      classNames(
-                        isFocusVisible && "outline",
-                        "topbar w-[25px] h-[25px] rounded-full shadow"
-                      )
-                    }
-                  />
-                </SliderTrack>
-              </Slider>
-            </div>
-          )}
           {selectedMode && (
-            <div className="flex justify-center">
-              <Button className="p-4 text-2xl font-bold">Play <FontAwesomeIcon icon={faCaretRight} /></Button>
+            <div
+              className={classNames(
+                selectedMode.endsWith("bot") && "bg-white/40 shadow-lg",
+                "p-3 rounded-xl"
+              )}
+            >
+              {selectedMode && selectedMode.endsWith("bot") && (
+                <div className="p-3 relative self-stretch">
+                  <Slider
+                    value={difficulty}
+                    // @ts-ignore
+                    onChange={setDifficulty}
+                    minValue={1}
+                    maxValue={10}
+                    className="w-full p-2 flex flex-col gap-2"
+                  >
+                    <div className="flex justify-between">
+                      <Label>Difficulty</Label>
+                      <SliderOutput>
+                        {({ state }) =>
+                          state.values.map((val) => (
+                            <>
+                              {val} {DifficultyLabels[val - 1]}
+                            </>
+                          ))
+                        }
+                      </SliderOutput>
+                    </div>
+                    <SliderTrack className="border border-gray-900 mt-2">
+                      <SliderThumb
+                        className={({ isFocusVisible }) =>
+                          classNames(
+                            isFocusVisible && "outline",
+                            "topbar w-[25px] h-[25px] rounded-full shadow"
+                          )
+                        }
+                      />
+                    </SliderTrack>
+                  </Slider>
+                </div>
+              )}
+              <div className="flex justify-center">
+                <Button className="p-4 text-2xl font-bold focus:outline">
+                  Play <FontAwesomeIcon icon={faCaretRight} />
+                </Button>
+              </div>
             </div>
           )}
         </div>
