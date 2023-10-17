@@ -65,7 +65,7 @@ const dark: Theme = {
       text: "white",
       textSubtle: "#333333",
       textInverse: "black",
-      textLink: "#a3e635",
+      textLink: "#0e32e9",
       input: "black",
       topbar0: "#0f172a",
       topbar1: "#1e293b",

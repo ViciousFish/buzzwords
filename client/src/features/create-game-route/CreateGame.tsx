@@ -51,10 +51,10 @@ function GameType({
         classNames(
           isFocused && "outline",
           isFocusVisible && "outline",
-          isSelected ? "bg-primary" : "bg-lighterbg hover:bg-darkbg",
-          isDisabled && "opacity-50",
-          "flex box-border justify-between items-center p-6 lg:p-8 rounded-xl shadow-lg overflow-hidden",
-          "my-8 first:mt-0 last:mb-0"
+          isSelected ? "bg-primary" : "bg-lighterbg",
+          isDisabled ? "opacity-40" : (!isSelected && "hover:bg-darkbg"),
+          "flex box-border justify-between items-center p-4 lg:p-8 rounded-xl shadow-lg overflow-hidden",
+          "my-6 first:mt-0 last:mb-0"
         )
       }
     >
@@ -102,7 +102,7 @@ function CreateGame() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [selectedMode, setSelectedMode] =
-    useState<CreateGameType>("offline-bot");
+    useState<CreateGameType>("online-bot");
   const [difficulty, setDifficulty] = useState(5);
   const [isSubmitting, setSubmitting] = useState(false);
   const loggedIn = useAppSelector((state) =>
@@ -134,8 +134,8 @@ function CreateGame() {
     <div
       ref={observe}
       className={classNames(
-        "w-full flex flex-col items-center h-full overflow-scroll text-text",
-        lg && "justify-center"
+        "w-full h-full overflow-scroll text-text relative flex justify-center items-start",
+        lg && "items-center"
       )}
     >
       <div
@@ -162,14 +162,22 @@ function CreateGame() {
             aria-label="Pick a game type"
             selectionMode="single"
             selectedKeys={[selectedMode]}
-            disabledKeys={!loggedIn ? ["online-bot"] : []}
+            // disabledKeys={!loggedIn ? ["online-bot"] : []}
+            disabledKeys={["offline-bot", "hotseat"]}
             disallowEmptySelection
           >
             <GameType
-              value="offline-bot"
-              title="Offline against a bot"
+              value="online-bot"
+              title="Online against a bot"
+              subtitle="Start here. Internet connection required"
+              // subtitle={
+              //   loggedIn
+              //     ? "Sync game across devices. Game will only be playable online"
+              //     : "Log in to sync bot games across devices"
+              // }
               icon={
                 <>
+                  <FontAwesomeIcon size="lg" icon={faGlobe} />
                   <FontAwesomeIcon size="lg" icon={faRobot} />
                 </>
               }
@@ -177,36 +185,31 @@ function CreateGame() {
             <GameType
               value="online-pvp"
               title="Online against a human"
-              subtitle="Game will only be playable when connected to the internet"
+              subtitle="Play in real time with a friend. Internet connection required"
               icon={
                 <>
                   <FontAwesomeIcon size="lg" icon={faGlobe} />
                   <FontAwesomeIcon size="lg" icon={faUser} />
-                </>
-              }
-            />
-            <GameType
-              value="online-bot"
-              title="Online against a bot"
-              subtitle={
-                loggedIn
-                  ? "Sync game across devices. Game will only be playable online"
-                  : "Log in to sync bot games across devices"
-              }
-              icon={
-                <>
-                  <FontAwesomeIcon size="lg" icon={faGlobe} />
-                  <FontAwesomeIcon size="lg" icon={faRobot} />
                 </>
               }
             />
             <GameType
               value="hotseat"
               title="Offline against a human"
-              subtitle="Both players take turns on this device"
+              subtitle="Both players take turns on this device. Coming soon"
               icon={
                 <>
                   <FontAwesomeIcon size="lg" icon={faUser} />
+                </>
+              }
+            />
+            <GameType
+              value="offline-bot"
+              title="Offline against a bot"
+              subtitle="Works without an internet connection. Coming soon"
+              icon={
+                <>
+                  <FontAwesomeIcon size="lg" icon={faRobot} />
                 </>
               }
             />
@@ -214,7 +217,7 @@ function CreateGame() {
         </div>
         <div
           className={classNames(
-            "p-4 m-4 flex flex-col gap-8 justify-center items-stretch",
+            "p-4 m-4 flex flex-col gap-5 justify-center items-stretch",
             lg && "w-full ml-0"
           )}
         >
