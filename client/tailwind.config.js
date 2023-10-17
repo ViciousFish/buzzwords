@@ -11,6 +11,7 @@ module.exports = {
         'upward': '0px -1px 5px 0px rgba(0,0,0,0.2)',
       },
       colors: {
+        lighterbg: "oklch(var(--lighterbg))",
         lightbg: ({ opacityVariable, opacityValue }) => {
           if (opacityValue !== undefined) {
             return `rgba(var(--lightbg), ${opacityValue})`;
@@ -20,7 +21,7 @@ module.exports = {
           }
           return `rgb(var(--lightbg))`;
         },
-        darkbg: "var(--darkbg)",
+        darkbg: "oklch(var(--darkbg))",
         primary: "var(--primaryAccent)", // theme.primary on lit tiles
         darkbrown: "var(--secondaryAccent)",
         p1: "var(--p1)",

@@ -24,6 +24,8 @@ export interface Theme {
       primaryAccent: string; // sampled from threed.primaryAccent
       secondaryAccent: string;
       lightbg: string;
+      /** OKLCH */
+      lighterbg: string;
       darkbg: string;
       p1: string; // sampled from threed.p1
       p2: string; // sampled from threed.p2
@@ -56,7 +58,8 @@ const dark: Theme = {
       primaryAccent: "#375BA8",
       secondaryAccent: "#DBF5FE",
       lightbg: "33,54,85",
-      darkbg: "#243347",
+      lighterbg: "28.49% 0.061 257.98",
+      darkbg: "25% 0.06 257.98",
       p1: "#984B86",
       p2: "#668354",
       text: "white",
@@ -76,7 +79,7 @@ const oled = mergeDeepRight(dark, {
   colors: {
     html: {
       lightbg: "0, 0, 0",
-      darkbg: "#243347",
+      // darkbg: "31.73% 0.041 255.83",
     },
   },
 } as Partial<Theme>);
@@ -98,7 +101,8 @@ export const theme: Record<ThemeNames, Theme> = {
         primaryAccent: "#F6C54B",
         secondaryAccent: "#59430D",
         lightbg: "250, 231, 178",
-        darkbg: "#f2dc9d",
+        lighterbg: "94.55% 0.051 90.66",
+        darkbg: "89.8% 0.084 91.05",
         p1: "#F3ADDF",
         p2: "#96BB87",
         text: "black",

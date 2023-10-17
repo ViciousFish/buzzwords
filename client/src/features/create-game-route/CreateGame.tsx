@@ -43,9 +43,9 @@ function GameType({
         classNames(
           isFocused && "outline",
           isFocusVisible && "outline",
-          isSelected ? "bg-primary" : "bg-white/40",
+          isSelected ? "bg-primary" : "bg-lighterbg",
           isDisabled && "opacity-50",
-          "flex box-border justify-between items-center p-8 rounded-xl shadow-lg overflow-hidden",
+          "flex box-border justify-between items-center p-6 lg:p-8 rounded-xl shadow-lg overflow-hidden",
           "my-8 first:mt-0 last:mb-0"
         )
       }
@@ -53,7 +53,7 @@ function GameType({
       {({ isSelected }) => (
         <>
           <div className="flex flex-col">
-            <Text slot="label" className={classNames(isSelected && "underline","text-2xl font-bold")}>
+            <Text slot="label" className={classNames(isSelected && "underline","text-xl lg:text-lgl font-bold")}>
               {title}
             </Text>
             <Text slot="description">{subtitle}</Text>
@@ -82,7 +82,7 @@ const DifficultyLabels = [
   </>,
 ];
 
-const PLAY_BREAKPOINTS = pick(["xs", "lg"], BREAKPOINTS);
+export const WIZARD_BREAKPOINTS = pick(["xs", "lg"], BREAKPOINTS);
 
 function CreateGame() {
   const [selectedMode, setSelectedMode] = useState<string>("offline-bot");
@@ -91,31 +91,33 @@ function CreateGame() {
     Boolean(state.user.user?.googleId)
   );
   const { currentBreakpoint, observe } = useDimensions({
-    breakpoints: PLAY_BREAKPOINTS,
+    breakpoints: WIZARD_BREAKPOINTS,
     updateOnBreakpointChange: true,
   });
+  const lg = currentBreakpoint === "lg";
+  const bot = selectedMode && selectedMode.endsWith('bot')
   return (
     <div
       ref={observe}
       className={classNames(
-        "w-full flex flex-col items-center justify-center",
-        currentBreakpoint === "lg" && "h-full"
+        "w-full flex flex-col items-center h-full overflow-scroll text-text",
+        lg && "justify-center"
       )}
     >
       <div
         className={classNames(
-          "max-w-[1200px] w-full flex  items-stretch",
-          currentBreakpoint === "lg" ? "flex-row" : "flex-col"
+          "max-w-[1200px] w-full flex flex-shrink-0 items-stretch gap-8 ",
+          lg ? "flex-row" : "flex-col"
         )}
       >
         <div
           className={classNames(
-            "flex flex-col justify-center p-4 m-4",
-            currentBreakpoint === "lg" && "mr-0 w-full"
+            "flex flex-col justify-center p-4 mx-4",
+            lg && "mr-0 w-full"
           )}
         >
-          <h1 className="text-lg font-bold text-text ml-8 mb-3">
-            Ready to rumble?
+          <h1 className="text-lg font-bold text-text text-center mb-4">
+            Pick a game mode
           </h1>
           <ListBox
             onSelectionChange={(selection) =>
@@ -134,7 +136,7 @@ function CreateGame() {
               title="Offline against a bot"
               icon={
                 <>
-                  <FontAwesomeIcon size="2x" icon={faRobot} />
+                  <FontAwesomeIcon size="lg" icon={faRobot} />
                 </>
               }
             />
@@ -144,8 +146,8 @@ function CreateGame() {
               subtitle="Game will only be playable when connected to the internet"
               icon={
                 <>
-                  <FontAwesomeIcon size="2x" icon={faGlobe} />
-                  <FontAwesomeIcon size="2x" icon={faUser} />
+                  <FontAwesomeIcon size="lg" icon={faGlobe} />
+                  <FontAwesomeIcon size="lg" icon={faUser} />
                 </>
               }
             />
@@ -159,8 +161,8 @@ function CreateGame() {
               }
               icon={
                 <>
-                  <FontAwesomeIcon size="2x" icon={faGlobe} />
-                  <FontAwesomeIcon size="2x" icon={faRobot} />
+                  <FontAwesomeIcon size="lg" icon={faGlobe} />
+                  <FontAwesomeIcon size="lg" icon={faRobot} />
                 </>
               }
             />
@@ -170,7 +172,7 @@ function CreateGame() {
               subtitle="Both players take turns on this device"
               icon={
                 <>
-                  <FontAwesomeIcon size="2x" icon={faUser} />
+                  <FontAwesomeIcon size="lg" icon={faUser} />
                 </>
               }
             />
@@ -179,18 +181,19 @@ function CreateGame() {
         <div
           className={classNames(
             "p-4 m-4 flex flex-col gap-8 justify-center items-stretch",
-            currentBreakpoint === "lg" && "w-full ml-0"
+            lg && "w-full ml-0"
           )}
         >
           {selectedMode && (
             <div
               className={classNames(
-                selectedMode.endsWith("bot") && "bg-white/40 shadow-lg",
+                selectedMode !== "hotseat" && "bg-lighterbg shadow-lg",
                 "p-3 rounded-xl"
               )}
             >
-              {selectedMode && selectedMode.endsWith("bot") && (
-                <div className="p-3 relative self-stretch">
+              {!bot && selectedMode !== 'hotseat' && <p className="p-4 mb-4 text-center">You&apos;ll invite your opponent on the next screen</p>}
+              {bot && (
+                <div className="p-4 mb-4 relative self-stretch">
                   <Slider
                     value={difficulty}
                     // @ts-ignore
@@ -225,7 +228,7 @@ function CreateGame() {
                 </div>
               )}
               <div className="flex justify-center">
-                <Button className="p-4 text-2xl font-bold focus:outline">
+                <Button className="p-6 text-2xl font-bold focus:outline">
                   Play <FontAwesomeIcon icon={faCaretRight} />
                 </Button>
               </div>
