@@ -1,14 +1,13 @@
 import React, { useState, useCallback } from "react";
 import { pick } from "ramda";
 import {
-  ListBox,
-  Item,
-  Text,
   Slider,
   Label,
   SliderThumb,
   SliderTrack,
   SliderOutput,
+  Radio,
+  RadioGroup,
 } from "react-aria-components";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -37,22 +36,25 @@ function GameType({
   subtitle,
   value,
   icon,
+  disabled,
 }: {
   title: string;
   subtitle?: string;
   value: string;
   icon: React.ReactNode;
+  disabled?: boolean;
 }) {
   return (
-    <Item
-      id={value}
+    <Radio
+      isDisabled={disabled}
+      value={value}
       aria-label={title}
       className={({ isSelected, isDisabled, isFocusVisible, isFocused }) =>
         classNames(
           isFocused && "outline",
           isFocusVisible && "outline",
           isSelected ? "bg-primary" : "bg-lighterbg",
-          isDisabled ? "opacity-40" : (!isSelected && "hover:bg-darkbg"),
+          isDisabled ? "opacity-40" : !isSelected && "hover:bg-darkbg",
           "flex box-border justify-between items-center p-4 lg:p-8 rounded-xl shadow-lg overflow-hidden",
           "my-6 first:mt-0 last:mb-0"
         )
@@ -61,23 +63,22 @@ function GameType({
       {({ isSelected }) => (
         <>
           <div className="flex flex-col">
-            <Text
-              slot="label"
+            <div
               className={classNames(
                 isSelected && "underline",
                 "text-xl lg:text-lgl font-bold"
               )}
             >
               {title}
-            </Text>
-            <Text slot="description">{subtitle}</Text>
+            </div>
+            <div>{subtitle}</div>
           </div>
           <div className="flex flex-row flex-nowrap shrink-0 ml-2 gap-2 opacity-60">
             {icon}
           </div>
         </>
       )}
-    </Item>
+    </Radio>
   );
 }
 
@@ -150,22 +151,15 @@ function CreateGame() {
             lg && "mr-0 w-full"
           )}
         >
-          <h1 className="text-lg font-bold text-text text-center mb-4">
-            Pick a game mode
-          </h1>
-          <ListBox
-            onSelectionChange={(selection) =>
-              setSelectedMode(
-                selection !== "all" ? selection.values().next().value : null
-              )
-            }
+          <RadioGroup
             aria-label="Pick a game type"
-            selectionMode="single"
-            selectedKeys={[selectedMode]}
-            // disabledKeys={!loggedIn ? ["online-bot"] : []}
-            disabledKeys={["offline-bot", "hotseat"]}
-            disallowEmptySelection
+            value={selectedMode}
+            // @ts-expect-error allowed mode types too narrow
+            onChange={setSelectedMode}
           >
+          <Label className="text-lg font-bold text-text block text-center mb-4">
+            Pick a game type
+          </Label>
             <GameType
               value="online-bot"
               title="Online against a bot"
@@ -194,6 +188,7 @@ function CreateGame() {
               }
             />
             <GameType
+              disabled
               value="hotseat"
               title="Offline against a human"
               subtitle="Both players take turns on this device. Coming soon"
@@ -204,6 +199,7 @@ function CreateGame() {
               }
             />
             <GameType
+              disabled
               value="offline-bot"
               title="Offline against a bot"
               subtitle="Works without an internet connection. Coming soon"
@@ -213,7 +209,7 @@ function CreateGame() {
                 </>
               }
             />
-          </ListBox>
+          </RadioGroup>
         </div>
         <div
           className={classNames(
