@@ -118,11 +118,6 @@ const PlayGame: React.FC = () => {
     }
   }, [game, opponent, fetchedOpponentName, dispatch, isSpectating]);
 
-  // const nickModal =
-  //   game && currentUser && !isSpectating && !currentUser.nickname ? (
-  //     <NicknameModal />
-  //   ) : null;
-
   const { observe, currentBreakpoint } = useDimensions({
     breakpoints: PLAY_BREAKPOINTS,
     updateOnBreakpointChange: true,
