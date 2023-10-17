@@ -108,7 +108,7 @@ export const theme: Record<ThemeNames, Theme> = {
         text: "black",
         textSubtle: "lightgrey",
         textInverse: "white",
-        textLink: "#0ea5e9",
+        textLink: "#0e32e9",
         input: "white",
         topbar0: "rgb(233, 187, 72)",
         topbar1: "rgb(246, 197, 75)",

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { pick } from "ramda";
 import {
   ListBox,
@@ -17,12 +17,20 @@ import {
   faGlobe,
   faRobot,
   faSkull,
+  faSpinner,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import useDimensions from "react-cool-dimensions";
 import { BREAKPOINTS } from "../../app/MainGameStructure";
+import {
+  CreateBotGameParams,
+  createGame,
+  CreateGameParams,
+  CreateGameType,
+} from "../gamelist/gamelistActions";
+import { useNavigate } from "react-router";
 
 function GameType({
   title,
@@ -53,7 +61,13 @@ function GameType({
       {({ isSelected }) => (
         <>
           <div className="flex flex-col">
-            <Text slot="label" className={classNames(isSelected && "underline","text-xl lg:text-lgl font-bold")}>
+            <Text
+              slot="label"
+              className={classNames(
+                isSelected && "underline",
+                "text-xl lg:text-lgl font-bold"
+              )}
+            >
               {title}
             </Text>
             <Text slot="description">{subtitle}</Text>
@@ -85,17 +99,37 @@ const DifficultyLabels = [
 export const WIZARD_BREAKPOINTS = pick(["xs", "lg"], BREAKPOINTS);
 
 function CreateGame() {
-  const [selectedMode, setSelectedMode] = useState<string>("offline-bot");
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const [selectedMode, setSelectedMode] =
+    useState<CreateGameType>("offline-bot");
   const [difficulty, setDifficulty] = useState(5);
+  const [isSubmitting, setSubmitting] = useState(false);
   const loggedIn = useAppSelector((state) =>
     Boolean(state.user.user?.googleId)
   );
+  const playButtonPress = useCallback(async () => {
+    setSubmitting(true);
+    const bot = selectedMode && selectedMode.endsWith("bot");
+    const params = {
+      type: selectedMode,
+    };
+    if (bot) {
+      (params as CreateBotGameParams).difficulty = difficulty;
+    }
+    try {
+      const game = await dispatch(createGame(params));
+      navigate(`/play/${game}`);
+    } catch (e) {
+      setSubmitting(false);
+    }
+  }, [selectedMode, difficulty, dispatch, navigate]);
   const { currentBreakpoint, observe } = useDimensions({
     breakpoints: WIZARD_BREAKPOINTS,
     updateOnBreakpointChange: true,
   });
   const lg = currentBreakpoint === "lg";
-  const bot = selectedMode && selectedMode.endsWith('bot')
+  const bot = selectedMode && selectedMode.endsWith("bot");
   return (
     <div
       ref={observe}
@@ -106,7 +140,7 @@ function CreateGame() {
     >
       <div
         className={classNames(
-          "max-w-[1200px] w-full flex flex-shrink-0 items-stretch gap-8 ",
+          "max-w-[1200px] w-full flex flex-shrink-0 items-stretch",
           lg ? "flex-row" : "flex-col"
         )}
       >
@@ -191,7 +225,11 @@ function CreateGame() {
                 "p-3 rounded-xl"
               )}
             >
-              {!bot && selectedMode !== 'hotseat' && <p className="p-4 mb-4 text-center">You&apos;ll invite your opponent on the next screen</p>}
+              {!bot && selectedMode !== "hotseat" && (
+                <p className="p-4 mb-4 text-center">
+                  You&apos;ll invite your opponent on the next screen
+                </p>
+              )}
               {bot && (
                 <div className="p-4 mb-4 relative self-stretch">
                   <Slider
@@ -228,8 +266,16 @@ function CreateGame() {
                 </div>
               )}
               <div className="flex justify-center">
-                <Button className="p-6 text-2xl font-bold focus:outline">
-                  Play <FontAwesomeIcon icon={faCaretRight} />
+                <Button
+                  disabled={isSubmitting}
+                  onClick={playButtonPress}
+                  className="p-6 text-2xl font-bold focus:outline"
+                >
+                  Play{" "}
+                  <FontAwesomeIcon
+                    className={isSubmitting ? "animate-spin" : ""}
+                    icon={isSubmitting ? faSpinner : faCaretRight}
+                  />
                 </Button>
               </div>
             </div>

@@ -4,6 +4,7 @@ import {
   faAngleDown,
   faAngleRight,
   faHome,
+  faPlusCircle,
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
@@ -18,7 +19,6 @@ import { toggleCompletedGames } from "./gamelistSlice";
 import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
 import GameListItem from "./GameListItem";
 import TutorialCard from "./TutorialCard";
-import PlayButtons from "../home-route/PlayButtons";
 
 // const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
 import Canvas from "../canvas/Canvas";
@@ -88,14 +88,24 @@ const GameList: React.FC<{ hideBee: boolean }> = ({ hideBee }) => {
           </div>
         )}
         <div className="flex-auto">
-          <div className="z-10 px-2 mt-0 flex items-center">
+          <div className="z-10 px-2 mt-0 flex items-center justify-between">
             <h2 className="text-2xl font-bold text-darkbrown">Games</h2>
-            <div className="bg-primary mx-2 rounded-xl text-center flex items-center px-2 py-1">
-              <h3 className="text-xs mr-2 text-text">New</h3>
-              <div className="flex gap-1">
-                <PlayButtons mode="icon" buttonVariant="dark" />
-              </div>
-            </div>
+            <NavLink
+              to="/play/"
+              className={({ isActive }) =>
+                classNames(
+                  "text-text text-sm p-2 rounded-full flex items-center",
+                  "hover:bg-primary",
+                  isActive ? "bg-primary" : "underline"
+                )
+              }
+            >
+              <FontAwesomeIcon
+                icon={faPlusCircle}
+                className="opacity-75 mr-2"
+              />
+              <span>New Game</span>
+            </NavLink>
           </div>
           {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
           <ul className="px-2 text-text">

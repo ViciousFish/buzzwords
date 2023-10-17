@@ -51,17 +51,21 @@ export default function GameInviteOpponentPrompt({
             lg && "mr-0 w-full"
           )}
         >
-          <h2 className="text-2xl font-bold flex-wrap mb-2">
+          <h2 className="text-2xl font-bold flex-wrap">
             Invite an opponent to start the game
           </h2>
-          <span>they can use this link to join you</span>
-          <a
-            className="underline text-textLink text-sm break-words"
-            href={gameUrl}
-          >
-            {gameUrl}
-          </a>
-          <div className="mt-2">
+          <div className="my-4 border-4 border-green-400 bg-green-200/40 flex p-2 rounded justify-between">
+            <div className="flex flex-col">
+              <span className="select-none text-sm opacity-70">
+                send your opponent this link
+              </span>
+
+              <a className="underline text-textLink break-words" href={gameUrl}>
+                {gameUrl}
+              </a>
+            </div>
+          </div>
+          <div>
             <CopyToClipboard label="Copy link" text={gameUrl} />
             {navigator.share && (
               <Button
@@ -76,7 +80,7 @@ export default function GameInviteOpponentPrompt({
             )}
             {id && (
               <Button
-                className="bg-red-600 text-white"
+                className="bg-red-800 text-white"
                 onClick={() => {
                   dispatch(deleteGameById(id));
                   navigate("/");
@@ -88,11 +92,13 @@ export default function GameInviteOpponentPrompt({
             )}
           </div>
         </div>
-        <div className={classNames(
-        "flex flex-col justify-center p-4 mx-4",
-        "rounded-xl bg-lighterbg shadow-lg",
-        lg && "ml-0 w-full"
-      )}>
+        <div
+          className={classNames(
+            "flex flex-col justify-center p-4 mx-4",
+            "rounded-xl bg-lighterbg shadow-lg",
+            lg && "ml-0 w-full"
+          )}
+        >
           <span className="text-sm opacity-75">in the mean time</span>
           <h2 className="text-2xl font-bold">Watch the tutorial</h2>
           <iframe
