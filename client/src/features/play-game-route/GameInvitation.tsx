@@ -40,10 +40,9 @@ export default function GameInvitation({
 
   const launchApp = useCallback(() => {
     const path = location.pathname;
-    console.log(urljoin(
-      `${import.meta.env.VITE_PRIVATE_SCHEME_NAME}://`,
-      path
-    ))
+    console.log(
+      urljoin(`${import.meta.env.VITE_PRIVATE_SCHEME_NAME}://`, path)
+    );
     // @ts-ignore
     window.location = urljoin(
       `${import.meta.env.VITE_PRIVATE_SCHEME_NAME}://`,
@@ -52,9 +51,9 @@ export default function GameInvitation({
   }, [location]);
 
   return (
-    <div className="flex flex-auto flex-col overflow-auto lg:h-[calc(100vh-calc(50px+var(--sat)))] justify-center items-center py-12 px-4">
-      <div className="max-w-full flex-shrink-0 bg-darkbg flex flex-col justify-center items-center text-center p-8 rounded-xl mb-5">
-        <h2 className="text-2xl text-text flex-wrap">
+    <div className="flex flex-auto flex-col overflow-auto lg:h-[calc(100vh-calc(50px+var(--sat)))] justify-center items-center py-8 px-4">
+      <div className="max-w-full flex-shrink-0 bg-darkbg shadow-lg flex flex-col justify-center items-center text-center p-8 rounded-xl">
+        <h2 className="text-2xl text-text flex-wrap mb-4">
           <span className="font-bold italic">
             {opponent?.nickname ?? (
               <FontAwesomeIcon icon={faSpinner} className="animate-spin mr-2" />
@@ -62,30 +61,30 @@ export default function GameInvitation({
           </span>{" "}
           has invited you to play Buzzwords
         </h2>
-      </div>
-      <div className="flex items-start">
-        <Button onClick={joinGame}>Join game{!window.ipc && " here"}</Button>
-        {/* IS_MOBILE_BROWSER is temporary */}
-        {!window.ipc && !IS_MOBILE_BROWSER && (
-          <div className="text-white bg-darkbrown rounded-full flex justify-center">
-            <Button className="text-text" onClick={launchApp}>
-              Join game in app
-            </Button>
-            <Popover
-              content={<NativeAppAd />}
-              isOpen={appInfoOverlay}
-              onClickOutside={() => setAppInfoOverlay(false)}
-            >
-              <Button
-                variant="quiet"
-                className="ml-0 text-textInverse"
-                onClick={() => setAppInfoOverlay(!appInfoOverlay)}
-              >
-                <FontAwesomeIcon icon={faInfoCircle} />
+        <div className="flex items-start">
+          <Button onClick={joinGame}>Join game{!window.ipc && " here"}</Button>
+          {/* IS_MOBILE_BROWSER is temporary */}
+          {!window.ipc && !IS_MOBILE_BROWSER && (
+            <div className="text-white bg-lighterbg rounded-full flex justify-center">
+              <Button className="text-text" onClick={launchApp}>
+                Join game in app
               </Button>
-            </Popover>
-          </div>
-        )}
+              <Popover
+                content={<NativeAppAd />}
+                isOpen={appInfoOverlay}
+                onClickOutside={() => setAppInfoOverlay(false)}
+              >
+                <Button
+                  variant="quiet"
+                  className="ml-0 text-textSubtle"
+                  onClick={() => setAppInfoOverlay(!appInfoOverlay)}
+                >
+                  <FontAwesomeIcon icon={faInfoCircle} />
+                </Button>
+              </Popover>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
