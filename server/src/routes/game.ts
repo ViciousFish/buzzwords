@@ -1,18 +1,18 @@
 import * as R from "ramda";
-import express from "express";
+import express, { Router } from "express";
 import { Server } from "socket.io";
 
 import { getBotMove } from "buzzwords-shared/bot";
 import { HexCoord } from "buzzwords-shared/types";
 import Game from "buzzwords-shared/Game";
+import GameManager from "buzzwords-shared/GameManager";
 
 import dl from "../datalayer";
 import getConfig from "../config";
-import GameManager from "../GameManager";
 import { WordsObject, BannedWordsObject } from "../words";
 import { removeMongoId } from "../util";
 
-export default (io: Server) => {
+export default (io: Server): Router => {
   const router = express.Router();
   router.get("/", async (req, res) => {
     const user = res.locals.userId as string;
@@ -75,7 +75,7 @@ export default (io: Server) => {
     }
     const options = req.body;
     const gm = new GameManager(null);
-    const game = gm.createGame(user);
+    const game = gm.createGame(user, WordsObject);
     if (options.vsAI) {
       game.vsAI = true;
       game.users.push("AI");
@@ -258,7 +258,7 @@ export default (io: Server) => {
         return;
       }
       console.log("Bot move", botMove);
-      game = gm.makeMove("AI", botMove);
+      game = gm.makeMove("AI", botMove, WordsObject);
       await dl.saveGame(gameId, game, {
         session,
       });
@@ -336,7 +336,7 @@ export default (io: Server) => {
 
     let newGame: Game;
     try {
-      newGame = gm.makeMove(user, parsedMove);
+      newGame = gm.makeMove(user, parsedMove, WordsObject);
     } catch (e: unknown) {
       res.status(400);
       if (e instanceof Error) {

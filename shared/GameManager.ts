@@ -1,23 +1,20 @@
 import * as R from "ramda";
-
-import Game from "buzzwords-shared/Game";
-import { HexCoord } from "buzzwords-shared/types";
-import {
-  getCellsToBeReset,
-  willBecomeOwned,
-} from "buzzwords-shared/gridHelpers";
-import { isValidWord } from "buzzwords-shared/alphaHelpers";
 import { nanoid } from "nanoid";
+
+import Game from "./Game";
+import { HexCoord } from "./types";
+import { getCellsToBeReset, willBecomeOwned } from "./gridHelpers";
+import { isValidWord } from "./alphaHelpers";
 import HexGrid, {
   makeHexGrid,
   getCell,
   getCellNeighbors,
   setCell,
   getNewCellValues,
-} from "buzzwords-shared/hexgrid";
+} from "./hexgrid";
+import Cell from "./cell";
 
-import { WordsObject, wordsBySortedLetters } from "./words";
-import Cell from "buzzwords-shared/cell";
+// import { WordsObject, wordsBySortedLetters } from "../server/src/words";
 
 export default class GameManager {
   game: Game | null;
@@ -44,7 +41,7 @@ export default class GameManager {
     }
 
     let opponentHasCapital = false;
-    const opponentCells = [];
+    const opponentCells: Cell[] = [];
     for (const cell of Object.values(this.game.grid)) {
       if (cell.owner == Number(!this.game.turn)) {
         opponentCells.push(cell);
@@ -100,7 +97,7 @@ export default class GameManager {
     return this.game;
   }
 
-  makeMove(userId: string, move: HexCoord[]): Game {
+  makeMove(userId: string, move: HexCoord[], words: Record<string, any>): Game {
     if (!this.game) {
       throw new Error("Game Manager has no game!");
     }
@@ -132,7 +129,7 @@ export default class GameManager {
       }
     }
     console.log("move received word", word);
-    if (!isValidWord(word, WordsObject)) {
+    if (!isValidWord(word, words)) {
       console.log("word invalid", word);
       throw new Error("Not a valid word");
     }
@@ -204,7 +201,7 @@ export default class GameManager {
         const newCellValues = getNewCellValues(
           letters,
           toBeReset.length,
-          WordsObject
+          words
         );
         for (let i = 0; i < toBeReset.length; i++) {
           const tile = toBeReset[i];
@@ -220,7 +217,7 @@ export default class GameManager {
         // No possible combinations. Need to regenerate the whole board!!
         console.log("No valid letter combinations. Shuffling board...");
         const newLetterCount = letters.length + toBeReset.length;
-        const newCellValues = getNewCellValues([], newLetterCount, WordsObject);
+        const newCellValues = getNewCellValues([], newLetterCount, words);
         for (const tile of keys
           .map((k) => grid[k])
           .filter((k) => Boolean(k.value))) {
@@ -266,7 +263,7 @@ export default class GameManager {
     }
 
     const cells = this.game.grid;
-    const opponentCells = [];
+    const opponentCells: Cell[] = [];
     let opponentHasCapital = false;
     for (const cell of Object.values(cells)) {
       if (cell.owner == Number(!this.game.turn)) {
@@ -295,7 +292,7 @@ export default class GameManager {
     return this.game;
   }
 
-  createGame(userId: string): Game {
+  createGame(userId: string, words: Record<string, any>): Game {
     const game: Game = {
       id: nanoid(),
       turn: 0 as 0 | 1,
@@ -312,7 +309,7 @@ export default class GameManager {
       ...getCellNeighbors(game.grid, -2, -1),
       ...getCellNeighbors(game.grid, 2, 1),
     ];
-    const newValues = getNewCellValues([], 12, WordsObject);
+    const newValues = getNewCellValues([], 12, words);
     let i = 0;
     for (const cell of neighbors) {
       cell.value = newValues[i];
