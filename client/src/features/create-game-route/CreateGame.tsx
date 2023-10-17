@@ -227,7 +227,7 @@ function CreateGame() {
             >
               {!bot && selectedMode !== "hotseat" && (
                 <p className="p-4 mb-4 text-center">
-                  You&apos;ll invite your opponent on the next screen
+                  We&apos;ll generate a link for you to send to your opponent
                 </p>
               )}
               {bot && (

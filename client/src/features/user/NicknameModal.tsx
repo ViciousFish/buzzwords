@@ -17,22 +17,24 @@ const NicknameModal: React.FC = () => {
   const dispatch = useAppDispatch();
   const gamesList = useAppSelector((state) => state.gamelist.games);
   return (
-    <Modal>
-      <div className="p-8 bg-lightbg rounded-xl text-darkbrown">
-        <h1 className="text-2xl">Pick a nickname</h1>
+    // <Modal>
+    <div className="p-8 bg-lightbg text-text flex justify-center items-center h-full">
+      <div className="p-8 shadow-lg rounded-xl bg-lighterbg">
+        <h1 className="text-2xl font-bold">Pick a nickname</h1>
         <p>It doesn&apos;t have to be unique. Your opponents will see it.</p>
-        <div className="bg-darkbg my-2 rounded-lg p-2">
-        <NicknameForm
-          afterSubmit={() => {
-            const games = Object.values(gamesList);
-            if (games.length === 1 && games[0].users.length === 2) {
-              dispatch(toggleTutorialModal());
-            }
-          }}
-        />
+        <div className="mt-2">
+          <NicknameForm
+            afterSubmit={() => {
+              const games = Object.values(gamesList);
+              if (games.length === 1 && games[0].users.length === 2) {
+                dispatch(toggleTutorialModal());
+              }
+            }}
+          />
         </div>
       </div>
-    </Modal>
+    </div>
+    // </Modal>
   );
 };
 

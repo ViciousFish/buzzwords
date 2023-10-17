@@ -118,29 +118,33 @@ const PlayGame: React.FC = () => {
     }
   }, [game, opponent, fetchedOpponentName, dispatch, isSpectating]);
 
-  const nickModal =
-    game && currentUser && !isSpectating && !currentUser.nickname ? (
-      <NicknameModal />
-    ) : null;
+  // const nickModal =
+  //   game && currentUser && !isSpectating && !currentUser.nickname ? (
+  //     <NicknameModal />
+  //   ) : null;
 
   const { observe, currentBreakpoint } = useDimensions({
     breakpoints: PLAY_BREAKPOINTS,
     updateOnBreakpointChange: true,
   });
 
-  if (!game || !id || !isFullGame(game)) {
-    return null;
-  }
-
   if (fourohfour) {
     return (
       <div className="flex flex-auto flex-col h-screen justify-center items-center">
         <h1>404</h1>
-        <Link className="underline text-blue-700" to="/">
+        <Link className="underline text-textLink" to="/">
           home
         </Link>
       </div>
     );
+  }
+
+  if (!game || !id || !isFullGame(game)) {
+    return null;
+  }
+
+  if (game && currentUser && !isSpectating && !currentUser.nickname) {
+    return <NicknameModal />
   }
 
   if (game.users.length === 1 && userIndex !== null && userIndex === -1) {
@@ -157,7 +161,6 @@ const PlayGame: React.FC = () => {
     return (
       <>
         <GameInviteOpponentPrompt id={id} gameUrl={getGameUrl(id)} />
-        {nickModal}
       </>
     );
   }
@@ -178,7 +181,6 @@ const PlayGame: React.FC = () => {
           </div>
         )}
         <MoveList mobileLayout={currentBreakpoint === "xs"} id={id} />
-        {nickModal}
         {gameStateModal && (
           <GameStateModal
             {...gameStateModal}
