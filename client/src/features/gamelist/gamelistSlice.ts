@@ -33,7 +33,7 @@ const initialState: GameListState = {
   gamesLoaded: false,
   isRefreshing: false,
   isOpen: window.innerWidth >= 1024,
-  showCompletedGames: true,
+  showCompletedGames: false,
   showTutorialCard: window.innerWidth >= 1024,
 };
 

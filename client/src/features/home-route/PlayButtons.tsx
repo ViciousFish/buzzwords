@@ -192,7 +192,7 @@ const PlayButtons: React.FC<PlayButtonsProps> = ({
         </Button>
       </Popover>
 
-      <TimerButton value={isTimerEnabled} onChange={setIsTimerEnabled} />
+      {/* <TimerButton value={isTimerEnabled} onChange={setIsTimerEnabled} /> */}
     </>
   );
 };
