@@ -127,6 +127,7 @@ function CreateGame() {
             selectionMode="single"
             selectedKeys={[selectedMode]}
             disabledKeys={!loggedIn ? ["online-bot"] : []}
+            disallowEmptySelection
           >
             <GameType
               value="offline-bot"
