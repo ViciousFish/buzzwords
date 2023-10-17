@@ -76,8 +76,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
       dispatch(backspaceTileSelection());
     }
   });
-  console.log("selectedWord?.length", selectedWord?.length);
-  console.log("game.turn === userIndex", game.turn === userIndex);
 
   return (
     <Canvas isGameboard key={`play-${id}`}>
