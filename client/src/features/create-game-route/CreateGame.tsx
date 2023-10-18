@@ -103,7 +103,7 @@ function CreateGame() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [selectedMode, setSelectedMode] =
-    useState<CreateGameType>("online-bot");
+    useState<CreateGameType>("offline-bot");
   const [difficulty, setDifficulty] = useState(5);
   const [isSubmitting, setSubmitting] = useState(false);
   const loggedIn = useAppSelector((state) =>
@@ -161,17 +161,11 @@ function CreateGame() {
             Pick a game type
           </Label>
             <GameType
-              value="online-bot"
-              title="Online against a bot"
-              subtitle="Start here. Internet connection required"
-              // subtitle={
-              //   loggedIn
-              //     ? "Sync game across devices. Game will only be playable online"
-              //     : "Log in to sync bot games across devices"
-              // }
+              value="offline-bot"
+              title="Offline against a bot"
+              subtitle="Works without an internet connection"
               icon={
                 <>
-                  <FontAwesomeIcon size="lg" icon={faGlobe} />
                   <FontAwesomeIcon size="lg" icon={faRobot} />
                 </>
               }
@@ -188,24 +182,29 @@ function CreateGame() {
               }
             />
             <GameType
-              disabled
-              value="hotseat"
-              title="Offline against a human"
-              subtitle="Both players take turns on this device. Coming soon"
+              value="online-bot"
+              title="Online against a bot"
+              // subtitle="Start here. Internet connection required"
+              disabled={!loggedIn}
+              subtitle={
+                loggedIn
+                  ? "Sync game across devices. Game will only be playable online"
+                  : "Log in to sync bot games across devices"
+              }
               icon={
                 <>
-                  <FontAwesomeIcon size="lg" icon={faUser} />
+                  <FontAwesomeIcon size="lg" icon={faGlobe} />
+                  <FontAwesomeIcon size="lg" icon={faRobot} />
                 </>
               }
             />
             <GameType
-              disabled
-              value="offline-bot"
-              title="Offline against a bot"
-              subtitle="Works without an internet connection. Coming soon"
+              value="hotseat"
+              title="Offline against a human"
+              subtitle="Both players take turns on this device"
               icon={
                 <>
-                  <FontAwesomeIcon size="lg" icon={faRobot} />
+                  <FontAwesomeIcon size="lg" icon={faUser} />
                 </>
               }
             />
