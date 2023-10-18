@@ -9,7 +9,7 @@ import Game, { Move } from "buzzwords-shared/Game";
 import dl from "../datalayer";
 import getConfig from "../config";
 import GameManager from "../GameManager";
-import { WordsObject, BannedWordsObject } from "../words";
+import { WordsObject, BannedWordsObject } from "buzzwords-shared/words";
 import { prismaGameToAPIGame, removeMongoId } from "../util";
 
 import { PrismaClient, Prisma } from "@prisma/client";

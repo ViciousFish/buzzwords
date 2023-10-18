@@ -12,6 +12,7 @@ import {
   updateGame,
 } from "./gamelistSlice";
 import Game, { ShallowGame } from "buzzwords-shared/Game";
+import GameManager from "buzzwords-shared/GameManager";
 import { opponentReceived, User } from "../user/userSlice";
 import { getAllUsers } from "../user/userSelectors";
 import { fetchOpponent } from "../user/userActions";
@@ -28,6 +29,7 @@ import chord from "../../assets/ding.mp3?url";
 import { batch } from "react-redux";
 import { Api } from "../../app/Api";
 import { AxiosError } from "axios";
+import { getItem, setItem } from "localforage";
 
 const gameUpdateEventGetGameStateModalType = (
   game: Game,
@@ -204,16 +206,48 @@ export interface CreateBotGameParams {
 export type CreateGameParams = {
   type: CreateGameType;
   difficulty?: number;
-}
+};
+
+type WordsRecord = Record<string, number>;
+
+export const ensureWordslist = async () => {
+  const wordsList = (await import("buzzwords-shared/words")).WordsObject;
+  // if (!wordsList) {
+  //   wordsList =
+  //   await setItem('wordsList', wordsList);
+  // }
+  return wordsList;
+};
 
 export const createGame =
   (params: CreateGameParams): AppThunk =>
-  async (dispatch): Promise<string> => {
+  async (dispatch, getState): Promise<string> => {
     switch (params.type) {
       case "hotseat":
-        return ""
+        return "";
       case "offline-bot":
-        return ""
+        const user = getState().user.user!.id;
+        const gm = new GameManager(null);
+        const wordsList = await ensureWordslist();
+        const game = gm.createGame(user, wordsList);
+        game.offline = true;
+        game.vsAI = true;
+        game.difficulty = params.difficulty!;
+        game.users.push("AI");
+        await setItem(`game:${game.id}`, game);
+        dispatch(
+          updateGame({
+            game,
+            gameStateModalToQueue: null,
+          })
+        );
+        dispatch(
+          setGameLoading({
+            id: game.id,
+            loading: "loaded",
+          })
+        );
+        return game.id;
       case "online-bot":
         try {
           const res = await Api.post<string>(getApiUrl("/game"), {
@@ -241,7 +275,7 @@ export const createGame =
           throw e.response?.data ?? e.message;
         }
       default:
-        throw "createGame default case reached"
+        throw "createGame default case reached";
     }
   };
 export const joinGameById =
@@ -277,7 +311,10 @@ export const fetchGameById =
   async (dispatch) => {
     dispatch(setGameLoading({ id, loading: "loading" }));
     try {
-      const { data } = await Api.get<Game>(getApiUrl("/game", id));
+      let data = await getItem<Game>(`game:${id}`);
+      if (!data) {
+        data = (await Api.get<Game>(getApiUrl("/game", id))).data;
+      }
       dispatch(
         updateGame({
           game: data,

@@ -1,5 +1,5 @@
 import * as R from "ramda";
-import WordsJSON from "../words.json";
+import WordsJSON from "./words.json";
 import BannedWordsJSON from "./banned_words.json";
 
 const words = Object.keys(WordsJSON);

@@ -1,5 +1,5 @@
 import { getRandomCharacter, isValidWord } from "buzzwords-shared/alphaHelpers";
-import { WordsObject } from "./words";
+import { WordsObject } from "buzzwords-shared/words";
 
 test("should return a random character", () => {
   const char = getRandomCharacter();

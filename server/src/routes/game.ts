@@ -9,7 +9,7 @@ import GameManager from "buzzwords-shared/GameManager";
 
 import dl from "../datalayer";
 import getConfig from "../config";
-import { WordsObject, BannedWordsObject } from "../words";
+import { WordsObject, BannedWordsObject } from "buzzwords-shared/words";
 import { removeMongoId } from "../util";
 
 export default (io: Server): Router => {

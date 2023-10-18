@@ -49,6 +49,7 @@
     "electron-context-menu": "^3.3.0",
     "favicon-notification": "^0.1.4",
     "formik": "^2.2.9",
+    "localforage": "^1.10.0",
     "ramda": "^0.27.1",
     "react": "^18.2.0",
     "react-aria": "^3.29.1",
