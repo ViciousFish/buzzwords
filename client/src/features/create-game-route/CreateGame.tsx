@@ -251,12 +251,12 @@ function CreateGame() {
                         }
                       </SliderOutput>
                     </div>
-                    <SliderTrack className="border border-gray-900 mt-2">
+                    <SliderTrack className="h-[4px] bg-vibrant-grad-red-reverse rounded-full">
                       <SliderThumb
                         className={({ isFocusVisible }) =>
                           classNames(
                             isFocusVisible && "outline",
-                            "topbar w-[25px] h-[25px] rounded-full shadow"
+                            "bg-vibrant-grad-blue w-[25px] h-[25px] rounded-full shadow"
                           )
                         }
                       />

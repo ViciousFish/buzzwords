@@ -17,7 +17,7 @@ const BG_BY_VARIANT = {
   green: "bg-vibrant-grad-green",
   neutral: "bg-vibrant-grad-neutral",
   blue: "bg-vibrant-grad-blue",
-  red: "bg-vibrant-grad-red"
+  red: "bg-vibrant-grad-red",
 };
 
 export function NewButton({

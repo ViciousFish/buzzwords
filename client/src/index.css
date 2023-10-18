@@ -78,14 +78,32 @@
   }
   .bg-vibrant-grad-red {
     background-image: linear-gradient(
-  45deg,
-  hsl(0deg 100% 39%) 0%,
-  hsl(351deg 77% 50%) 17%,
-  hsl(346deg 88% 59%) 33%,
-  hsl(340deg 98% 68%) 50%,
-  hsl(331deg 100% 74%) 67%,
-  hsl(319deg 100% 80%) 83%,
-  hsl(302deg 100% 86%) 100%
+      45deg,
+      hsl(273deg 100% 30%) 0%,
+      hsl(299deg 100% 28%) 10%,
+      hsl(317deg 100% 35%) 19%,
+      hsl(328deg 100% 41%) 28%,
+      hsl(340deg 79% 50%) 37%,
+      hsl(356deg 87% 61%) 46%,
+      hsl(12deg 95% 63%) 56%,
+      hsl(23deg 98% 62%) 68%,
+      hsl(33deg 96% 62%) 82%,
+      hsl(43deg 90% 63%) 100%
+    );
+  }
+  .bg-vibrant-grad-red-reverse {
+    background-image: linear-gradient(
+  225deg,
+  hsl(273deg 100% 30%) 0%,
+  hsl(299deg 100% 28%) 10%,
+  hsl(317deg 100% 35%) 19%,
+  hsl(328deg 100% 41%) 28%,
+  hsl(340deg 79% 50%) 37%,
+  hsl(356deg 87% 61%) 46%,
+  hsl(12deg 95% 63%) 56%,
+  hsl(23deg 98% 62%) 68%,
+  hsl(33deg 96% 62%) 82%,
+  hsl(43deg 90% 63%) 100%
 );
   }
   /* .bg-vibrant-grad-red {
