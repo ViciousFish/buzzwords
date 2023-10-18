@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { IS_MOBILE_BROWSER } from "../settings/SettingsPage";
 import { User } from "../user/userSlice";
+import { NewButton } from "../../presentational/NewButton";
 
 interface GameInvitationProps {
   id: string;
@@ -61,14 +62,14 @@ export default function GameInvitation({
           </span>{" "}
           has invited you to play Buzzwords
         </h2>
-        <div className="flex items-start">
-          <Button onClick={joinGame}>Join game{!window.ipc && " here"}</Button>
+        <div className="flex items-center gap-2">
+          <NewButton variant="green" onPress={joinGame}>Join game{!window.ipc && " here"}</NewButton>
           {/* IS_MOBILE_BROWSER is temporary */}
           {!window.ipc && !IS_MOBILE_BROWSER && (
-            <div className="text-white bg-lighterbg rounded-full flex justify-center">
-              <Button className="text-text" onClick={launchApp}>
+            <div className="text-white bg-lighterbg rounded-full flex justify-center p-1">
+              <NewButton variant="blue" onPress={launchApp}>
                 Join game in app
-              </Button>
+              </NewButton>
               <Popover
                 content={<NativeAppAd />}
                 isOpen={appInfoOverlay}
