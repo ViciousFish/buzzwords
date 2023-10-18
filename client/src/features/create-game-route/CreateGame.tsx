@@ -30,6 +30,7 @@ import {
   CreateGameType,
 } from "../gamelist/gamelistActions";
 import { useNavigate } from "react-router";
+import { NewButton } from "../../presentational/NewButton";
 
 function GameType({
   title,
@@ -135,7 +136,7 @@ function CreateGame() {
     <div
       ref={observe}
       className={classNames(
-        "w-full h-full overflow-scroll text-text relative flex justify-center items-start",
+        "w-full h-full overflow-auto text-text relative flex justify-center items-start",
         lg && "items-center"
       )}
     >
@@ -264,17 +265,18 @@ function CreateGame() {
                 </div>
               )}
               <div className="flex justify-center">
-                <Button
-                  disabled={isSubmitting}
-                  onClick={playButtonPress}
-                  className="p-6 text-2xl font-bold focus:outline"
+                <NewButton
+                  isDisabled={isSubmitting}
+                  onPress={playButtonPress}
+                  className="p-4 px-6 text-2xl font-bold"
+                  variant="blue"
                 >
                   Play{" "}
                   <FontAwesomeIcon
                     className={isSubmitting ? "animate-spin" : ""}
                     icon={isSubmitting ? faSpinner : faCaretRight}
                   />
-                </Button>
+                </NewButton>
               </div>
             </div>
           )}

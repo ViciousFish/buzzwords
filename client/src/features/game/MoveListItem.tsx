@@ -15,6 +15,7 @@ import relativeDate from "tiny-relative-date";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
+import { NewButton } from "../../presentational/NewButton";
 import { initiateReplay } from "./gameActions";
 import { clearReplay } from "./gameSlice";
 
@@ -119,15 +120,17 @@ const MoveListItem: React.FC<MoveListItemProps> = ({
         </div>
       )}
       {!move.forfeit ? (
-        <Button
-          className={classNames(
-            "text-sm p-2 m-0 w-full",
-            replayState &&
-              currentReplayIndex === index &&
-              "bg-blue-400 text-white",
-            replayState && "bg-gray-300 hover:bg-red-500"
-          )}
-          onClick={() => {
+        <NewButton
+          // className={classNames(
+          //   "text-sm p-2 m-0 w-full",
+          //   replayState &&
+          //     currentReplayIndex === index &&
+          //     "bg-blue-400 text-white",
+          //   replayState && "bg-gray-300 hover:bg-red-500"
+          // )}
+          variant="green"
+          isDisabled={replayState}
+          onPress={() => {
             if (replayState) {
               return dispatch(clearReplay());
             }
@@ -138,14 +141,10 @@ const MoveListItem: React.FC<MoveListItemProps> = ({
         >
           <FontAwesomeIcon
             className="mr-2"
-            icon={
-              replayState && currentReplayIndex === index
-                ? faPlay
-                : faPlayCircle
-            }
+            icon={faPlayCircle}
           />
           Replay
-        </Button>
+        </NewButton>
       ) : (
         <div className="text-center font-serif italic p-2 mx-2 border border-darkbrown rounded-xl">
           Player {move.player + 1} resigned

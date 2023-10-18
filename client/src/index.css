@@ -32,6 +32,62 @@
   .window-drag {
     -webkit-app-region: drag;
   }
+  .anim-grad {
+    background-position: 100% !important;
+    transition: background-position 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .anim-grad-h {
+    background-position: 0 !important;
+  }
+  .bg-vibrant-grad-green {
+    background-image: linear-gradient(
+      45deg,
+      hsl(141deg 87% 40%) 0%,
+      hsl(121deg 52% 51%) 11%,
+      hsl(105deg 57% 51%) 22%,
+      hsl(94deg 62% 51%) 33%,
+      hsl(85deg 67% 50%) 44%,
+      hsl(77deg 74% 49%) 56%,
+      hsl(71deg 82% 48%) 67%,
+      hsl(65deg 92% 46%) 78%,
+      hsl(60deg 100% 46%) 89%,
+      hsl(55deg 100% 50%) 100%
+    );
+  }
+  .bg-vibrant-grad-neutral {
+    background-image: linear-gradient(
+      45deg,
+      hsl(0deg 0% 44%) 0%,
+      hsl(344deg 0% 55%) 25%,
+      hsl(344deg 0% 67%) 50%,
+      hsl(344deg 0% 79%) 75%,
+      hsl(0deg 0% 92%) 100%
+    );
+  }
+  .bg-vibrant-grad-blue {
+    background-image: linear-gradient(
+      45deg,
+      hsl(217deg 100% 50%) 0%,
+      hsl(209deg 100% 50%) 17%,
+      hsl(202deg 100% 50%) 33%,
+      hsl(201deg 100% 62%) 50%,
+      hsl(201deg 100% 75%) 67%,
+      hsl(199deg 94% 85%) 83%,
+      hsl(194deg 81% 96%) 100%
+    );
+  }
+  .bg-vibrant-grad-red {
+    background-image: linear-gradient(
+      45deg,
+      hsl(342deg 100% 54%) 0%,
+      hsl(357deg 100% 65%) 17%,
+      hsl(9deg 100% 67%) 33%,
+      hsl(17deg 100% 69%) 50%,
+      hsl(24deg 100% 71%) 67%,
+      hsl(29deg 100% 75%) 83%,
+      hsl(34deg 100% 80%) 100%
+    );
+  }
   /* .wood-light-x {
     background-image: linear-gradient(
         0deg,
@@ -63,7 +119,7 @@ body {
 }
 *::-webkit-scrollbar {
   width: 10px;
-  background: rgba(0,0,0,.1);
+  background: rgba(0, 0, 0, 0.1);
   @apply rounded-full;
 }
 /* // idk, helps canvas shrink
@@ -83,11 +139,7 @@ body {
 }
 
 .topbar {
-  background: linear-gradient(
-    0deg,
-    var(--topbar0) 0%,
-    var(--topbar1) 100%
-  );
+  background: linear-gradient(0deg, var(--topbar0) 0%, var(--topbar1) 100%);
 }
 
 .stoplights {
@@ -100,5 +152,5 @@ body {
 }
 
 html {
-height: 100%;
+  height: 100%;
 }

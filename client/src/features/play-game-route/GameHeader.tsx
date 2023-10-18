@@ -10,6 +10,7 @@ import { Popover } from "react-tiny-popover";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import CopyToClipboard from "../../presentational/CopyToClipboard";
+import { NewButton } from "../../presentational/NewButton";
 import { forfeitGame } from "../gamelist/gamelistActions";
 import { getAllUsers } from "../user/userSelectors";
 import { getGameUrl } from "./PlayGame";
@@ -90,28 +91,30 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
       <h3 className="text-lg font-bold">Spectating</h3>
       <p>Share this link with your friends to allow them to see your game.</p>
       <a
-        className="underline text-textlink text-sm break-words block"
+        className="underline text-textlink text-sm break-words block mb-2"
         href={getGameUrl(game.id)}
       >
         {getGameUrl(game.id)}
       </a>
-      <CopyToClipboard
-        variant="dark"
-        label="Copy link"
-        text={getGameUrl(game.id)}
-      />
-      {navigator.share && (
-        <Button
-          onClick={() =>
-            navigator.share?.({
-              url: getGameUrl(game.id),
-            })
-          }
+      <div className="flex gap-2">
+        <CopyToClipboard
           variant="dark"
-        >
-          Share <FontAwesomeIcon icon={faShareSquare} />
-        </Button>
-      )}
+          label="Copy link"
+          text={getGameUrl(game.id)}
+        />
+        {navigator.share && (
+          <NewButton
+            onPress={() =>
+              navigator.share?.({
+                url: getGameUrl(game.id),
+              })
+            }
+            variant="green"
+          >
+            Share <FontAwesomeIcon icon={faShareSquare} />
+          </NewButton>
+        )}
+      </div>
     </div>
   ) : (
     <></>

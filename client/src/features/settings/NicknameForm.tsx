@@ -4,6 +4,7 @@ import * as yup from "yup";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { setNickname } from "../user/userActions";
 import Button from "../../presentational/Button";
+import { NewButton } from "../../presentational/NewButton";
 
 const NicknameValidationSchema = yup.object().shape({
   nickname: yup.string().required(),
@@ -60,19 +61,19 @@ export const NicknameForm = ({ afterSubmit, onCancel }: NicknameFormProps) => {
                 onBlur={handleBlur}
               />
             </label>
-            <div className="mt-2">
+            <div className="mt-2 flex gap-2">
               {onCancel && (
-                <Button
-                  disabled={isSubmitting}
+                <NewButton
+                  isDisabled={isSubmitting}
                   type="button"
-                  onClick={onCancel}
+                  onPress={onCancel}
                 >
                   cancel
-                </Button>
+                </NewButton>
               )}
-              <Button disabled={!isValid || isSubmitting} type="submit">
+              <NewButton variant="green" isDisabled={!isValid || isSubmitting} type="submit">
                 save
-              </Button>
+              </NewButton>
             </div>
           </form>
           {status && (

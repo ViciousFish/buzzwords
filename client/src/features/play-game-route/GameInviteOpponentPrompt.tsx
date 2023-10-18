@@ -8,6 +8,7 @@ import { useAppDispatch } from "../../app/hooks";
 
 import Button from "../../presentational/Button";
 import CopyToClipboard from "../../presentational/CopyToClipboard";
+import { NewButton } from "../../presentational/NewButton";
 import { WIZARD_BREAKPOINTS } from "../create-game-route/CreateGame";
 import { deleteGameById } from "../gamelist/gamelistActions";
 
@@ -34,7 +35,7 @@ export default function GameInviteOpponentPrompt({
     <div
       ref={observe}
       className={classNames(
-        "w-full flex flex-col items-center h-full overflow-scroll text-text",
+        "w-full flex flex-col items-center h-full overflow-auto text-text",
         lg && "justify-center"
       )}
     >
@@ -65,30 +66,31 @@ export default function GameInviteOpponentPrompt({
               </a>
             </div>
           </div>
-          <div>
+          <div className="flex gap-2">
             <CopyToClipboard label="Copy link" text={gameUrl} />
             {navigator.share && (
-              <Button
-                onClick={() => {
+              <NewButton
+                variant="green"
+                onPress={() => {
                   navigator.share?.({
                     url: gameUrl,
                   });
                 }}
               >
                 Share <FontAwesomeIcon icon={faShareSquare} />{" "}
-              </Button>
+              </NewButton>
             )}
             {id && (
-              <Button
-                className="bg-red-800 text-white"
-                onClick={() => {
+              <NewButton
+                variant="red"
+                onPress={() => {
                   dispatch(deleteGameById(id));
                   navigate("/");
                 }}
               >
                 <FontAwesomeIcon className="mr-2" icon={faTrash} />
                 Delete
-              </Button>
+              </NewButton>
             )}
           </div>
         </div>

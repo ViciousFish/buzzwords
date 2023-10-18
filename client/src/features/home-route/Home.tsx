@@ -6,12 +6,14 @@ import HexWord from "../thereed-lettering/HexWord";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 // import { IconWatch01 } from "../../assets/IconWatch01";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import classNames from "classnames";
+import { NewButton } from "../../presentational/NewButton";
 
 const Home: React.FC = () => {
   const { progress } = useProgress();
 
+  const navigate = useNavigate();
   return (
     <>
       <div className="flex flex-auto no-touch h-[50vh] pt-[20vh] p-12 ">
@@ -35,13 +37,14 @@ const Home: React.FC = () => {
           </React.Suspense>
         </Canvas>
       </div>
-      <div className="flex justify-center items-center text-2xl">
-        <NavLink
-          to="/play/"
-          className="bg-primary font-bold inset-shadow text-text p-8 rounded-full"
+      <div className="flex justify-center items-center text-2xl flex-wrap">
+        <NewButton
+          onPress={() => navigate('/play/')}
+          className="font-bold p-6 px-7"
+          variant="green"
         >
           Play Now
-        </NavLink>
+        </NewButton>
       </div>
     </>
   );

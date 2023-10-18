@@ -2,6 +2,7 @@ import React from "react";
 import { useAppDispatch } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import Modal from "../../presentational/Modal";
+import { NewButton } from "../../presentational/NewButton";
 import TutorialCard from "../gamelist/TutorialCard";
 import { toggleTutorialModal } from "./gameSlice";
 
@@ -30,14 +31,15 @@ const TutorialModal: React.FC = () => {
         <div className="mt-2 lg:hidden" style={{ maxWidth: "560px" }}>
           <TutorialCard hideDismiss />
         </div>
-        <div className="flex justify-center items-center">
-          <Button
-            onClick={() => {
+        <div className="flex justify-center items-center py-2">
+          <NewButton
+            variant="blue"
+            onPress={() => {
               dispatch(toggleTutorialModal());
             }}
           >
             Dismiss tutorial
-          </Button>
+          </NewButton>
         </div>
       </div>
     </Modal>

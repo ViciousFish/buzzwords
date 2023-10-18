@@ -29,7 +29,7 @@ import chord from "../../assets/ding.mp3?url";
 import { batch } from "react-redux";
 import { Api } from "../../app/Api";
 import { AxiosError } from "axios";
-import { getItem, setItem } from "localforage";
+import { getItem, iterate, setItem } from "localforage";
 
 const gameUpdateEventGetGameStateModalType = (
   game: Game,
@@ -52,16 +52,34 @@ const gameUpdateEventGetGameStateModalType = (
   return gameStateModalType;
 };
 
+export const fetchLocalGames = async () => {
+  try {
+    const games: Game[] = [];
+    await iterate((value, key) => {
+      if (key.startsWith("game:")) {
+        games.push(value as Game);
+      }
+    });
+    return games;
+  } catch (e) {
+    toast(e, { type: "error" });
+    return [];
+  }
+};
+
 export const refresh = (): AppThunk => async (dispatch, getState) => {
   dispatch(setIsRefreshing(true));
   try {
-    const response = await Api.get<{
-      games: ShallowGame[];
-      users: User[];
-    }>(getApiUrl("/game"));
+    const [response, localGames] = await Promise.all([
+      Api.get<{
+        games: ShallowGame[];
+        users: User[];
+      }>(getApiUrl("/game")),
+      fetchLocalGames(),
+    ]);
 
     const gamesById: { [id: string]: ShallowGame } = {};
-    response.data.games.forEach((game) => {
+    [...response.data.games, ...localGames].forEach((game) => {
       gamesById[game.id] = game;
     }, {});
 

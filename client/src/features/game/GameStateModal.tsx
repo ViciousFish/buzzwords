@@ -3,8 +3,10 @@ import { NavLink } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import Modal from "../../presentational/Modal";
+import { NewButton } from "../../presentational/NewButton";
 import Canvas from "../canvas/Canvas";
 import HexWord from "../thereed-lettering/HexWord";
+import { useNavigate } from "react-router";
 
 export type GameStateModalType =
   | "extra-turn-p1"
@@ -63,6 +65,7 @@ const GameStateModal: React.FC<GameStateModalOwnprops> = ({
   type,
   onDismiss,
 }) => {
+  const navigate = useNavigate();
   const selectedGameId = useAppSelector((state) => state.game.currentGame);
   const game = useAppSelector((state) =>
     selectedGameId ? state.gamelist.games[selectedGameId] : null
@@ -91,15 +94,10 @@ const GameStateModal: React.FC<GameStateModalOwnprops> = ({
             <p>{twoDText.body}</p>
           </div>
         )}
-        <div className="flex items-center">
-          <Button onClick={onDismiss}>Dismiss</Button>
+        <div className="flex items-center gap-2">
+          <NewButton variant="blue" onPress={onDismiss}>Dismiss</NewButton>
           {(type === "defeat" || type === "victory") && (
-                <NavLink
-                  to="/play/"
-                  className="bg-primary ml-2 inset-shadow text-text p-2 rounded-full"
-                >
-                  New Game
-                </NavLink>
+            <NewButton variant="green" onPress={() => navigate("/play/")}>New Game</NewButton>
           )}
         </div>
       </div>
