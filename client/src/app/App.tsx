@@ -49,7 +49,8 @@ FaviconNotification.init({
 const MM = window.matchMedia("(prefers-color-scheme: dark)");
 
 const HomeLazy = lazy(() => import("../features/home-route/Home"));
-const PlayLazy = lazy(() => import("../features/play-route/Play"));
+const CreateLazy = lazy(() => import("../features/create-game-route/CreateGame"))
+const PlayLazy = lazy(() => import("../features/play-game-route/PlayGame"));
 const AuthSuccessLazy = lazy(
   () => import("../features/auth-route/AuthSuccess")
 );
@@ -151,6 +152,14 @@ function App() {
                   </React.Suspense>
                 }
               />
+              <Route
+                path="/play"
+                element={
+                  <React.Suspense fallback={<></>}>
+                    <CreateLazy />
+                  </React.Suspense>
+                }
+                />
               <Route
                 path="/play/:id"
                 element={

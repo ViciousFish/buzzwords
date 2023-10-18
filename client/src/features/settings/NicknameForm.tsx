@@ -16,7 +16,7 @@ interface NicknameFormProps {
 
 export const NicknameForm = ({ afterSubmit, onCancel }: NicknameFormProps) => {
   const dispatch = useAppDispatch();
-  const currentNickname = useAppSelector(state => state.user.user?.nickname)
+  const currentNickname = useAppSelector((state) => state.user.user?.nickname);
   return (
     <Formik
       initialValues={{ nickname: currentNickname ?? "" }}
@@ -48,26 +48,31 @@ export const NicknameForm = ({ afterSubmit, onCancel }: NicknameFormProps) => {
             onSubmit={handleSubmit}
             className="w-full rounded-md flex flex-col items-end"
           >
-            <label className="flex flex-col w-full"><span className="pl-2 text-sm">Nickname</span>
-            <input
-              autoFocus
-              className=" bg-input text-text w-full p-2 rounded-md border-2 border-primary"
-              name="nickname"
-              type="text"
-              value={values.nickname}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
+            <label className="flex flex-col w-full">
+              <span className="pl-2 text-sm">Nickname</span>
+              <input
+                autoFocus
+                className=" bg-input text-text w-full p-2 rounded-md border-2 border-primary"
+                name="nickname"
+                type="text"
+                value={values.nickname}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
             </label>
-            <div>
-            {onCancel && (
-              <Button disabled={isSubmitting} type="button" onClick={onCancel}>
-                cancel
+            <div className="mt-2">
+              {onCancel && (
+                <Button
+                  disabled={isSubmitting}
+                  type="button"
+                  onClick={onCancel}
+                >
+                  cancel
+                </Button>
+              )}
+              <Button disabled={!isValid || isSubmitting} type="submit">
+                save
               </Button>
-            )}
-            <Button disabled={!isValid || isSubmitting} type="submit">
-              save
-            </Button>
             </div>
           </form>
           {status && (

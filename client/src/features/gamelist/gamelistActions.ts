@@ -27,6 +27,7 @@ import { initiateReplay, maybeShowNudge } from "../game/gameActions";
 import chord from "../../assets/ding.mp3?url";
 import { batch } from "react-redux";
 import { Api } from "../../app/Api";
+import { AxiosError } from "axios";
 
 const gameUpdateEventGetGameStateModalType = (
   game: Game,
@@ -186,37 +187,63 @@ export const markGameAsSeen =
     dispatch(dequeueOrDismissGameStateModalForGame(gameId));
   };
 
-export const createNewGame = (): AppThunk => async (dispatch) => {
-  try {
-    const res = await Api.post<string>(getApiUrl("/game"));
-    await dispatch(fetchGameById(res.data));
-    return res.data;
-  } catch (e) {
-    if (e.response?.data?.message) {
-      toast(e.response.data.message);
-    }
-    throw e.response?.data ?? e.toString();
-  }
-};
+export type CreateGameType =
+  | "offline-bot"
+  | "online-pvp"
+  | "online-bot"
+  | "hotseat";
+interface CreateHumanGameParams {
+  type: "online-pvp" | "hotseat";
+}
 
-export const createNewAIGame =
-  (difficulty: number): AppThunk =>
-  async (dispatch) => {
-    try {
-      const res = await Api.post<string>(getApiUrl("/game"), {
-        vsAI: true,
-        difficulty,
-      });
-      await dispatch(fetchGameById(res.data));
-      return res.data;
-    } catch (e) {
-      if (e.response?.data?.message) {
-        toast(e.response.data.message);
-      }
-      throw e.response?.data ?? e.toString();
+export interface CreateBotGameParams {
+  type: "offline-bot" | "online-bot";
+  difficulty: number;
+}
+
+export type CreateGameParams = {
+  type: CreateGameType;
+  difficulty?: number;
+}
+
+export const createGame =
+  (params: CreateGameParams): AppThunk =>
+  async (dispatch): Promise<string> => {
+    switch (params.type) {
+      case "hotseat":
+        return ""
+      case "offline-bot":
+        return ""
+      case "online-bot":
+        try {
+          const res = await Api.post<string>(getApiUrl("/game"), {
+            vsAI: true,
+            difficulty: (params as CreateBotGameParams).difficulty,
+          });
+          await dispatch(fetchGameById(res.data));
+          return res.data;
+        } catch (e) {
+          // CQx: come back to this
+          if (e.response?.data?.message) {
+            toast(e.response.data.message);
+          }
+          throw e.response?.data ?? (e as AxiosError).message;
+        }
+      case "online-pvp":
+        try {
+          const res = await Api.post<string>(getApiUrl("/game"));
+          await dispatch(fetchGameById(res.data));
+          return res.data;
+        } catch (e) {
+          if (e.response?.data?.message) {
+            toast(e.response.data.message);
+          }
+          throw e.response?.data ?? e.message;
+        }
+      default:
+        throw "createGame default case reached"
     }
   };
-
 export const joinGameById =
   (id: string): AppThunk<Promise<boolean>> =>
   async (dispatch) => {
