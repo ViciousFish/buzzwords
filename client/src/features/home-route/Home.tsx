@@ -42,6 +42,7 @@ const Home: React.FC = () => {
           onPress={() => navigate('/play/')}
           className="font-bold p-6 px-7"
           variant="green"
+          thicker
         >
           Play Now
         </NewButton>

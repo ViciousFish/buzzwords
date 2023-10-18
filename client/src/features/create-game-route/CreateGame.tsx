@@ -270,6 +270,7 @@ function CreateGame() {
                   onPress={playButtonPress}
                   className="p-4 px-6 text-2xl font-bold"
                   variant="blue"
+                  thicker
                 >
                   Play{" "}
                   <FontAwesomeIcon

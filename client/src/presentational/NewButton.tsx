@@ -6,6 +6,7 @@ import styles from "./NewButton.module.css";
 
 interface NewButtonOwnprops {
   variant?: "green" | "blue" | "red" | "neutral";
+  thicker?: boolean;
   children: React.ReactNode;
 }
 
@@ -23,6 +24,7 @@ export function NewButton({
   children,
   className,
   variant,
+  thicker,
   ...props
 }: NewButtonProps) {
   const bg = variant ? BG_BY_VARIANT[variant] : "bg-vibrant-grad-neutral";
@@ -33,6 +35,7 @@ export function NewButton({
           styles.Parent,
           !isDisabled ? bg : BG_BY_VARIANT.neutral,
           isDisabled ? 'opacity-70' : 'shadow-md',
+          thicker ? "p-2" : "p-1",
           "rounded-full"
         )
       }
