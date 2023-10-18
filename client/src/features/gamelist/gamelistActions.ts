@@ -226,10 +226,10 @@ export const createGame =
       case "hotseat":
         return "";
       case "offline-bot":
-        const user = getState().user.user!.id;
+        // const user = getState().user.user!.id;
         const gm = new GameManager(null);
         const wordsList = await ensureWordslist();
-        const game = gm.createGame(user, wordsList);
+        const game = gm.createGame("LOCAL1", wordsList);
         game.offline = true;
         game.vsAI = true;
         game.difficulty = params.difficulty!;
