@@ -8932,15 +8932,15 @@ __metadata:
   linkType: hard
 
 "electron@npm:20":
-  version: 20.0.0
-  resolution: "electron@npm:20.0.0"
+  version: 20.3.8
+  resolution: "electron@npm:20.3.8"
   dependencies:
     "@electron/get": ^1.14.1
     "@types/node": ^16.11.26
     extract-zip: ^2.0.1
   bin:
     electron: cli.js
-  checksum: d8dadab7c5a77d7eb430becd74368340ed077897662cf5d91de713dd5739db355bfdbd8e3af8a92185454a78d4ec5ad89b9d24b791a8bcdc27b1b03d9e682abc
+  checksum: 96c1dd4637039c80e647241009bc1c3114b39f004c1f72b56ebd7ee66a6266bbce7a27ed49c98bb841577c81486feb230956e35efb9d86aa472262f12a187e02
   languageName: node
   linkType: hard
 
