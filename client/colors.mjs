@@ -41,9 +41,6 @@ const sunset = [
   "hsl(45deg 100% 69%)",
 ];
 
-// const sunset_hex = sunset.map((s) => chroma(toHSLObject(s)).hex());
-// console.log(list_string(sunset_hex));
-
 let springtime = `hsl(299deg 100% 79%) 0%,
 hsl(270deg 100% 82%) 5%,
 hsl(229deg 100% 82%) 10%,
@@ -63,10 +60,7 @@ hsl(44deg 100% 65%) 75%,
 hsl(45deg 100% 67%) 85%,
 hsl(45deg 100% 69%) 100%`;
 
-springtime = springtime.split(",\n");
-
-// const springtime_hex = springtime.map((s) => chroma(toHSLObject(s)).hex());
-// console.log(list_string(springtime_hex));
+springtime = springtime.split(",\n").filter((row, i) => i % 2 == 0);
 
 const to_chroma = (s) => {
   const hslObj = toHSLObject(s);
@@ -89,13 +83,22 @@ const format_hex = ([[_l, ...ch]]) => {
 };
 const format_grad = ([lch, pos]) => `${format_lch([lch])} ${pos}%`
 
-const to_threed = map(pipe(to_chroma, chroma_to_lch, fix_lch, mod_lch, format_hex));
+const get_palette = (formatter) => ([[l, c, h]]) => {
+  return {
+    darker: formatter([[Math.max(l - 10, 0), c, h]]),
+    DEFAULT: formatter([[l, c, h]]),
+    lighter: formatter([[Math.min(l + 7, 100), c - 0.07, h]]),
+  }
+}
 
-const to_tailwind = map(pipe(to_chroma, chroma_to_lch, fix_lch, format_lch))
+
+const to_threed = map(pipe(to_chroma, chroma_to_lch, fix_lch, mod_lch, get_palette(format_hex)));
+
+const to_tailwind = map(pipe(to_chroma, chroma_to_lch, fix_lch, get_palette(format_lch)))
 
 const to_css = map(pipe(to_chroma, chroma_to_lch, fix_lch, format_grad))
 
-// pipe(to_threed, list_string, console.log)(sunset)
-// pipe(to_threed, list_string, console.log)(springtime)
-// pipe(to_tailwind, list_string, console.log)(sunset)
-pipe(to_css, join(',\n'), console.log)(springtime)
+
+pipe(to_threed, JSON.stringify, console.log)(springtime)
+// pipe(to_tailwind, JSON.stringify, console.log)(springtime)
+// pipe(to_css, join(',\n'), console.log)(springtime)

@@ -30,6 +30,12 @@ module.exports = {
           200: "oklch(85% 0.16 82.07)",
           250: "oklch(78% 0.16 82.07)",
         },
+        paleYellow: {
+          50: "oklch(94.55% 0.051 90.66)",
+          100: "oklch(93% 0.07 90.66)",
+          200: "oklch(91% 0.095 90.66)",
+          300: "oklch(90% 0.13 90.66)",
+        },
         beeBrown: {
           DEFAULT: "oklch(84.56% 0.146 86.45)",
         },
@@ -55,30 +61,51 @@ module.exports = {
         ],
 
         springtime: [
-          { DEFAULT: "oklch(81.22% 0.18 326.42 / var(--tw-bg-opacity))" },
-          { DEFAULT: "oklch(79.09% 0.14 306.50 / var(--tw-bg-opacity))" },
-          { DEFAULT: "oklch(78.53% 0.11 273.85 / var(--tw-bg-opacity))" },
-          { DEFAULT: "oklch(77.94% 0.12 244.68 / var(--tw-bg-opacity))" },
-          { DEFAULT: "oklch(77.41% 0.14 230.48 / var(--tw-bg-opacity))" },
-          { DEFAULT: "oklch(78.56% 0.15 224.27 / var(--tw-bg-opacity))" },
-          { DEFAULT: "oklch(78.42% 0.14 211.83 / var(--tw-bg-opacity))" },
-          { DEFAULT: "oklch(79.08% 0.14 190.58 / var(--tw-bg-opacity))" },
-          { DEFAULT: "oklch(79.09% 0.16 166.72 / var(--tw-bg-opacity))" },
-          { DEFAULT: "oklch(79.71% 0.17 144.63 / var(--tw-bg-opacity))" },
           {
+            darker: "oklch(71.22% 0.18 326.42 / var(--tw-bg-opacity))",
+            DEFAULT: "oklch(81.22% 0.18 326.42 / var(--tw-bg-opacity))",
+            lighter: "oklch(91.22% 0.13 326.42 / var(--tw-bg-opacity))",
+          },
+          {
+            darker: "oklch(68.53% 0.11 273.85 / var(--tw-bg-opacity))",
+            DEFAULT: "oklch(78.53% 0.11 273.85 / var(--tw-bg-opacity))",
+            lighter: "oklch(88.53% 0.06 273.85 / var(--tw-bg-opacity))",
+          },
+          {
+            darker: "oklch(67.41% 0.14 230.48 / var(--tw-bg-opacity))",
+            DEFAULT: "oklch(77.41% 0.14 230.48 / var(--tw-bg-opacity))",
+            lighter: "oklch(87.41% 0.09 230.48 / var(--tw-bg-opacity))",
+          },
+          {
+            darker: "oklch(68.42% 0.14 211.83 / var(--tw-bg-opacity))",
+            DEFAULT: "oklch(78.42% 0.14 211.83 / var(--tw-bg-opacity))",
+            lighter: "oklch(88.42% 0.09 211.83 / var(--tw-bg-opacity))",
+          },
+          {
+            darker: "oklch(69.09% 0.16 166.72 / var(--tw-bg-opacity))",
+            DEFAULT: "oklch(79.09% 0.16 166.72 / var(--tw-bg-opacity))",
+            lighter: "oklch(89.09% 0.11 166.72 / var(--tw-bg-opacity))",
+          },
+          {
+            darker: "oklch(71.60% 0.17 122.60 / var(--tw-bg-opacity))",
             DEFAULT: "oklch(81.60% 0.17 122.60 / var(--tw-bg-opacity))",
-            f1: "oklch(85% 0.12 122.60 / var(--tw-bg-opacity))",
+            lighter: "oklch(91.60% 0.12 122.60 / var(--tw-bg-opacity))",
           },
           {
-            DEFAULT: "oklch(82.58% 0.17 94.63 / var(--tw-bg-opacity))",
-            f1: "oklch(90% 0.17 94.63 / var(--tw-bg-opacity))",
+            darker: "oklch(74.64% 0.17 84.90 / var(--tw-bg-opacity))",
+            DEFAULT: "oklch(84.64% 0.17 84.90 / var(--tw-bg-opacity))",
+            lighter: "oklch(94.64% 0.12 84.90 / var(--tw-bg-opacity))",
           },
-          { DEFAULT: "oklch(84.64% 0.17 84.90 / var(--tw-bg-opacity))" },
-          { DEFAULT: "oklch(85.67% 0.16 86.42 / var(--tw-bg-opacity))" },
-          { DEFAULT: "oklch(86.52% 0.16 87.42 / var(--tw-bg-opacity))" },
-          { DEFAULT: "oklch(87.41% 0.15 88.11 / var(--tw-bg-opacity))" },
-          { DEFAULT: "oklch(88.66% 0.15 90.45 / var(--tw-bg-opacity))" },
-          { DEFAULT: "oklch(89.14% 0.14 90.48 / var(--tw-bg-opacity))" },
+          {
+            darker: "oklch(76.52% 0.16 87.42 / var(--tw-bg-opacity))",
+            DEFAULT: "oklch(86.52% 0.16 87.42 / var(--tw-bg-opacity))",
+            lighter: "oklch(96.52% 0.11 87.42 / var(--tw-bg-opacity))",
+          },
+          {
+            darker: "oklch(78.66% 0.15 90.45 / var(--tw-bg-opacity))",
+            DEFAULT: "oklch(88.66% 0.15 90.45 / var(--tw-bg-opacity))",
+            lighter: "oklch(98.66% 0.10 90.45 / var(--tw-bg-opacity))",
+          },
         ],
 
         darkbrown: "var(--secondaryAccent)",

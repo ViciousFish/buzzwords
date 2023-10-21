@@ -37,7 +37,7 @@ const HexWord: React.FC<HexWordProps & GroupProps> = ({
           key={index}
           position={[index * 5.5, 0, 0]}
           index={index}
-          color={`springtime.${index * 2}`}
+          color={`springtime.${index}.lighter`}
         />
       )})}
     </group>

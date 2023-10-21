@@ -22,6 +22,7 @@ const HexTile: React.FC<MeshProps & HexTileProps> = ({
 }) => {
   const theme = useAppSelector(getTheme);
   const color = path(_color?.split(".") ?? ["primaryAccent"], theme.colors.threed);
+  console.log("🚀 ~ file: HexTile.tsx:25 ~ color:", color)
   const group = useRef(null);
   // @ts-ignore
   const { nodes, materials } = useGLTF(hextile);

@@ -54,8 +54,8 @@ function GameType({
         classNames(
           isFocused && "outline",
           isFocusVisible && "outline",
-          isSelected ? "bg-primary" : "bg-lighterbg",
-          isDisabled ? "opacity-40" : !isSelected && "hover:bg-darkbg",
+          isSelected ? "bg-gradient-to-t from-beeYellow-200 to-beeYellow-100" : "bg-paleYellow-50",
+          isDisabled ? "opacity-40" : !isSelected && "hover:bg-paleYellow-300",
           "flex box-border justify-between items-center p-4 lg:p-8 rounded-xl shadow-lg overflow-hidden",
           "my-6 first:mt-0 last:mb-0"
         )

@@ -41,7 +41,7 @@ const GameList: React.FC<{ hideBee: boolean }> = ({ hideBee }) => {
   const completedGames = Object.values(games).filter((game) => game.gameOver);
 
   return (
-    <ScreenHeightWraper insetTop={50} className="flex flex-col bg-darkbg">
+    <ScreenHeightWraper insetTop={50} className="flex flex-col bg-springtime-6-lighter">
       <header className={classNames("mb-2 border-b border-black/20", "flex flex-shrink-0 px-2 py-2 space-x-1")}>
         <a
           className="block p-2 rounded-md hover:bg-primary hover:bg-opacity-50 text-darkbrown"

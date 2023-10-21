@@ -32,7 +32,7 @@ const initialState: GameListState = {
   gamesLoading: {},
   gamesLoaded: false,
   isRefreshing: false,
-  isOpen: false,
+  isOpen: true,
   showCompletedGames: false,
   showTutorialCard: false,
 };
