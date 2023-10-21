@@ -5,6 +5,7 @@ import { Mesh } from "three";
 import hextile from "../../assets/hextile.glb?url";
 import { useAppSelector } from "../app/hooks";
 import { getTheme } from "../features/settings/settingsSelectors";
+import { path } from "ramda";
 
 interface HexTileProps {
   orientation?: "flat" | "pointy";
@@ -15,11 +16,12 @@ const HexTile: React.FC<MeshProps & HexTileProps> = ({
   position,
   rotation,
   orientation,
-  color,
+  color: _color,
   children,
   ...props
 }) => {
   const theme = useAppSelector(getTheme);
+  const color = path(_color?.split(".") ?? ["primaryAccent"], theme.colors.threed);
   const group = useRef(null);
   // @ts-ignore
   const { nodes, materials } = useGLTF(hextile);
@@ -42,7 +44,7 @@ const HexTile: React.FC<MeshProps & HexTileProps> = ({
         {...props}
       >
         {!children && (
-          <meshStandardMaterial color={theme.colors.threed[color || "primaryAccent"]} />
+          <meshStandardMaterial color={color} />
         )}
         {children}
       </mesh>

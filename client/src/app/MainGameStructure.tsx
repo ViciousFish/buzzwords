@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Outlet } from "react-router";
+import { Outlet, useLocation } from "react-router";
 import { animated as a, useSpring } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import useBreakpoint from "use-breakpoint";
@@ -31,6 +31,10 @@ const MainGameStructure: React.FC = () => {
 
   const { breakpoint } = useBreakpoint(BREAKPOINTS);
   const mobileLayout = breakpoint === "xs" || breakpoint === "sm";
+
+  const location = useLocation();
+
+  const hideBee = mobileLayout || location.pathname === "/"
 
   const safeAreaLeft = Number(
     getComputedStyle(document.documentElement)
@@ -89,14 +93,14 @@ const MainGameStructure: React.FC = () => {
     <ScreenHeightWraper className="flex flex-col relative overflow-hidden">
       <TopBar />
       <div
-        style={{ display: "flex" }}
-        className="bg-lightbg mt-[50px] overflow-hidden max-w-[100vw] flex-row safe-area-pad flex-auto"
+        style={{ display: "flex", backgroundSize: '300%' }}
+        className="bg-lightBg mt-[50px] overflow-hidden max-w-[100vw] flex-row safe-area-pad flex-auto"
       >
         <a.div
           className="w-[300px] flex-shrink-0 z-30"
           style={{ marginLeft: sidebarSpring.marginLeft }}
         >
-          <GameList hideBee={mobileLayout} />
+          <GameList hideBee={hideBee} />
         </a.div>
         <SidebarRightSide mobileLayout={mobileLayout} bindDragArgs={bind()}>
           <Outlet />

@@ -69,11 +69,15 @@ const TopBar: React.FC = () => {
     <div
       className={classNames(
         "fixed top-0 z-30 text-darkbrown",
-        "h-[calc(50px+var(--sat))] w-screen shadow-md p-t-safe"
+        "h-[calc(50px+var(--sat))] w-screen p-t-safe"
       )}
     >
       <div
-        className="flex h-full p-0 items-center topbar"
+        className={classNames(
+          "flex h-full p-0 items-center",
+          "bg-gradient-to-t from-beeYellow-200 to-beeYellow-100",
+          // "bg-vibrant-grad-springtime"
+          )}
       >
         <div className="flex h-full gap-1 items-center">
           {PLATFORM === "darwin" && (

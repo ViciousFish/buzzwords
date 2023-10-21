@@ -37,15 +37,23 @@ const Home: React.FC = () => {
           </React.Suspense>
         </Canvas>
       </div>
-      <div className="flex justify-center items-center text-2xl flex-wrap">
+      <div className="flex justify-center items-center text-2xl flex-wrap gap-4">
         <NewButton
-          onPress={() => navigate('/play/')}
+          onPress={() => navigate("/play/")}
           className="font-bold p-6 px-7"
-          variant="green"
+          variant="springtime"
           thicker
         >
           Play Now
         </NewButton>
+        {/* <NewButton
+          onPress={() => navigate("/play/")}
+          className="font-bold p-6 px-7"
+          variant="sunset"
+          thicker
+        >
+          Play Now
+        </NewButton> */}
       </div>
     </>
   );

@@ -39,6 +39,11 @@
   .anim-grad-h {
     background-position: 0 !important;
   }
+  .bg-gradient-to-45 {
+    background-image: linear-gradient(
+      45deg, var(--tw-gradient-stops)
+    );
+  }
   .bg-vibrant-grad-green {
     background-image: linear-gradient(
       45deg,
@@ -93,31 +98,64 @@
   }
   .bg-vibrant-grad-red-reverse {
     background-image: linear-gradient(
-  225deg,
-  hsl(273deg 100% 30%) 0%,
-  hsl(299deg 100% 28%) 10%,
-  hsl(317deg 100% 35%) 19%,
-  hsl(328deg 100% 41%) 28%,
-  hsl(340deg 79% 50%) 37%,
-  hsl(356deg 87% 61%) 46%,
-  hsl(12deg 95% 63%) 56%,
-  hsl(23deg 98% 62%) 68%,
-  hsl(33deg 96% 62%) 82%,
-  hsl(43deg 90% 63%) 100%
-);
+      225deg,
+      hsl(273deg 100% 30%) 0%,
+      hsl(299deg 100% 28%) 10%,
+      hsl(317deg 100% 35%) 19%,
+      hsl(328deg 100% 41%) 28%,
+      hsl(340deg 79% 50%) 37%,
+      hsl(356deg 87% 61%) 46%,
+      hsl(12deg 95% 63%) 56%,
+      hsl(23deg 98% 62%) 68%,
+      hsl(33deg 96% 62%) 82%,
+      hsl(43deg 90% 63%) 100%
+    );
   }
-  /* .bg-vibrant-grad-red {
+  .bg-vibrant-grad-sunset {
     background-image: linear-gradient(
       45deg,
-      hsl(342deg 100% 54%) 0%,
-      hsl(357deg 100% 65%) 17%,
-      hsl(9deg 100% 67%) 33%,
-      hsl(17deg 100% 69%) 50%,
-      hsl(24deg 100% 71%) 67%,
-      hsl(29deg 100% 75%) 83%,
-      hsl(34deg 100% 80%) 100%
+      hsl(203deg 100% 47%) 0%,
+      hsl(230deg 84% 71%) 6%,
+      hsl(269deg 73% 71%) 13%,
+      hsl(308deg 69% 67%) 19%,
+      hsl(329deg 100% 70%) 25%,
+      hsl(343deg 100% 70%) 31%,
+      hsl(4deg 100% 70%) 37%,
+      hsl(23deg 100% 62%) 44%,
+      hsl(38deg 100% 50%) 50%,
+      hsl(38deg 100% 54%) 56%,
+      hsl(39deg 100% 57%) 63%,
+      hsl(39deg 99% 59%) 69%,
+      hsl(40deg 99% 61%) 75%,
+      hsl(41deg 99% 63%) 81%,
+      hsl(43deg 99% 65%) 87%,
+      hsl(44deg 100% 67%) 94%,
+      hsl(45deg 100% 69%) 100%
     );
-  } */
+  }
+  .bg-vibrant-grad-springtime {
+    --tw-gradient-stops:
+      oklch(81.22% 0.18 326.42 / var(--tw-bg-opacity)) 0%,
+      oklch(79.09% 0.14 306.5 / var(--tw-bg-opacity)) 5%,
+      oklch(78.53% 0.11 273.85 / var(--tw-bg-opacity)) 10%,
+      oklch(77.94% 0.12 244.68 / var(--tw-bg-opacity)) 14%,
+      oklch(77.41% 0.14 230.48 / var(--tw-bg-opacity)) 18%,
+      oklch(78.56% 0.15 224.27 / var(--tw-bg-opacity)) 22%,
+      oklch(78.42% 0.14 211.83 / var(--tw-bg-opacity)) 26%,
+      oklch(79.08% 0.14 190.58 / var(--tw-bg-opacity)) 30%,
+      oklch(79.09% 0.16 166.72 / var(--tw-bg-opacity)) 34%,
+      oklch(79.71% 0.17 144.63 / var(--tw-bg-opacity)) 39%,
+      oklch(81.6% 0.17 122.6 / var(--tw-bg-opacity)) 43%,
+      oklch(82.58% 0.17 94.63 / var(--tw-bg-opacity)) 48%,
+      oklch(84.64% 0.17 84.9 / var(--tw-bg-opacity)) 54%,
+      oklch(85.67% 0.16 86.42 / var(--tw-bg-opacity)) 60%,
+      oklch(86.52% 0.16 87.42 / var(--tw-bg-opacity)) 67%,
+      oklch(87.41% 0.15 88.11 / var(--tw-bg-opacity)) 75%,
+      oklch(88.66% 0.15 90.45 / var(--tw-bg-opacity)) 85%,
+      oklch(89.14% 0.14 90.48 / var(--tw-bg-opacity)) 100%;
+
+  }
+
   /* .wood-light-x {
     background-image: linear-gradient(
         0deg,
@@ -166,10 +204,6 @@ body {
   --sar: env(safe-area-inset-right);
   --sab: env(safe-area-inset-bottom);
   --sal: env(safe-area-inset-left);
-}
-
-.topbar {
-  background: linear-gradient(0deg, var(--topbar0) 0%, var(--topbar1) 100%);
 }
 
 .stoplights {

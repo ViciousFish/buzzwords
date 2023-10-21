@@ -38,6 +38,7 @@ const HexLetter: React.FC<HexLetterProps> = ({
   autoSpin,
   ...props
 }) => {
+  console.log("🚀 ~ file: HexLetter.tsx:41 ~ color:", color)
   const theme = useAppSelector(getTheme);
   const lowPowerMode = useAppSelector(({ settings }) => settings.lowPowerMode);
 

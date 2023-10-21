@@ -8,39 +8,113 @@ import { ThemeNames } from "../features/settings/settingsSlice";
 //
 //
 
-export interface Theme {
+// export interface Theme {
+//   colors: {
+//     threed: {
+//       primaryAccent: string;
+//       secondaryAccent: string;
+//       p1: string;
+//       p2: string;
+//       selected: string;
+//       crown: string;
+//       beeYellow: string;
+//       beeBrown: string;
+//     };
+//     html: {
+//       primaryAccent: string; // sampled from threed.primaryAccent
+//       secondaryAccent: string;
+//       lightbg: string;
+//       /** OKLCH */
+//       lighterbg: string;
+//       darkbg: string;
+//       p1: string; // sampled from threed.p1
+//       p2: string; // sampled from threed.p2
+//       text: string;
+//       textSubtle: string;
+//       textInverse: string;
+//       textLink: string;
+//       input: string;
+//       topbar0: string;
+//       topbar1: string;
+//       stoplights0: string;
+//       stoplights1: string;
+//     };
+//   };
+// }
+
+const light = {
   colors: {
     threed: {
-      primaryAccent: string;
-      secondaryAccent: string;
-      p1: string;
-      p2: string;
-      selected: string;
-      crown: string;
-      beeYellow: string;
-      beeBrown: string;
-    };
+      primaryAccent: "#d79e0f",
+      sunset: [
+        "#0072d0",
+        "#636bd0",
+        "#995ec5",
+        "#c74fad",
+        "#de438d",
+        "#dd446a",
+        "#db513e",
+        "#da6a00",
+        "#d98500",
+        "#d98c00",
+        "#d89500",
+        "#d89900",
+        "#d89f00",
+        "#d7a602",
+        "#d7ae1f",
+        "#d8b42f",
+        "#d8b93d",
+      ],
+      springtime: [
+        "#df72d7",
+        "#b682d9",
+        "#8a93dd",
+        "#589ddf",
+        "#00a3e1",
+        "#00aae1",
+        "#00adcf",
+        "#00b5b5",
+        "#00bb8d",
+        "#39ba5c",
+        "#87b61f",
+        "#c2a600",
+        "#d8a500",
+        "#d8aa00",
+        "#d8ae00",
+        "#d8b11e",
+        "#d8b72f",
+        "#d8b93d",
+      ],
+      secondaryAccent: "#59430D",
+      p1: "#d788b8",
+      p2: "#709867",
+      selected: "#9a9a9a",
+      crown: "#fcba03",
+      beeYellow: "#d79e0f", // oklch(73.41% 0.149 82.07)
+      beeBrown: "#59430D",
+    },
     html: {
-      primaryAccent: string; // sampled from threed.primaryAccent
-      secondaryAccent: string;
-      lightbg: string;
-      /** OKLCH */
-      lighterbg: string;
-      darkbg: string;
-      p1: string; // sampled from threed.p1
-      p2: string; // sampled from threed.p2
-      text: string;
-      textSubtle: string;
-      textInverse: string;
-      textLink: string;
-      input: string;
-      topbar0: string;
-      topbar1: string;
-      stoplights0: string;
-      stoplights1: string;
-    };
-  };
-}
+      primaryAccent: "#F6C54B",
+      secondaryAccent: "#59430D",
+      lightbg: "250, 231, 178",
+      lighterbg: "94.55% 0.051 90.66",
+      darkbg: "89.8% 0.084 91.05",
+      p1: "#F3ADDF",
+      p2: "#96BB87",
+      text: "black",
+      textSubtle: "lightgrey",
+      textInverse: "white",
+      textLink: "#0e32e9",
+      input: "white",
+      topbar0: "rgb(233, 187, 72)",
+      topbar1: "rgb(246, 197, 75)",
+      stoplights0: "rgba(134, 85, 17, 1)",
+      stoplights1: "rgba(173, 110, 22, 1)",
+    },
+  },
+};
+
+type Theme = typeof light;
 
 const dark: Theme = {
   colors: {
@@ -85,38 +159,7 @@ const oled = mergeDeepRight(dark, {
 } as Partial<Theme>);
 
 export const theme: Record<ThemeNames, Theme> = {
-  light: {
-    colors: {
-      threed: {
-        primaryAccent: "#d79e0f",
-        secondaryAccent: "#59430D",
-        p1: "#d788b8",
-        p2: "#709867",
-        selected: "#9a9a9a",
-        crown: "#fcba03",
-        beeYellow: "#d79e0f",
-        beeBrown: "#59430D",
-      },
-      html: {
-        primaryAccent: "#F6C54B",
-        secondaryAccent: "#59430D",
-        lightbg: "250, 231, 178",
-        lighterbg: "94.55% 0.051 90.66",
-        darkbg: "89.8% 0.084 91.05",
-        p1: "#F3ADDF",
-        p2: "#96BB87",
-        text: "black",
-        textSubtle: "lightgrey",
-        textInverse: "white",
-        textLink: "#0e32e9",
-        input: "white",
-        topbar0: "rgb(233, 187, 72)",
-        topbar1: "rgb(246, 197, 75)",
-        stoplights0: "rgba(134, 85, 17, 1)",
-        stoplights1: "rgba(173, 110, 22, 1)"
-      },
-    },
-  },
+  light,
   dark,
   oled,
 };

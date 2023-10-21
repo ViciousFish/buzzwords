@@ -1,6 +1,7 @@
 import { GroupProps } from "@react-three/fiber";
 import React, { useRef } from "react";
 import HexLetter from "./HexLetter";
+import { theme } from "../../app/theme";
 
 interface HexWordProps {
   text: string;
@@ -27,16 +28,18 @@ const HexWord: React.FC<HexWordProps & GroupProps> = ({
       ]}
       {...props}
     >
-      {characters.map((character, index) => (
+      {characters.map((character, index) => {
+        console.log(theme.light.colors.threed.sunset[index]);
+        return (
         <HexLetter
           autoSpin={autoSpin}
           letter={character}
           key={index}
           position={[index * 5.5, 0, 0]}
           index={index}
-          color={color}
+          color={`springtime.${index * 2}`}
         />
-      ))}
+      )})}
     </group>
   );
 };
