@@ -11,7 +11,8 @@
     "docker": "concurrently \"yarn docker-server\" \"yarn docker-client\"",
     "dev:server": "yarn --cwd server dev",
     "dev:client": "yarn --cwd client dev",
-    "dev": "concurrently \"yarn dev:server\" \"yarn dev:client\""
+    "dev-donotuse": "concurrently \"yarn dev:server\" \"yarn dev:client\"",
+    "dev": "echo \"do this in the client or server folder\""
   },
   "repository": {
     "type": "git",
