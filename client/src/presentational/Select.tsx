@@ -1,80 +1,39 @@
-import React from "react";
-import type { AriaSelectProps } from "@react-types/select";
-import { useSelectState } from "react-stately";
-import {
-  useSelect,
-  HiddenSelect,
-  useButton,
-  mergeProps,
-  useFocusRing
-} from "react-aria";
+import classNames from 'classnames';
+import React from 'react';
+import type {ItemProps, SelectProps} from 'react-aria-components';
+import {Button, Label, ListBox, Popover, Select as RACSelect, SelectValue, Text, Item as RACItem} from 'react-aria-components';
 
-import { ListBox } from "./ListBox";
-import { Popover } from "./Popover";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronCircleDown } from "@fortawesome/free-solid-svg-icons";
+interface MySelectProps<T extends object>
+  extends Omit<SelectProps<T>, 'children'> {
+  label?: string;
+  description?: string;
+  errorMessage?: string;
+  items?: Iterable<T>;
+  children: React.ReactNode | ((item: T) => React.ReactNode);
+}
 
-export { Item } from "react-stately";
-
-export function Select<T extends object>(props: AriaSelectProps<T>) {
-  // Create state based on the incoming props
-  let state = useSelectState(props);
-
-  // Get props for child elements from useSelect
-  let ref = React.useRef(null);
-  let { labelProps, triggerProps, valueProps, menuProps } = useSelect(
-    props,
-    state,
-    ref
-  );
-
-  // Get props for the button based on the trigger props from useSelect
-  let { buttonProps } = useButton(triggerProps, ref);
-
-  let { focusProps, isFocusVisible } = useFocusRing();
-
+export function Select<T extends object>(
+  { label, description, errorMessage, children, items, ...props }:
+    MySelectProps<T>
+) {
   return (
-    <div className="inline-flex flex-col relative w-full">
-      <div
-        {...labelProps}
-        className="block text-sm font-medium text-text text-left cursor-default pl-2"
-      >
-        {props.label as React.ReactNode}
-      </div>
-      <HiddenSelect
-        state={state}
-        triggerRef={ref}
-        label={props.label}
-        name={props.name}
-      />
-      <button
-        {...mergeProps(buttonProps, focusProps)}
-        ref={ref}
-        className={`p-1 pl-3 py-1 relative inline-flex flex-row items-center justify-between rounded-md overflow-hidden cursor-default border-2 outline-none ${
-          isFocusVisible ? "border-darkbrown" : "border-primary"
-        } ${state.isOpen ? "bg-input" : "bg-input"}`}
-      >
-        <span
-          {...valueProps}
-          className={`text-md ${
-            state.selectedItem ? "text-text" : "text-textSubtle"
-          }`}
-        >
-          {state.selectedItem
-            ? state.selectedItem.rendered as React.ReactNode
-            : "Select an option"}
-        </span>
-        <FontAwesomeIcon icon={faChevronCircleDown}
-          className={`w-5 h-5 ${
-            isFocusVisible ? "text-darkbrown" : "text-primary"
-          }`}
-        />
-      </button>
-      {state.isOpen && (
-        <Popover isOpen={state.isOpen} onClose={state.close}>
-          <ListBox {...menuProps} state={state} />
-        </Popover>
-      )}
-    </div>
+    <RACSelect className="flex flex-col items-stretch flex-auto" {...props}>
+      <Label className='pl-2 text-sm m-0'>{label}</Label>
+      <Button className={classNames('text-left p-2 rounded-md bg-input text-text w-full border-2 border-primary flex')}>
+        <SelectValue className='flex-auto' />
+        <span aria-hidden="true">▼</span>
+      </Button>
+      {description && <Text slot="description">{description}</Text>}
+      {errorMessage && <Text slot="errorMessage">{errorMessage}</Text>}
+      <Popover className='bg-input p-2 rounded-md shadow w-[var(--trigger-width)]'>
+        <ListBox className="flex flex-col items-stretch gap-1 w-full">
+          {children}
+        </ListBox>
+      </Popover>
+    </RACSelect>
   );
+}
+
+export function Item({ className, ...props}: ItemProps) {
+  return <RACItem {...props} className={classNames(className, "p-2 rounded hover:bg-lightbg text-text")} />
 }
