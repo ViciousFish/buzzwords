@@ -19,13 +19,14 @@ import { useAppSelector } from "../app/hooks";
 import { getTheme } from "../features/settings/settingsSelectors";
 
 // TODO: remove materials from model so we don't load unnecessary data
-const Bee = (props: GroupProps) => {
+const Bee = ({spinning: _spinning, ...props}: GroupProps & {spinning?: boolean}) => {
   const theme = useAppSelector(getTheme);
   const viewport = useThree(({ viewport }) => viewport);
   const size = useThree(({ size }) => size);
   const invalidate = useThree(({ invalidate }) => invalidate);
 
   const lowPowerMode = useAppSelector(({ settings }) => settings.lowPowerMode);
+  const spinning = _spinning ?? true;
 
   const aspect = size.width / viewport.getCurrentViewport().width;
   const group = useRef<Group>();
@@ -55,7 +56,7 @@ const Bee = (props: GroupProps) => {
   const [v] = useState(() => new Vector3());
   useFrame(({ clock }) => {
     if (group.current && !lowPowerMode) {
-      if (!isDragging.current) {
+      if (!isDragging.current && spinning) {
         rotateSpringApi.set({
           x: rotateSpring.x.get() + 0.03,
         });

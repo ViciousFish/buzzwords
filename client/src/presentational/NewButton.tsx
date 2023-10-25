@@ -37,7 +37,7 @@ export function NewButton({
           styles.Parent,
           !isDisabled ? bg : BG_BY_VARIANT.neutral,
           isDisabled ? 'opacity-70' : '',
-          thicker ? "p-2" : "p-1",
+          thicker ? "p-2" : "p-2",
           "rounded-full inset-shadow bg-gradient-to-45"
         )
       }
@@ -47,7 +47,7 @@ export function NewButton({
         <div
           className={classNames(
             styles.Child,
-            "inset-shadow rounded-full p-2 px-3",
+            "inset-shadow rounded-full p-3 px-4",
             "bg-white dark:bg-slate-800 text-darkbrown",
             className
           )}

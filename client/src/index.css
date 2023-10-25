@@ -155,6 +155,19 @@
       oklch(89.14% 0.14 90.48 / var(--tw-bg-opacity)) 100%;
 
   }
+  .bg-vibrant-grad-beeYellow {
+    --tw-gradient-stops:
+      oklch(97.64% 0.0214 82.06694038779712 / var(--tw-bg-opacity)) 0%,
+      oklch(95.88% 0.039 82.06694038779712 / var(--tw-bg-opacity)) 20%,
+      oklch(94.7% 0.0511 82.06694038779712 / var(--tw-bg-opacity)) 30%,
+      oklch(92% 0.07858902880441465 82.06694038779712 / var(--tw-bg-opacity)) 40%,
+      oklch(88.52% 0.1136 82.06694038779712 / var(--tw-bg-opacity)) 50%,
+      oklch(85% 0.1525025971445893 82.07249786810627 / var(--tw-bg-opacity)) 60%,
+      oklch(78% 0.16 82.07 / var(--tw-bg-opacity)) 70%,
+      oklch(67.51% 0.13026009694080318 82.06582566004525 / var(--tw-bg-opacity)) 80%,
+      oklch(50.59% 0.0873 82.06582566004525 / var(--tw-bg-opacity)) 90%,
+      oklch(39.42% 0.0807 82.06582566004525 / var(--tw-bg-opacity)) 100%;
+  }
 
   /* .wood-light-x {
     background-image: linear-gradient(

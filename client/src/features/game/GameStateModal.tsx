@@ -7,6 +7,8 @@ import { NewButton } from "../../presentational/NewButton";
 import Canvas from "../canvas/Canvas";
 import HexWord from "../thereed-lettering/HexWord";
 import { useNavigate } from "react-router";
+import Crown from "../../assets/Crown";
+import Bee from "../../assets/Bee";
 
 export type GameStateModalType =
   | "extra-turn-p1"
@@ -79,26 +81,49 @@ const GameStateModal: React.FC<GameStateModalOwnprops> = ({
   const twoDText = getTwoDText(type, p1Nick, p2Nick);
   return (
     <Modal key={type} overlayClassName="flex">
-      <div className="bg-lightbg rounded-xl w-[700px] h-[300px] flex justify-center items-center flex-col">
-        {threeDText && (
-          <div className="w-full max-w-[90vw] no-touch">
-            <React.Suspense fallback={null}>
-              <Canvas>
-                <HexWord text={threeDText} />
-              </Canvas>
-            </React.Suspense>
+      <div style={{backgroundSize: '300% 250%', backgroundPositionY: '70%', backgroundPositionX: '40%'}} className="bg-vibrant-grad-beeYellow bg-gradient-to-bl bg-opacity-100 inset-shadow relative rounded-xl w-[700px] h-[400px] flex flex-col items-stretch p-4 overflow-hidden">
+        {/* <div className="rounded-xl overflow-hidden absolute top-0 left-0 right-0 bottom-0 flex-auto flex flex-col p-0 items-stretch justify">
+          <div className="flex-auto bg-beeYellow-100"></div>
+          <div className="flex-auto bg-beeYellow-200"></div>
+          <div className="flex-auto bg-beeYellow-300"></div>
+          <div className="flex-auto bg-beeYellow-400"></div>
+          <div className="flex-auto bg-beeYellow-500"></div>
+          <div className="flex-auto bg-beeYellow-600"></div>
+          <div className="flex-auto bg-beeYellow-700"></div>
+          <div className="flex-auto bg-beeYellow-800"></div>
+          <div className="flex-auto bg-beeYellow-900"></div>
+        </div> */}
+        <h1 style={{lineHeight: 1}} className="z-10 text-center text-[80px] p-0 text-beeYellow-900 font-fredoka">{threeDText}</h1>
+        <div className="flex-auto bg-beeYellow-200 shadow-inner z-10 flex flex-col items-stretch rounded-md">
+          <div className="flex-auto">
+            {threeDText && (
+              <div className="w-full max-w-[90vw] no-touch">
+                <React.Suspense fallback={null}>
+                  <Canvas>
+                    {/* <HexWord text={threeDText} /> */}
+                    <Crown position={[-1,1,1]} rotation={[0, Math.PI / 6, - Math.PI / 4]} />
+                    <Bee position={[0,-1,0.5]} spinning={false}/>
+                  </Canvas>
+                </React.Suspense>
+              </div>
+            )}
           </div>
-        )}
-        {twoDText && (
-          <div className="w-full max-w-[90vw] text-lg my-2 text-center text-text">
-            <p>{twoDText.body}</p>
+          <div className="flex-auto w-full max-w-[90vw] text-lg my-2 text-center text-text">
+            {twoDText && <p>{twoDText.body}</p>}
           </div>
-        )}
-        <div className="flex items-center gap-2">
-          <NewButton variant="blue" onPress={onDismiss}>Dismiss</NewButton>
-          {(type === "defeat" || type === "victory") && (
-            <NewButton variant="green" onPress={() => navigate("/play/")}>New Game</NewButton>
-          )}
+          <div className="flex justify-self-end items-center justify-end gap-2 p-4">
+            <NewButton variant="springtime" onPress={onDismiss}>
+              Dismiss
+            </NewButton>
+            {(type === "defeat" || type === "victory") && (
+              <NewButton
+                variant="springtime"
+                onPress={() => navigate("/play/")}
+              >
+                New Game
+              </NewButton>
+            )}
+          </div>
         </div>
       </div>
     </Modal>

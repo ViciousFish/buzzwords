@@ -9,13 +9,14 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { NavLink, useNavigate } from "react-router-dom";
 import classNames from "classnames";
 import { NewButton } from "../../presentational/NewButton";
+import GameStateModal from "../game/GameStateModal";
 
 const Home: React.FC = () => {
   const { progress } = useProgress();
 
   const navigate = useNavigate();
   return (
-    <>
+    <div className="flex flex-col gap-2">
       <div className="flex flex-auto no-touch h-[50vh] pt-[20vh] p-12 ">
         <Canvas key="home">
           <React.Suspense
@@ -55,6 +56,7 @@ const Home: React.FC = () => {
           Play Now
         </NewButton> */}
       </div>
+      <GameStateModal type="victory" />
       <div className="flex-auto flex gap-0 p-0 items-center justify-stretch">
         <div className="h-[50vh] flex-auto bg-beeYellow-100"></div>
         <div className="h-[50vh] flex-auto bg-beeYellow-200"></div>
@@ -66,7 +68,7 @@ const Home: React.FC = () => {
         <div className="h-[50vh] flex-auto bg-beeYellow-800"></div>
         <div className="h-[50vh] flex-auto bg-beeYellow-900"></div>
       </div>
-    </>
+    </div>
   );
 };
 
