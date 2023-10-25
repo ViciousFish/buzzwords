@@ -29,7 +29,6 @@ const HexWord: React.FC<HexWordProps & GroupProps> = ({
       {...props}
     >
       {characters.map((character, index) => {
-        console.log(theme.light.colors.threed.sunset[index]);
         return (
         <HexLetter
           autoSpin={autoSpin}
@@ -37,7 +36,7 @@ const HexWord: React.FC<HexWordProps & GroupProps> = ({
           key={index}
           position={[index * 5.5, 0, 0]}
           index={index}
-          color={`springtime.${index}.lighter`}
+          color={`primaryAccent`}
         />
       )})}
     </group>

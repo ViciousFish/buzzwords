@@ -124,13 +124,13 @@ const GameTile: React.FC<GameTileProps> = ({
   const willBeReset =
     tilesThatWillBeReset && coord && tilesThatWillBeReset[coord] && owner !== 2;
 
-  let color = theme.colors.threed.primaryAccent;
+  let color = theme.colors.threed.springtime[7].DEFAULT;
   if (willBeReset) {
     color = theme.colors.threed.selected;
   } else if (owner === 0) {
-    color = theme.colors.threed.p1;
+    color = theme.colors.threed.springtime[0].DEFAULT;
   } else if (owner === 1) {
-    color = theme.colors.threed.p2;
+    color = theme.colors.threed.springtime[5].DEFAULT;
   } else if (selected && grid && coord) {
     const [q, r] = coord.split(",");
     const parsedCoord = {

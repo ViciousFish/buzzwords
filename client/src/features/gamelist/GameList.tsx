@@ -41,10 +41,10 @@ const GameList: React.FC<{ hideBee: boolean }> = ({ hideBee }) => {
   const completedGames = Object.values(games).filter((game) => game.gameOver);
 
   return (
-    <ScreenHeightWraper insetTop={50} className="flex flex-col bg-springtime-6-lighter">
+    <ScreenHeightWraper insetTop={50} className="flex flex-col bg-beeYellow-250 text-beeYellow-900">
       <header className={classNames("mb-2 border-b border-black/20", "flex flex-shrink-0 px-2 py-2 space-x-1")}>
         <a
-          className="block p-2 rounded-md hover:bg-primary hover:bg-opacity-50 text-darkbrown"
+          className="block p-2 rounded-md hover:bg-beeYellow-400 hover:bg-opacity-50"
           href="https://github.com/ViciousFish/buzzwords"
           target="_blank"
           rel="noreferrer"
@@ -54,7 +54,7 @@ const GameList: React.FC<{ hideBee: boolean }> = ({ hideBee }) => {
           <FontAwesomeIcon icon={faGithub} />
         </a>
         <a
-          className="block p-2 rounded-md hover:bg-primary hover:bg-opacity-50 text-darkbrown"
+          className="block p-2 rounded-md hover:bg-beeYellow-400 hover:bg-opacity-50"
           href="https://twitter.com/BuzzwordsGG"
           target="_blank"
           rel="noreferrer"
@@ -65,8 +65,8 @@ const GameList: React.FC<{ hideBee: boolean }> = ({ hideBee }) => {
         <NavLink
           className={({ isActive }) =>
             classNames(
-              isActive ? "bg-primary hover:bg-opacity-100" : "underline",
-              "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50 text-darkbrown"
+              isActive ? "bg-beeYellow-400 hover:bg-opacity-100" : "underline",
+              "p-2 rounded-md block hover:bg-beeYellow-400 hover:bg-opacity-50 "
             )
           }
           to="/"
@@ -89,14 +89,14 @@ const GameList: React.FC<{ hideBee: boolean }> = ({ hideBee }) => {
         )}
         <div className="flex-auto">
           <div className="z-10 px-2 mt-0 flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-darkbrown">Games</h2>
+            <h2 className="text-2xl font-bold ">Games</h2>
             <NavLink
               to="/play/"
               className={({ isActive }) =>
                 classNames(
-                  "text-text text-sm p-2 rounded-full flex items-center",
-                  "hover:bg-primary",
-                  isActive ? "bg-primary" : "underline"
+                  " text-sm p-2 rounded-full flex items-center",
+                  "hover:bg-beeYellow-400",
+                  isActive ? "bg-beeYellow-400" : "underline"
                 )
               }
             >
@@ -108,7 +108,7 @@ const GameList: React.FC<{ hideBee: boolean }> = ({ hideBee }) => {
             </NavLink>
           </div>
           {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
-          <ul className="px-2 text-text">
+          <ul className="px-2 ">
             {incompleteGames.map((game) => (
               <GameListItem key={game.id} game={game} />
             ))}
@@ -130,7 +130,7 @@ const GameList: React.FC<{ hideBee: boolean }> = ({ hideBee }) => {
           {completedGames.length ? (
             <div className="px-2 ">
               <button
-                className="flex items-center text-darkbrown w-full"
+                className="flex items-center  w-full"
                 onClick={() => dispatch(toggleCompletedGames())}
               >
                 <FontAwesomeIcon
@@ -150,7 +150,7 @@ const GameList: React.FC<{ hideBee: boolean }> = ({ hideBee }) => {
           )}
         </div>
         {showTutorialCard && isOpen && <TutorialCard />}
-        <div className="p-2 text-sm text-center text-text opacity-75">
+        <div className="p-2 text-sm text-center  opacity-75">
           by{" "}
           <a className="underline" href="https://chuckdries.com">
             Chuck Dries

@@ -26,9 +26,16 @@ module.exports = {
         primary: "oklch(85% 0.16 82.07)", // theme.primary on lit tiles
 
         beeYellow: {
-          100: "oklch(92% 0.16 82.07)",
-          200: "oklch(85% 0.16 82.07)",
-          250: "oklch(78% 0.16 82.07)",
+          100: "oklch(97.64% 0.0214 82.06694038779712)",
+          200: "oklch(95.88% 0.039 82.06694038779712)",
+          250: "oklch(94.7% 0.0511 82.06694038779712)",
+          300: "oklch(92% 0.07858902880441465 82.06694038779712)",
+          400: "oklch(88.52% 0.1136 82.06694038779712)",//here
+          500: "oklch(85% 0.1525025971445893 82.07249786810627)",
+          600: "oklch(78% 0.16 82.07)", // DEFAULT
+          700: "oklch(67.51% 0.13026009694080318 82.06582566004525)",
+          800: "oklch(50.59% 0.0873 82.06582566004525)",
+          900: "oklch(39.42% 0.0807 82.06582566004525)"
         },
         paleYellow: {
           50: "oklch(94.55% 0.051 90.66)",
@@ -67,14 +74,14 @@ module.exports = {
             lighter: "oklch(91.22% 0.13 326.42 / var(--tw-bg-opacity))",
           },
           {
-            darker: "oklch(68.53% 0.11 273.85 / var(--tw-bg-opacity))",
+            darker: "oklch(49.7% 0.0565 273.85 / var(--tw-bg-opacity))", // here
             DEFAULT: "oklch(78.53% 0.11 273.85 / var(--tw-bg-opacity))",
-            lighter: "oklch(88.53% 0.06 273.85 / var(--tw-bg-opacity))",
+            lighter: "oklch(91.25% 0.0258 273.85 / var(--tw-bg-opacity))", // here
           },
           {
             darker: "oklch(67.41% 0.14 230.48 / var(--tw-bg-opacity))",
             DEFAULT: "oklch(77.41% 0.14 230.48 / var(--tw-bg-opacity))",
-            lighter: "oklch(87.41% 0.09 230.48 / var(--tw-bg-opacity))",
+            lighter: "oklch(94.81% 0.0159 230.48 / var(--tw-bg-opacity))", // here
           },
           {
             darker: "oklch(68.42% 0.14 211.83 / var(--tw-bg-opacity))",
@@ -84,7 +91,7 @@ module.exports = {
           {
             darker: "oklch(69.09% 0.16 166.72 / var(--tw-bg-opacity))",
             DEFAULT: "oklch(79.09% 0.16 166.72 / var(--tw-bg-opacity))",
-            lighter: "oklch(89.09% 0.11 166.72 / var(--tw-bg-opacity))",
+            lighter: "oklch(90% 0.005 166.72 / var(--tw-bg-opacity))", // here
           },
           {
             darker: "oklch(71.60% 0.17 122.60 / var(--tw-bg-opacity))",

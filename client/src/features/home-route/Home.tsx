@@ -55,6 +55,17 @@ const Home: React.FC = () => {
           Play Now
         </NewButton> */}
       </div>
+      <div className="flex-auto flex gap-0 p-0 items-center justify-stretch">
+        <div className="h-[50vh] flex-auto bg-beeYellow-100"></div>
+        <div className="h-[50vh] flex-auto bg-beeYellow-200"></div>
+        <div className="h-[50vh] flex-auto bg-beeYellow-300"></div>
+        <div className="h-[50vh] flex-auto bg-beeYellow-400"></div>
+        <div className="h-[50vh] flex-auto bg-beeYellow-500"></div>
+        <div className="h-[50vh] flex-auto bg-beeYellow-600"></div>
+        <div className="h-[50vh] flex-auto bg-beeYellow-700"></div>
+        <div className="h-[50vh] flex-auto bg-beeYellow-800"></div>
+        <div className="h-[50vh] flex-auto bg-beeYellow-900"></div>
+      </div>
     </>
   );
 };

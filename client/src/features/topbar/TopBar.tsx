@@ -75,7 +75,8 @@ const TopBar: React.FC = () => {
       <div
         className={classNames(
           "flex h-full p-0 items-center",
-          "bg-gradient-to-t from-beeYellow-200 to-beeYellow-100",
+          "bg-gradient-to-t from-beeYellow-500 to-beeYellow-400",
+          // "bg-springtime-5 bg-opacity-100"
           // "bg-vibrant-grad-springtime"
           )}
       >

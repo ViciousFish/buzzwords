@@ -94,7 +94,7 @@ const MainGameStructure: React.FC = () => {
       <TopBar />
       <div
         style={{ display: "flex", backgroundSize: '300%' }}
-        className="bg-springtime-7-lighter mt-[50px] overflow-hidden max-w-[100vw] flex-row safe-area-pad flex-auto"
+        className="bg-beeYellow-200 mt-[50px] overflow-hidden max-w-[100vw] flex-row safe-area-pad flex-auto"
       >
         <a.div
           className="w-[300px] flex-shrink-0 z-30"
