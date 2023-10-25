@@ -31,10 +31,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { ReactNode, useCallback, useState } from "react";
-import { Item } from "react-stately";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { Select } from "../../presentational/Select";
+import { Select, Item } from "../../presentational/Select";
 import { Switch } from "../../presentational/Switch";
 import { NicknameForm } from "./NicknameForm";
 import {
@@ -46,7 +45,7 @@ import {
 import { ColorScheme, ThemeNames } from "./settingsSlice";
 
 const SettingsPageSection = ({ children }: { children: ReactNode }) => (
-  <div className="bg-lightbg p-2 rounded-xl flex flex-col items-center gap-2">
+  <div className="bg-lightbg p-2 rounded-xl flex flex-col items-stretch gap-2">
     {children}
   </div>
 );
@@ -76,6 +75,7 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
   }, [dispatch, turnNotificationsMuted]);
   const switchColorScheme = useCallback(
     (key: string) => {
+      console.log('key', key)
       dispatch(setColorSchemeSetting(key as ColorScheme));
     },
     [dispatch]
@@ -161,9 +161,9 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
             onSelectionChange={switchColorScheme}
             label="Color scheme"
           >
-            <Item key="light">Light</Item>
-            <Item key="dark">Dark</Item>
-            <Item key="system">Follow system preference</Item>
+            <Item id="light">Light</Item>
+            <Item id="dark">Dark</Item>
+            <Item id="system">Follow system preference</Item>
           </Select>
           {colorScheme !== "light" && (
             <Select
@@ -171,8 +171,8 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
               onSelectionChange={switchDarkTheme}
               label="Dark mode theme"
             >
-              <Item key="dark">Subtle Dark</Item>
-              <Item key="oled">OLED Dark</Item>
+              <Item id="dark">Subtle Dark</Item>
+              <Item id="oled">OLED Dark</Item>
             </Select>
           )}
         </SettingsPageSection>
