@@ -11,4 +11,3 @@ node_modules
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
-server/prisma/buzzwords.db
