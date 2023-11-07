@@ -119,7 +119,7 @@ module.exports = {
         p1: "var(--p1)",
         p2: "var(--p2)",
         text: "var(--text)",
-        textSubtle: "var(--textSubtle",
+        textSubtle: "var(--textSubtle)",
         textInverse: "var(--textInverse)",
         textLink: "var(--textLink)",
         input: "var(--input)",
