@@ -56,8 +56,8 @@ const Home: React.FC = () => {
           Play Now
         </NewButton> */}
       </div>
-      <GameStateModal type="victory" />
-      <div className="flex-auto flex gap-0 p-0 items-center justify-stretch">
+      {/* <GameStateModal type="victory" /> */}
+      {/* <div className="flex-auto flex gap-0 p-0 items-center justify-stretch">
         <div className="h-[50vh] flex-auto bg-beeYellow-100"></div>
         <div className="h-[50vh] flex-auto bg-beeYellow-200"></div>
         <div className="h-[50vh] flex-auto bg-beeYellow-300"></div>
@@ -67,7 +67,7 @@ const Home: React.FC = () => {
         <div className="h-[50vh] flex-auto bg-beeYellow-700"></div>
         <div className="h-[50vh] flex-auto bg-beeYellow-800"></div>
         <div className="h-[50vh] flex-auto bg-beeYellow-900"></div>
-      </div>
+      </div> */}
     </div>
   );
 };

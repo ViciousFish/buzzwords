@@ -43,6 +43,7 @@ const GameListItem: React.FC<GameListItemProps> = ({ game }) => {
                 <span className="text-textSubtle no-underline">
                   {" "}
                   ({game.difficulty})
+                  {game.offline && " o"}
                 </span>
               ) : null}
             </span>

@@ -48,7 +48,7 @@ export default function GameInviteOpponentPrompt({
         <div
           className={classNames(
             "flex flex-col justify-center p-4 mx-4",
-            "rounded-xl bg-lighterbg shadow-lg",
+            "rounded-xl bg-beeYellow-250 shadow-lg",
             lg && "mr-0 w-full"
           )}
         >
@@ -97,7 +97,7 @@ export default function GameInviteOpponentPrompt({
         <div
           className={classNames(
             "flex flex-col justify-center p-4 mx-4",
-            "rounded-xl bg-lighterbg shadow-lg",
+            "rounded-xl bg-beeYellow-250 shadow-lg",
             lg && "ml-0 w-full"
           )}
         >
