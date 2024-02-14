@@ -2,7 +2,15 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import * as R from "ramda";
 
 import Game, { ShallowGame } from "buzzwords-shared/Game";
+import {
+  Gamev2,
+  GameplayState,
+  GameplayEvent,
+} from "buzzwords-shared/GamplaySlice";
 import { GameStateModalType } from "../game/GameStateModal";
+import { enablePatches, applyPatches } from "immer";
+
+enablePatches();
 
 export interface ClientGameMeta {
   queuedGameStateModals: GameStateModalType[];
@@ -11,6 +19,9 @@ export interface ClientGameMeta {
 interface GameListState {
   games: {
     [id: string]: Game | ShallowGame;
+  };
+  v2games: {
+    [id: string]: Gamev2;
   };
   gameMetas: {
     [id: string]: ClientGameMeta;
@@ -28,6 +39,7 @@ interface GameListState {
 // Define the initial state using that type
 const initialState: GameListState = {
   games: {},
+  v2games: {},
   gameMetas: {},
   gamesLoading: {},
   gamesLoaded: false,
@@ -57,6 +69,40 @@ export const gamelistSlice = createSlice({
       >(state.games, action.payload);
       state.isRefreshing = false;
       state.gamesLoaded = true;
+    },
+    updatev2Game: (
+      state,
+      action: PayloadAction<{
+        event: GameplayEvent;
+        id: string;
+      }>
+    ) => {
+      const game = state.v2games[action.payload.id];
+      if (!game) {
+        const v1game = state.games[action.payload.id]
+        state.v2games[action.payload.id] = {
+          id: v1game.id,
+          gampeplayState: {
+            gameState: 'playable',
+            users: v1game.users,
+            vsAI: v1game.vsAI,
+            turn: v1game.turn,
+            currentGrid: (v1game as Game).grid,
+            winner: v1game.winner
+          },
+          events: [], // TODO
+          createdDate: v1game.createdDate ?? new Date(),
+          updatedDate: v1game.updatedDate ?? new Date(),
+          deleted: false
+        }
+      }
+      const newGameplayState = applyPatches(
+        state.v2games[action.payload.id].gampeplayState,
+        action.payload.event.patches
+      );
+      state.v2games[action.payload.id].gampeplayState = newGameplayState;
+      state.v2games[action.payload.id].updatedDate = new Date();
+      state.v2games[action.payload.id].events.push(action.payload.event);
     },
     updateGame: (state, action: PayloadAction<UpdateGamePayload>) => {
       const game = {
@@ -115,6 +161,7 @@ export const gamelistSlice = createSlice({
 export const {
   refreshReceived,
   updateGame,
+  updatev2Game,
   toggleIsOpen,
   toggleCompletedGames,
   setShowCompletedGames,
@@ -131,5 +178,5 @@ export const {
 export default gamelistSlice.reducer;
 
 export function isFullGame(game: Game | ShallowGame): game is Game {
-  return Boolean((game as Game).moves)
+  return Boolean((game as Game).moves);
 }
