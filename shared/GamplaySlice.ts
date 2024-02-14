@@ -1,27 +1,42 @@
-import Game from "./Game";
-import HexGrid, { getCell } from "./hexgrid";
+import * as R from "ramda";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+
+import HexGrid, { getCell } from "./hexgrid";
 import { HexCoord } from "./types";
+import { isValidWord } from "./alphaHelpers";
 
 export interface GameplayState {
-  id: string;
   users: string[];
   vsAI: boolean;
-  /** pending = awaiting RNG update */
-  gameState: "awaiting-opponent" | "pending-rng" | "playable";
+  gameState: "awaiting-opponent" | "pending-rng" | "playable" | "finished";
   turn: 0 | 1;
   currentGrid: HexGrid;
-  gameOver: boolean;
   winner: 0 | 1 | null;
-  moves: typeof gameplaySlice.actions[];
+}
+
+// proposed
+interface Gamev2 {
+  version: number;
+  id: string;
+  gampeplayState: GameplayState;
+  /** replaces moves[]
+   * serialized move input data and resulting gameplaystate immer patches */
+  events: {
+    action: "shuffle" | "pass" | "forfeit" | "move";
+    selection: HexCoord[];
+    word: string | null;
+    /** list of updates to apply to GameplayState
+     * see https://immerjs.github.io/immer/patches */ 
+    patches: {
+      op: string;
+      path: string[];
+      value: any;
+    }[];
+  };
   createdDate: Date | null;
   updatedDate: Date;
   deleted: boolean;
-}
-
-const universalPreflight = (state: GameplayState, action: any) => {
-  
 }
 
 function getWord(grid: HexGrid, selection: HexCoord[]) {
@@ -41,33 +56,39 @@ function getWord(grid: HexGrid, selection: HexCoord[]) {
   return word;
 }
 
-// use async thunk for move??
-const gameplaySlice = createSlice({
-  initialState: {} as GameplayState,
-  name: "gameplay",
-  reducers: {
-    playerMove: (state, action: PayloadAction<{
-      userId: string;
-      move: HexCoord[];
-    }>) => {
-      if (state.gameState !== 'playable') {
-        throw new Error('game not in playable state')
-      }
-      const turnUser = state.users[state.turn]
-      if (action.payload.userId !== turnUser) {
-        throw new Error('not your turn')
-      }
-      let word = getWord(state.currentGrid, action.payload.move);
-      // check validity of word?
-      return state;
+type PlayerMoveAction = PayloadAction<{
+  userId: string;
+  move: HexCoord[];
+}>;
+
+// CQ: refactor using produce()
+const makeGameplayPrimarySlice = (wordsObject: {}) =>
+  createSlice({
+    initialState: {} as GameplayState,
+    name: "gameplay",
+    reducers: {
+      playerMove: (state, action: PlayerMoveAction) => {
+        if (state.gameState !== "playable") {
+          throw new Error("game-not-playable");
+        }
+        const turnUser = state.users[state.turn];
+        if (action.payload.userId !== turnUser) {
+          throw new Error("wrong-turn");
+        }
+        let word = getWord(state.currentGrid, action.payload.move);
+        if (!isValidWord(word, wordsObject)) {
+          throw new Error("invalid-word");
+        }
+        state.gameState = "pending-rng";
+      },
     },
-  },
-});
+  });
 
-type GameplayAction =
-  typeof gameplaySlice.actions[keyof typeof gameplaySlice.actions];
+type GameplaySlice = ReturnType<typeof makeGameplayPrimarySlice>;
 
-export const gameplayReducer = gameplaySlice.reducer as unknown as (
-  state: GameplayState,
-  action: GameplayAction
-) => GameplayState;
+type GameplayAction = GameplaySlice["actions"][keyof GameplaySlice["actions"]];
+
+// export const gameplayReducer = gameplaySlice.reducer as unknown as (
+//   state: GameplayState,
+//   action: GameplayAction
+// ) => GameplayState;

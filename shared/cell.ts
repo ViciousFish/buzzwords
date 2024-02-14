@@ -1,3 +1,4 @@
+
 export default interface Cell {
   q: number;
   r: number;
