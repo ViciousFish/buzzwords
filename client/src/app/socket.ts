@@ -13,6 +13,7 @@ import {
 import { SOCKET_DOMAIN, SOCKET_PATH } from "./apiPrefix";
 import { setSocketConnected } from "../features/game/gameSlice";
 import { retrieveAuthToken } from "../features/user/userActions";
+import { updatev2Game } from "../features/gamelist/gamelistSlice";
 
 let socket: Socket | null = null;
 
@@ -55,6 +56,10 @@ export const subscribeSocket = (dispatch: AppDispatch) => {
   socket.on("game updated", (game: Game) => {
     dispatch(receiveGameUpdatedSocket(game));
   });
+  socket.on("game-event", (data) => {
+    console.log("🚀 ~ socket.on('game-event') ~ data:", data)
+    dispatch(updatev2Game(data))
+  })
   socket.on("selection", ({ gameId, selection }: SelectionEventProps) => {
     dispatch(receiveSelectionSocket(selection, gameId));
   });

@@ -1,7 +1,7 @@
 import * as R from "ramda";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { Patch, produceWithPatches, enablePatches } from "immer";
+import { Patch, produceWithPatches } from "immer";
 
 import HexGrid, {
   getCell,
@@ -15,8 +15,6 @@ import {
   getCellsToBecomeNeutral,
 } from "./gridHelpers";
 
-enablePatches();
-
 export interface GameplayState {
   users: string[];
   vsAI: boolean;
@@ -27,7 +25,7 @@ export interface GameplayState {
 }
 
 // for serialization
-interface GameplayEvent {
+export interface GameplayEvent {
   action: "shuffle" | "pass" | "forfeit" | "move";
   selection: HexCoord[];
   word: string | null;
@@ -37,8 +35,8 @@ interface GameplayEvent {
 }
 
 // proposed
-interface Gamev2 {
-  version: number;
+export interface Gamev2 {
+  // version: number;
   id: string;
   gampeplayState: GameplayState;
   /** replaces moves[]
