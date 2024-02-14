@@ -37,6 +37,48 @@ export const willConnectToTerritory = (
   return false;
 };
 
+/** get list of coords of cells that will become ownerless */
+export const getCellsToBecomeNeutral = (
+  grid: HexGrid,
+  selection: HexCoord[],
+  turn: number
+): HexCoord[] => {
+  const affected: HexCoord[] = [];
+  for (const coord of selection) {
+    // affected.push(coord);
+    const neighbors = getCellNeighbors(grid, coord.q, coord.r);
+    for (const neighbor of neighbors) {
+      if (neighbor.owner !== turn && neighbor.value === "") {
+        affected.push({ q: neighbor.q, r: neighbor.r });
+      }
+    }
+  }
+  return affected;
+};
+
+/** always call after updating ownership of affected cells*/
+export const getCellsToBecomeBlank = (
+  grid: HexGrid,
+): HexCoord[] => {
+  const toBecomeBlank: HexCoord[] = [];
+  for (const cell of Object.values(grid)) {
+    if (cell.owner === 2 && cell.value !== "") {
+      const playerNeighbors = getCellNeighbors(grid, cell.q, cell.r).filter(c => c.owner !== 2);
+      if (!playerNeighbors.length) {
+        toBecomeBlank.push({q: cell.q, r: cell.r})
+      }
+    }
+  }
+  return toBecomeBlank;
+};
+
+/** cells that are
+ * - part of the current selection, or:
+ * - neighbors of cells that will be captured, which:
+ *     - are owned by the enemy player (and thus don't have a value), or:
+ *     - are neutral and don't have a value
+ *     - (aka cells that will be reset)
+ */
 export const getCellsToBeReset = (
   grid: HexGrid,
   move: HexCoord[],
@@ -61,6 +103,20 @@ export const getCellsToBeReset = (
     }
   }
   return reset;
+};
+
+export const getCellsCapturedThisTurn = (
+  grid: HexGrid,
+  selection: HexCoord[],
+  turn: number
+): HexCoord[] => {
+  const captured: HexCoord[] = [];
+  for (const coord of selection) {
+    if (willConnectToTerritory(grid, selection, coord, turn as 0 | 1)) {
+      captured.push(coord);
+    }
+  }
+  return captured;
 };
 
 export const willBecomeOwned = (

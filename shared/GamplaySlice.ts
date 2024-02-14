@@ -1,11 +1,21 @@
 import * as R from "ramda";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { Patch, produceWithPatches, enablePatches } from "immer";
 
-import HexGrid, { getCell } from "./hexgrid";
-import { HexCoord } from "./types";
+import HexGrid, {
+  getCell,
+  getNewCellValues,
+} from "./hexgrid";
+import { HexCoord, HexCoordKey } from "./types";
 import { isValidWord } from "./alphaHelpers";
-import { Patch, produceWithPatches } from "immer";
+import {
+  getCellsCapturedThisTurn,
+  getCellsToBecomeBlank,
+  getCellsToBecomeNeutral,
+} from "./gridHelpers";
+
+enablePatches();
 
 export interface GameplayState {
   users: string[];
@@ -67,44 +77,136 @@ interface GameplayMoveAction {
 type GameplayAction = GameplayMoveAction;
 
 /** throws gameplay errors */
-const executeGameplayAction = (
+export const executeGameplayAction = (
   action: GameplayAction,
-  gameplayState: GameplayState,
+  _gameplayState: GameplayState,
   wordsObject: {}
-): GameplayEvent & { inversePatches: Patch[] } => {
+): {
+  event: GameplayEvent;
+  nextState: GameplayState;
+  inversePatches: Patch[];
+} => {
   let word: string | null = null;
-  const [nextState, patches, inversePatches] = produceWithPatches(gameplayState, (state: GameplayState) => {
-    switch (action.type) {
-      case 'move': {
-        if (state.gameState !== "playable") {
-          throw new Error("game-not-playable");
+  const [nextState, patches, inversePatches] = produceWithPatches(
+    _gameplayState,
+    (draft: GameplayState) => {
+      switch (action.type) {
+        case "move": {
+          if (draft.gameState !== "playable") {
+            throw new Error("game-not-playable");
+          }
+          const turnUser = draft.users[draft.turn];
+          if (action.payload.userId !== turnUser) {
+            throw new Error("wrong-turn");
+          }
+          word = getWord(draft.currentGrid, action.payload.selection);
+          if (!isValidWord(word, wordsObject)) {
+            throw new Error("invalid-word");
+          }
+
+          //- [x] execute changes to tile ownership
+          const conquered = getCellsCapturedThisTurn(
+            draft.currentGrid,
+            action.payload.selection,
+            draft.turn
+          );
+          console.log('conquered', conquered);
+          for (const coord of conquered) {
+            const cell = draft.currentGrid[HexCoordKey(coord)];
+            cell.owner = draft.turn;
+            cell.value = "";
+          }
+          const toBecomeNeutral = getCellsToBecomeNeutral(
+            draft.currentGrid,
+            action.payload.selection,
+            draft.turn
+          );
+          console.log('toBecomeNeutral', toBecomeNeutral);
+          for (const coord of toBecomeNeutral) {
+            const cell = draft.currentGrid[HexCoordKey(coord)];
+            cell.owner = 2;
+            cell.capital = false;
+          }
+
+          //- [x] remove valus from cells that no longer have playable neighbors
+          const neutralToBecomeBlank = getCellsToBecomeBlank(draft.currentGrid);
+          console.log('neutralToBecomeBlank', neutralToBecomeBlank);
+          for (const coord of neutralToBecomeBlank) {
+            draft.currentGrid[HexCoordKey(coord)].value = "";
+          }
+
+          //- [x] check win condition
+          const opponentKeys = Object.values(draft.currentGrid)
+            .filter((cell) => cell.owner !== draft.turn && cell.owner !== 2)
+            .map(HexCoordKey);
+
+            console.log('four')
+          if (opponentKeys.length === 0) {
+            // game over!
+            draft.gameState = "finished";
+            draft.winner = draft.turn;
+            return;
+          }
+
+          //- [x] set turn to opponent
+          draft.turn = Number(!draft.turn) as 0 | 1;
+
+          //- [x] reroll capital if necessary
+          if (
+            !Object.values(draft.currentGrid).find(
+              (cell) => cell.owner === draft.turn && cell.capital
+            )
+          ) {
+            draft.currentGrid[
+              opponentKeys[Math.floor(Math.random() * opponentKeys.length)]
+            ].capital = true;
+          }
+
+          //- [-] setup board to start turn
+          //  - RNG cells that need new values
+          //  - reroll-if-no-playable-words routine
+          const lettersOnBoard = Object.values(draft.currentGrid)
+            .filter((cell) => cell.value !== "")
+            .map((cell) => cell.value);
+          const tilesThatNeedLetters = R.difference(
+            toBecomeNeutral,
+            neutralToBecomeBlank
+          );
+          console.log('tilesThatNeedLetters', tilesThatNeedLetters);
+          try {
+            const newCellValues = getNewCellValues(
+              lettersOnBoard,
+              tilesThatNeedLetters.length,
+              wordsObject
+            );
+            for (let i = 0; i < tilesThatNeedLetters.length; i++) {
+              const coord = tilesThatNeedLetters[i];
+              const cell = draft.currentGrid[HexCoordKey(coord)];
+              cell.value = newCellValues[i];
+            }
+          } catch (e) {
+            if (e && (e as Error).message === 'no-possible-words') {
+              // TODO shuffle all letter tiles
+            }
+          }
+
+          // const untouchedKeys = R.difference(
+          //   Object.keys(draft.currentGrid),
+          //   [...toBecomeNeutral, ...conquered].map(HexCoordKey)
+          // );
         }
-        const turnUser = state.users[state.turn];
-        if (action.payload.userId !== turnUser) {
-          throw new Error("wrong-turn");
-        }
-        word = getWord(state.currentGrid, action.payload.selection);
-        if (!isValidWord(word, wordsObject)) {
-          throw new Error("invalid-word");
-        }
-        //- [ ] calculate cells affected by move
-        //  - resetTiles, toBecomeOwned, toBeReset
-        //- [ ] execute changes to tile ownership
-        //- [ ] remove valus from cells that no longer have playable neighbors
-        //- [ ] check win condition
-        //- [ ] reroll opponent capital if necessary
-        //- [ ] execute RNG
-        //  - getNewCellValues
-        //  - reroll-if-no-playable-words routine
       }
     }
-  });
+  );
 
   return {
-    action: action.type,
-    selection: action.payload.selection,
-    word,
-    patches,
-    inversePatches
-  }
+    event: {
+      action: action.type,
+      selection: action.payload.selection,
+      word,
+      patches,
+    },
+    nextState,
+    inversePatches,
+  };
 };
