@@ -6,6 +6,8 @@ import { getBotMove } from "buzzwords-shared/bot";
 import { HexCoord } from "buzzwords-shared/types";
 import Game from "buzzwords-shared/Game";
 import { executeGameplayAction } from "buzzwords-shared/GamplaySlice";
+import { enablePatches } from "immer";
+enablePatches();
 
 import dl from "../datalayer";
 import getConfig from "../config";
@@ -356,6 +358,10 @@ export default (io: Server) => {
         WordsObject
       );
       console.log("🚀 ~ router.post ~ res.event.patches:", res.event.patches);
+      res.nextState.users.forEach((user) => {
+        io.to(user).emit("game-event", { id: gameId, event: res.event });
+      });
+
       newGame = gm.makeMove(user, parsedMove);
       console.log("here");
     } catch (e: unknown) {
