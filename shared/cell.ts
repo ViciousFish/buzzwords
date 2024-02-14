@@ -3,6 +3,8 @@ export default interface Cell {
   r: number;
   value: string;
   capital: boolean;
+  /** player index (0|1) or 2 for neutral
+   * TODO: migrate to non-int value to support arbitrary # of players */
   owner: 0 | 1 | 2;
 }
 
