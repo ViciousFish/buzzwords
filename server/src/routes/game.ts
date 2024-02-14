@@ -7,6 +7,7 @@ import urljoin from "url-join";
 import { getBotMove } from "buzzwords-shared/bot";
 import { HexCoord } from "buzzwords-shared/types";
 import Game from "buzzwords-shared/Game";
+import { executeGameplayAction } from "buzzwords-shared/GamplaySlice";
 
 import dl from "../datalayer";
 import getConfig from "../config";
@@ -394,10 +395,31 @@ export default (io: Server): Router => {
 
     let newGame: Game;
     try {
+      const res = executeGameplayAction(
+        {
+          type: "move",
+          payload: {
+            userId: user,
+            selection: parsedMove,
+          },
+        },
+        {
+          users: JSON.parse(JSON.stringify(game.users)),
+          vsAI: game.vsAI,
+          gameState: "playable", // TODO
+          turn: game.turn,
+          currentGrid: JSON.parse(JSON.stringify(game.grid)),
+          winner: game.winner,
+        },
+        WordsObject
+      );
+      console.log("🚀 ~ router.post ~ res.event.patches:", res.event.patches);
       newGame = gm.makeMove(user, parsedMove);
+      console.log("here");
     } catch (e: unknown) {
       res.status(400);
       if (e instanceof Error) {
+        console.error(e);
         res.send(e.message);
       } else {
         res.send();

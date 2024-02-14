@@ -169,7 +169,7 @@ export const getNewCellValues = (
   const potentialWords = Object.keys(wordsToMissingLetters);
 
   if (!potentialWords.length) {
-    throw "No possible combinations";
+    throw new Error("no-possible-words");
   }
 
   const word = potentialWords[getRandomInt(0, potentialWords.length)];

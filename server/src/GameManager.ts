@@ -1,7 +1,7 @@
 import * as R from "ramda";
 
 import Game from "buzzwords-shared/Game";
-import { HexCoord } from "buzzwords-shared/types";
+import { HexCoord, HexCoordKey } from "buzzwords-shared/types";
 import {
   getCellsToBeReset,
   willBecomeOwned,
@@ -160,15 +160,13 @@ export default class GameManager {
 
     let capitalCaptured = false;
 
-    // Make all tiles adjacent to move neutral and active
+    // all cells that will change ownership
     const resetTiles = getCellsToBeReset(this.game.grid, move, this.game.turn);
 
-    // Parsed word, checked validity of move and word etc.
-    // Have to check for what's attached to current territory to see what to expand
-    // Have to check from above to see what is adjacent to enemy territory to see what to remove
-    // change whose turn it is
+    // cells conquered by current player this turn
     const toBecomeOwned = willBecomeOwned(this.game.grid, move, this.game.turn);
 
+    // cells that will become ownerless
     const toBeReset = R.difference(resetTiles, toBecomeOwned);
 
     for (const cell of toBecomeOwned) {
@@ -179,12 +177,15 @@ export default class GameManager {
 
       setCell(this.game.grid, cell);
     }
+
+    // all cells in grid that are not becoming ownerless this turn that are also not conquered this turn
     const keys = R.difference(
+      // all cells in grid that are not becoming ownerless this turn
       R.difference(
         Object.keys(this.game.grid),
-        toBeReset.map((cell) => `${cell.q},${cell.r}`)
+        toBeReset.map((cell) => HexCoordKey(cell))
       ),
-      toBecomeOwned.map((cell) => `${cell.q},${cell.r}`)
+      toBecomeOwned.map((cell) => HexCoordKey(cell))
     );
     const grid = this.game.grid;
     const letters = keys.map((k) => grid[k].value).filter(Boolean);
@@ -222,8 +223,9 @@ export default class GameManager {
         const newLetterCount = letters.length + toBeReset.length;
         const newCellValues = getNewCellValues([], newLetterCount, WordsObject);
         for (const tile of keys
-          .map((k) => grid[k])
+          .map((k) => this.game!.grid[k])
           .filter((k) => Boolean(k.value))) {
+          console.log("tile", tile);
           tile.owner = 2;
           tile.value = newCellValues[0];
           newCellValues.splice(0, 1);
