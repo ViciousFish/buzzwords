@@ -3,10 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { Patch, produceWithPatches } from "immer";
 
-import HexGrid, {
-  getCell,
-  getNewCellValues,
-} from "./hexgrid";
+import HexGrid, { getCell, getNewCellValues } from "./hexgrid";
 import { HexCoord, HexCoordKey } from "./types";
 import { isValidWord } from "./alphaHelpers";
 import {
@@ -102,13 +99,12 @@ export const executeGameplayAction = (
             throw new Error("invalid-word");
           }
 
-          //- [x] execute changes to tile ownership
+          //execute changes to tile ownership
           const conquered = getCellsCapturedThisTurn(
             draft.currentGrid,
             action.payload.selection,
             draft.turn
           );
-          console.log('conquered', conquered);
           for (const coord of conquered) {
             const cell = draft.currentGrid[HexCoordKey(coord)];
             cell.owner = draft.turn;
@@ -119,26 +115,23 @@ export const executeGameplayAction = (
             action.payload.selection,
             draft.turn
           );
-          console.log('toBecomeNeutral', toBecomeNeutral);
           for (const coord of toBecomeNeutral) {
             const cell = draft.currentGrid[HexCoordKey(coord)];
             cell.owner = 2;
             cell.capital = false;
           }
 
-          //- [x] remove valus from cells that no longer have playable neighbors
+          // remove valus from cells that no longer have playable neighbors
           const neutralToBecomeBlank = getCellsToBecomeBlank(draft.currentGrid);
-          console.log('neutralToBecomeBlank', neutralToBecomeBlank);
           for (const coord of neutralToBecomeBlank) {
             draft.currentGrid[HexCoordKey(coord)].value = "";
           }
 
-          //- [x] check win condition
+          // check win condition
           const opponentKeys = Object.values(draft.currentGrid)
             .filter((cell) => cell.owner !== draft.turn && cell.owner !== 2)
             .map(HexCoordKey);
 
-            console.log('four')
           if (opponentKeys.length === 0) {
             // game over!
             draft.gameState = "finished";
@@ -146,10 +139,10 @@ export const executeGameplayAction = (
             return;
           }
 
-          //- [x] set turn to opponent
+          // set turn to opponent
           draft.turn = Number(!draft.turn) as 0 | 1;
 
-          //- [x] reroll capital if necessary
+          // reroll capital if necessary
           if (
             !Object.values(draft.currentGrid).find(
               (cell) => cell.owner === draft.turn && cell.capital
@@ -160,7 +153,7 @@ export const executeGameplayAction = (
             ].capital = true;
           }
 
-          //- [-] setup board to start turn
+          // setup board to start turn
           //  - RNG cells that need new values
           //  - reroll-if-no-playable-words routine
           const lettersOnBoard = Object.values(draft.currentGrid)
@@ -170,7 +163,6 @@ export const executeGameplayAction = (
             toBecomeNeutral,
             neutralToBecomeBlank
           );
-          console.log('tilesThatNeedLetters', tilesThatNeedLetters);
           try {
             const newCellValues = getNewCellValues(
               lettersOnBoard,
@@ -183,7 +175,7 @@ export const executeGameplayAction = (
               cell.value = newCellValues[i];
             }
           } catch (e) {
-            if (e && (e as Error).message === 'no-possible-words') {
+            if (e && (e as Error).message === "no-possible-words") {
               // TODO shuffle all letter tiles
             }
           }
