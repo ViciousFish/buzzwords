@@ -11,9 +11,22 @@ export default class Memory implements DataLayer {
   authTokens: {
     [key: string]: AuthToken;
   } = {};
+  moves: {
+    [key: string]: {
+      count: number;
+      valid: boolean;
+    };
+  } = {};
   constructor() {
     this.games = {};
     this.users = {};
+  }
+  async saveMove(word: string, valid: boolean): Promise<boolean> {
+    this.moves[word] = {
+      valid,
+      count: (this.moves[word]?.count ?? 0) + 1,
+    };
+    return true;
   }
 
   async createUser(
