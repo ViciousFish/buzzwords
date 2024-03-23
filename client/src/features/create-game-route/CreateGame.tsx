@@ -103,7 +103,7 @@ function CreateGame() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [selectedMode, setSelectedMode] =
-    useState<CreateGameType>("online-bot");
+    useState<CreateGameType>(null);
   const [difficulty, setDifficulty] = useState(5);
   const [isSubmitting, setSubmitting] = useState(false);
   const loggedIn = useAppSelector((state) =>
@@ -164,7 +164,7 @@ function CreateGame() {
             <GameType
               value="online-bot"
               title="Online against a bot"
-              subtitle="Start here. Internet connection required"
+              subtitle="Start here"
               // subtitle={
               //   loggedIn
               //     ? "Sync game across devices. Game will only be playable online"
@@ -180,7 +180,7 @@ function CreateGame() {
             <GameType
               value="online-pvp"
               title="Online against a human"
-              subtitle="Play in real time with a friend. Internet connection required"
+              subtitle="Play in real time with a friend"
               icon={
                 <>
                   <FontAwesomeIcon size="lg" icon={faGlobe} />
