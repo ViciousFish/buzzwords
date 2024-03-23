@@ -58,6 +58,7 @@ const MainGameStructureLazy = lazy(() => import("./MainGameStructure"));
 
 const ELECTRON = window.versions;
 const Router = ELECTRON ? HashRouter : BrowserRouter;
+const SIZZY = Boolean(window.navigator.userAgent.match(/Sizzy/));
 
 function App() {
   const theme = useAppSelector(getTheme);
@@ -131,6 +132,25 @@ function App() {
       StatusBar.setStyle({ style: Style.Default });
     }
   }, [colorScheme]);
+
+  if (SIZZY) {
+    return (
+      <div className="m-8">
+        <h1 className="font-bold">Sizzy is not supported by buzzwords</h1>
+        <h2>The creator @thekitze is a dick on twitter</h2>
+        <p>
+          <a
+            className="text-blue-500 underline"
+            href="https://responsively.app/"
+          >
+            Responsively
+          </a>{" "}
+          is free and open source.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <>
       {/* @ts-ignore */}
