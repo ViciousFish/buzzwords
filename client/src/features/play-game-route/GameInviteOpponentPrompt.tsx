@@ -54,16 +54,13 @@ export default function GameInviteOpponentPrompt({
           <h2 className="text-2xl font-bold flex-wrap">
             Invite an opponent to start the game
           </h2>
-          <div className="my-4 border-4 border-green-400 bg-green-200 flex p-2 rounded justify-between">
-            <div className="flex flex-col">
-              <span className="select-none text-black text-sm opacity-70">
-                send your opponent this link
-              </span>
-
-              <a className="underline text-textLink break-words" href={gameUrl}>
-                {gameUrl}
-              </a>
-            </div>
+          <span className="select-none text-black opacity-70">
+            send your opponent this link
+          </span>
+          <div className="my-4 border-4 border-green-400 bg-white/50 flex p-2 rounded justify-between">
+            <a className="underline text-textLink break-words" href={gameUrl}>
+              {gameUrl}
+            </a>
           </div>
           <div>
             <CopyToClipboard label="Copy link" text={gameUrl} />

@@ -135,20 +135,21 @@ function CreateGame() {
     <div
       ref={observe}
       className={classNames(
-        "w-full h-full overflow-scroll text-text relative flex justify-center items-start",
-        lg && "items-center"
+        "w-full h-full overflow-scroll text-text relative flex justify-center items-center",
+        // lg && "items-center"
       )}
     >
       <div
         className={classNames(
-          "max-w-[1200px] w-full flex flex-shrink-0 items-stretch",
-          lg ? "flex-row" : "flex-col"
+          "max-w-[600px] w-full flex flex-shrink-0 items-stretch m-auto",
+          // lg ? "flex-row" : "flex-col"
+          "flex-col"
         )}
       >
         <div
           className={classNames(
             "flex flex-col justify-center p-4 mx-4",
-            lg && "mr-0 w-full"
+            // lg && "mr-0 w-full"
           )}
         >
           <RadioGroup
@@ -187,7 +188,7 @@ function CreateGame() {
                 </>
               }
             />
-            <GameType
+            {/* <GameType
               disabled
               value="hotseat"
               title="Offline against a human"
@@ -208,13 +209,13 @@ function CreateGame() {
                   <FontAwesomeIcon size="lg" icon={faRobot} />
                 </>
               }
-            />
+            /> */}
           </RadioGroup>
         </div>
         <div
           className={classNames(
             "p-4 m-4 flex flex-col gap-5 justify-center items-stretch",
-            lg && "w-full ml-0"
+            // lg && "w-full ml-0"
           )}
         >
           {selectedMode && (
@@ -268,7 +269,7 @@ function CreateGame() {
                 <Button
                   disabled={isSubmitting}
                   onClick={playButtonPress}
-                  className="p-6 text-2xl font-bold focus:outline"
+                  className="p-6 text-xl font-bold focus:outline"
                 >
                   Play{" "}
                   <FontAwesomeIcon
