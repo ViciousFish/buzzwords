@@ -1,7 +1,7 @@
 import { Html, useProgress } from "@react-three/drei";
 import * as R from "ramda";
 import Game from "buzzwords-shared/Game";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Canvas from "../canvas/Canvas";
@@ -76,10 +76,11 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
       dispatch(backspaceTileSelection());
     }
   });
-  console.log("selectedWord?.length", selectedWord?.length);
-  console.log("game.turn === userIndex", game.turn === userIndex);
+
+  const portal = useRef<HTMLDivElement>(null);
 
   return (
+    <>
     <Canvas isGameboard key={`play-${id}`}>
       {/* <CameraControls /> */}
       <React.Suspense
@@ -113,7 +114,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
           </group>
         </group>
         <group position={[0, 14, 0]}>
-          <Html center zIndexRange={[20, 0]} distanceFactor={0.075}>
+          {/* @ts-expect-error shrug */}
+          <Html center zIndexRange={[20, 0]} distanceFactor={0.075} portal={portal}>
             <div className="flex justify-center items-center">
               {selectedWord?.length && game.turn === userIndex ? (
                 <button
@@ -202,6 +204,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
         </group>
       </React.Suspense>
     </Canvas>
+    <div style={{position: 'absolute', top: '50px'}} ref={portal}></div>
+    </>
   );
 };
 
