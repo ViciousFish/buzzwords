@@ -135,7 +135,7 @@ function CreateGame() {
     <div
       ref={observe}
       className={classNames(
-        "w-full h-full overflow-scroll text-text relative flex justify-center items-center",
+        "w-full h-full overflow-auto text-text relative flex justify-center items-center",
         // lg && "items-center"
       )}
     >
