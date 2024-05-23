@@ -103,7 +103,7 @@ function CreateGame() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [selectedMode, setSelectedMode] =
-    useState<CreateGameType>(null);
+    useState<CreateGameType | null>(null);
   const [difficulty, setDifficulty] = useState(5);
   const [isSubmitting, setSubmitting] = useState(false);
   const loggedIn = useAppSelector((state) =>
@@ -113,7 +113,7 @@ function CreateGame() {
     setSubmitting(true);
     const bot = selectedMode && selectedMode.endsWith("bot");
     const params = {
-      type: selectedMode,
+      type: selectedMode!,
     };
     if (bot) {
       (params as CreateBotGameParams).difficulty = difficulty;
@@ -154,7 +154,7 @@ function CreateGame() {
         >
           <RadioGroup
             aria-label="Pick a game type"
-            value={selectedMode}
+            value={selectedMode ?? undefined}
             // @ts-expect-error allowed mode types too narrow
             onChange={setSelectedMode}
           >
@@ -252,12 +252,13 @@ function CreateGame() {
                         }
                       </SliderOutput>
                     </div>
-                    <SliderTrack className="border border-gray-900 mt-2">
+                    <SliderTrack className="h-[4px] rounded mt-2 bg-gradient-to-r from-purple-500 to-pink-500">
                       <SliderThumb
                         className={({ isFocusVisible }) =>
                           classNames(
                             isFocusVisible && "outline",
-                            "topbar w-[25px] h-[25px] rounded-full shadow"
+                            "relative top-[2px] w-[25px] h-[25px] rounded-full shadow",
+                            "bg-gradient-to-t from-slate-200 to-slate-100 border-2 border-blue-300"
                           )
                         }
                       />
