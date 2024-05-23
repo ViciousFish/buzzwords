@@ -1,8 +1,13 @@
-# TODO
+# Buzzwords Server
 
-- API pagination?
-- Link inviting? (needs client routing component as well)
-- Authentication?
-  - But also still want option for anonymous drop in link games
-  - create "ghost" user account when user joins game from invite, just has a display name, guid username or w/e
-  - if they register or sign in, assign ghost user's games to actual user, merging if necessary
+## Database
+
+Buzzwords currently supports three storage types:
+
+- In Memory (memory)
+- SQLite (prisma)
+- Mongodb (mongo)
+
+This can be controlled via the `DB_TYPE` environment variable.
+
+If you choose SQLite, you must first run `npx prisma generate` and `npx prisma db push` to generate the Prisma client code and configure your local DB.

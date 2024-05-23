@@ -1,9 +1,9 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import Modal from "../../presentational/Modal";
 import Canvas from "../canvas/Canvas";
-import PlayButtons from "../home-route/PlayButtons";
 import HexWord from "../thereed-lettering/HexWord";
 
 export type GameStateModalType =
@@ -91,18 +91,15 @@ const GameStateModal: React.FC<GameStateModalOwnprops> = ({
             <p>{twoDText.body}</p>
           </div>
         )}
-        <div className="flex items-end">
+        <div className="flex items-center">
           <Button onClick={onDismiss}>Dismiss</Button>
           {(type === "defeat" || type === "victory") && (
-            <div className="mx-2 bg-primary rounded-xl flex flex-col justify-center items-center text-text">
-              <span>Play again?</span>
-              <div>
-                <PlayButtons
-                  buttonVariant="dark"
-                  mode="shorttext"
-                />
-              </div>
-            </div>
+                <NavLink
+                  to="/play/"
+                  className="bg-primary ml-2 inset-shadow text-text p-2 rounded-full"
+                >
+                  New Game
+                </NavLink>
           )}
         </div>
       </div>

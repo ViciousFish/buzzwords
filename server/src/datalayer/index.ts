@@ -16,6 +16,10 @@ switch (config.dbType) {
     dl = new Mongo();
     break;
 
+  case "prisma":
+    dl = new Memory();
+    break;
+
   default:
     console.error("Invalid dbType", config.dbType);
     process.exit(1);

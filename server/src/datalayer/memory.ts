@@ -22,6 +22,8 @@ export default class Memory implements DataLayer {
   ): Promise<User> {
     this.users[id] = {
       id,
+      nickname: null,
+      googleId: null,
     };
     return this.users[id];
   }
@@ -44,6 +46,7 @@ export default class Memory implements DataLayer {
       userId,
       createdDate: new Date(),
       deleted: false,
+      state: null,
     };
     return true;
   }

@@ -86,11 +86,10 @@ const MainGameStructure: React.FC = () => {
   });
 
   return (
-    <ScreenHeightWraper className="flex flex-col relative overflow-hidden">
+    <ScreenHeightWraper className="grid grid-rows-[min-content_minmax(0_auto)] relative overflow-hidden">
       <TopBar />
       <div
-        style={{ display: "flex" }}
-        className="bg-lightbg mt-[50px] overflow-hidden max-w-[100vw] flex-row safe-area-pad flex-auto"
+        className="bg-lightbg mt-[50px] overflow-hidden max-w-[100vw] flex flex-row safe-area-pad flex-auto"
       >
         <a.div
           className="w-[300px] flex-shrink-0 z-30"

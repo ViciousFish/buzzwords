@@ -24,6 +24,7 @@ export const getTheme = ({
 };
 
 export const getBodyStyleFromTheme = (theme: Theme) => {
+  console.log("🚀 ~ file: settingsSelectors.ts:27 ~ getBodyStyleFromTheme ~ theme:", theme)
   return R.pipe(
     R.toPairs,
     R.map(([key, val]) => `--${key}: ${val};`),
