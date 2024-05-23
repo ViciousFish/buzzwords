@@ -63,7 +63,7 @@ export default function GameInviteOpponentPrompt({
           </span>
           <div className="border-4 border-gray-300/50 bg-white/50 flex flex-wrap p-2 rounded-lg justify-between items-center">
             <a
-              className="underline text-textLink break-words text-sm break-all"
+              className="underline text-textLink break-words text-xs break-all"
               href={gameUrl}
             >
               {gameUrl}
