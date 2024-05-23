@@ -1,15 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
 import copy from "copy-to-clipboard";
-import Button from "./Button";
+// import Button from "./Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { Button } from "react-aria-components";
+import { ActionButton } from "./ActionButton";
 
 interface CopyToClipboardProps {
   text: string;
   label?: string;
-  variant?: React.ComponentProps<typeof Button>['variant']
 }
-const CopyToClipboard: React.FC<CopyToClipboardProps> = ({ text, label, variant }) => {
+const CopyToClipboard: React.FC<CopyToClipboardProps> = ({ text, label }) => {
   const [copied, setCopied] = useState(false);
   const onCopy = useCallback(() => {copy(text); setCopied(true)}, [text]);
   useEffect(() => {
@@ -18,9 +19,11 @@ const CopyToClipboard: React.FC<CopyToClipboardProps> = ({ text, label, variant 
     }, 5000)
   }, [copied])
   return (
-    <Button variant={variant || 'light'} type="button" onClick={onCopy}>
+    <ActionButton onPress={onCopy}>
+      <div>
       {label || "copy"} {copied && <FontAwesomeIcon icon={faCheck} />}
-    </Button>
+      </div>
+    </ActionButton>
   );
 };
 

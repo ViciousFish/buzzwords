@@ -8597,6 +8597,7 @@ __metadata:
     react-dom: ^18.2.0
     react-helmet: ^6.1.0
     react-modal: ^3.14.4
+    react-qr-code: ^2.0.13
     react-redux: ^8.0.2
     react-router-dom: 6
     react-stately: ^3.16.0
@@ -15185,6 +15186,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"qr.js@npm:0.0.0":
+  version: 0.0.0
+  resolution: "qr.js@npm:0.0.0"
+  checksum: 5ac6c393967bdeaa660e7fd3a501a25eb538c1f6008a4d30ab2b97bbe520e5c236530090773f1578aa0a523cdaa6923c866615e21143f9e7cd22abd41c789b69
+  languageName: node
+  linkType: hard
+
 "qs@npm:6.9.7":
   version: 6.9.7
   resolution: "qs@npm:6.9.7"
@@ -15495,6 +15503,22 @@ __metadata:
     react: ^0.14.0 || ^15.0.0 || ^16 || ^17
     react-dom: ^0.14.0 || ^15.0.0 || ^16 || ^17
   checksum: 71457de902d45de390932fb68380c4a72fcd51e64faaf8b96138c3cb402d2e445002220560614ef6035eb349ff933bcbbe35c4cb85fb66c1129e65ad40336b8b
+  languageName: node
+  linkType: hard
+
+"react-qr-code@npm:^2.0.13":
+  version: 2.0.13
+  resolution: "react-qr-code@npm:2.0.13"
+  dependencies:
+    prop-types: ^15.8.1
+    qr.js: 0.0.0
+  peerDependencies:
+    react: ^16.x || ^17.x || ^18.x || ^19.x
+    react-native-svg: "*"
+  peerDependenciesMeta:
+    react-native-svg:
+      optional: true
+  checksum: cfadaf22883d90b00d01daa7539c993d1229b698df6aa46c8ce5be306d3e932a03e5426dcec7ddc774af9965e88c84c3568e39ab5960d4987396002405e6968e
   languageName: node
   linkType: hard
 
