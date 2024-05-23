@@ -20,7 +20,7 @@ const CopyToClipboard: React.FC<CopyToClipboardProps> = ({ text, label }) => {
   }, [copied])
   return (
     <ActionButton onPress={onCopy}>
-      <div>
+      <div className="flex flex-row gap-2 items-center">
       {label || "copy"} {copied && <FontAwesomeIcon icon={faCheck} />}
       </div>
     </ActionButton>
