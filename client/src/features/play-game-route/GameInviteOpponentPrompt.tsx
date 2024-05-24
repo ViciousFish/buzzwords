@@ -44,26 +44,38 @@ export default function GameInviteOpponentPrompt({
     >
       <div
         className={classNames(
-          "max-w-[1200px] w-full flex flex-shrink-0 gap-4 p-4",
+          "max-w-[1000px] w-full flex flex-shrink-0 gap-4 p-4",
           lg ? "flex-row items-center" : "flex-col items-center"
         )}
       >
         <div
           className={classNames(
-            "flex flex-col justify-center p-4 gap-2",
+            "flex flex-col justify-center p-4 items-center",
             "rounded-xl bg-lighterbg shadow-lg w-full max-w-[500px]"
             // lg && "mr-0"
           )}
         >
-          <h2 className="text-2xl font-bold flex-wrap">
-            Invite an opponent to start the game
-          </h2>
-          <span className="select-none text-black opacity-70 ">
-            send your opponent this link
+          <span className="text-center">
+            <h2 className="text-2xl font-bold flex-wrap leading-6">Invite an opponent</h2>
+            <span className="text-sm text-black opacity-70 relative mt-[-5px]">
+              to start the game.
+            </span>
           </span>
-          <div className="border-4 border-gray-300/50 bg-white/50 flex flex-wrap p-2 rounded-lg justify-between items-center">
+          <span className="select-none text-black opacity-70 mt-4">
+            scan this invite code
+          </span>
+          <QRCode
+            className="bg-white/50 p-4 rounded-md border-4 border-gray-300"
+            width={300}
+            bgColor="transparent"
+            value={gameUrl}
+          />
+          <span className="select-none text-black opacity-70 mt-4">
+            or send this invite link
+          </span>
+          <div className="border-4 border-gray-300/50 bg-white/50 flex flex-wrap gap-2 p-2 rounded-lg justify-between items-center">
             <a
-              className="underline text-textLink break-words text-xs break-all"
+              className="underline text-textLink text-xs break-all"
               href={gameUrl}
             >
               {gameUrl}
@@ -83,22 +95,11 @@ export default function GameInviteOpponentPrompt({
               )}
             </div>
           </div>
-          <span className="select-none text-black opacity-70 ">
-            or have them scan this code
-          </span>
-          <div
-            className={classNames(
-              "max-w-full aspect-square border-4 border-gray-300/50 bg-white/50",
-              "self-start flex flex-col p-2 rounded-lg justify-between items-center"
-            )}
-          >
-            <QRCode bgColor="transparent" value={gameUrl} />
-          </div>
         </div>
         <div className="flex flex-col">
           <div
             className={classNames(
-              "flex flex-col justify-center p-4 ",
+              "flex flex-col justify-center p-4 items-center",
               "rounded-xl bg-lighterbg shadow-lg w-full max-w-[500px]"
               // lg && "ml-0"
             )}
@@ -119,7 +120,7 @@ export default function GameInviteOpponentPrompt({
               className="border-darkbrown border-2 rounded-lg"
             ></iframe>
           </div>
-          <div className=" p-4 mt-4 rounded-xl bg-lighterbg shadow-lg max-w-[500px] self-start">
+          <div className="w-full p-4 mt-4 rounded-xl bg-lighterbg shadow-lg max-w-[500px] text-center">
             {id && (
               <>
                 You can also
