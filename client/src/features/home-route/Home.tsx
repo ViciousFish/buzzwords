@@ -6,8 +6,7 @@ import HexWord from "../thereed-lettering/HexWord";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 // import { IconWatch01 } from "../../assets/IconWatch01";
-import { NavLink } from "react-router-dom";
-import classNames from "classnames";
+import { FancyButtonLink } from "../../presentational/FancyButton";
 
 const Home: React.FC = () => {
   const { progress } = useProgress();
@@ -36,12 +35,11 @@ const Home: React.FC = () => {
         </Canvas>
       </div>
       <div className="flex justify-center items-center text-2xl">
-        <NavLink
+        <FancyButtonLink
           to="/play/"
-          className="bg-primary font-bold inset-shadow text-text p-8 rounded-full"
         >
           Play Now
-        </NavLink>
+        </FancyButtonLink>
       </div>
     </>
   );
