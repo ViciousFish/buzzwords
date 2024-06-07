@@ -271,7 +271,7 @@ function CreateGame() {
                 <FancyButton
                   isDisabled={isSubmitting}
                   onPress={playButtonPress}
-                  className="text-xl font-bold"
+                  className="text-xl font-bold text-black"
                   variant={FancyButtonVariant.Springtime}
                 >
                   Play{" "}

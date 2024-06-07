@@ -57,11 +57,11 @@ export default function GameInviteOpponentPrompt({
         >
           <span className="text-center">
             <h2 className="text-2xl font-bold flex-wrap leading-6">Invite an opponent</h2>
-            <span className="text-sm text-black opacity-70 relative mt-[-5px]">
+            <span className="text-sm text-text opacity-70 relative mt-[-5px]">
               to start the game.
             </span>
           </span>
-          <span className="select-none text-black opacity-70 mt-4">
+          <span className="select-none text-text opacity-70 mt-4">
             scan this invite code
           </span>
           <QRCode
@@ -70,7 +70,7 @@ export default function GameInviteOpponentPrompt({
             bgColor="transparent"
             value={gameUrl}
           />
-          <span className="select-none text-black opacity-70 mt-4">
+          <span className="select-none text-text opacity-70 mt-4">
             or send this invite link
           </span>
           <div className="border-4 border-gray-300/50 bg-white/50 flex flex-wrap gap-2 p-2 rounded-lg justify-between items-center">
