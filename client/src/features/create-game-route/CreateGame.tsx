@@ -30,6 +30,7 @@ import {
   CreateGameType,
 } from "../gamelist/gamelistActions";
 import { useNavigate } from "react-router";
+import { FancyButton, FancyButtonVariant } from "../../presentational/FancyButton";
 
 function GameType({
   title,
@@ -267,17 +268,18 @@ function CreateGame() {
                 </div>
               )}
               <div className="flex justify-center">
-                <Button
-                  disabled={isSubmitting}
-                  onClick={playButtonPress}
-                  className="p-6 text-xl font-bold focus:outline"
+                <FancyButton
+                  isDisabled={isSubmitting}
+                  onPress={playButtonPress}
+                  className="text-xl font-bold"
+                  variant={FancyButtonVariant.Springtime}
                 >
                   Play{" "}
                   <FontAwesomeIcon
                     className={isSubmitting ? "animate-spin" : ""}
                     icon={isSubmitting ? faSpinner : faCaretRight}
                   />
-                </Button>
+                </FancyButton>
               </div>
             </div>
           )}

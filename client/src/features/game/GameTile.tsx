@@ -235,6 +235,7 @@ const GameTile: React.FC<GameTileProps> = ({
         y: 0,
       });
       isAnimating.current = true;
+      const [q, r] = coord.split(",");
       setTimeout(
         () => {
           const to = { x: 0, y: 0 };
@@ -246,7 +247,7 @@ const GameTile: React.FC<GameTileProps> = ({
         },
         lowPowerMode
           ? 0
-          : 150 + Number(coord.split(",")[0]) * 50 + Math.random() * 150
+          : 100 + (Number(r) * 80) + Number(q) * 80 + Math.random() * 70
       );
     }
     if ((prevLetter?.length && !letter) || (prevCapital && !isCapital)) {
