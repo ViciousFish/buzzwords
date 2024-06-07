@@ -1,0 +1,70 @@
+.Parent {
+  padding: 0.5rem;
+  margin: 0;
+  background-size: 250% !important;
+  background-position: 100% !important;
+  transition: background-position 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.2) 2px -2px 2px inset,
+    rgba(255, 255, 255, 0.3) -2px 2px 2px inset;
+
+}
+.Child {
+  padding: 1rem 1.5rem;
+  width: 100%;
+  transition: opacity 0.6s ease;
+  opacity: 1;
+}
+
+.Parent:is(:hover, :focus-within):not(:disabled) {
+  background-position: 0 !important;
+}
+.Parent:is(:hover, :focus-within):not(:disabled) .Child {
+  /* opacity: 0.8; */
+}
+
+.Sunset {
+  background-image: linear-gradient(
+    45deg,
+    hsl(203deg 100% 47%) 0%,
+    hsl(230deg 84% 71%) 6%,
+    hsl(269deg 73% 71%) 13%,
+    hsl(308deg 69% 67%) 19%,
+    hsl(329deg 100% 70%) 25%,
+    hsl(343deg 100% 70%) 31%,
+    hsl(4deg 100% 70%) 37%,
+    hsl(23deg 100% 62%) 44%,
+    hsl(38deg 100% 50%) 50%,
+    hsl(38deg 100% 54%) 56%,
+    hsl(39deg 100% 57%) 63%,
+    hsl(39deg 99% 59%) 69%,
+    hsl(40deg 99% 61%) 75%,
+    hsl(41deg 99% 63%) 81%,
+    hsl(43deg 99% 65%) 87%,
+    hsl(44deg 100% 67%) 94%,
+    hsl(45deg 100% 69%) 100%
+  );
+}
+.Springtime {
+  background-image: linear-gradient(
+    45deg,
+    oklch(81.22% 0.18 326.42 / var(--tw-bg-opacity)) 0%,
+    oklch(79.09% 0.14 306.5 / var(--tw-bg-opacity)) 5%,
+    oklch(78.53% 0.11 273.85 / var(--tw-bg-opacity)) 10%,
+    oklch(77.94% 0.12 244.68 / var(--tw-bg-opacity)) 14%,
+    oklch(77.41% 0.14 230.48 / var(--tw-bg-opacity)) 18%,
+    oklch(78.56% 0.15 224.27 / var(--tw-bg-opacity)) 22%,
+    oklch(78.42% 0.14 211.83 / var(--tw-bg-opacity)) 26%,
+    oklch(79.08% 0.14 190.58 / var(--tw-bg-opacity)) 30%,
+    oklch(79.09% 0.16 166.72 / var(--tw-bg-opacity)) 34%,
+    oklch(79.71% 0.17 144.63 / var(--tw-bg-opacity)) 39%,
+    oklch(81.6% 0.17 122.6 / var(--tw-bg-opacity)) 43%,
+    oklch(82.58% 0.17 94.63 / var(--tw-bg-opacity)) 48%,
+    oklch(84.64% 0.17 84.9 / var(--tw-bg-opacity)) 54%,
+    oklch(85.67% 0.16 86.42 / var(--tw-bg-opacity)) 60%,
+    oklch(86.52% 0.16 87.42 / var(--tw-bg-opacity)) 67%,
+    oklch(87.41% 0.15 88.11 / var(--tw-bg-opacity)) 75%,
+    oklch(88.66% 0.15 90.45 / var(--tw-bg-opacity)) 85%,
+    oklch(89.14% 0.14 90.48 / var(--tw-bg-opacity)) 100%
+  );
+}

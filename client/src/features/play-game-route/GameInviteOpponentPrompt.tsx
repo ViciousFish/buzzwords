@@ -125,7 +125,7 @@ export default function GameInviteOpponentPrompt({
               <>
                 You can also
                 <ActionButton
-                  className="bg-red-500 hover:bg-red-400 border-red-600 text-white inline mx-2"
+                  colorClasses="bg-red-500 hover:bg-red-400 border-red-600 text-white inline mx-2"
                   onPress={() => {
                     dispatch(deleteGameById(id));
                     navigate("/");

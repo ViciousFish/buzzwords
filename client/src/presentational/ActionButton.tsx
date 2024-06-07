@@ -4,13 +4,15 @@ import { Button } from "react-aria-components";
 
 export function ActionButton({
   className,
+  colorClasses,
   ...props
-}: React.ComponentProps<typeof Button>) {
+}: React.ComponentProps<typeof Button> & { colorClasses?: string }) {
   return (
     <Button
       className={classNames(
-        "cursor-default p-1 rounded border-2 border-slate-300 hover:bg-slate-100 block",
-        className
+        "cursor-default p-1 rounded border-2 block",
+        className,
+        colorClasses ?? 'border-slate-300 bg-slate-200 hover:bg-slate-100 '
       )}
       {...props}
     />
