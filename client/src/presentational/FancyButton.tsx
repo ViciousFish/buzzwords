@@ -40,7 +40,7 @@ export function FancyButton({
     <Button
       className={classNames(
         styles.Parent,
-        "rounded-full focus:outline",
+        "rounded-full focus:outline cursor-auto",
         props.isDisabled ? "bg-slate-300" : getBackgroundFromVariant(variant),
         className
       )}
