@@ -1,4 +1,4 @@
-import React, { lazy, useCallback, useEffect } from "react";
+import React, { lazy, useCallback, useEffect, useMemo } from "react";
 import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
 // import { Globals } from "@react-spring/shared";
 import FaviconNotification from "favicon-notification";
@@ -72,6 +72,13 @@ function App() {
   const numberOfGamesWaitingForPlayer = useAppSelector((state) =>
     getHowManyGamesAreMyTurn(state, null)
   );
+
+  const colorClass = useMemo(() => {
+    if (colorScheme !== ColorScheme.System) {
+      return colorScheme;
+    }
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? ColorScheme.Dark : ColorScheme.Light;
+  }, [colorScheme]);
 
   useEffect(() => {
     frameLoop();
@@ -156,7 +163,7 @@ function App() {
       {/* @ts-ignore */}
       <Helmet>
         {/* @ts-ignore */}
-        <body className={colorScheme} style={getBodyStyleFromTheme(theme)} />
+        <body className={`${colorClass} bg-beeYellow-300`} style={getBodyStyleFromTheme(theme)} />
       </Helmet>
       <Router>
         <IPCRoutingComponent />
@@ -191,7 +198,7 @@ function App() {
               <Route
                 path="/download"
                 element={
-                  <div className="flex justify-center items-center bg-lightbg h-full">
+                  <div className="flex justify-center items-center h-full">
                     <NativeAppAd />
                   </div>
                 }

@@ -13,7 +13,6 @@ import { Popover } from "react-tiny-popover";
 import { faCircleQuestion } from "@fortawesome/free-regular-svg-icons";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import Button from "../../presentational/Button";
 import NativeAppAd from "../../presentational/NativeAppAd";
 import { getHowManyGamesAreMyTurn } from "../gamelist/gamelistSelectors";
 import { setShowTutorialCard, toggleIsOpen } from "../gamelist/gamelistSlice";
@@ -22,6 +21,7 @@ import { logout } from "../user/userActions";
 import { isUserLoggedIn } from "../user/userSelectors";
 import AuthPrompt from "./AuthPrompt";
 import { IS_MOBILE_BROWSER, SettingsPage } from "../settings/SettingsPage";
+import { TopBarButton } from "./TopBarButton";
 
 const PLATFORM = window.versions?.platform?.();
 
@@ -51,7 +51,8 @@ const TopBar: React.FC = () => {
   const [settingsPanel, setSettingsPanel] = useState(false);
 
   const [nativeAppAd, setNativeAppAd] = useState(false);
-  const showDownloadButton = !window.ipc && !location.pathname.match(/download/) && !IS_MOBILE_BROWSER;
+  const showDownloadButton =
+    !window.ipc && !location.pathname.match(/download/) && !IS_MOBILE_BROWSER;
 
   const isLoading =
     isRefreshing || (currentGame && gamesLoading[currentGame] === "loading");
@@ -68,50 +69,45 @@ const TopBar: React.FC = () => {
   return (
     <div
       className={classNames(
-        "fixed top-0 z-30 text-darkbrown",
+        "fixed top-0 z-30 text-beeYellow-800",
+        "bg-gradient-to-t from-beeYellow-600 to-beeYellow-500 dark:from-beeYellow-900 dark:to-beeYellow-800",
         "h-[calc(50px+var(--sat))] w-screen shadow-md p-t-safe"
       )}
     >
-      <div
-        className="flex h-full p-0 items-center topbar"
-      >
+      <div className="flex h-full p-0 items-center topbar">
         <div className="flex h-full gap-1 items-center">
           {PLATFORM === "darwin" && (
-            <div className="stoplights h-full w-[90px] dark:w-[75px]" />
+            <div className="stoplights h-full w-[90px] dark:w-[75px] mr-2" />
           )}
-          <button
-            onClick={() => {
+          <TopBarButton
+            className="ml-2"
+            onPress={() => {
               dispatch(toggleIsOpen());
               if (gamelistIsOpen) {
                 dispatch(setShowTutorialCard(false));
               }
             }}
-            aria-label="toggle games list"
-            className="relative ml-2 p-2 hover:bg-lightbg hover:bg-opacity-50 rounded-md"
-            data-tip="Toggle games list"
           >
             <FontAwesomeIcon icon={faBars} />
-            {/* CQ: this top param */}
             <span className="absolute text-sm left-[14px] top-[calc(0.25rem+var(--sat))]">
               {hamburgerNotification}
             </span>
-          </button>
+          </TopBarButton>
           <Popover
             positions={["bottom"]}
             content={<SettingsPage onDismiss={() => setSettingsPanel(false)} />}
             isOpen={settingsPanel}
             containerClassName="z-30 px-2"
           >
-            <button
-              onClick={() => {
-                setSettingsPanel(true)
+            <TopBarButton
+              onPress={() => {
+                setSettingsPanel(true);
               }}
               aria-label="toggle game settings"
-              data-tip="Toggle game settings"
-              className="p-2 rounded-md hover:bg-lightbg hover:bg-opacity-50"
+              // className="p-2 rounded-md hover:bg-lightbg hover:bg-opacity-50"
             >
               <FontAwesomeIcon icon={faCog} />
-            </button>
+            </TopBarButton>
           </Popover>
           <Popover
             positions={["bottom"]}
@@ -119,19 +115,17 @@ const TopBar: React.FC = () => {
             isOpen={!gamelistIsOpen && showTutorialCard}
             containerClassName="z-30 w-full max-w-[300px]"
           >
-            <button
-              onClick={() => {
+            <TopBarButton
+              onPress={() => {
                 dispatch(setShowTutorialCard(true));
               }}
               aria-label="display tutorial"
-              data-tip="Tutorial"
               className={classNames(
-                "p-2 rounded-md hover:bg-lightbg hover:bg-opacity-50",
                 gamelistIsOpen && showTutorialCard && "hidden"
               )}
             >
               <FontAwesomeIcon icon={faCircleQuestion} />
-            </button>
+            </TopBarButton>
           </Popover>
         </div>
         <div className="h-full flex-auto window-drag" />
@@ -140,13 +134,12 @@ const TopBar: React.FC = () => {
             <FontAwesomeIcon icon={faSpinner} className="mr-2 animate-spin" />
           )}
           {!isLoading && !socketConnected && (
-            <Button
-              onClick={() => window.location.reload()}
-              variant="quiet"
+            <TopBarButton
+              onPress={() => window.location.reload()}
               className="mr-2"
             >
               <FontAwesomeIcon icon={faSyncAlt} />
-            </Button>
+            </TopBarButton>
           )}
           <FontAwesomeIcon
             className={socketConnected ? "text-green-500" : "text-gray-400"}
@@ -160,13 +153,12 @@ const TopBar: React.FC = () => {
               content={<NativeAppAd />}
               onClickOutside={() => setNativeAppAd(false)}
             >
-              <Button
-                variant="quiet"
-                onClick={() => setNativeAppAd(!nativeAppAd)}
-                className="rounded-md"
+              <TopBarButton
+                className="ml-2"
+                onPress={() => setNativeAppAd(!nativeAppAd)}
               >
                 Download
-              </Button>
+              </TopBarButton>
             </Popover>
           )}
           {isLoggedIn !== null && (
@@ -177,21 +169,19 @@ const TopBar: React.FC = () => {
               content={<AuthPrompt onDismiss={() => setAuthPrompt(false)} />}
             >
               {isLoggedIn ? (
-                <Button
-                  variant="quiet"
-                  className="ml-0 rounded-md"
-                  onClick={() => dispatch(logout())}
+                <TopBarButton
+                  className="ml-2 rounded-md"
+                  onPress={() => dispatch(logout())}
                 >
                   Logout
-                </Button>
+                </TopBarButton>
               ) : (
-                <Button
-                  variant="quiet"
-                  onClick={() => setAuthPrompt(true)}
-                  className="ml-0 rounded-md"
+                <TopBarButton
+                  onPress={() => setAuthPrompt(true)}
+                  className="ml-2 rounded-md"
                 >
                   Login
-                </Button>
+                </TopBarButton>
               )}
             </Popover>
           )}

@@ -1,12 +1,17 @@
 import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import React from "react";
 
 const NativeAppAd = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
   return (
     <div
       ref={ref}
-      className="bg-primary p-4 shadow-lg rounded-xl max-w-md text-text"
+      className={classNames(
+        "p-4 items-stretch rounded-xl shadow-lg border-2",
+        "border-beeYellow-600 dark:border-beeYellow-700 bg-beeYellow-400 dark:bg-beeYellow-800",
+        "text-beeYellow-900 dark:text-beeYellow-200"
+      )}
     >
       <div className="flex gap-2 mb-2 items-center">
         <img
@@ -37,7 +42,7 @@ const NativeAppAd = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
         target="_blank"
         rel="noreferrer"
         href="https://chuckdries.itch.io/buzzwords"
-        className="block text-center bg-darkbrown text-textInverse hover:bg-opacity-50 rounded-full p-2 m-1 transition-all active:transform active:scale-90 active:bg-opacity-100 inset-shadow"
+        className="block text-center bg-beeYellow-900 text-beeYellow-300 hover:bg-beeYellow-800 rounded-full p-2 m-1 transition-all active:transform active:scale-90 active:bg-opacity-100 inset-shadow"
       >
         Download Now{" "}
         <FontAwesomeIcon

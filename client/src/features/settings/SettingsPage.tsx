@@ -30,9 +30,15 @@ import {
   faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import React, { ReactNode, useCallback, useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {
+  INPUT_BG,
+  INPUT_BORDER,
+  INPUT_TEXT,
+} from "../../presentational/InputColors";
 import { Select, Item } from "../../presentational/Select";
 import { Switch } from "../../presentational/Switch";
 import { NicknameForm } from "./NicknameForm";
@@ -45,7 +51,12 @@ import {
 import { ColorScheme, ThemeNames } from "./settingsSlice";
 
 const SettingsPageSection = ({ children }: { children: ReactNode }) => (
-  <div className="bg-lightbg p-2 rounded-xl flex flex-col items-stretch gap-2">
+  <div
+    className={classNames(
+      INPUT_TEXT,
+      "bg-beeYellow-300 dark:bg-beeYellow-900 p-2 rounded-xl flex flex-col items-stretch gap-2"
+    )}
+  >
     {children}
   </div>
 );
@@ -75,7 +86,7 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
   }, [dispatch, turnNotificationsMuted]);
   const switchColorScheme = useCallback(
     (key: string) => {
-      console.log('key', key)
+      console.log("key", key);
       dispatch(setColorSchemeSetting(key as ColorScheme));
     },
     [dispatch]
@@ -94,9 +105,15 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
   );
 
   return (
-    <div className="p-4 items-stretch bg-primary rounded-xl border border-darkbrown shadow-lg text-text">
+    <div
+      className={classNames(
+        "p-4 items-stretch rounded-xl shadow-lg border-2",
+        "border-beeYellow-600 dark:border-beeYellow-700 bg-beeYellow-400 dark:bg-beeYellow-800",
+        "text-beeYellow-900 dark:text-beeYellow-200"
+      )}
+    >
       <button
-        aria-label="dismiss login prompt"
+        aria-label="dismiss settings panel"
         className="float-right hover:opacity-75"
         onClick={onDismiss}
       >
@@ -114,7 +131,7 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
                 <button
                   type="button"
                   onClick={() => setNickState("editing")}
-                  className="text-left p-2 rounded-md bg-input text-text w-full border-2 border-primary flex"
+                  className={`${INPUT_BG} ${INPUT_TEXT} ${INPUT_BORDER} text-left p-2 rounded-md w-full flex`}
                 >
                   <span className="flex-auto">{nickname}</span>
                   <span className="text-primary">

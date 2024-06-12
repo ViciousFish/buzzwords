@@ -93,7 +93,13 @@ const AuthPrompt: React.FC<AuthPromptProps> = ({ onDismiss }) => {
   const dispatch = useAppDispatch();
   const [view, setView] = useState<AuthPromptView>("login-options");
   return (
-    <div className="rounded-xl border border-darkbrown bg-primary shadow-lg p-4 text-text">
+    <div
+      className={classNames(
+        "p-4 items-stretch rounded-xl shadow-lg border-2",
+        "border-beeYellow-600 dark:border-beeYellow-700 bg-beeYellow-400 dark:bg-beeYellow-800",
+        "text-beeYellow-900 dark:text-beeYellow-200"
+      )}
+    >
       <button
         aria-label="dismiss login prompt"
         className="float-right hover:opacity-75"
@@ -112,7 +118,7 @@ const AuthPrompt: React.FC<AuthPromptProps> = ({ onDismiss }) => {
             <button
               type="button"
               className={classNames(
-                "mt-2 mb-2 flex items-center flex-auto bg-darkbrown text-textInverse p-2 text-sm hover:bg-opacity-50",
+                "mt-2 mb-2 flex items-center flex-auto bg-beeYellow-900 text-beeYellow-200 p-2 text-sm hover:bg-opacity-50",
                 "rounded-full inset-shadow transition-all"
               )}
               onClick={() => dispatch(getGoogleLoginURL())}
@@ -135,7 +141,7 @@ const AuthPrompt: React.FC<AuthPromptProps> = ({ onDismiss }) => {
           </div> */}
           <p className="px-2 text-xs opacity-75 max-w-xs">
             Don&apos;t worry, the game will continue to work just fine if you
-            choose not to. More authentication options are coming soon.
+            choose not to.
           </p>
         </>
       )}

@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { setNickname } from "../user/userActions";
 import Button from "../../presentational/Button";
 import { ActionButton } from "../../presentational/ActionButton";
+import { INPUT_BG, INPUT_TEXT } from "../../presentational/InputColors";
 
 const NicknameValidationSchema = yup.object().shape({
   nickname: yup.string().required(),
@@ -53,7 +54,7 @@ export const NicknameForm = ({ afterSubmit, onCancel }: NicknameFormProps) => {
               <span className="pl-2 text-sm">Nickname</span>
               <input
                 autoFocus
-                className=" bg-input text-text w-full p-2 rounded-md border-2 border-primary"
+                className={`${INPUT_BG} ${INPUT_TEXT} w-full p-2 rounded-md border-2 border-primary`}
                 name="nickname"
                 type="text"
                 value={values.nickname}
@@ -71,7 +72,11 @@ export const NicknameForm = ({ afterSubmit, onCancel }: NicknameFormProps) => {
                   cancel
                 </ActionButton>
               )}
-              <ActionButton colorClasses="border-blue-400 bg-blue-300 hover:bg-blue-200 text-black" isDisabled={!isValid || isSubmitting} type="submit">
+              <ActionButton
+                colorClasses="border-blue-400 bg-blue-300 hover:bg-blue-200 text-black"
+                isDisabled={!isValid || isSubmitting}
+                type="submit"
+              >
                 save
               </ActionButton>
             </div>

@@ -54,12 +54,12 @@
   } */
 }
 
-body {
-  @apply bg-lightbg;
-}
+/* body {
+  @apply bg-beeYellow-300 dark:bg-beeYellow-700;
+} */
 
 *::-webkit-scrollbar-thumb {
-  @apply bg-darkbrown rounded-full;
+  @apply bg-beeYellow-800 rounded-full;
 }
 *::-webkit-scrollbar {
   width: 10px;
@@ -82,13 +82,6 @@ body {
   --sal: env(safe-area-inset-left);
 }
 
-.topbar {
-  background: linear-gradient(
-    0deg,
-    var(--topbar0) 0%,
-    var(--topbar1) 100%
-  );
-}
 
 .stoplights {
   background: rgb(134, 85, 17);

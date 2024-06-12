@@ -9,32 +9,38 @@ import { setShowTutorialCard } from "./gamelistSlice";
 const TutorialCard: React.FC<{
   hideDismiss?: boolean;
   shadow?: boolean;
-}> = ({
-  hideDismiss,
-  shadow
-}) => {
+}> = ({ hideDismiss, shadow }) => {
   const dispatch = useAppDispatch();
   return (
-    <div className={classNames("rounded-xl bg-primary p-4 mx-2 text-text", shadow && 'shadow-xl border border-darkbrown')}>
+    <div
+      className={classNames(
+        "rounded-xl bg-primary p-4 mx-2",
+        "bg-beeYellow-500 dark:bg-beeYellow-800 text-beeYellow-900 dark:text-beeYellow-200",
+        shadow ?
+          "shadow-xl border-2 border-beeYellow-600 dark:border-beeYellow-700" : "dark:bg-beeYellow-900"
+      )}
+    >
       <h3 className="text-lg font-bold inline">How to play</h3>
-      {!hideDismiss && <div className="float-right text-lg">
-        <button
-          className="hover:text-darkbrown mr-2"
-          data-tip="Watch tutorial"
-          aria-label="watch tutorial"
-          onClick={() => dispatch(toggleTutorialModal())}
-        >
-          <FontAwesomeIcon icon={faFilm} />
-        </button>
-        <button
-          className="hover:text-darkbrown"
-          data-tip="Dismiss instructions"
-          aria-label="dismiss instructions"
-          onClick={() => dispatch(setShowTutorialCard(false))}
-        >
-          <FontAwesomeIcon icon={faTimes} />
-        </button>
-      </div>}
+      {!hideDismiss && (
+        <div className="float-right text-lg">
+          <button
+            className="hover:text-darkbrown mr-2"
+            data-tip="Watch tutorial"
+            aria-label="watch tutorial"
+            onClick={() => dispatch(toggleTutorialModal())}
+          >
+            <FontAwesomeIcon icon={faFilm} />
+          </button>
+          <button
+            className="hover:text-darkbrown"
+            data-tip="Dismiss instructions"
+            aria-label="dismiss instructions"
+            onClick={() => dispatch(setShowTutorialCard(false))}
+          >
+            <FontAwesomeIcon icon={faTimes} />
+          </button>
+        </div>
+      )}
       <ul className="list-disc list-outside pl-6 text-sm">
         <li>
           <h4 className="font-bold">Make words</h4>
@@ -42,9 +48,7 @@ const TutorialCard: React.FC<{
         </li>
         <li>
           <h4 className="font-bold">Capture tiles</h4>
-          <p>
-            You&apos;ll capture chains of letters that touch your territory
-          </p>
+          <p>You&apos;ll capture chains of letters that touch your territory</p>
         </li>
         <li>
           <h4 className="font-bold">Go for the flower</h4>
