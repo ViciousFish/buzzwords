@@ -131,7 +131,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                     type="button"
                     className={classNames(
                       "mx-1 text-sm",
-                      submitting ? "text-gray-400" : "text-darkbrown"
+                      submitting ? "text-gray-400" : "text-beeYellow-800 dark:text-beeYellow-300"
                     )}
                   >
                     <FontAwesomeIcon icon={faBackspace} size="2x" />
@@ -146,7 +146,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                     type="button"
                     className={classNames(
                       "mx-1 text-sm",
-                      submitting ? "text-gray-400" : "text-darkbrown"
+                      submitting ? "text-gray-400" : "text-beeYellow-800 dark:text-beeYellow-300"
                     )}
                   >
                     <FontAwesomeIcon icon={faTimesCircle} size="2x" />
@@ -154,7 +154,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 ) : null}
                 <div
                   style={{ height: "60px" }}
-                  className="text-[60px] text-darkbrown font-fredoka overflow-hidden"
+                  className="text-[60px] font-fredoka overflow-hidden text-beeYellow-800 dark:text-beeYellow-300"
                 >
                   <span style={{ position: "relative", top: -15 }}>
                     {replayLetters
@@ -171,8 +171,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                     disabled={submitting}
                     type="button"
                     className={classNames(
-                      "font-bold text-lightbg bg-opacity-100 rounded-md p-1 mx-1 text-sm",
-                      submitting ? "bg-gray-400" : "bg-darkbrown"
+                      "font-bold text-beeYellow-300 dark:text-beeYellow-950 bg-opacity-100 rounded-md p-1 mx-1 text-sm",
+                      submitting ? "bg-gray-400" : "bg-beeYellow-800 dark:bg-beeYellow-300"
                     )}
                   >
                     Submit

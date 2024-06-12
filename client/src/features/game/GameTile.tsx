@@ -224,7 +224,6 @@ const GameTile: React.FC<GameTileProps> = ({
   const prevLetter = usePrevious(letter);
   const prevCapital = usePrevious(isCapital);
   useLayoutEffect(() => {
-    // CQ: TODO: low power mode
     if (
       (letter?.length || isCapital) &&
       (prevLetter !== letter || isCapital !== prevCapital) &&

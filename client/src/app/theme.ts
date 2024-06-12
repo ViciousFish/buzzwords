@@ -45,8 +45,8 @@ export interface Theme {
 const dark: Theme = {
   colors: {
     threed: {
-      primaryAccent: "#18478C",
-      secondaryAccent: "#ACC8F1",
+      primaryAccent: "#563d00",
+      secondaryAccent: "#cebb95",
       p1: "#83346D",
       p2: "#49693B",
       selected: "#626262",
