@@ -18,6 +18,8 @@ interface GameInviteOpponentPromptProps {
   gameUrl: string;
 }
 
+const COLORS = "bg-beeYellow-200 dark:bg-beeYellow-700 text-beeYellow-950 dark:text-beeYellow-200";
+
 export default function GameInviteOpponentPrompt({
   gameUrl,
   id,
@@ -51,7 +53,7 @@ export default function GameInviteOpponentPrompt({
         <div
           className={classNames(
             "flex flex-col justify-center p-4 items-center",
-            "rounded-xl bg-lighterbg shadow-lg w-full max-w-[500px]"
+            "rounded-xl shadow-lg w-full max-w-[500px]", COLORS,
             // lg && "mr-0"
           )}
         >
@@ -75,7 +77,7 @@ export default function GameInviteOpponentPrompt({
           </span>
           <div className="border-4 border-gray-300/50 bg-white/50 flex flex-wrap gap-2 p-2 rounded-lg justify-between items-center">
             <a
-              className="underline text-textLink text-xs break-all"
+              className="underline text-blue-400 dark:text-blue-800 text-xs break-all"
               href={gameUrl}
             >
               {gameUrl}
@@ -100,7 +102,7 @@ export default function GameInviteOpponentPrompt({
           <div
             className={classNames(
               "flex flex-col justify-center p-4 items-center",
-              "rounded-xl bg-lighterbg shadow-lg w-full max-w-[500px]"
+              "rounded-xl shadow-lg w-full max-w-[500px]", COLORS
               // lg && "ml-0"
             )}
           >
@@ -120,7 +122,7 @@ export default function GameInviteOpponentPrompt({
               className="border-darkbrown border-2 rounded-lg"
             ></iframe>
           </div>
-          <div className="w-full p-4 mt-4 rounded-xl bg-lighterbg shadow-lg max-w-[500px] text-center">
+          <div className={classNames(COLORS, "w-full p-4 mt-4 rounded-xl shadow-lg max-w-[500px] text-center")}>
             {id && (
               <>
                 You can also

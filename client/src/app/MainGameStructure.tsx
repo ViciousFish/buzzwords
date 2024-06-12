@@ -101,6 +101,27 @@ const MainGameStructure: React.FC = () => {
           <Outlet />
         </SidebarRightSide>
       </div>
+      <div className="flex bg-black gap-2 p-2 justify-stretch">
+        {[
+          "bg-beeYellow-100",
+          "bg-beeYellow-200",
+          "bg-beeYellow-300",
+          "bg-beeYellow-400",
+          "bg-beeYellow-500",
+          "bg-beeYellow-600",
+          "bg-beeYellow-700",
+          "bg-beeYellow-800",
+          "bg-beeYellow-900",
+          "bg-beeYellow-950",
+        ].map((className) => (
+          <div
+            key={className}
+            className={`p-2 rounded flex-auto ${className} flex items-center justify-center`}
+          >
+            {className.replace("bg-", "")}
+          </div>
+        ))}
+      </div>
     </ScreenHeightWraper>
   );
 };

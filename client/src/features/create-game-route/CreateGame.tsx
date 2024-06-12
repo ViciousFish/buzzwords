@@ -52,7 +52,7 @@ function GameType({
         classNames(
           isFocused && "outline",
           isFocusVisible && "outline",
-          isSelected ? "bg-beeYellow-500 dark:bg-beeYellow-700" : "bg-beeYellow-400 dark:bg-beeYellow-800",
+          isSelected ? "bg-beeYellow-500 dark:bg-beeYellow-600" : "bg-beeYellow-200 dark:bg-beeYellow-700",
           isDisabled ? "opacity-40" : !isSelected && "hover:bg-darkbg",
           "flex box-border justify-between items-center p-4 lg:p-8 rounded-xl shadow-lg overflow-hidden",
           "my-6 first:mt-0 last:mb-0"
@@ -135,7 +135,7 @@ function CreateGame() {
       // ref={observe}
       className={classNames(
         "w-full h-full overflow-auto relative flex justify-center items-center",
-        "text-beeYellow-800 dark:text-beeYellow-200"
+        "text-beeYellow-950 dark:text-beeYellow-200"
         // lg && "items-center"
       )}
     >
@@ -221,7 +221,7 @@ function CreateGame() {
           {selectedMode && (
             <div
               className={classNames(
-                selectedMode !== "hotseat" && "bg-beeYellow-400 dark:bg-beeYellow-800 shadow-lg",
+                selectedMode !== "hotseat" && "bg-beeYellow-200 dark:bg-beeYellow-700 shadow-lg",
                 "p-3 rounded-xl"
               )}
             >

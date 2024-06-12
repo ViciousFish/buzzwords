@@ -35,11 +35,7 @@ const Home: React.FC = () => {
         </Canvas>
       </div>
       <div className="flex justify-center items-center text-2xl">
-        <FancyButtonLink
-          to="/play/"
-        >
-          Play Now
-        </FancyButtonLink>
+        <FancyButtonLink to="/play/">Play Now</FancyButtonLink>
       </div>
     </>
   );
