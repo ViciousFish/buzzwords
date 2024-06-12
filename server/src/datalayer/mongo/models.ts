@@ -160,9 +160,31 @@ const migrationSchema = new Schema<{ version: number }>(
 
 const MigrationModel = model<{ version: number }>("Migration", migrationSchema);
 
+const moveSchema = new Schema<{ word: string; count: number; valid: boolean }>({
+  word: {
+    type: String,
+    required: true,
+  },
+  count: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+  valid: {
+    type: Boolean,
+    required: true,
+  },
+});
+
+const MoveModel = model<{ word: string; count: number; valid: boolean }>(
+  "Move",
+  moveSchema
+);
+
 export default {
   Game: GameModel,
   User: UserModel,
   AuthToken: AuthTokenModel,
   Migration: MigrationModel,
+  Move: MoveModel,
 };
