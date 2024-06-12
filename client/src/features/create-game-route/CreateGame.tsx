@@ -20,13 +20,11 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import Button from "../../presentational/Button";
-import useDimensions from "react-cool-dimensions";
+// import useDimensions from "react-cool-dimensions";
 import { BREAKPOINTS } from "../../app/MainGameStructure";
 import {
   CreateBotGameParams,
   createGame,
-  CreateGameParams,
   CreateGameType,
 } from "../gamelist/gamelistActions";
 import { useNavigate } from "react-router";
@@ -54,7 +52,7 @@ function GameType({
         classNames(
           isFocused && "outline",
           isFocusVisible && "outline",
-          isSelected ? "bg-primary" : "bg-lighterbg",
+          isSelected ? "bg-beeYellow-500 dark:bg-beeYellow-700" : "bg-beeYellow-400 dark:bg-beeYellow-800",
           isDisabled ? "opacity-40" : !isSelected && "hover:bg-darkbg",
           "flex box-border justify-between items-center p-4 lg:p-8 rounded-xl shadow-lg overflow-hidden",
           "my-6 first:mt-0 last:mb-0"
@@ -107,9 +105,9 @@ function CreateGame() {
     useState<CreateGameType | null>(null);
   const [difficulty, setDifficulty] = useState(5);
   const [isSubmitting, setSubmitting] = useState(false);
-  const loggedIn = useAppSelector((state) =>
-    Boolean(state.user.user?.googleId)
-  );
+  // const loggedIn = useAppSelector((state) =>
+  //   Boolean(state.user.user?.googleId)
+  // );
   const playButtonPress = useCallback(async () => {
     setSubmitting(true);
     const bot = selectedMode && selectedMode.endsWith("bot");
@@ -126,17 +124,18 @@ function CreateGame() {
       setSubmitting(false);
     }
   }, [selectedMode, difficulty, dispatch, navigate]);
-  const { currentBreakpoint, observe } = useDimensions({
-    breakpoints: WIZARD_BREAKPOINTS,
-    updateOnBreakpointChange: true,
-  });
-  const lg = currentBreakpoint === "lg";
+  // const { currentBreakpoint, observe } = useDimensions({
+  //   breakpoints: WIZARD_BREAKPOINTS,
+  //   updateOnBreakpointChange: true,
+  // });
+  // const lg = currentBreakpoint === "lg";
   const bot = selectedMode && selectedMode.endsWith("bot");
   return (
     <div
-      ref={observe}
+      // ref={observe}
       className={classNames(
-        "w-full h-full overflow-auto text-text relative flex justify-center items-center",
+        "w-full h-full overflow-auto relative flex justify-center items-center",
+        "text-beeYellow-800 dark:text-beeYellow-200"
         // lg && "items-center"
       )}
     >
@@ -222,7 +221,7 @@ function CreateGame() {
           {selectedMode && (
             <div
               className={classNames(
-                selectedMode !== "hotseat" && "bg-lighterbg shadow-lg",
+                selectedMode !== "hotseat" && "bg-beeYellow-400 dark:bg-beeYellow-800 shadow-lg",
                 "p-3 rounded-xl"
               )}
             >
