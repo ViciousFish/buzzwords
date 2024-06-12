@@ -17,13 +17,20 @@ module.exports = {
           200: "oklch(95.5% 0.045 82.07)",
           // 250: "oklch(94.2% 0.0511 82.07)",
           300: "oklch(93% 0.078 82.07)",
-          400: "oklch(86% 0.11 82.07)",
+          400: "oklch(89% 0.11 82.07)",
           500: "oklch(85% 0.15 82.07)", // primary accent
-          600: "oklch(65% 0.15 82.07)", // primary accent dark
+          510: "oklch(80% 0.15 82.07)",
+          600: "oklch(63% 0.14 82.07)", // primary accent dark
           700: "oklch(49% 0.09 82.07)",
           800: "oklch(41% 0.08 82.07)",
           900: "oklch(36% 0.07 82.07)",
           950: "oklch(30% 0.055 82.07)"
+        },
+        bYellow: {
+          // TODO: 100-500ish
+        },
+        bBrown: {
+          // TODO 510-950ish
         },
         // lighterbg: "oklch(var(--lighterbg))",
         // lightbg: 'rgb(var(--lightbg) / <alpha-value>)',

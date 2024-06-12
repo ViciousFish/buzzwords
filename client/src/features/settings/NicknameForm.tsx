@@ -5,7 +5,12 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { setNickname } from "../user/userActions";
 import Button from "../../presentational/Button";
 import { ActionButton } from "../../presentational/ActionButton";
-import { INPUT_BG, INPUT_TEXT } from "../../presentational/InputColors";
+import {
+  INPUT_BG,
+  INPUT_BORDER,
+  INPUT_TEXT,
+} from "../../presentational/InputColors";
+import classNames from "classnames";
 
 const NicknameValidationSchema = yup.object().shape({
   nickname: yup.string().required(),
@@ -54,7 +59,7 @@ export const NicknameForm = ({ afterSubmit, onCancel }: NicknameFormProps) => {
               <span className="pl-2 text-sm">Nickname</span>
               <input
                 autoFocus
-                className={`${INPUT_BG} ${INPUT_TEXT} w-full p-2 rounded-md border-2 border-primary`}
+                className={`${INPUT_BG} ${INPUT_TEXT} ${INPUT_BORDER} w-full p-2 rounded-md border-2`}
                 name="nickname"
                 type="text"
                 value={values.nickname}
@@ -73,7 +78,13 @@ export const NicknameForm = ({ afterSubmit, onCancel }: NicknameFormProps) => {
                 </ActionButton>
               )}
               <ActionButton
-                colorClasses="border-blue-400 bg-blue-300 hover:bg-blue-200 text-black"
+                colorClasses={classNames([
+                  "border-beeYellow-510 dark:border-beeYellow-600",
+                  "bg-beeYellow-500 dark:bg-beeYellow-700",
+                  "hover:bg-beeYellow-510 hover:dark:bg-beeYellow-600",
+                  "hover:border-beeYellow-600 dark:hover:border-beeYellow-510",
+                  "text-beeYellow-950 dark:text-beeYellow-100",
+                ])}
                 isDisabled={!isValid || isSubmitting}
                 type="submit"
               >

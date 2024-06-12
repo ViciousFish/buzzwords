@@ -165,7 +165,7 @@ const MoveListItem: React.FC<MoveListItemProps> = ({
         <button
           type="button"
           className={classNames(
-            "flex-auto p-1 font-bold text-gray-100 text-center rounded-md m-1 hover:bg-opacity-70 inset-shadow",
+            "flex-auto p-1 font-bold text-beeYellow-950 dark:text-beeYellow-100 text-center rounded-md m-1 hover:bg-opacity-70 inset-shadow",
             isOpen && "outline-darkbrown outline",
             move.player === 0 ? "bg-p1 dark:bg-p1-dark" : "bg-p2 dark:bg-p2-dark"
           )}

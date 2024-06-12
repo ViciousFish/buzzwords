@@ -108,7 +108,7 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
     <div
       className={classNames(
         "p-4 items-stretch rounded-xl shadow-lg border-2",
-        "border-beeYellow-600 dark:border-beeYellow-700 bg-beeYellow-400 dark:bg-beeYellow-800",
+        "border-beeYellow-300 dark:border-beeYellow-700 bg-beeYellow-400 dark:bg-beeYellow-800",
         "text-beeYellow-900 dark:text-beeYellow-200"
       )}
     >

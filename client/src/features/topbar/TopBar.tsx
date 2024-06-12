@@ -70,7 +70,7 @@ const TopBar: React.FC = () => {
     <div
       className={classNames(
         "fixed top-0 z-30 text-beeYellow-800",
-        "bg-gradient-to-t from-beeYellow-600 to-beeYellow-500 dark:from-beeYellow-900 dark:to-beeYellow-800",
+        "bg-gradient-to-t from-beeYellow-510 to-beeYellow-500 dark:from-beeYellow-900 dark:to-beeYellow-800",
         "h-[calc(50px+var(--sat))] w-screen shadow-md p-t-safe"
       )}
     >
