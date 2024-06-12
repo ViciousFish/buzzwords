@@ -96,7 +96,6 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
         {getGameUrl(game.id)}
       </a>
       <CopyToClipboard
-        variant="dark"
         label="Copy link"
         text={getGameUrl(game.id)}
       />

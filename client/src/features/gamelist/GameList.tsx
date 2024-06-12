@@ -20,12 +20,7 @@ import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
 import GameListItem from "./GameListItem";
 import TutorialCard from "./TutorialCard";
 
-// const CanvasLazy = React.lazy(() => import("../canvas/Canvas"));
-import Canvas from "../canvas/Canvas";
-const BeeLazy = React.lazy(() => import("../../assets/Bee"));
-const HexWordLazy = React.lazy(() => import("../thereed-lettering/HexWord"));
-
-const GameList: React.FC<{ hideBee: boolean }> = ({ hideBee }) => {
+const GameList: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const games = useAppSelector((state) => state.gamelist.games);
@@ -77,16 +72,6 @@ const GameList: React.FC<{ hideBee: boolean }> = ({ hideBee }) => {
         </NavLink>
       </header>
       <nav className="flex flex-col flex-auto overflow-y-auto">
-        {!hideBee && (
-          <div className="h-[150px] no-touch">
-            <React.Suspense fallback={<></>}>
-              <Canvas>
-                <BeeLazy position={[0, 5, 0]} scale={4} />
-                <HexWordLazy autoSpin position={[0, -6, 0]} text="BUZZWORDS" />
-              </Canvas>
-            </React.Suspense>
-          </div>
-        )}
         <div className="flex-auto">
           <div className="z-10 px-2 mt-0 flex items-center justify-between">
             <h2 className="text-2xl font-bold text-darkbrown">Games</h2>
