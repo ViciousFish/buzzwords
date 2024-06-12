@@ -95,7 +95,7 @@ const MainGameStructure: React.FC = () => {
           className="w-[300px] flex-shrink-0 z-30"
           style={{ marginLeft: sidebarSpring.marginLeft }}
         >
-          <GameList hideBee={mobileLayout} />
+          <GameList />
         </a.div>
         <SidebarRightSide mobileLayout={mobileLayout} bindDragArgs={bind()}>
           <Outlet />
