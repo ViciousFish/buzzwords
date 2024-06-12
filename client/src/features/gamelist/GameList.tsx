@@ -36,10 +36,10 @@ const GameList: React.FC = () => {
   const completedGames = Object.values(games).filter((game) => game.gameOver);
 
   return (
-    <ScreenHeightWraper insetTop={50} className="flex flex-col bg-beeYellow-400 dark:bg-beeYellow-800">
+    <ScreenHeightWraper insetTop={50} className="flex flex-col bg-beeYellow-400 dark:bg-beeYellow-800 text-beeYellow-900 dark:text-beeYellow-200">
       <header className="flex flex-shrink-0 px-2 py-2 space-x-1">
         <a
-          className="block p-2 rounded-md hover:bg-primary hover:bg-opacity-50 text-darkbrown"
+          className="block p-2 rounded-md hover:bg-beeYellow-500 dark:hover:bg-beeYellow-700"
           href="https://github.com/ViciousFish/buzzwords"
           target="_blank"
           rel="noreferrer"
@@ -49,7 +49,7 @@ const GameList: React.FC = () => {
           <FontAwesomeIcon icon={faGithub} />
         </a>
         <a
-          className="block p-2 rounded-md hover:bg-primary hover:bg-opacity-50 text-darkbrown"
+          className="block p-2 rounded-md hover:bg-beeYellow-500 dark:hover:bg-beeYellow-700"
           href="https://twitter.com/BuzzwordsGG"
           target="_blank"
           rel="noreferrer"
@@ -60,8 +60,8 @@ const GameList: React.FC = () => {
         <NavLink
           className={({ isActive }) =>
             classNames(
-              isActive ? "bg-primary hover:bg-opacity-100" : "underline",
-              "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50 text-darkbrown"
+              isActive ? "bg-beeYellow-500 dark:bg-beeYellow-700" : "",
+              "p-2 rounded-md block hover:bg-beeYellow-500 hover:dark:bg-beeYellow-700"
             )
           }
           to="/"
@@ -79,9 +79,8 @@ const GameList: React.FC = () => {
               to="/play/"
               className={({ isActive }) =>
                 classNames(
-                  "text-text text-sm p-2 rounded-full flex items-center",
-                  "hover:bg-primary",
-                  isActive ? "bg-primary" : "underline"
+                  "text-sm p-2 rounded-full flex items-center hover:bg-beeYellow-500 dark:hover:bg-beeYellow-700",
+                  isActive ? "bg-beeYellow-500 dark:bg-beeYellow-700" : "underline"
                 )
               }
             >
@@ -93,7 +92,7 @@ const GameList: React.FC = () => {
             </NavLink>
           </div>
           {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
-          <ul className="px-2 text-text">
+          <ul className="px-2">
             {incompleteGames.map((game) => (
               <GameListItem key={game.id} game={game} />
             ))}
@@ -135,7 +134,7 @@ const GameList: React.FC = () => {
           )}
         </div>
         {showTutorialCard && isOpen && <TutorialCard />}
-        <div className="p-2 text-sm text-center text-text opacity-75">
+        <div className="p-2 text-sm text-center opacity-75">
           by{" "}
           <a className="underline" href="https://chuckdries.com">
             Chuck Dries
