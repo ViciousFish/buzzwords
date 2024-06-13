@@ -54,7 +54,7 @@ const SettingsPageSection = ({ children }: { children: ReactNode }) => (
   <div
     className={classNames(
       INPUT_TEXT,
-      "bg-beeYellow-300 dark:bg-beeYellow-900 p-2 rounded-xl flex flex-col items-stretch gap-2"
+      "bg-bYellow-400 dark:bg-bBrown-900 p-2 rounded-xl flex flex-col items-stretch gap-2"
     )}
   >
     {children}

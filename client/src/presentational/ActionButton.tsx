@@ -15,10 +15,10 @@ export function ActionButton({
         className,
         colorClasses ?? [
           INPUT_TEXT,
-          "bg-beeYellow-300 dark:bg-beeYellow-800",
-          "border-2 border-beeYellow-400 dark:border-beeYellow-700",
-          "hover:bg-beeYellow-300 dark:hover:bg-beeYellow-700",
-          "hover:border-beeYellow-500 dark:hover:border-beeYellow-600",
+          "bg-bYellow-500 dark:bg-bBrown-700",
+          "border-2 border-bYellow-700 dark:border-bBrown-500",
+          "hover:bg-bYellow-600 dark:hover:bg-bBrown-500",
+          "hover:border-bYellow-900 dark:hover:border-bBrown-300",
         ]
       )}
       {...props}

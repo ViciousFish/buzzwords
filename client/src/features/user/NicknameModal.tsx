@@ -8,6 +8,8 @@ import { setNickname } from "./userActions";
 import Modal from "../../presentational/Modal";
 import { toggleTutorialModal } from "../game/gameSlice";
 import { NicknameForm } from "../settings/NicknameForm";
+import classNames from "classnames";
+import { INPUT_TEXT } from "../../presentational/InputColors";
 
 const NicknameValidationSchema = yup.object().shape({
   nickname: yup.string().required(),
@@ -18,8 +20,8 @@ const NicknameModal: React.FC = () => {
   const gamesList = useAppSelector((state) => state.gamelist.games);
   return (
     // <Modal>
-    <div className="p-8 bg-lightbg text-text flex justify-center items-center h-full">
-      <div className="p-8 shadow-lg rounded-xl bg-lighterbg">
+    <div className="p-8 flex justify-center items-center h-full">
+      <div className={classNames(INPUT_TEXT, "p-8 bg-bYellow-400 dark:bg-bBrown-900 shadow-lg rounded-xl bg-lighterbg")}>
         <h1 className="text-2xl font-bold">Pick a nickname</h1>
         <p>It doesn&apos;t have to be unique. Your opponents will see it.</p>
         <div className="mt-2">
