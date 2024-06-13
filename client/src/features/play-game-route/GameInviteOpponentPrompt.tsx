@@ -76,10 +76,10 @@ export default function GameInviteOpponentPrompt({
           </span>
           <QRCode
             className={classNames(
-              // INPUT_BORDER,
-              "border-2 border-bYellow-900",
-              "bg-bYellow-100 dark:bg-bYellow-600",
-              "fill-bBrown-900",
+              INPUT_BORDER,
+              // "border-2 border-bYellow-900 dark:border-transparent",
+              "bg-bYellow-100 dark:bg-bBrown-900",
+              "fill-bBrown-900 dark:fill-bYellow-600",
               "p-4 rounded-md"
             )}
             fgColor="unset"
