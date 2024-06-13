@@ -124,17 +124,25 @@ const MainGameStructure: React.FC = () => {
         ))}
       </div>
 
-      <div className="flex justify-stretch">
+      <div className="flex justify-stretch bg-black">
         {[
           "bg-bYellow-100",
+          "bg-bYellow-200",
           "bg-bYellow-300",
+          "bg-bYellow-400",
           "bg-bYellow-500",
+          "bg-bYellow-600",
           "bg-bYellow-700",
+          "bg-bYellow-800",
           "bg-bYellow-900",
           "bg-bBrown-100",
+          "bg-bBrown-200",
           "bg-bBrown-300",
+          "bg-bBrown-400",
           "bg-bBrown-500",
+          "bg-bBrown-600",
           "bg-bBrown-700",
+          "bg-bBrown-800",
           "bg-bBrown-900",
           "bg-bBrown-950",
         ].map((className) => (

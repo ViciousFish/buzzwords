@@ -8,8 +8,12 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../app/hooks";
 import { ActionButton } from "../../presentational/ActionButton";
 
-import Button from "../../presentational/Button";
 import CopyToClipboard from "../../presentational/CopyToClipboard";
+import {
+  INPUT_BG,
+  INPUT_BORDER,
+  INPUT_TEXT,
+} from "../../presentational/InputColors";
 import { WIZARD_BREAKPOINTS } from "../create-game-route/CreateGame";
 import { deleteGameById } from "../gamelist/gamelistActions";
 
@@ -18,7 +22,8 @@ interface GameInviteOpponentPromptProps {
   gameUrl: string;
 }
 
-const COLORS = "bg-beeYellow-200 dark:bg-beeYellow-700 text-beeYellow-950 dark:text-beeYellow-200";
+const COLORS =
+  "bg-beeYellow-200 dark:bg-beeYellow-700 text-beeYellow-950 dark:text-beeYellow-200";
 
 export default function GameInviteOpponentPrompt({
   gameUrl,
@@ -53,12 +58,15 @@ export default function GameInviteOpponentPrompt({
         <div
           className={classNames(
             "flex flex-col justify-center p-4 items-center",
-            "rounded-xl shadow-lg w-full max-w-[500px]", COLORS,
+            "rounded-xl shadow-lg w-full max-w-[500px]",
+            COLORS
             // lg && "mr-0"
           )}
         >
           <span className="text-center">
-            <h2 className="text-2xl font-bold flex-wrap leading-6">Invite an opponent</h2>
+            <h2 className="text-2xl font-bold flex-wrap leading-6">
+              Invite an opponent
+            </h2>
             <span className="text-sm text-text opacity-70 relative mt-[-5px]">
               to start the game.
             </span>
@@ -67,7 +75,13 @@ export default function GameInviteOpponentPrompt({
             scan this invite code
           </span>
           <QRCode
-            className="bg-white/50 p-4 rounded-md border-4 border-gray-300"
+            className={classNames(
+              INPUT_BG,
+              INPUT_BORDER,
+              "fill-bBrown-900 dark:fill-bYellow-300",
+              "p-4 rounded-md"
+            )}
+            fgColor="inherit"
             width={300}
             bgColor="transparent"
             value={gameUrl}
@@ -75,9 +89,15 @@ export default function GameInviteOpponentPrompt({
           <span className="select-none text-text opacity-70 mt-4">
             or send this invite link
           </span>
-          <div className="border-4 border-gray-300/50 bg-white/50 flex flex-wrap gap-2 p-2 rounded-lg justify-between items-center">
+          <div
+            className={classNames(
+              " flex flex-wrap gap-2 p-2 rounded-lg justify-between items-center",
+              INPUT_BG,
+              INPUT_BORDER
+            )}
+          >
             <a
-              className="underline text-blue-400 dark:text-blue-800 text-xs break-all"
+              className={classNames("underline text-xs break-all", INPUT_TEXT)}
               href={gameUrl}
             >
               {gameUrl}
@@ -102,7 +122,8 @@ export default function GameInviteOpponentPrompt({
           <div
             className={classNames(
               "flex flex-col justify-center p-4 items-center",
-              "rounded-xl shadow-lg w-full max-w-[500px]", COLORS
+              "rounded-xl shadow-lg w-full max-w-[500px]",
+              COLORS
               // lg && "ml-0"
             )}
           >
@@ -122,7 +143,12 @@ export default function GameInviteOpponentPrompt({
               className="border-darkbrown border-2 rounded-lg"
             ></iframe>
           </div>
-          <div className={classNames(COLORS, "w-full p-4 mt-4 rounded-xl shadow-lg max-w-[500px] text-center")}>
+          <div
+            className={classNames(
+              COLORS,
+              "w-full p-4 mt-4 rounded-xl shadow-lg max-w-[500px] text-center"
+            )}
+          >
             {id && (
               <>
                 You can also
