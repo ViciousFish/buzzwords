@@ -73,12 +73,12 @@ function App() {
     getHowManyGamesAreMyTurn(state, null)
   );
 
-  const colorClass = useMemo(() => {
+  const colorClass = (() => {
     if (colorScheme !== ColorScheme.System) {
       return colorScheme;
     }
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? ColorScheme.Dark : ColorScheme.Light;
-  }, [colorScheme]);
+  })();
 
   useEffect(() => {
     frameLoop();

@@ -46,7 +46,7 @@ export default function GameInviteOpponentPrompt({
         justifyContent: lg ? "safe center" : "",
       }}
       className={classNames(
-        "w-full flex flex-col items-center h-full overflow-auto text-text"
+        "w-full flex flex-col items-center h-full overflow-auto", INPUT_TEXT
       )}
     >
       <div
@@ -67,21 +67,22 @@ export default function GameInviteOpponentPrompt({
             <h2 className="text-2xl font-bold flex-wrap leading-6">
               Invite an opponent
             </h2>
-            <span className="text-sm text-text opacity-70 relative mt-[-5px]">
+            <span className="text-sm opacity-70 relative mt-[-5px]">
               to start the game.
             </span>
           </span>
-          <span className="select-none text-text opacity-70 mt-4">
+          <span className="select-none opacity-70 mt-4">
             scan this invite code
           </span>
           <QRCode
             className={classNames(
-              INPUT_BG,
-              INPUT_BORDER,
-              "fill-bBrown-900 dark:fill-bYellow-300",
+              // INPUT_BORDER,
+              "border-2 border-bYellow-900",
+              "bg-bYellow-100 dark:bg-bYellow-600",
+              "fill-bBrown-900",
               "p-4 rounded-md"
             )}
-            fgColor="inherit"
+            fgColor="unset"
             width={300}
             bgColor="transparent"
             value={gameUrl}
