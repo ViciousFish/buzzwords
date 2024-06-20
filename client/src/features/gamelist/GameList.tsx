@@ -36,7 +36,7 @@ const GameList: React.FC = () => {
   const completedGames = Object.values(games).filter((game) => game.gameOver);
 
   return (
-    <ScreenHeightWraper insetTop={50} className="flex flex-col bg-beeYellow-400 dark:bg-beeYellow-800 text-beeYellow-900 dark:text-beeYellow-200">
+    <ScreenHeightWraper insetTop={50} className="flex flex-col bg-bYellow-700 dark:bg-beeYellow-800 text-beeYellow-900 dark:text-beeYellow-200">
       <header className="flex flex-shrink-0 px-2 py-2 space-x-1">
         <a
           className="block p-2 rounded-md hover:bg-beeYellow-500 dark:hover:bg-beeYellow-700"

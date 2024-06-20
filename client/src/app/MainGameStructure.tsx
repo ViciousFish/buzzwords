@@ -154,7 +154,7 @@ const MainGameStructure: React.FC = () => {
           <Outlet />
         </SidebarRightSide>
       </div>
-      {/* {colors} */}
+      {colors}
     </ScreenHeightWraper>
   );
 };
