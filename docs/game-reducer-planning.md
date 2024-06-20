@@ -7,8 +7,10 @@ Project to refactor shared game manager to redux reducer
 - easy to unit test
 
 ### game loop
-1. secondary submits move to primary. primary echoes move to all nodes. all nodes set game to `pending-move`.
-2. primary evaluates move for validity and derives resulting board state. if it rejects move, all clients undo previous update
+eh, maybe not doing any of this?
+0. game state starts in `player-turn`
+1. client submits move to server. game state is `pending-move`.
+2. server evaluates move for validity and derives resulting board state. if it rejects move, game state returns to `player-turn`
 3. primary issues `moveExecuted` message with input data and immer patches
 4. all nodes serialize move and derive updated gameplay state from patch set (always)
 - only distinction between online and offline mode is whether "submit move" makes API call or simply calls gameplay reducer directly
