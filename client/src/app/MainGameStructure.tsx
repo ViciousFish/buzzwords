@@ -87,6 +87,59 @@ const MainGameStructure: React.FC = () => {
     }
   );
 
+  const colors = (<><div className="flex">
+    {[
+      "bg-beeYellow-100",
+      "bg-beeYellow-200",
+      "bg-beeYellow-300",
+      "bg-beeYellow-400",
+      "bg-beeYellow-500",
+      "bg-beeYellow-510",
+      "bg-beeYellow-600",
+      "bg-beeYellow-700",
+      "bg-beeYellow-800",
+      "bg-beeYellow-900",
+      "bg-beeYellow-950",
+    ].map((className) => (
+      <div
+        key={className}
+        className={`p-2 flex-auto ${className} flex items-center justify-center`}
+      >
+        {className.split('-')[2]}
+      </div>
+    ))}
+  </div>
+  <div className="flex justify-stretch bg-black">
+    {[
+      "bg-bYellow-100",
+      "bg-bYellow-200",
+      "bg-bYellow-300",
+      "bg-bYellow-400",
+      "bg-bYellow-500",
+      "bg-bYellow-600",
+      "bg-bYellow-700",
+      "bg-bYellow-800",
+      "bg-bYellow-900",
+      "bg-bBrown-100",
+      "bg-bBrown-200",
+      "bg-bBrown-300",
+      "bg-bBrown-400",
+      "bg-bBrown-500",
+      "bg-bBrown-600",
+      "bg-bBrown-700",
+      "bg-bBrown-800",
+      "bg-bBrown-900",
+      "bg-bBrown-950",
+    ].map((className) => (
+      <div
+        key={className}
+        className={`p-2 flex-auto ${className} flex items-center justify-center`}
+      >
+        {className.split('-')[2]}
+      </div>
+    ))}
+  </div></>)
+
   return (
     <ScreenHeightWraper className="grid grid-rows-[min-content_minmax(0_auto)] relative overflow-hidden">
       <TopBar />
@@ -101,59 +154,7 @@ const MainGameStructure: React.FC = () => {
           <Outlet />
         </SidebarRightSide>
       </div>
-      <div className="flex">
-        {[
-          "bg-beeYellow-100",
-          "bg-beeYellow-200",
-          "bg-beeYellow-300",
-          "bg-beeYellow-400",
-          "bg-beeYellow-500",
-          "bg-beeYellow-510",
-          "bg-beeYellow-600",
-          "bg-beeYellow-700",
-          "bg-beeYellow-800",
-          "bg-beeYellow-900",
-          "bg-beeYellow-950",
-        ].map((className) => (
-          <div
-            key={className}
-            className={`p-2 flex-auto ${className} flex items-center justify-center`}
-          >
-            {className.replace("bg-", "")}
-          </div>
-        ))}
-      </div>
-
-      <div className="flex justify-stretch bg-black">
-        {[
-          "bg-bYellow-100",
-          "bg-bYellow-200",
-          "bg-bYellow-300",
-          "bg-bYellow-400",
-          "bg-bYellow-500",
-          "bg-bYellow-600",
-          "bg-bYellow-700",
-          "bg-bYellow-800",
-          "bg-bYellow-900",
-          "bg-bBrown-100",
-          "bg-bBrown-200",
-          "bg-bBrown-300",
-          "bg-bBrown-400",
-          "bg-bBrown-500",
-          "bg-bBrown-600",
-          "bg-bBrown-700",
-          "bg-bBrown-800",
-          "bg-bBrown-900",
-          "bg-bBrown-950",
-        ].map((className) => (
-          <div
-            key={className}
-            className={`p-2 flex-auto ${className} flex items-center justify-center`}
-          >
-            {className.replace("bg-", "")}
-          </div>
-        ))}
-      </div>
+      {/* {colors} */}
     </ScreenHeightWraper>
   );
 };

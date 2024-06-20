@@ -1,5 +1,13 @@
 import React, { useRef } from "react";
-import { Group, Mesh, MeshBasicMaterial, MeshStandardMaterial, DirectionalLight, AmbientLight } from "three";
+import {
+  Group,
+  Mesh,
+  MeshBasicMaterial,
+  MeshStandardMaterial,
+  DirectionalLight,
+  AmbientLight,
+  PlaneGeometry,
+} from "three";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { extend, createRoot, events, ReconcilerRoot } from "@react-three/fiber";
 import { useContextBridge } from "@react-three/drei";
@@ -16,6 +24,7 @@ extend({
   DirectionalLight,
   AmbientLight,
   TextGeometry,
+  PlaneGeometry
 });
 interface BaseCanvasProps {
   children: React.ReactNode;

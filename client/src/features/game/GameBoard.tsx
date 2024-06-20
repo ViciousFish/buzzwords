@@ -131,7 +131,9 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                     type="button"
                     className={classNames(
                       "mx-1 text-sm",
-                      submitting ? "text-gray-400" : "text-beeYellow-800 dark:text-beeYellow-300"
+                      submitting
+                        ? "text-gray-400"
+                        : "text-beeYellow-800 dark:text-beeYellow-300"
                     )}
                   >
                     <FontAwesomeIcon icon={faBackspace} size="2x" />
@@ -146,7 +148,9 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                     type="button"
                     className={classNames(
                       "mx-1 text-sm",
-                      submitting ? "text-gray-400" : "text-beeYellow-800 dark:text-beeYellow-300"
+                      submitting
+                        ? "text-gray-400"
+                        : "text-beeYellow-800 dark:text-beeYellow-300"
                     )}
                   >
                     <FontAwesomeIcon icon={faTimesCircle} size="2x" />
@@ -172,7 +176,9 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                     type="button"
                     className={classNames(
                       "font-bold text-beeYellow-300 dark:text-beeYellow-950 bg-opacity-100 rounded-md p-1 mx-1 text-sm",
-                      submitting ? "bg-gray-400" : "bg-beeYellow-800 dark:bg-beeYellow-300"
+                      submitting
+                        ? "bg-gray-400"
+                        : "bg-beeYellow-800 dark:bg-beeYellow-300"
                     )}
                   >
                     Submit
@@ -181,6 +187,12 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
               </div>
             </Html>
           </group>
+          {/* <group position={[0, -2, -1]}>
+            <mesh>
+              <planeGeometry args={[38, 55]} />
+              <meshStandardMaterial color="darkgreen" />
+            </mesh>
+          </group> */}
           <group position={[0, -7, 0]}>
             {Object.keys(game.grid).map((coord: QRCoord) => {
               const gridTile = game.grid[coord];
