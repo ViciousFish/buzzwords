@@ -22,6 +22,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import useHotkeys from "@reecelucas/react-use-hotkeys";
+import { GameBoardTiles } from "./GameBoardTiles";
 
 interface GameBoardProps {
   id: string;
@@ -181,32 +182,14 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
               </div>
             </Html>
           </group>
-          <group position={[0, -7, 0]}>
-            {Object.keys(game.grid).map((coord: QRCoord) => {
-              const gridTile = game.grid[coord];
-              return (
-                <GameTile
-                  isSubmitting={submitting}
-                  isCapital={revealLetters ? gridTile.capital : false}
-                  coord={coord}
-                  letter={revealLetters ? gridTile.value : ""}
-                  position={[
-                    // https://www.redblobgames.com/grids/hexagons/#hex-to-pixel-axial
-                    3.1 * (3 / 2) * gridTile.q,
-                    -1 *
-                      3.1 *
-                      ((Math.sqrt(3) / 2) * gridTile.q +
-                        Math.sqrt(3) * gridTile.r),
-                    0,
-                  ]}
-                  key={coord}
-                  owner={gridTile.owner}
-                  currentGame={id}
-                  userIndex={userIndex}
-                />
-              );
-            })}
-          </group>
+          <GameBoardTiles
+            grid={game.grid}
+            revealLetters={revealLetters}
+            submitting={submitting}
+            currentGame={id}
+            userIndex={userIndex}
+            position={[0, -7, 0]}
+          />
         </React.Suspense>
       </Canvas>
       <div style={{ position: "absolute", top: "50px" }} ref={portal}></div>

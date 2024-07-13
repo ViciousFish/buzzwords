@@ -96,6 +96,8 @@ const GameTile: React.FC<GameTileProps> = ({
   const currentTurn = game.turn;
   const currentMove = useAppSelector(getTileSelectionInParsedHexCoords);
   const gridState = isFullGame(game) ? game.grid : null;
+  // TODO: move replay stuff up to above GameBoardTile
+  // (also use selector)
   const replayMove = useAppSelector((state) => state.game.replay.move);
   const replayProgress = useAppSelector(
     (state) => state.game.replay.playbackState
