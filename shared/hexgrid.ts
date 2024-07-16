@@ -4,7 +4,7 @@ import { getRandomCharacter } from "./alphaHelpers";
 import Cell, { makeCell } from "./cell";
 import { combinationN, getRandomInt, shuffle } from "./utils";
 
-const QRLookup = (q: number): number => {
+export function QRLookup(q: number): number {
   switch (q) {
     case -3:
       return -1;

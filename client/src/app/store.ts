@@ -6,13 +6,15 @@ import gameReducer from "../features/game/gameSlice";
 import gamelistReducer from "../features/gamelist/gamelistSlice";
 import userReducer from "../features/user/userSlice";
 import settingsReducer from '../features/settings/settingsSlice';
+import {reducer as endlessReducer} from '../features/endless-mode/endlessSlice';
 
 export const store = configureStore({
   reducer: {
     game: gameReducer,
     gamelist: gamelistReducer,
     user: userReducer,
-    settings: settingsReducer
+    settings: settingsReducer,
+    endlessMode: endlessReducer,
   },
 });
 

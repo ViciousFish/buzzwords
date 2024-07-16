@@ -37,6 +37,7 @@ import { isFullGame } from "../gamelist/gamelistSlice";
 import { willConnectToTerritory } from "buzzwords-shared/gridHelpers";
 import Crown from "../../assets/Crown";
 import { getTheme } from "../settings/settingsSelectors";
+import { Html, Text } from "@react-three/drei";
 
 interface GameTileProps {
   position: V3Type;
@@ -318,7 +319,8 @@ const GameTile: React.FC<GameTileProps> = ({
       onClick={onTileClick}
       {...colorAndScaleSpring}
     >
-      {/* <Html>{coord}</Html> */}
+      {/* <Html><div className="z-20 text-xl overflow-visible">{coord}</div></Html> */}
+      <Text position={[0,0,2]} scale={1.5} color="white">{coord}</Text>
       {letter && (
         // @ts-ignore
         <mesh ref={characterMesh} position={[0, 0, 0.2]}>

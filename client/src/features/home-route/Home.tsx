@@ -7,13 +7,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 // import { IconWatch01 } from "../../assets/IconWatch01";
 import { FancyButtonLink } from "../../presentational/FancyButton";
+import { useAppDispatch } from "../../app/hooks";
+import { endlessInitThunk } from "../endless-mode/endlessThunks";
 
 const Home: React.FC = () => {
   const { progress } = useProgress();
 
+  const dispatch = useAppDispatch();
+
+  React.useEffect(() => {
+    dispatch(endlessInitThunk());
+  }, [dispatch]);
+
   return (
     <>
-      <div className="flex flex-auto no-touch h-[50vh] pt-[20vh] p-12 ">
+      {/* <div className="flex flex-auto no-touch h-[50vh] pt-[20vh] p-12 ">
         <Canvas key="home">
           <React.Suspense
             fallback={
@@ -33,13 +41,14 @@ const Home: React.FC = () => {
             <group position={[0, 0, 0]}></group>
           </React.Suspense>
         </Canvas>
-      </div>
-      <div className="flex justify-center items-center text-2xl">
-        <FancyButtonLink
-          to="/play/"
-        >
-          Play Now
-        </FancyButtonLink>
+      </div> */}
+      <div className="flex flex-col lg:flex-row-reverse">
+        <div>
+          {/* TODO endless mode gameboard */}
+        </div>
+        <div className="flex justify-center items-center text-2xl">
+          <FancyButtonLink to="/play/">Play Now</FancyButtonLink>
+        </div>
       </div>
     </>
   );
