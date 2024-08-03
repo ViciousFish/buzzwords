@@ -1,9 +1,11 @@
 import { AppThunk } from "../../app/store";
+import { configure_firebase_messaging } from "../../firebase";
 import {
   ColorScheme,
   setColorScheme,
   setLowPowerMode,
   setPreferredDarkTheme,
+  setPushNotificationsEnabled,
   setTurnNotificationsMute,
   ThemeNames,
 } from "./settingsSlice";
@@ -20,6 +22,32 @@ export const setTurnNotificationsSetting =
     dispatch(setTurnNotificationsMute(mute));
   };
 
+export const getPushNotificationsEnabledSetting = () =>
+  JSON.parse(
+    localStorage.getItem("pushNotificationsEnabled") || "false"
+  ) as boolean;
+
+export const setPushNotificationsEnabledSetting =
+  (enabled: boolean): AppThunk =>
+  async (dispatch) => {
+    if (enabled) {
+      try {
+        const token = await configure_firebase_messaging();
+        localStorage.setItem(
+          "pushNotificationsEnabled",
+          JSON.stringify(enabled)
+        );
+        console.log("token", token);
+        dispatch(setPushNotificationsEnabled(enabled));
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      localStorage.setItem("pushNotificationsEnabled", JSON.stringify(enabled));
+      dispatch(setPushNotificationsEnabled(enabled));
+    }
+  };
+
 function getPrefersReducedMotion() {
   const QUERY = "(prefers-reduced-motion: no-preference)";
   const mediaQueryList = window.matchMedia(QUERY);
@@ -28,9 +56,9 @@ function getPrefersReducedMotion() {
 }
 
 export const getLowPowerModeSetting = () => {
-  const setting = localStorage.getItem("lowPowerMode")
-  return setting === null ? getPrefersReducedMotion() : JSON.parse(setting); 
-}
+  const setting = localStorage.getItem("lowPowerMode");
+  return setting === null ? getPrefersReducedMotion() : JSON.parse(setting);
+};
 
 export const setLowPowerModeSetting =
   (mode: boolean): AppThunk =>
