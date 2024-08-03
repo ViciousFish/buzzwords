@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getColorSchemeSetting, getLowPowerModeSetting, getPreferredDarkThemeSetting, getTurnNotificationsSetting } from "./settingsActions";
+import { getColorSchemeSetting, getLowPowerModeSetting, getPreferredDarkThemeSetting, getPushNotificationsEnabledSetting, getTurnNotificationsSetting } from "./settingsActions";
 import { getCurrentSystemScheme } from "./settingsSelectors";
 
 export enum ColorScheme {
@@ -12,6 +12,7 @@ export type ThemeNames = "light" | "dark" | "oled";
 
 interface SettingsState {
   turnNotificationsMuted: boolean;
+  pushNotificationsEnabled: boolean;
   colorScheme: ColorScheme;
   preferredDarkTheme: ThemeNames;
   currentSystemScheme: ColorScheme.Dark | ColorScheme.Light;
@@ -20,6 +21,7 @@ interface SettingsState {
 
 // Define the initial state using that type
 const initialState: SettingsState = {
+  pushNotificationsEnabled: getPushNotificationsEnabledSetting(),
   turnNotificationsMuted: getTurnNotificationsSetting(),
   colorScheme: getColorSchemeSetting(),
   preferredDarkTheme: getPreferredDarkThemeSetting(),
@@ -31,6 +33,9 @@ export const settingsSlice = createSlice({
   name: "settings",
   initialState,
   reducers: {
+    setPushNotificationsEnabled: (state, action: PayloadAction<boolean>) => {
+      state.pushNotificationsEnabled = action.payload;
+    },
     setTurnNotificationsMute: (state, action: PayloadAction<boolean>) => {
       state.turnNotificationsMuted = action.payload;
     },
@@ -54,6 +59,7 @@ export const settingsSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const {
+  setPushNotificationsEnabled,
   setTurnNotificationsMute,
   setColorScheme,
   setPreferredDarkTheme,
