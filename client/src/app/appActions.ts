@@ -1,6 +1,6 @@
 import { refresh } from "../features/gamelist/gamelistActions";
 import { getUser } from "../features/user/userActions";
-import { subscribeToMessages } from "../firebase";
+import { subscribeToMessages } from "./firebase";
 import { subscribeSocket } from "./socket";
 import { AppThunk } from "./store";
 

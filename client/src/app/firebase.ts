@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, FirebaseApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
-import { AppThunk } from "./app/store";
+import { AppThunk } from "./store";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -22,6 +22,10 @@ export function configure_firebase() {
 export async function configure_firebase_messaging() {
   if (!("serviceWorker" in navigator)) {
     return false;
+  }
+  const permission = await Notification.requestPermission();
+  if (permission !== "granted") {
+    return true;
   }
   const messaging = getMessaging(app);
   const token = await getToken(messaging, {
