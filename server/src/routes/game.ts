@@ -376,7 +376,9 @@ export default (io: Server) => {
         const tokens = pushTokens.map((pt) => pt.token);
         const opponent = (await dl.getUserById(notificationRecipient))
           ?.nickname;
-        const word = newGame.moves[newGame.moves.length - 1].letters.join("");
+        const word = newGame.moves[newGame.moves.length - 1].letters
+          .join("")
+          .toUpperCase();
         const res = await getMessaging().sendEachForMulticast({
           notification: {
             title: "Buzzwords: it's your turn",

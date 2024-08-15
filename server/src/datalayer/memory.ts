@@ -217,11 +217,11 @@ export default class Memory implements DataLayer {
     return 0;
   }
 
-  async createPushToken(token: string, userId: string): Promise<boolean> {
+  async storePushToken(token: string, userId: string): Promise<boolean> {
     this.pushTokens[token] = {
       token,
       userId,
-      createdDate: new Date(),
+      lastTouchedDate: new Date(),
     };
     return true;
   }

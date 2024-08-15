@@ -29,26 +29,42 @@ export const getPushNotificationsEnabledSetting = () =>
     localStorage.getItem("pushNotificationsEnabled") || "false"
   ) as boolean;
 
+export const retrieveAndStorePushToken = async () => {
+  try {
+    const token = await configure_firebase_messaging();
+    if (token === false) {
+      return false;
+    }
+    const res = await Api.post(getApiUrl("/pushToken/register"), {
+      token,
+    });
+    if (res.status === 201) {
+      return true;
+    }
+  } catch (e) {
+    console.error(e);
+  }
+  return false;
+};
+
+export const refreshTokenIfEnabled = async () => {
+  const enabled = getPushNotificationsEnabledSetting();
+  if (enabled) {
+    await retrieveAndStorePushToken();
+  }
+}
+
 export const setPushNotificationsEnabledSetting =
   (enabled: boolean): AppThunk =>
   async (dispatch) => {
     if (enabled) {
-      try {
-        const token = await configure_firebase_messaging();
+      const notificationsAllowed = await retrieveAndStorePushToken();
+      if (notificationsAllowed) {
         localStorage.setItem(
           "pushNotificationsEnabled",
-          JSON.stringify(enabled)
+          JSON.stringify(notificationsAllowed)
         );
-        console.log({ token });
-        const res = await Api.post(getApiUrl("/pushToken/register"), {
-          token,
-        });
-        if (res.status === 201) {
-          dispatch(setPushNotificationsEnabled(enabled));
-        }
-      } catch (e) {
-        // TODO: toast?
-        console.error(e);
+        dispatch(setPushNotificationsEnabled(notificationsAllowed));
       }
     } else {
       localStorage.setItem("pushNotificationsEnabled", JSON.stringify(enabled));

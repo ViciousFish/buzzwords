@@ -25,7 +25,7 @@ export async function configure_firebase_messaging() {
   }
   const permission = await Notification.requestPermission();
   if (permission !== "granted") {
-    return true;
+    return false;
   }
   const messaging = getMessaging(app);
   const token = await getToken(messaging, {

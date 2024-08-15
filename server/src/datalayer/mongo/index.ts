@@ -628,22 +628,24 @@ export default class Mongo implements DataLayer {
     return result[0]?.uniquePlayers ?? 0;
   }
 
-  async createPushToken(token: string, userId: string): Promise<boolean> {
+  async storePushToken(token: string, userId: string): Promise<boolean> {
     if (!this.connected) {
       throw new Error("Db not connected");
     }
-    try {
-      await Models.PushToken.create([
-        {
-          token,
-          userId,
-        },
-      ]);
-      return true;
-    } catch (e) {
-      console.log(e);
-      return false;
-    }
+    await Models.PushToken.findOneAndUpdate(
+      {
+        token,
+      },
+      {
+        token,
+        userId,
+        lastTouchedDate: new Date(),
+      },
+      {
+        upsert: true,
+      }
+    );
+    return true;
   }
 
   async getPushTokensByUserId(userId: string): Promise<PushToken[]> {

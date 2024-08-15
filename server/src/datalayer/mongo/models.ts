@@ -165,13 +165,14 @@ const pushTokenSchema = new Schema<PushToken>({
     type: String,
     required: true,
     unique: true,
+    index: true,
   },
   userId: {
     type: String,
     required: true,
     index: true,
   },
-  createdDate: {
+  lastTouchedDate: {
     type: Date,
     required: true,
     default: () => new Date(),

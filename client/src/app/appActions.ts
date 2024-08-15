@@ -1,4 +1,5 @@
 import { refresh } from "../features/gamelist/gamelistActions";
+import { refreshTokenIfEnabled } from "../features/settings/settingsActions";
 import { getUser } from "../features/user/userActions";
 import { subscribeToMessages } from "./firebase";
 import { subscribeSocket } from "./socket";
@@ -9,4 +10,5 @@ export const initAction = (): AppThunk => async (dispatch) => {
   subscribeSocket(dispatch);
   dispatch(refresh());
   dispatch(subscribeToMessages());
+  refreshTokenIfEnabled();
 }

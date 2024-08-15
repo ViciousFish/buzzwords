@@ -17,7 +17,7 @@ export interface AuthToken {
 export interface PushToken {
   token: string;
   userId: string;
-  createdDate: Date;
+  lastTouchedDate: Date;
 }
 
 export interface DataLayer {
@@ -98,7 +98,7 @@ export interface DataLayer {
     userId: string,
     options?: Record<string, unknown>
   ): Promise<boolean>;
-  createPushToken(
+  storePushToken(
     token: string,
     userId: string,
     options?: Record<string, unknown>

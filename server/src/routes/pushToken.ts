@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { MongoServerError } from "mongodb";
 import dl from "../datalayer";
 
 export default (): Router => {
@@ -13,12 +14,16 @@ export default (): Router => {
       });
       return;
     }
-    const success = await dl.createPushToken(token, userId);
-    if (success) {
-      res.sendStatus(201);
-    } else {
-      res.sendStatus(500);
+    try {
+      const success = await dl.storePushToken(token, userId);
+      if (success) {
+        res.sendStatus(201);
+        return;
+      }
+    } catch (e) {
+      console.error(e);
     }
+    res.sendStatus(500);
   });
 
   // TODO: route to disable notifications for given device (token?)
