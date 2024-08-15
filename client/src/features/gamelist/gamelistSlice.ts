@@ -6,7 +6,7 @@ import {
   Gamev2,
   GameplayState,
   GameplayEvent,
-} from "buzzwords-shared/GamplaySlice";
+} from "buzzwords-shared/GameReducer1";
 import { GameStateModalType } from "../game/GameStateModal";
 import { getHasDismissedTutorialCard } from "./gamelistActions";
 import { enablePatches, applyPatches } from "immer";
