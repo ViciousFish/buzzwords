@@ -18,8 +18,6 @@ Project to refactor shared game manager to redux reducer
 3. Migrate active games?
 
 ## Notes
-Progress: exploring implementation in `shared/GameplaySlice.ts`
-
 Updated game schema?:
 - necessary to take advantage of more compact Move.grid storage
 - grid -> gridDeltas?
@@ -29,12 +27,19 @@ Game schema migration?
 - do we care about leaving old codepaths around for old clients?
   - (I'm thiiiiiinking about ditching electron in favor of tauri anyway...)
 
-## old
+## scratchpad
+- first attempt: explored in `shared/GameReducer1.ts`
+  - big changes to schema
+  - patches only over the socket
+  - called by server's existing game move route
+    - for convenience - did not occur to me to try idea with hotseat
+- DOING round 2: `shared/GameReducer2.ts`
+  - reuse existing interfaces/types, just return extra stuff?
+  - attempt to implement client-only for hotseat (maybe that'll be simpler?)
+
+## old scribbles
 - rtk entityadapters may be helpful for updating games in memory on client?
 - gameplay reducer should use plain immer so we can serialize patches
 - RTKquery has built in .undo on top of patches - use this for adding and removing pending state?
   - https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates
 - https://immerjs.github.io/immer/patches
-
-TODO
-- [ ] migration of existing db game objects  (translate for now, migrate later?)

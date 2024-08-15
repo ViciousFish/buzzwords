@@ -5,7 +5,7 @@ import { Server } from "socket.io";
 import { getBotMove } from "buzzwords-shared/bot";
 import { HexCoord } from "buzzwords-shared/types";
 import Game from "buzzwords-shared/Game";
-import { executeGameplayAction } from "buzzwords-shared/GamplaySlice";
+import { executeGameplayAction } from "buzzwords-shared/GameReducer1";
 import { enablePatches } from "immer";
 enablePatches();
 
