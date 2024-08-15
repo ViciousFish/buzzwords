@@ -71,7 +71,7 @@ export const NicknameForm = ({ afterSubmit, onCancel }: NicknameFormProps) => {
                   cancel
                 </ActionButton>
               )}
-              <ActionButton colorClasses="border-blue-400 bg-blue-300 hover:bg-blue-200 text-black" isDisabled={!isValid || isSubmitting} type="submit">
+              <ActionButton colorClasses="border-green-400 bg-green-300 hover:bg-green-200 text-black" isDisabled={!isValid || isSubmitting} type="submit">
                 save
               </ActionButton>
             </div>

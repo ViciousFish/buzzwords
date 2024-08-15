@@ -1,5 +1,5 @@
 import { AppThunk } from "../../app/store";
-import { configure_firebase_messaging } from "../../firebase";
+import { configure_firebase_messaging } from "../../app/firebase";
 import {
   ColorScheme,
   setColorScheme,

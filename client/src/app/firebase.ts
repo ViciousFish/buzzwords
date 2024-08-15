@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, FirebaseApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
-import { AppThunk } from "./app/store";
+import { AppThunk } from "./store";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -14,24 +14,38 @@ const firebaseConfig = {
 };
 
 let app: FirebaseApp;
+let messaging;
 
 export function configure_firebase() {
   app = initializeApp(firebaseConfig);
-  console.log("🚀 ~ app:", app)
+  messaging = getMessaging(app);
 }
 
 export async function configure_firebase_messaging() {
-  const messaging = getMessaging(app);
+  if (!("serviceWorker" in navigator)) {
+    return false;
+  }
+  console.log("🚀 ~ configure_firebase_messaging ~ import.meta.env.MODE === \"production\":", import.meta.env.MODE === "production")
+  const registration = await navigator.serviceWorker.register(
+    import.meta.env.MODE === "production" ? "/sw.js" : "/dev-sw.js?dev-sw",
+    { type: import.meta.env.MODE === "production" ? "classic" : "module" }
+  );
   const token = await getToken(messaging, {
     vapidKey:
       "BIYsGBDfSJxey0PNgvDYHpNjNRmAoA8oExcXfr7pSE42DI3gtpFBI61zjq4ekTXd6kL3xEQkylUQlXWETonOLEM",
-  })
+    serviceWorkerRegistration: registration,
+  });
   return token;
 }
 
 export const subscribeToMessages = (): AppThunk => async (dispatch) => {
-  const messaging = getMessaging(app);
   onMessage(messaging, (payload) => {
     console.log("Message received. ", payload);
   });
-}
+};
+
+// import { initializeApp } from "firebase/app";
+// import { getMessaging, getToken, onMessage } from "firebase/messaging";
+
+// const firebaseApp = initializeApp(<your-firebase-config>);
+// const messaging = getMessaging(firebaseApp);
