@@ -628,6 +628,24 @@ export default class Mongo implements DataLayer {
     return result[0]?.uniquePlayers ?? 0;
   }
 
+  async createPushToken(token: string, userId: string): Promise<boolean> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    try {
+      await Models.PushToken.create([
+        {
+          token,
+          userId,
+        },
+      ]);
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  }
+
   async createContext(): Promise<ClientSession> {
     const db = mongoose.connection;
     const session = await db.startSession();

@@ -14,6 +14,12 @@ export interface AuthToken {
   state: string | null;
 }
 
+export interface PushToken {
+  token: string;
+  userId: string;
+  createdDate: Date;
+}
+
 export interface DataLayer {
   createUser(id: string, options?: Record<string, unknown>): Promise<User>;
   deleteUser(id: string, options?: Record<string, unknown>): Promise<boolean>;
@@ -89,6 +95,11 @@ export interface DataLayer {
     options?: Record<string, unknown>
   ): Promise<boolean>;
   joinRandomGame(
+    userId: string,
+    options?: Record<string, unknown>
+  ): Promise<boolean>;
+  createPushToken(
+    token: string,
     userId: string,
     options?: Record<string, unknown>
   ): Promise<boolean>;

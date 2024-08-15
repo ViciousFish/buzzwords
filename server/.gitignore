@@ -25,3 +25,5 @@ yarn-error.log*
 dist
 
 *.env
+
+google-credentials.json

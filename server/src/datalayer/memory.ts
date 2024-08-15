@@ -1,5 +1,5 @@
 import Game from "buzzwords-shared/Game";
-import { AuthToken, DataLayer, User } from "../types";
+import { AuthToken, DataLayer, PushToken, User } from "../types";
 
 export default class Memory implements DataLayer {
   games: {
@@ -10,6 +10,9 @@ export default class Memory implements DataLayer {
   };
   authTokens: {
     [key: string]: AuthToken;
+  } = {};
+  pushTokens: {
+    [key: string]: PushToken;
   } = {};
   constructor() {
     this.games = {};
@@ -212,6 +215,15 @@ export default class Memory implements DataLayer {
 
   async getActiveUsersBetweenDates(): Promise<number> {
     return 0;
+  }
+
+  async createPushToken(token: string, userId: string): Promise<boolean> {
+    this.pushTokens[token] = {
+      token,
+      userId,
+      createdDate: new Date(),
+    };
+    return true;
   }
 
   async createContext(): Promise<null> {
