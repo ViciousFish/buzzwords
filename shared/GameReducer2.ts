@@ -1,6 +1,7 @@
-import { Move, ShallowGame, default as Game } from "./Game";
 import { Patch, produceWithPatches } from "immer";
+import * as R from "ramda";
 
+import { Move, ShallowGame, default as Game } from "./Game";
 import HexGrid, { getCell, getNewCellValues } from "./hexgrid";
 import { HexCoord, HexCoordKey } from "./types";
 import { isValidWord } from "./alphaHelpers";
@@ -10,6 +11,14 @@ import {
   getCellsToBecomeNeutral,
 } from "./gridHelpers";
 import { WordsObject } from "../server/src/words";
+
+const prettyPatch = ({ op, path, ...patch }: Patch) => {
+  const prettyPath = path.join(".");
+  return {
+    prettyPath,
+    ...patch,
+  };
+};
 
 export function makeMove(game: Game, move: HexCoord[], userId: string) {
   let word = getWord(game.grid, move);
@@ -21,7 +30,14 @@ export function makeMove(game: Game, move: HexCoord[], userId: string) {
     (draft) => moveReducer(draft, move)
   );
 
-  console.log({ nextState, patches, inversePatches });
+  console.log({
+    nextState: R.omit(["grid"], nextState),
+    patches: patches.map(prettyPatch),
+    inversePatches: inversePatches.map(prettyPatch),
+  });
+  const gridDeltas = patches.filter((patch) => patch.path[0] === "grid");
+
+  console.log({ gridDeltas: gridDeltas.map(prettyPatch) });
 }
 
 function moveReducer(game: Game, move: HexCoord[]) {
