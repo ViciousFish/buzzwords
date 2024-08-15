@@ -389,7 +389,15 @@ export default (io: Server) => {
           },
           tokens,
         });
-        console.log(res);
+        res.responses.forEach((r, i) => {
+          if (r.success) {
+            return;
+          }
+          if (r.error?.code === "messaging/registration-token-not-registered") {
+            dl.deletePushToken(tokens[i]);
+          }
+        });
+        console.log(res.responses.filter((r) => !r.success)[0]?.error?.code);
       });
 
     doBotMoves(gameId);

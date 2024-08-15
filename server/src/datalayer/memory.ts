@@ -226,6 +226,11 @@ export default class Memory implements DataLayer {
     return true;
   }
 
+  async deletePushToken(token: string): Promise<boolean> {
+    delete this.pushTokens[token];
+    return true;
+  }
+
   async getPushTokensByUserId(userId: string): Promise<PushToken[]> {
     return Object.values(this.pushTokens).filter((pt) => pt.userId == userId);
   }

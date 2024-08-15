@@ -103,6 +103,10 @@ export interface DataLayer {
     userId: string,
     options?: Record<string, unknown>
   ): Promise<boolean>;
+  deletePushToken(
+    token: string,
+    options?: Record<string, unknown>
+  ): Promise<boolean>;
   getPushTokensByUserId(
     userId: string,
     options?: Record<string, unknown>

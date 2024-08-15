@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { MongoServerError } from "mongodb";
+// import { MongoServerError } from "mongodb";
 import dl from "../datalayer";
 
 export default (): Router => {

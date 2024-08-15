@@ -648,6 +648,16 @@ export default class Mongo implements DataLayer {
     return true;
   }
 
+  async deletePushToken(token: string): Promise<boolean> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    await Models.PushToken.deleteOne({
+      token,
+    });
+    return true;
+  }
+
   async getPushTokensByUserId(userId: string): Promise<PushToken[]> {
     if (!this.connected) {
       throw new Error("Db not connected");

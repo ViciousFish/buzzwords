@@ -9300,6 +9300,7 @@ __metadata:
     cookie: ^0.4.1
     copy-to-clipboard: ^3.3.1
     cross-env: ^7.0.3
+    date-fns: ^3.6.0
     electron: 20
     electron-builder: ^23.1.0
     electron-context-menu: ^3.3.0
@@ -10171,6 +10172,13 @@ __metadata:
   version: 2.28.0
   resolution: "date-fns@npm:2.28.0"
   checksum: a0516b2e4f99b8bffc6cc5193349f185f195398385bdcaf07f17c2c4a24473c99d933eb0018be4142a86a6d46cb0b06be6440ad874f15e795acbedd6fd727a1f
+  languageName: node
+  linkType: hard
+
+"date-fns@npm:^3.6.0":
+  version: 3.6.0
+  resolution: "date-fns@npm:3.6.0"
+  checksum: 0daa1e9a436cf99f9f2ae9232b55e11f3dd46132bee10987164f3eebd29f245b2e066d7d7db40782627411ecf18551d8f4c9fcdf2226e48bb66545407d448ab7
   languageName: node
   linkType: hard
 

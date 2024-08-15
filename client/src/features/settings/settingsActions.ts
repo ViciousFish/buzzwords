@@ -11,6 +11,7 @@ import {
 } from "./settingsSlice";
 import { Api } from "../../app/Api";
 import { getApiUrl } from "../../app/apiPrefix";
+import { addDays } from "date-fns";
 
 export const getTurnNotificationsSetting = () =>
   JSON.parse(
@@ -39,6 +40,7 @@ export const retrieveAndStorePushToken = async () => {
       token,
     });
     if (res.status === 201) {
+      localStorage.setItem("lastPushTokenRefresh", new Date().toISOString());
       return true;
     }
   } catch (e) {
@@ -49,7 +51,11 @@ export const retrieveAndStorePushToken = async () => {
 
 export const refreshTokenIfEnabled = async () => {
   const enabled = getPushNotificationsEnabledSetting();
-  if (enabled) {
+  if (!enabled) {
+    return;
+  }
+  const lastPushTokenRefresh = localStorage.getItem("lastPushTokenRefresh");
+  if (!lastPushTokenRefresh || new Date() > addDays(new Date(lastPushTokenRefresh), 7)) {
     await retrieveAndStorePushToken();
   }
 }
