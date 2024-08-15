@@ -60,6 +60,21 @@ export const refreshTokenIfEnabled = async () => {
   }
 }
 
+export const unregisterPushTokenIfEnabled = async () => {
+  const enabled = getPushNotificationsEnabledSetting();
+  if (!enabled) {
+    return;
+  }
+  try {
+    const token = await get_token();
+    await Api.post(getApiUrl("/pushToken/unregister"), {
+      token,
+    });
+  } catch (e) {
+    console.error('encountered error unregistering pushToken', e);
+  }
+}
+
 export const setPushNotificationsEnabledSetting =
   (enabled: boolean): AppThunk =>
   async (dispatch) => {
@@ -73,14 +88,7 @@ export const setPushNotificationsEnabledSetting =
         dispatch(setPushNotificationsEnabled(notificationsAllowed));
       }
     } else {
-      try {
-        const token = await get_token();
-        await Api.post(getApiUrl("/pushToken/unregister"), {
-          token,
-        });
-      } catch (e) {
-        console.error('encountered error unregistering pushToken', e);
-      }
+      unregisterPushTokenIfEnabled();
       localStorage.setItem("pushNotificationsEnabled", JSON.stringify(enabled));
       dispatch(setPushNotificationsEnabled(enabled));
     }

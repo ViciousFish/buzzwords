@@ -4,6 +4,7 @@ import { Api } from "../../app/Api";
 
 import { getApiUrl } from "../../app/apiPrefix";
 import { AppThunk } from "../../app/store";
+import { unregisterPushTokenIfEnabled } from "../settings/settingsActions";
 import { nicknameSet, opponentReceived, User, userReceived } from "./userSlice";
 
 interface ApiUser extends User {
@@ -73,6 +74,7 @@ export const deleteAuthToken = () => localStorage.removeItem("authToken");
 export const logout = (): AppThunk => async () => {
   try {
     await Api.post(getApiUrl("/logout"));
+    unregisterPushTokenIfEnabled();
     deleteAuthToken();
     window.location.reload();
   } catch (e) {
