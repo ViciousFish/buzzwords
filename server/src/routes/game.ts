@@ -374,8 +374,8 @@ export default (io: Server) => {
           return;
         }
         const tokens = pushTokens.map((pt) => pt.token);
-        const opponent = (await dl.getUserById(notificationRecipient))
-          ?.nickname;
+        const opponent =
+          user === "AI" ? "Computer" : (await dl.getUserById(user))?.nickname;
         const word = newGame.moves[newGame.moves.length - 1].letters
           .join("")
           .toUpperCase();

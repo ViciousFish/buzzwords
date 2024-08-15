@@ -84,21 +84,23 @@ export const receiveGameUpdatedSocket =
 
     if (userIndex === game.turn && !game.gameOver) {
       if (!state.settings.turnNotificationsMuted) {
-        DingAudio.play();
+        // DingAudio.play();
       }
+      const opponentNick = game.vsAI
+        ? "Computer"
+        : getAllUsers(state)[game.users[1 - userIndex]].nickname ??
+          "Your opponent";
+      const word = game.moves[game.moves.length - 1].letters.join("");
+      const NOTIFICATION_TITLE = "Buzzwords: it's your turn";
+      const NOTIFICATION_BODY = `${opponentNick} played ${word.toUpperCase()}`;
       if (!state.game.windowHasFocus) {
-        const opponentNick = game.vsAI
-          ? "Computer"
-          : getAllUsers(state)[game.users[1 - userIndex]].nickname ??
-            "Your opponent";
-        const NOTIFICATION_TITLE = "Buzzwords";
-        const NOTIFICATION_BODY = `It's your turn against ${opponentNick}`;
-        const CLICK_MESSAGE = "Notification clicked!";
-
-        // new Notification(NOTIFICATION_TITLE, {
-        //   body: NOTIFICATION_BODY,
-        //   silent: true,
-        // }).onclick = () => console.log(CLICK_MESSAGE);
+        new Notification(NOTIFICATION_TITLE, {
+          body: NOTIFICATION_BODY,
+          image: "/apple-touch-icon.png",
+          silent: true,
+        }).onclick = () => console.log("clicked", game.id);
+      } else if (state.game.currentGame !== game.id) {
+        toast(NOTIFICATION_BODY);
       }
     }
 
@@ -204,16 +206,16 @@ export interface CreateBotGameParams {
 export type CreateGameParams = {
   type: CreateGameType;
   difficulty?: number;
-}
+};
 
 export const createGame =
   (params: CreateGameParams): AppThunk =>
   async (dispatch): Promise<string> => {
     switch (params.type) {
       case "hotseat":
-        return ""
+        return "";
       case "offline-bot":
-        return ""
+        return "";
       case "online-bot":
         try {
           const res = await Api.post<string>(getApiUrl("/game"), {
@@ -241,7 +243,7 @@ export const createGame =
           throw e.response?.data ?? e.message;
         }
       default:
-        throw "createGame default case reached"
+        throw "createGame default case reached";
     }
   };
 export const joinGameById =

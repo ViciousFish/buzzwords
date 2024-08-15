@@ -160,11 +160,11 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
               <div className="m-0">
                 <FontAwesomeIcon icon={faVolumeUp} /> Push Notifications
               </div>
-              {/* <span className="text-xs opacity-75">may pause your music</span> */}
+              <span className="text-xs opacity-75">Only works on iOS if you add to your home screen</span>
             </div>
           </Switch>
         </SettingsPageSection>
-        <SettingsPageSection>
+        {/* <SettingsPageSection>
           <Switch
             onChange={toggleTurnNotificationsMute}
             isSelected={!turnNotificationsMuted}
@@ -176,7 +176,7 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
               <span className="text-xs opacity-75">may pause your music</span>
             </div>
           </Switch>
-        </SettingsPageSection>
+        </SettingsPageSection> */}
         <SettingsPageSection>
           <Select
             selectedKey={colorScheme}

@@ -22,7 +22,8 @@ interface SettingsState {
 // Define the initial state using that type
 const initialState: SettingsState = {
   pushNotificationsEnabled: getPushNotificationsEnabledSetting(),
-  turnNotificationsMuted: getTurnNotificationsSetting(),
+  // turnNotificationsMuted: getTurnNotificationsSetting(),
+  turnNotificationsMuted: true,
   colorScheme: getColorSchemeSetting(),
   preferredDarkTheme: getPreferredDarkThemeSetting(),
   currentSystemScheme: getCurrentSystemScheme(),
