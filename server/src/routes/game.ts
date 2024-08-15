@@ -397,7 +397,6 @@ export default (io: Server) => {
             dl.deletePushToken(tokens[i]);
           }
         });
-        console.log(res.responses.filter((r) => !r.success)[0]?.error?.code);
       });
 
     doBotMoves(gameId);

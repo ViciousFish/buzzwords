@@ -61,7 +61,6 @@ const setZoom = (
       max: {x: boundingBox.max.x, y: boundingBox.max.y},
     });
   } else {
-    console.log("zoom normal", appliedZoom);
     camera.zoom = appliedZoom;
     camera.updateProjectionMatrix();
   }

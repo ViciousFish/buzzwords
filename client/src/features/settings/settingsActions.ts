@@ -1,5 +1,5 @@
 import { AppThunk } from "../../app/store";
-import { configure_firebase_messaging } from "../../app/firebase";
+import { configure_firebase_messaging, get_token } from "../../app/firebase";
 import {
   ColorScheme,
   setColorScheme,
@@ -73,6 +73,14 @@ export const setPushNotificationsEnabledSetting =
         dispatch(setPushNotificationsEnabled(notificationsAllowed));
       }
     } else {
+      try {
+        const token = await get_token();
+        await Api.post(getApiUrl("/pushToken/unregister"), {
+          token,
+        });
+      } catch (e) {
+        console.error('encountered error unregistering pushToken', e);
+      }
       localStorage.setItem("pushNotificationsEnabled", JSON.stringify(enabled));
       dispatch(setPushNotificationsEnabled(enabled));
     }
