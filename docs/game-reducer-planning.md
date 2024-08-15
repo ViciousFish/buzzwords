@@ -6,18 +6,30 @@ Project to refactor shared game manager to redux reducer
 - easy to integrate in client and server = fewer bugs from differences between the two
 - easy to unit test
 
-### game loop
-eh, maybe not doing any of this?
-0. game state starts in `player-turn`
-1. client submits move to server. game state is `pending-move`.
-2. server evaluates move for validity and derives resulting board state. if it rejects move, game state returns to `player-turn`
-3. primary issues `moveExecuted` message with input data and immer patches
-4. all nodes serialize move and derive updated gameplay state from patch set (always)
-- only distinction between online and offline mode is whether "submit move" makes API call or simply calls gameplay reducer directly
+## Plan
+1. Client only hotseat
+  - defines v2 game schema(?)
+  - core non-bot game logic entirely implemented in shared reducer
+  - games serialize to localstorage
+2. Server side and datalayer
+  - new games use v2 schema
+  - v2 games go through shared reducer
+  - can we send whole game deltas over the wire?
+3. Migrate active games?
 
+## Notes
 Progress: exploring implementation in `shared/GameplaySlice.ts`
 
-Notes:
+Updated game schema?:
+- necessary to take advantage of more compact Move.grid storage
+- grid -> gridDeltas?
+  - just the diffs of the grid obj so we can recreate the board state of any turn without duplicating tiles that don't change
+
+Game schema migration?
+- do we care about leaving old codepaths around for old clients?
+  - (I'm thiiiiiinking about ditching electron in favor of tauri anyway...)
+
+## old
 - rtk entityadapters may be helpful for updating games in memory on client?
 - gameplay reducer should use plain immer so we can serialize patches
 - RTKquery has built in .undo on top of patches - use this for adding and removing pending state?
