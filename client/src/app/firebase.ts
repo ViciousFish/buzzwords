@@ -42,5 +42,6 @@ export const subscribeToMessages = (): AppThunk => async (dispatch) => {
   const messaging = getMessaging(app);
   onMessage(messaging, (payload) => {
     // console.log("Foreground message received. ", payload);
+    // this is currently handled by socket messages
   });
 }

@@ -71,7 +71,6 @@ export const emitSelection = (
     console.error("cannot emit: no socket!");
     return;
   }
-  console.log("emitting selection on game", gameId);
   socket.emit("selection", {
     selection,
     gameId,
