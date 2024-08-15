@@ -1,6 +1,7 @@
 import * as R from "ramda";
 import express from "express";
 import { Server } from "socket.io";
+import { getMessaging } from "firebase-admin/messaging";
 
 import { getBotMove } from "buzzwords-shared/bot";
 import { HexCoord } from "buzzwords-shared/types";
@@ -358,9 +359,36 @@ export default (io: Server) => {
 
     res.status(201);
     res.send(newGame);
-    newGame.users.forEach((user) => {
+
+    newGame.users.forEach(async (user) => {
       io.to(user).emit("game updated", newGame);
     });
+
+    newGame.users
+      .filter((u) => u !== user && u !== "AI")
+      .forEach(async (notificationRecipient) => {
+        const pushTokens = await dl.getPushTokensByUserId(
+          notificationRecipient
+        );
+        if (!pushTokens.length) {
+          return;
+        }
+        const tokens = pushTokens.map((pt) => pt.token);
+        const opponent = (await dl.getUserById(notificationRecipient))
+          ?.nickname;
+        const word = newGame.moves[newGame.moves.length - 1].letters.join("");
+        const res = await getMessaging().sendEachForMulticast({
+          notification: {
+            title: "Buzzwords: it's your turn",
+            body: `${opponent} played ${word}`,
+          },
+          data: {
+            gameId: newGame.id,
+          },
+          tokens,
+        });
+        console.log(res);
+      });
 
     doBotMoves(gameId);
   });

@@ -11,7 +11,7 @@ import cors from "cors";
 import passport from "passport";
 import { OAuth2Strategy } from "passport-google-oauth";
 import urljoin from "url-join";
-import { initializeApp } from "firebase-admin/app";
+import { applicationDefault, initializeApp } from "firebase-admin/app";
 
 import getConfig from "./config";
 import dl from "./datalayer";
@@ -341,6 +341,9 @@ const main = async () => {
     .db(config.mongoDbName)
     .collection(COLLECTION);
   io.adapter(createAdapter(mongoCollection));
+  initializeApp({
+    credential: applicationDefault(),
+  });
   server.listen(config.port, () => {
     console.log("Server listening on port", config.port);
   });

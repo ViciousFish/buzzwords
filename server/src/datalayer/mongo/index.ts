@@ -1,7 +1,7 @@
 import mongoose, { ClientSession } from "mongoose";
 import getConfig from "../../config";
 
-import { AuthToken, DataLayer, User } from "../../types";
+import { AuthToken, DataLayer, PushToken, User } from "../../types";
 import { withRetry } from "../../util";
 import Game from "buzzwords-shared/Game";
 import Models from "./models";
@@ -644,6 +644,16 @@ export default class Mongo implements DataLayer {
       console.log(e);
       return false;
     }
+  }
+
+  async getPushTokensByUserId(userId: string): Promise<PushToken[]> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    const res = await Models.PushToken.find({
+      userId,
+    });
+    return res;
   }
 
   async createContext(): Promise<ClientSession> {

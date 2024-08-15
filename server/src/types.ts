@@ -103,6 +103,10 @@ export interface DataLayer {
     userId: string,
     options?: Record<string, unknown>
   ): Promise<boolean>;
+  getPushTokensByUserId(
+    userId: string,
+    options?: Record<string, unknown>
+  ): Promise<PushToken[]>;
   createContext(): Promise<unknown>;
   commitContext(context: unknown): Promise<boolean>;
   getActiveUsersBetweenDates(startDate: Date, endDate: Date): Promise<number>;

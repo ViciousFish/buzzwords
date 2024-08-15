@@ -95,10 +95,10 @@ export const receiveGameUpdatedSocket =
         const NOTIFICATION_BODY = `It's your turn against ${opponentNick}`;
         const CLICK_MESSAGE = "Notification clicked!";
 
-        new Notification(NOTIFICATION_TITLE, {
-          body: NOTIFICATION_BODY,
-          silent: true,
-        }).onclick = () => console.log(CLICK_MESSAGE);
+        // new Notification(NOTIFICATION_TITLE, {
+        //   body: NOTIFICATION_BODY,
+        //   silent: true,
+        // }).onclick = () => console.log(CLICK_MESSAGE);
       }
     }
 

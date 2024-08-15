@@ -9,6 +9,8 @@ import {
   setTurnNotificationsMute,
   ThemeNames,
 } from "./settingsSlice";
+import { Api } from "../../app/Api";
+import { getApiUrl } from "../../app/apiPrefix";
 
 export const getTurnNotificationsSetting = () =>
   JSON.parse(
@@ -37,9 +39,15 @@ export const setPushNotificationsEnabledSetting =
           "pushNotificationsEnabled",
           JSON.stringify(enabled)
         );
-        console.log("token", token);
-        dispatch(setPushNotificationsEnabled(enabled));
+        console.log({ token });
+        const res = await Api.post(getApiUrl("/pushToken/register"), {
+          token,
+        });
+        if (res.status === 201) {
+          dispatch(setPushNotificationsEnabled(enabled));
+        }
       } catch (e) {
+        // TODO: toast?
         console.error(e);
       }
     } else {
