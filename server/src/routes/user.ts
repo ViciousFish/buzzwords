@@ -16,7 +16,6 @@ export const ensureNickname = async (
   userId: string,
   io: Server
 ): Promise<void> => {
-  console.log("🚀 ~ userId:", userId);
   const user = await dl.getUserById(userId);
   if (!user || !user.nickname) {
     const nickname = uniqueNamesGenerator({
