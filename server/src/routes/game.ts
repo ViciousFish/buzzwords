@@ -1,5 +1,5 @@
 import * as R from "ramda";
-import express from "express";
+import express, { Router } from "express";
 import { Server } from "socket.io";
 
 import { getBotMove } from "buzzwords-shared/bot";
@@ -11,8 +11,9 @@ import getConfig from "../config";
 import GameManager from "../GameManager";
 import { WordsObject, BannedWordsObject } from "../words";
 import { removeMongoId } from "../util";
+import { ensureNickname } from "./user";
 
-export default (io: Server) => {
+export default (io: Server): Router => {
   const router = express.Router();
   router.get("/", async (req, res) => {
     const user = res.locals.userId as string;
@@ -56,9 +57,9 @@ export default (io: Server) => {
   });
 
   router.post("/", async (req, res) => {
-    const user = res.locals.userId as string;
+    const userId = res.locals.userId as string;
     const session = await dl.createContext();
-    const games = await dl.getGamesByUserId(user, {
+    const games = await dl.getGamesByUserId(userId, {
       session,
     });
 
@@ -73,9 +74,10 @@ export default (io: Server) => {
       });
       return;
     }
+
     const options = req.body;
     const gm = new GameManager(null);
-    const game = gm.createGame(user);
+    const game = gm.createGame(userId);
     if (options.vsAI) {
       game.vsAI = true;
       game.users.push("AI");
@@ -111,6 +113,7 @@ export default (io: Server) => {
         return;
       }
       res.send(game.id);
+      ensureNickname(userId, io);
       return;
     } catch (e) {
       console.log(e);
@@ -162,6 +165,8 @@ export default (io: Server) => {
       game.users.forEach((user) => {
         io.to(user).emit("game updated", game);
       });
+      console.log("join user", user);
+      ensureNickname(user, io);
       res.sendStatus(201);
     } else {
       res.sendStatus(404);

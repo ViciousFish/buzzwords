@@ -1,18 +1,26 @@
 import {
   faEllipsisV,
+  faPencil,
   faShareSquare,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Game from "buzzwords-shared/Game";
 import React, { useState } from "react";
+import { DialogTrigger, Button as AriaButton } from "react-aria-components";
+// import Modal from "../../presentational/Modal";
 import { Popover } from "react-tiny-popover";
+
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
 import CopyToClipboard from "../../presentational/CopyToClipboard";
 import { forfeitGame } from "../gamelist/gamelistActions";
+import { NicknameForm } from "../settings/NicknameForm";
 import { getAllUsers } from "../user/userSelectors";
 import { getGameUrl } from "./PlayGame";
+import NicknameModal from "../user/NicknameModal";
+import { Modal2 } from "../../presentational/Modal2";
+import { Dialog } from "../../presentational/Dialog";
 
 interface GameMenuProps {
   id: string;
@@ -68,9 +76,10 @@ GameMenu.displayName = "GameMenu";
 
 interface GameHeaderProps {
   game: Game;
+  userIndex: number | null;
 }
 
-const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
+const GameHeader: React.FC<GameHeaderProps> = ({ game, userIndex }) => {
   const [shareOverlay, setShareOverlay] = useState(false);
   const [menuOverlay, setMenuOverlay] = useState(false);
 
@@ -95,10 +104,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
       >
         {getGameUrl(game.id)}
       </a>
-      <CopyToClipboard
-        label="Copy link"
-        text={getGameUrl(game.id)}
-      />
+      <CopyToClipboard label="Copy link" text={getGameUrl(game.id)} />
       {navigator.share && (
         <Button
           onClick={() =>
@@ -116,18 +122,37 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
     <></>
   );
 
+  const editButton =
+    userIndex !== null ? (
+      <DialogTrigger>
+        <AriaButton
+          className={`text-sm ${ userIndex === 0 ? 'text-p1' : 'text-p2'} p-1 mx-1 opacity-70 hover:opacity-100`}
+          // colorClasses="text-pink-100 opacity-70 hover:opacity-100 border-0"
+        >
+          <FontAwesomeIcon icon={faPencil} />
+        </AriaButton>
+        <Modal2>
+          <Dialog>
+            <NicknameModal />
+          </Dialog>
+        </Modal2>
+      </DialogTrigger>
+    ) : null;
+
   return (
     <div className="h-[50px] flex flex-shrink-0 bg-darkbrown text-textInverse text-lg px-4">
       <div className="flex items-center justify-start flex-auto">
-        <span className="text-p1 font-bold">{p1Nick || "Player 2"}</span>
+        <span className="text-p1 font-bold">{p1Nick || "???"}</span>
+        {p1Nick && userIndex === 0 && editButton}
         <span className="mx-2 text-textInverse"> vs </span>
         <span className="text-p2 font-bold">
-          {p2Nick || "Player 1"}
+          {p2Nick || "???"}
           {game.vsAI && (
             <span className="font-normal text-textInverse opacity-50 no-underline ml-1">
               ({game.difficulty})
             </span>
           )}
+          {p2Nick && userIndex === 1 && editButton}
         </span>
       </div>
       <div className="lg:w-[200px] flex items-center justify-end">
