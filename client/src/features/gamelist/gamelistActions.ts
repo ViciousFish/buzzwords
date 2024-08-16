@@ -89,7 +89,7 @@ export const receiveGameUpdatedSocket =
       if (!state.game.windowHasFocus) {
         const opponentNick = game.vsAI
           ? "Computer"
-          : getAllUsers(state)[game.users[1 - userIndex]].nickname ??
+          : getAllUsers(state)[game.users[1 - userIndex]]?.nickname ??
             "Your opponent";
         const NOTIFICATION_TITLE = "Buzzwords";
         const NOTIFICATION_BODY = `It's your turn against ${opponentNick}`;

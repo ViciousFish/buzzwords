@@ -6,7 +6,6 @@ import { Server } from "socket.io";
 import {
   uniqueNamesGenerator,
   adjectives,
-  colors,
   animals,
 } from "unique-names-generator";
 
@@ -17,10 +16,11 @@ export const ensureNickname = async (
   userId: string,
   io: Server
 ): Promise<void> => {
+  console.log("🚀 ~ userId:", userId);
   const user = await dl.getUserById(userId);
   if (!user || !user.nickname) {
     const nickname = uniqueNamesGenerator({
-      dictionaries: [adjectives, colors, animals],
+      dictionaries: [adjectives, animals],
       separator: " ",
       style: "capital",
       length: 2,
@@ -28,7 +28,7 @@ export const ensureNickname = async (
 
     await dl.setNickName(userId, nickname);
     io.emit("nickname updated", {
-      id: user,
+      id: userId,
       nickname,
     });
   }

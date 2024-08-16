@@ -75,7 +75,6 @@ export default (io: Server): Router => {
       return;
     }
 
-    ensureNickname(userId, io);
     const options = req.body;
     const gm = new GameManager(null);
     const game = gm.createGame(userId);
@@ -114,6 +113,7 @@ export default (io: Server): Router => {
         return;
       }
       res.send(game.id);
+      ensureNickname(userId, io);
       return;
     } catch (e) {
       console.log(e);
@@ -160,12 +160,13 @@ export default (io: Server): Router => {
     const user = res.locals.userId as string;
     const gameId = req.params.id;
     const success = await dl.joinGame(user, gameId);
-    ensureNickname(user, io);
     const game = await dl.getGameById(gameId);
     if (game && success) {
       game.users.forEach((user) => {
         io.to(user).emit("game updated", game);
       });
+      console.log("join user", user);
+      ensureNickname(user, io);
       res.sendStatus(201);
     } else {
       res.sendStatus(404);
