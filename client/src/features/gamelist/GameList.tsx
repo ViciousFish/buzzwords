@@ -38,50 +38,27 @@ const GameList: React.FC = () => {
   return (
     <ScreenHeightWraper insetTop={50} className="flex flex-col bg-darkbg">
       <header className="flex flex-shrink-0 px-2 py-2 space-x-1">
-        <a
-          className="block p-2 rounded-md hover:bg-primary hover:bg-opacity-50 text-darkbrown"
-          href="https://github.com/ViciousFish/buzzwords"
-          target="_blank"
-          rel="noreferrer"
-          aria-label="buzzwords github"
-          data-tip="Github repo"
-        >
-          <FontAwesomeIcon icon={faGithub} />
-        </a>
-        <a
+        {/* */}
+        {/* <a
           className="block p-2 rounded-md hover:bg-primary hover:bg-opacity-50 text-darkbrown"
           href="https://twitter.com/BuzzwordsGG"
           target="_blank"
           rel="noreferrer"
         >
           <FontAwesomeIcon icon={faTwitter} /> @BuzzwordsGG
-        </a>
+        </a> */}
         <div className="flex-auto" />
-        <NavLink
-          className={({ isActive }) =>
-            classNames(
-              isActive ? "bg-primary hover:bg-opacity-100" : "underline",
-              "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50 text-darkbrown"
-            )
-          }
-          to="/"
-          aria-label="home"
-          data-tip="Home"
-        >
-          <FontAwesomeIcon icon={faHome} />
-        </NavLink>
       </header>
       <nav className="flex flex-col flex-auto overflow-y-auto">
         <div className="flex-auto">
-          <div className="z-10 px-2 mt-0 flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-darkbrown">Games</h2>
+          <div className="z-10 px-2 mt-0 flex items-center justify-between gap-2">
+            <h2 className="text-2xl font-bold text-darkbrown flex-auto">Games</h2>
             <NavLink
               to="/play/"
               className={({ isActive }) =>
                 classNames(
-                  "text-text text-sm p-2 rounded-full flex items-center",
-                  "hover:bg-primary",
-                  isActive ? "bg-primary" : "underline"
+                  isActive ? "bg-primary hover:bg-opacity-100" : "underline",
+                  "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50 text-darkbrown"
                 )
               }
             >
@@ -90,6 +67,19 @@ const GameList: React.FC = () => {
                 className="opacity-75 mr-2"
               />
               <span>New Game</span>
+            </NavLink>
+            <NavLink
+              className={({ isActive }) =>
+                classNames(
+                  isActive ? "bg-primary hover:bg-opacity-100" : "underline",
+                  "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50 text-darkbrown"
+                )
+              }
+              to="/"
+              aria-label="home"
+              data-tip="Home"
+            >
+              <FontAwesomeIcon icon={faHome} />
             </NavLink>
           </div>
           {/* TODO: use useTransition to actually remove them from the dom on disappear? */}

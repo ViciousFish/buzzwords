@@ -8,7 +8,7 @@ import { ActionButton } from "./ActionButton";
 
 interface CopyToClipboardProps {
   text: string;
-  label?: string;
+  label?: React.ReactNode;
 }
 const CopyToClipboard: React.FC<CopyToClipboardProps> = ({ text, label }) => {
   const [copied, setCopied] = useState(false);

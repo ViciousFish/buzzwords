@@ -32,9 +32,9 @@ const initialState: GameListState = {
   gamesLoading: {},
   gamesLoaded: false,
   isRefreshing: false,
-  isOpen: window.innerWidth >= 1024,
+  isOpen: false,
   showCompletedGames: false,
-  showTutorialCard: window.innerWidth >= 1024,
+  showTutorialCard: false,
 };
 
 interface UpdateGamePayload {

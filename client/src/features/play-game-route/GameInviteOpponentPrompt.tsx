@@ -1,15 +1,23 @@
-import { faShareSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faClipboard,
+  faShareSquare,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import React from "react";
 import useDimensions from "react-cool-dimensions";
 import QRCode from "react-qr-code";
 import { useNavigate } from "react-router-dom";
+import { Modal as RACModal, ModalOverlay } from "react-aria-components";
+import { twMerge } from "tailwind-merge";
+
 import { useAppDispatch } from "../../app/hooks";
 import { ActionButton } from "../../presentational/ActionButton";
 
 import Button from "../../presentational/Button";
 import CopyToClipboard from "../../presentational/CopyToClipboard";
+import { Modal2, overlayStyles } from "../../presentational/Modal2";
 import { WIZARD_BREAKPOINTS } from "../create-game-route/CreateGame";
 import { deleteGameById } from "../gamelist/gamelistActions";
 
@@ -34,29 +42,27 @@ export default function GameInviteOpponentPrompt({
   const lg = currentBreakpoint === "lg";
   return (
     <div
+      id="game-invite-opponent-prompt"
       ref={observe}
-      style={{
-        justifyContent: lg ? "safe center" : "",
-      }}
-      className={classNames(
-        "w-full flex flex-col items-center h-full overflow-auto text-text"
-      )}
+      className={twMerge(overlayStyles.base, "overflow-hidden absolute z-20")}
     >
       <div
         className={classNames(
-          "max-w-[1000px] w-full flex flex-shrink-0 gap-4 p-4",
-          lg ? "flex-row items-center" : "flex-col items-center"
+          "flex-shrink-0 my-auto mx-0 h-full w-full flex items-center p-4 gap-4 overflow-auto",
+          lg ? "justify-center" : "flex-col"
         )}
       >
         <div
           className={classNames(
-            "flex flex-col justify-center p-4 items-center",
-            "rounded-xl bg-lighterbg shadow-lg w-full max-w-[500px]"
+            "flex-shrink-0 flex flex-col justify-center p-4 items-center",
+            "rounded-xl bg-lighterbg shadow-lg w-full max-w-[450px]"
             // lg && "mr-0"
           )}
         >
           <span className="text-center">
-            <h2 className="text-2xl font-bold flex-wrap leading-6">Invite an opponent</h2>
+            <h2 className="text-2xl font-bold flex-wrap leading-6">
+              Invite an opponent
+            </h2>
             <span className="text-sm text-text opacity-70 relative mt-[-5px]">
               to start the game.
             </span>
@@ -81,7 +87,10 @@ export default function GameInviteOpponentPrompt({
               {gameUrl}
             </a>
             <div className="flex gap-1 mt-1">
-              <CopyToClipboard label="Copy" text={gameUrl} />
+              <CopyToClipboard
+                label={<FontAwesomeIcon icon={faClipboard} />}
+                text={gameUrl}
+              />
               {navigator.share && (
                 <ActionButton
                   onPress={() => {
@@ -96,11 +105,11 @@ export default function GameInviteOpponentPrompt({
             </div>
           </div>
         </div>
-        <div className="flex flex-col">
+        <div className="flex-shrink-0 flex flex-col">
           <div
             className={classNames(
               "flex flex-col justify-center p-4 items-center",
-              "rounded-xl bg-lighterbg shadow-lg w-full max-w-[500px]"
+              "rounded-xl bg-lighterbg shadow-lg w-full max-w-[450px]"
               // lg && "ml-0"
             )}
           >
@@ -120,7 +129,7 @@ export default function GameInviteOpponentPrompt({
               className="border-darkbrown border-2 rounded-lg"
             ></iframe>
           </div>
-          <div className="w-full p-4 mt-4 rounded-xl bg-lighterbg shadow-lg max-w-[500px] text-center">
+          <div className="w-full p-4 mt-4 rounded-xl bg-lighterbg shadow-lg max-w-[450px] text-center">
             {id && (
               <>
                 You can also
@@ -141,5 +150,7 @@ export default function GameInviteOpponentPrompt({
         </div>
       </div>
     </div>
+    // </div>
+    // </div>
   );
 }
