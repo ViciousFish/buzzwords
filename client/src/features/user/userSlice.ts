@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import * as R from "ramda";
+import { toast } from "react-toastify";
 
 export interface User {
   id: string;
@@ -21,7 +22,7 @@ const initialState: UserState = {
   opponents: {},
 };
 
-export const gamelistSlice = createSlice({
+export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
@@ -38,12 +39,15 @@ export const gamelistSlice = createSlice({
     opponentReceived: (state, action: PayloadAction<User>) => {
       state.opponents[action.payload.id] = action.payload;
     },
-    maybeOpponentNicknameUpdated: (
+    nicknameUpdated: (
       state,
       action: PayloadAction<{ id: string; nickname: string }>
     ) => {
       if (state.opponents[action.payload.id]) {
         state.opponents[action.payload.id].nickname = action.payload.nickname;
+      }
+      if (state.user?.id === action.payload.id) {
+        state.user.nickname = action.payload.nickname;
       }
     },
   },
@@ -54,10 +58,10 @@ export const {
   userReceived,
   nicknameSet,
   opponentReceived,
-  maybeOpponentNicknameUpdated,
-} = gamelistSlice.actions;
+  nicknameUpdated,
+} = userSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (state: RootState) => state.counter.value;
 
-export default gamelistSlice.reducer;
+export default userSlice.reducer;

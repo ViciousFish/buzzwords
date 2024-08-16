@@ -5,7 +5,7 @@ import { receiveSelectionSocket } from "../features/game/gameActions";
 import Game from "buzzwords-shared/Game";
 import { QRCoord } from "../features/hexGrid/hexGrid";
 import { AppDispatch } from "./store";
-import { maybeOpponentNicknameUpdated } from "../features/user/userSlice";
+import { nicknameUpdated } from "../features/user/userSlice";
 import {
   receiveGameUpdatedSocket,
   refreshActiveGames,
@@ -60,8 +60,18 @@ export const subscribeSocket = (dispatch: AppDispatch) => {
     dispatch(receiveSelectionSocket(selection, gameId));
   });
   socket.on("nickname updated", (data: { id: string; nickname: string }) => {
-    dispatch(maybeOpponentNicknameUpdated(data));
+    dispatch(nicknameUpdated(data));
   });
+
+  const cleanup = () => {
+    if (!socket) {
+      return;
+    }
+    socket.removeAllListeners('game updated');
+    socket.removeAllListeners('selection');
+    socket.removeAllListeners('nickname updated');
+  }
+  return cleanup;
 };
 
 export const emitSelection = (

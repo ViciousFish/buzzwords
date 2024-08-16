@@ -11,7 +11,7 @@ export const logtail = new Logtail("bTQ9NZVDhbZj4XmQsXbKDRmw");
 
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { initAction } from "./appActions";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import TutorialModal from "../features/game/TutorialModal";
 import { handleWindowFocusThunk } from "../features/game/gameActions";
 import ReactTooltip from "react-tooltip";
@@ -28,6 +28,7 @@ import {
   setCurrentSystemScheme,
 } from "../features/settings/settingsSlice";
 import MobileRoutingComponent from "./MobileRoutingComponent";
+import { usePrevious } from "../utils/usePrevious";
 
 // not necessary, as long as there's always a 3d canvas on screen!
 // import.meta.env.PROD &&
@@ -63,6 +64,7 @@ const SIZZY = Boolean(window.navigator.userAgent.match(/Sizzy/));
 function App() {
   const theme = useAppSelector(getTheme);
   const colorScheme = useAppSelector((state) => state.settings.colorScheme);
+const user = useAppSelector(state => state.user.user);
 
   const dispatch = useAppDispatch();
   const showingTutorialModal = useAppSelector(
@@ -77,8 +79,15 @@ function App() {
     frameLoop();
   }, []);
 
+  const prevUser = usePrevious(user)
   useEffect(() => {
-    dispatch(initAction());
+    if (user?.nickname && prevUser && !prevUser.nickname) {
+      toast(`Your nickname has been set to ${user?.nickname}. You can change it at any time`)
+    }
+  })
+
+  useEffect(() => {
+    const cleanup = dispatch(initAction());
 
     const handleFocus = () => dispatch(handleWindowFocusThunk(true));
     const handleBlur = () => dispatch(handleWindowFocusThunk(false));
@@ -87,6 +96,7 @@ function App() {
     return () => {
       window.removeEventListener("focus", handleFocus);
       window.removeEventListener("blur", handleBlur);
+      cleanup.then(cu => cu());
     };
   }, [dispatch]);
 

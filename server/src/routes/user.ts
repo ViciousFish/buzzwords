@@ -3,8 +3,35 @@ import { Router } from "express";
 import { nanoid } from "nanoid";
 import { Server } from "socket.io";
 
+import {
+  uniqueNamesGenerator,
+  adjectives,
+  animals,
+} from "unique-names-generator";
+
 import dl from "../datalayer";
 import BannedWords from "../banned_words.json";
+
+export const ensureNickname = async (
+  userId: string,
+  io: Server
+): Promise<void> => {
+  const user = await dl.getUserById(userId);
+  if (!user || !user.nickname) {
+    const nickname = uniqueNamesGenerator({
+      dictionaries: [adjectives, animals],
+      separator: " ",
+      style: "capital",
+      length: 2,
+    });
+
+    await dl.setNickName(userId, nickname);
+    io.emit("nickname updated", {
+      id: userId,
+      nickname,
+    });
+  }
+};
 
 export default (io: Server): Router => {
   const userRouter = Router();

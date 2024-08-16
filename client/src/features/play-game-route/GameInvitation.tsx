@@ -1,16 +1,17 @@
 import React, { useCallback, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Popover } from "react-tiny-popover";
 import urljoin from "url-join";
+import { Button as AriaButton } from "react-aria-components";
+import { twMerge } from "tailwind-merge";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 import { useAppDispatch } from "../../app/hooks";
-import Button from "../../presentational/Button";
 import { joinGameById } from "../gamelist/gamelistActions";
-import NativeAppAd from "../../presentational/NativeAppAd";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfoCircle, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { IS_MOBILE_BROWSER } from "../settings/SettingsPage";
 import { User } from "../user/userSlice";
+import { FancyButton } from "../../presentational/FancyButton";
+import { overlayStyles } from "../../presentational/Modal2";
 
 interface GameInvitationProps {
   id: string;
@@ -51,7 +52,7 @@ export default function GameInvitation({
   }, [location]);
 
   return (
-    <div className="flex flex-auto flex-col overflow-auto lg:h-[calc(100vh-calc(50px+var(--sat)))] justify-center items-center py-8 px-4">
+    <div className={twMerge(overlayStyles.base, "flex flex-auto flex-col overflow-auto justify-center items-center absolute")}>
       <div className="max-w-full flex-shrink-0 bg-darkbg shadow-lg flex flex-col justify-center items-center text-center p-8 rounded-xl">
         <h2 className="text-2xl text-text flex-wrap mb-4">
           <span className="font-bold italic">
@@ -61,15 +62,15 @@ export default function GameInvitation({
           </span>{" "}
           has invited you to play Buzzwords
         </h2>
-        <div className="flex items-start">
-          <Button onClick={joinGame}>Join game{!window.ipc && " here"}</Button>
+        <div className="flex flex-col gap-2">
+          <FancyButton className="font-bold text-xl" onPress={joinGame}>Join game</FancyButton>
           {/* IS_MOBILE_BROWSER is temporary */}
           {!window.ipc && !IS_MOBILE_BROWSER && (
-            <div className="text-white bg-lighterbg rounded-full flex justify-center">
-              <Button className="text-text" onClick={launchApp}>
-                Join game in app
-              </Button>
-              <Popover
+            <div className="flex text-xs justify-center items-baseline">
+              <AriaButton className="text-text underline" onPress={launchApp}>
+                Launch desktop client
+              </AriaButton>
+              {/* <Popover
                 content={<NativeAppAd />}
                 isOpen={appInfoOverlay}
                 onClickOutside={() => setAppInfoOverlay(false)}
@@ -81,7 +82,7 @@ export default function GameInvitation({
                 >
                   <FontAwesomeIcon icon={faInfoCircle} />
                 </Button>
-              </Popover>
+              </Popover> */}
             </div>
           )}
         </div>

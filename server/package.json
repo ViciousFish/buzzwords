@@ -37,6 +37,7 @@
     "ramda": "^0.27.1",
     "socket.io": "^4.4.0",
     "ulid": "^2.3.0",
+    "unique-names-generator": "^4.7.1",
     "url-join": "^4"
   },
   "devDependencies": {

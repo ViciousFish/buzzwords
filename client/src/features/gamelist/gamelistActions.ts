@@ -8,6 +8,7 @@ import {
   refreshReceived,
   setGameLoading,
   setIsRefreshing,
+  setShowTutorialCard,
   shiftGameStateModalQueueForGame,
   updateGame,
 } from "./gamelistSlice";
@@ -89,7 +90,7 @@ export const receiveGameUpdatedSocket =
       if (!state.game.windowHasFocus) {
         const opponentNick = game.vsAI
           ? "Computer"
-          : getAllUsers(state)[game.users[1 - userIndex]].nickname ??
+          : getAllUsers(state)[game.users[1 - userIndex]]?.nickname ??
             "Your opponent";
         const NOTIFICATION_TITLE = "Buzzwords";
         const NOTIFICATION_BODY = `It's your turn against ${opponentNick}`;
@@ -204,16 +205,16 @@ export interface CreateBotGameParams {
 export type CreateGameParams = {
   type: CreateGameType;
   difficulty?: number;
-}
+};
 
 export const createGame =
   (params: CreateGameParams): AppThunk =>
   async (dispatch): Promise<string> => {
     switch (params.type) {
       case "hotseat":
-        return ""
+        return "";
       case "offline-bot":
-        return ""
+        return "";
       case "online-bot":
         try {
           const res = await Api.post<string>(getApiUrl("/game"), {
@@ -241,7 +242,7 @@ export const createGame =
           throw e.response?.data ?? e.message;
         }
       default:
-        throw "createGame default case reached"
+        throw "createGame default case reached";
     }
   };
 export const joinGameById =
@@ -325,3 +326,10 @@ export const forfeitGame =
   async (dispatch) => {
     const { data } = await Api.post<Game>(getApiUrl("/game", id, "forfeit"));
   };
+
+export const getHasDismissedTutorialCard = (): boolean =>
+  JSON.parse(localStorage.getItem("dismissedTutorialCard") ?? "false");
+export const dismissTutorialCard = (): AppThunk => (dispatch) => {
+  localStorage.setItem("dismissedTutorialCard", "true");
+  dispatch(setShowTutorialCard(false));
+};
