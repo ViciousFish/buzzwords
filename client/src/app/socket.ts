@@ -62,6 +62,16 @@ export const subscribeSocket = (dispatch: AppDispatch) => {
   socket.on("nickname updated", (data: { id: string; nickname: string }) => {
     dispatch(nicknameUpdated(data));
   });
+
+  const cleanup = () => {
+    if (!socket) {
+      return;
+    }
+    socket.removeAllListeners('game updated');
+    socket.removeAllListeners('selection');
+    socket.removeAllListeners('nickname updated');
+  }
+  return cleanup;
 };
 
 export const emitSelection = (

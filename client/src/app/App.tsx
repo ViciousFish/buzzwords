@@ -87,7 +87,7 @@ const user = useAppSelector(state => state.user.user);
   })
 
   useEffect(() => {
-    dispatch(initAction());
+    const cleanup = dispatch(initAction());
 
     const handleFocus = () => dispatch(handleWindowFocusThunk(true));
     const handleBlur = () => dispatch(handleWindowFocusThunk(false));
@@ -96,6 +96,7 @@ const user = useAppSelector(state => state.user.user);
     return () => {
       window.removeEventListener("focus", handleFocus);
       window.removeEventListener("blur", handleBlur);
+      cleanup.then(cu => cu());
     };
   }, [dispatch]);
 

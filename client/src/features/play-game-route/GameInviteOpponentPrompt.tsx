@@ -9,15 +9,13 @@ import React from "react";
 import useDimensions from "react-cool-dimensions";
 import QRCode from "react-qr-code";
 import { useNavigate } from "react-router-dom";
-import { Modal as RACModal, ModalOverlay } from "react-aria-components";
 import { twMerge } from "tailwind-merge";
 
 import { useAppDispatch } from "../../app/hooks";
 import { ActionButton } from "../../presentational/ActionButton";
 
-import Button from "../../presentational/Button";
 import CopyToClipboard from "../../presentational/CopyToClipboard";
-import { Modal2, overlayStyles } from "../../presentational/Modal2";
+import { overlayStyles } from "../../presentational/Modal2";
 import { WIZARD_BREAKPOINTS } from "../create-game-route/CreateGame";
 import { deleteGameById } from "../gamelist/gamelistActions";
 
@@ -49,7 +47,7 @@ export default function GameInviteOpponentPrompt({
       <div
         className={classNames(
           "flex-shrink-0 my-auto mx-0 h-full w-full flex items-center p-4 gap-4 overflow-auto",
-          lg ? "justify-center" : "flex-col"
+          lg ? "justify-center" : "flex-col pt-6"
         )}
       >
         <div
@@ -64,7 +62,7 @@ export default function GameInviteOpponentPrompt({
               Invite an opponent
             </h2>
             <span className="text-sm text-text opacity-70 relative mt-[-5px]">
-              to start the game.
+              to start this game.
             </span>
           </span>
           <span className="select-none text-text opacity-70 mt-4">
@@ -150,7 +148,5 @@ export default function GameInviteOpponentPrompt({
         </div>
       </div>
     </div>
-    // </div>
-    // </div>
   );
 }
