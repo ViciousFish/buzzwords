@@ -143,7 +143,7 @@ export default function GameInviteOpponentPrompt({
                   <FontAwesomeIcon className="mr-2" icon={faTrash} />
                   Delete
                 </ActionButton>
-                this link
+                this game
               </>
             )}
           </div>
