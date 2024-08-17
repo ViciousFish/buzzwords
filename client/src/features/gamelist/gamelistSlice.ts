@@ -35,7 +35,7 @@ const initialState: GameListState = {
   isRefreshing: false,
   isOpen: false,
   showCompletedGames: false,
-  showTutorialCard: !getHasDismissedTutorialCard(),
+  showTutorialCard: false,
 };
 
 interface UpdateGamePayload {
