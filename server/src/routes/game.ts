@@ -33,7 +33,10 @@ async function sendPush(
   const url = urljoin(config.notificationGameBaseUrl, gameId);
 
   const res = await getMessaging().sendEachForMulticast({
-    notification,
+    notification: {
+      imageUrl: "https://buzzwords.gg/apple-touch-icon.png",
+      ...notification,
+    },
     data: {
       url,
     },

@@ -1,3 +1,11 @@
+#######################
+# WARNING
+# Do not ever publicly publish an image
+# with a GOOGLE_CREDS build arg.
+# Doing this is necessary for DO app platform,
+# which has its own secret image registry and no
+# other mechanism for supplying secrets as a file.
+#######################
 FROM node:16 as build
 
 WORKDIR /build
