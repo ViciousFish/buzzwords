@@ -20,13 +20,17 @@ async function sendPush(
   notification: Notification,
   gameId: string
 ) {
+  const config = getConfig();
+  if (!config.enablePushNotifications) {
+    return;
+  }
   const pushTokens = await dl.getPushTokensByUserId(notificationRecipient);
   if (!pushTokens.length) {
     return;
   }
   const tokens = pushTokens.map((pt) => pt.token);
 
-  const url = urljoin(getConfig().notificationGameBaseUrl, gameId);
+  const url = urljoin(config.notificationGameBaseUrl, gameId);
 
   const res = await getMessaging().sendEachForMulticast({
     notification,

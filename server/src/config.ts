@@ -13,6 +13,7 @@ interface Config {
   googleCallbackUrl: string;
   adminApiKey: string;
   notificationGameBaseUrl: string;
+  enablePushNotifications?: boolean;
 }
 
 export const getConfig = (): Config => {
@@ -34,6 +35,7 @@ export const getConfig = (): Config => {
     adminApiKey: process.env.ADMIN_API_KEY || "CHANGE_ME_IN_PRODUCTION",
     notificationGameBaseUrl:
       process.env.NOTIFICATION_GAME_BASE_URL || "http://localhost:5173/play",
+    enablePushNotifications: process.env.ENABLE_PUSH_NOTIFICATIONS === "true",
   };
 };
 

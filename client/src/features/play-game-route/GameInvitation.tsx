@@ -74,14 +74,14 @@ export default function GameInvitation({
           </span>{" "}
           challenges you to{" "}
           <span className="inline-block mt-4">
-          <img
-            className="inline drop-shadow mb-1 ml-1 relative bottom-1"
-            style={{ width: 30, height: 30 }}
-            src="/bee.png"
-          />{" "}
-          <span className="text-darkbrown font-fredoka inline-flex">
-            BUZZWORDS
-          </span>
+            <img
+              className="inline drop-shadow mb-1 ml-1 relative bottom-1"
+              style={{ width: 30, height: 30 }}
+              src="/bee.png"
+            />{" "}
+            <span className="text-darkbrown font-fredoka inline-flex">
+              BUZZWORDS
+            </span>
           </span>
         </h2>
         <div className="flex flex-col gap-2">

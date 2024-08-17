@@ -341,9 +341,11 @@ const main = async () => {
     .db(config.mongoDbName)
     .collection(COLLECTION);
   io.adapter(createAdapter(mongoCollection));
-  initializeApp({
-    credential: applicationDefault(),
-  });
+  if (config.enablePushNotifications) {
+    initializeApp({
+      credential: applicationDefault(),
+    });
+  }
   server.listen(config.port, () => {
     console.log("Server listening on port", config.port);
   });
