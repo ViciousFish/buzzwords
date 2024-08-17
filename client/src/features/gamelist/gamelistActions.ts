@@ -8,6 +8,7 @@ import {
   refreshReceived,
   setGameLoading,
   setIsRefreshing,
+  setShowTutorialCard,
   shiftGameStateModalQueueForGame,
   updateGame,
 } from "./gamelistSlice";
@@ -88,7 +89,7 @@ export const receiveGameUpdatedSocket =
       }
       const opponentNick = game.vsAI
         ? "Computer"
-        : getAllUsers(state)[game.users[1 - userIndex]].nickname ??
+        : getAllUsers(state)[game.users[1 - userIndex]]?.nickname ??
           "Your opponent";
       const word = game.moves[game.moves.length - 1].letters.join("");
       const NOTIFICATION_TITLE = "Buzzwords: it's your turn";
@@ -327,3 +328,10 @@ export const forfeitGame =
   async (dispatch) => {
     const { data } = await Api.post<Game>(getApiUrl("/game", id, "forfeit"));
   };
+
+export const getHasDismissedTutorialCard = (): boolean =>
+  JSON.parse(localStorage.getItem("dismissedTutorialCard") ?? "false");
+export const dismissTutorialCard = (): AppThunk => (dispatch) => {
+  localStorage.setItem("dismissedTutorialCard", "true");
+  dispatch(setShowTutorialCard(false));
+};

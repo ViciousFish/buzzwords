@@ -24,6 +24,7 @@ function Android() {
 
 export const IS_MOBILE_BROWSER = iOS() || Android();
 
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import {
   faPencilAlt,
   faTimes,
@@ -199,8 +200,18 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
           )}
         </SettingsPageSection>
       </div>
-      <div className="text-xs opacity-75">
-        Buzzwords version {__APP_VERSION__}
+      <div className=" flex justify-center gap-2 items-baseline">
+        <span className="text-xs opacity-75">Buzzwords version {__APP_VERSION__}</span>
+        <a
+          className="block p-2 rounded-md text-darkbrown"
+          href="https://github.com/ViciousFish/buzzwords"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="buzzwords github"
+          data-tip="Github repo"
+        >
+          <FontAwesomeIcon icon={faGithub} />
+        </a> 
       </div>
     </div>
   );

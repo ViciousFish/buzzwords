@@ -4,6 +4,7 @@ import classNames from "classnames";
 import React from "react";
 import { useAppDispatch } from "../../app/hooks";
 import { toggleTutorialModal } from "../game/gameSlice";
+import { dismissTutorialCard } from "./gamelistActions";
 import { setShowTutorialCard } from "./gamelistSlice";
 
 const TutorialCard: React.FC<{
@@ -27,18 +28,18 @@ const TutorialCard: React.FC<{
           <FontAwesomeIcon icon={faFilm} />
         </button>
         <button
-          className="hover:text-darkbrown"
+          className="hover:text-darkbrown p-1"
           data-tip="Dismiss instructions"
           aria-label="dismiss instructions"
-          onClick={() => dispatch(setShowTutorialCard(false))}
+          onClick={() => dispatch(dismissTutorialCard())}
         >
           <FontAwesomeIcon icon={faTimes} />
         </button>
       </div>}
       <ul className="list-disc list-outside pl-6 text-sm">
         <li>
-          <h4 className="font-bold">Make words</h4>
-          <p>Use any letter on the board</p>
+          <h4 className="font-bold">Spell words</h4>
+          <p>Tap any letter tile on the board</p>
         </li>
         <li>
           <h4 className="font-bold">Capture tiles</h4>

@@ -3,6 +3,7 @@ import * as R from "ramda";
 
 import Game, { ShallowGame } from "buzzwords-shared/Game";
 import { GameStateModalType } from "../game/GameStateModal";
+import { getHasDismissedTutorialCard } from "./gamelistActions";
 
 export interface ClientGameMeta {
   queuedGameStateModals: GameStateModalType[];
@@ -32,9 +33,9 @@ const initialState: GameListState = {
   gamesLoading: {},
   gamesLoaded: false,
   isRefreshing: false,
-  isOpen: window.innerWidth >= 1024,
+  isOpen: false,
   showCompletedGames: false,
-  showTutorialCard: window.innerWidth >= 1024,
+  showTutorialCard: false,
 };
 
 interface UpdateGamePayload {
