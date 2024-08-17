@@ -1,6 +1,8 @@
 import * as R from "ramda";
 import express, { Router } from "express";
 import { Server } from "socket.io";
+import { getMessaging, Notification } from "firebase-admin/messaging";
+import urljoin from "url-join";
 
 import { getBotMove } from "buzzwords-shared/bot";
 import { HexCoord } from "buzzwords-shared/types";
@@ -12,6 +14,45 @@ import GameManager from "../GameManager";
 import { WordsObject, BannedWordsObject } from "../words";
 import { removeMongoId } from "../util";
 import { ensureNickname } from "./user";
+
+async function sendPush(
+  notificationRecipient: string,
+  notification: Notification,
+  gameId: string
+) {
+  const config = getConfig();
+  if (!config.enablePushNotifications) {
+    return;
+  }
+  const pushTokens = await dl.getPushTokensByUserId(notificationRecipient);
+  if (!pushTokens.length) {
+    return;
+  }
+  const tokens = pushTokens.map((pt) => pt.token);
+
+  const url = urljoin(config.notificationGameBaseUrl, gameId);
+
+  const res = await getMessaging().sendEachForMulticast({
+    notification,
+    data: {
+      url,
+    },
+    webpush: {
+      fcmOptions: {
+        link: url,
+      },
+    },
+    tokens,
+  });
+  res.responses.forEach((r, i) => {
+    if (r.success) {
+      return;
+    }
+    if (r.error?.code === "messaging/registration-token-not-registered") {
+      dl.deletePushToken(tokens[i]);
+    }
+  });
+}
 
 export default (io: Server): Router => {
   const router = express.Router();
@@ -162,11 +203,20 @@ export default (io: Server): Router => {
     const success = await dl.joinGame(user, gameId);
     const game = await dl.getGameById(gameId);
     if (game && success) {
+      await ensureNickname(user, io);
+
       game.users.forEach((user) => {
         io.to(user).emit("game updated", game);
       });
-      console.log("join user", user);
-      ensureNickname(user, io);
+
+      const title = "Buzzwords: it's your turn";
+      const body = `${
+        (await dl.getUserById(user))?.nickname
+      } accepted your challenge`;
+      game.users
+        .filter((u) => u !== user && u !== "AI")
+        .forEach((u) => sendPush(u, { title, body }, gameId));
+
       res.sendStatus(201);
     } else {
       res.sendStatus(404);
@@ -363,9 +413,23 @@ export default (io: Server): Router => {
 
     res.status(201);
     res.send(newGame);
-    newGame.users.forEach((user) => {
+
+    newGame.users.forEach(async (user) => {
       io.to(user).emit("game updated", newGame);
     });
+
+    const opponent =
+      user === "AI" ? "Computer" : (await dl.getUserById(user))?.nickname;
+    const word =
+      newGame.moves[newGame.moves.length - 1]?.letters.join("").toUpperCase() ??
+      "";
+
+    const title = "Buzzwords: it's your turn";
+    const body = `${opponent} played ${word}`;
+
+    newGame.users
+      .filter((u) => u !== user && u !== "AI")
+      .forEach((u) => sendPush(u, { title, body }, newGame.id));
 
     doBotMoves(gameId);
   });

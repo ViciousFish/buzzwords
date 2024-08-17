@@ -66,20 +66,22 @@ export default function GameInvitation({
       )}
     >
       <div className="max-w-full flex-shrink-0 bg-darkbg shadow-lg flex flex-col justify-center items-center text-center p-8 rounded-xl">
-        <h2 className="text-2xl text-text flex-wrap mb-4">
+        <h2 className="text-2xl text-text flex-wrap mb-4 ">
           <span className="font-bold text-p1 p-2 bg-darkbrown">
             {opponent?.nickname ?? (
               <FontAwesomeIcon icon={faSpinner} className="animate-spin mr-2" />
             )}
           </span>{" "}
           challenges you to{" "}
-          <img
-            className="inline drop-shadow mb-1 ml-1 relative bottom-1"
-            style={{ width: 30, height: 30 }}
-            src="/bee.png"
-          />{" "}
-          <span className="text-darkbrown font-fredoka inline-flex">
-            BUZZWORDS
+          <span className="inline-block mt-4">
+            <img
+              className="inline drop-shadow mb-1 ml-1 relative bottom-1"
+              style={{ width: 30, height: 30 }}
+              src="/bee.png"
+            />{" "}
+            <span className="text-darkbrown font-fredoka inline-flex">
+              BUZZWORDS
+            </span>
           </span>
         </h2>
         <div className="flex flex-col gap-2">
