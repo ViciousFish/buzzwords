@@ -198,10 +198,11 @@ export default (io: Server): Router => {
     const success = await dl.joinGame(user, gameId);
     const game = await dl.getGameById(gameId);
     if (game && success) {
+      await ensureNickname(user, io);
+
       game.users.forEach((user) => {
         io.to(user).emit("game updated", game);
       });
-      ensureNickname(user, io);
 
       const title = "Buzzwords: it's your turn";
       const body = `${
