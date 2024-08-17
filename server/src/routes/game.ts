@@ -25,7 +25,7 @@ async function sendPush(
   }
   const tokens = pushTokens.map((pt) => pt.token);
 
-  const url = `https://buzzwords.gg/${gameId}`;
+  const url = `https://buzzwords.gg/play/${gameId}`;
 
   const res = await getMessaging().sendEachForMulticast({
     notification,
