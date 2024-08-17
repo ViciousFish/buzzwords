@@ -2,6 +2,7 @@ import * as R from "ramda";
 import express, { Router } from "express";
 import { Server } from "socket.io";
 import { getMessaging, Notification } from "firebase-admin/messaging";
+import urljoin from "url-join";
 
 import { getBotMove } from "buzzwords-shared/bot";
 import { HexCoord } from "buzzwords-shared/types";
@@ -25,7 +26,7 @@ async function sendPush(
   }
   const tokens = pushTokens.map((pt) => pt.token);
 
-  const url = `https://buzzwords.gg/play/${gameId}`;
+  const url = urljoin(getConfig().notificationGameBaseUrl, gameId);
 
   const res = await getMessaging().sendEachForMulticast({
     notification,
