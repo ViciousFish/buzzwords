@@ -5,11 +5,16 @@ import { subscribeToMessages } from "./firebase";
 import { subscribeSocket } from "./socket";
 import { AppThunk } from "./store";
 
-export const initAction = (): AppThunk<Promise<() => void>> => async (dispatch) => {
-  await dispatch(getUser());
-  const cleanup = subscribeSocket(dispatch);
-  dispatch(refresh());
-  dispatch(subscribeToMessages());
-  refreshTokenIfEnabled();
-  return cleanup;
-}
+const ELECTRON = window.versions;
+
+export const initAction =
+  (): AppThunk<Promise<() => void>> => async (dispatch) => {
+    await dispatch(getUser());
+    const cleanup = subscribeSocket(dispatch);
+    dispatch(refresh());
+    if (!ELECTRON) {
+      dispatch(subscribeToMessages());
+    }
+    refreshTokenIfEnabled();
+    return cleanup;
+  };

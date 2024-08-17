@@ -78,6 +78,12 @@ export const unregisterPushTokenIfEnabled = async () => {
 export const setPushNotificationsEnabledSetting =
   (enabled: boolean): AppThunk =>
   async (dispatch) => {
+    const ELECTRON = window.versions;
+    if (ELECTRON) {
+      localStorage.setItem("pushNotificationsEnabled", JSON.stringify(enabled));
+      dispatch(setPushNotificationsEnabled(enabled));
+      return;
+    }
     if (enabled) {
       const notificationsAllowed = await retrieveAndStorePushToken();
       if (notificationsAllowed) {

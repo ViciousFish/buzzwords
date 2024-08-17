@@ -10,7 +10,11 @@ import "./index.css";
 import App from "./app/App";
 import { configure_firebase } from "./app/firebase";
 
-configure_firebase();
+const ELECTRON = window.versions;
+
+if (!ELECTRON) {
+  configure_firebase();
+}
 
 const container = document.getElementById('root');
 const root = createRoot(container!); // createRoot(container!) if you use TypeScript
