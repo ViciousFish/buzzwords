@@ -22,7 +22,8 @@ messaging.onBackgroundMessage((payload) => {
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: '/apple-touch-icon.png'
+    icon: '/apple-touch-icon.png',
+    data: { url: payload.data.url },
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
