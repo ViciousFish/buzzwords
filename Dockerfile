@@ -36,7 +36,8 @@ COPY ./server/words.json .
 
 COPY --from=build /build/server/dist ./dist
 
-RUN echo $GOOGLE_CREDS > ./google-credentials.json
-ENV GOOGLE_APPLICATION_CREDENTIALS=./google-credentials.json
+ARG GOOGLE_CREDS
+RUN echo $GOOGLE_CREDS | base64 --decode > ./google-credentials.json
+ENV GOOGLE_APPLICATION_CREDENTIALS=/buzzwords/server/google-credentials.json
 
 CMD ["node", "/buzzwords/server/dist/index.js"]
