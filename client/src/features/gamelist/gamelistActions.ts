@@ -91,17 +91,22 @@ export const receiveGameUpdatedSocket =
         ? "Computer"
         : getAllUsers(state)[game.users[1 - userIndex]]?.nickname ??
           "Your opponent";
-      const word = game.moves[game.moves.length - 1].letters.join("");
-      const NOTIFICATION_TITLE = "Buzzwords: it's your turn";
-      const NOTIFICATION_BODY = `${opponentNick} played ${word.toUpperCase()}`;
+      const word = game.moves[game.moves.length - 1]?.letters.join("");
+      let title = "Buzzwords: it's your turn";
+      let body = "";
+      if (!word) {
+        body = `${opponentNick} accepted your challenge`;
+      } else {
+        body = `${opponentNick} played ${word.toUpperCase()}`;
+      }
       if (!state.game.windowHasFocus) {
-        new Notification(NOTIFICATION_TITLE, {
-          body: NOTIFICATION_BODY,
+        new Notification(title, {
+          body: body,
           image: "/apple-touch-icon.png",
           silent: true,
         }).onclick = () => console.log("clicked", game.id);
       } else if (state.game.currentGame !== game.id) {
-        toast(NOTIFICATION_BODY);
+        toast(body);
       }
     }
 
