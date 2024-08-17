@@ -60,7 +60,7 @@ export const setNickname =
   };
 
 export const fetchOpponent =
-  (id: string): AppThunk =>
+  (id: string): AppThunk<Promise<void>> =>
   async (dispatch) => {
     const opponent = await Api.get<User>(getApiUrl("/user", id));
     dispatch(opponentReceived(opponent.data));

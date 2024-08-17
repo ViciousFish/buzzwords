@@ -83,13 +83,29 @@ export const receiveGameUpdatedSocket =
       (user) => user === state.user.user?.id
     );
 
+    const allKnownPlayersWithNicknames = R.pipe(
+      R.filter((player: User) => Boolean(player.nickname)),
+      R.keys
+    )(getAllUsers(state));
+    const missingPlayers = R.difference(
+      game.users,
+      allKnownPlayersWithNicknames
+    );
+    if (missingPlayers.length) {
+      await Promise.all(
+        missingPlayers.map((missingPlayer) =>
+          dispatch(fetchOpponent(missingPlayer))
+        )
+      );
+    }
+
     if (userIndex === game.turn && !game.gameOver) {
       if (!state.settings.turnNotificationsMuted) {
         // DingAudio.play();
       }
       const opponentNick = game.vsAI
         ? "Computer"
-        : getAllUsers(state)[game.users[1 - userIndex]]?.nickname ??
+        : getAllUsers(getState())[game.users[1 - userIndex]]?.nickname ??
           "Your opponent";
       const word = game.moves[game.moves.length - 1]?.letters.join("");
       let title = "Buzzwords: it's your turn";
@@ -108,20 +124,6 @@ export const receiveGameUpdatedSocket =
       } else if (state.game.currentGame !== game.id) {
         toast(body);
       }
-    }
-
-    const allKnownPlayersWithNicknames = R.pipe(
-      R.filter((player: User) => Boolean(player.nickname)),
-      R.keys
-    )(getAllUsers(state));
-    const missingPlayers = R.difference(
-      game.users,
-      allKnownPlayersWithNicknames
-    );
-    if (missingPlayers.length) {
-      missingPlayers.forEach((missingPlayer) => {
-        dispatch(fetchOpponent(missingPlayer));
-      });
     }
 
     if (game.vsAI && game.turn === 1) {
