@@ -31,6 +31,9 @@ messaging.onBackgroundMessage((payload) => {
 });
 
 addEventListener("notificationclick", (event) => {
+  if (!event.notification.data?.url) {
+    return;
+  }
   const urlToOpen = new URL(event.notification.data.url, self.location.origin)
     .href;
 
