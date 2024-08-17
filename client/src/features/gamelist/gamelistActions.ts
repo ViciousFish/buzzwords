@@ -91,22 +91,23 @@ export const receiveGameUpdatedSocket =
       game.users,
       allKnownPlayersWithNicknames
     );
+    let opponentNamesPromise = Promise.resolve([] as void[]);
     if (missingPlayers.length) {
-      await Promise.all(
+      opponentNamesPromise = Promise.all(
         missingPlayers.map((missingPlayer) =>
           dispatch(fetchOpponent(missingPlayer))
         )
       );
     }
 
-    if (userIndex === game.turn && !game.gameOver) {
+    if (userIndex === game.turn && !game.vsAI && !game.gameOver) {
+      await opponentNamesPromise;
       if (!state.settings.turnNotificationsMuted) {
         // DingAudio.play();
       }
-      const opponentNick = game.vsAI
-        ? "Computer"
-        : getAllUsers(getState())[game.users[1 - userIndex]]?.nickname ??
-          "Your opponent";
+      const opponentNick =
+        getAllUsers(getState())[game.users[1 - userIndex]]?.nickname ??
+        "Your opponent";
       const word = game.moves[game.moves.length - 1]?.letters.join("");
       let title = "Buzzwords: it's your turn";
       let body = "";
