@@ -50,7 +50,9 @@ FaviconNotification.init({
 const MM = window.matchMedia("(prefers-color-scheme: dark)");
 
 const HomeLazy = lazy(() => import("../features/home-route/Home"));
-const CreateLazy = lazy(() => import("../features/create-game-route/CreateGame"))
+const CreateLazy = lazy(
+  () => import("../features/create-game-route/CreateGame")
+);
 const PlayLazy = lazy(() => import("../features/play-game-route/PlayGame"));
 const AuthSuccessLazy = lazy(
   () => import("../features/auth-route/AuthSuccess")
@@ -64,7 +66,7 @@ const SIZZY = Boolean(window.navigator.userAgent.match(/Sizzy/));
 function App() {
   const theme = useAppSelector(getTheme);
   const colorScheme = useAppSelector((state) => state.settings.colorScheme);
-const user = useAppSelector(state => state.user.user);
+  const user = useAppSelector((state) => state.user.user);
 
   const dispatch = useAppDispatch();
   const showingTutorialModal = useAppSelector(
@@ -79,12 +81,15 @@ const user = useAppSelector(state => state.user.user);
     frameLoop();
   }, []);
 
-  const prevUser = usePrevious(user)
+  const prevUser = usePrevious(user);
   useEffect(() => {
     if (user?.nickname && prevUser && !prevUser.nickname) {
-      toast(`Your nickname has been set to ${user?.nickname}. You can change it at any time`)
+      toast(
+        `Your nickname has been set to "${user?.nickname}". You can change it from the settings menu`,
+        { type: "info", autoClose: 8000 }
+      );
     }
-  })
+  });
 
   useEffect(() => {
     const cleanup = dispatch(initAction());
@@ -96,7 +101,7 @@ const user = useAppSelector(state => state.user.user);
     return () => {
       window.removeEventListener("focus", handleFocus);
       window.removeEventListener("blur", handleBlur);
-      cleanup.then(cu => cu());
+      cleanup.then((cu) => cu());
     };
   }, [dispatch]);
 
@@ -189,7 +194,7 @@ const user = useAppSelector(state => state.user.user);
                     <CreateLazy />
                   </React.Suspense>
                 }
-                />
+              />
               <Route
                 path="/play/:id"
                 element={
