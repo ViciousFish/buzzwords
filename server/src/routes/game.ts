@@ -263,7 +263,13 @@ export default (io: Server): Router => {
         return;
       }
       console.log("Bot move", botMove);
-      game = gm.makeMove("AI", botMove);
+      const response = gm.makeMove("AI", botMove);
+      const valid = Boolean(response.game);
+      await dl.saveMove(response.word, valid, { session });
+      if (!response.game) {
+        return;
+      }
+      game = response.game;
       await dl.saveGame(gameId, game, {
         session,
       });
@@ -341,7 +347,19 @@ export default (io: Server): Router => {
 
     let newGame: Game;
     try {
-      newGame = gm.makeMove(user, parsedMove);
+      const { game, word } = gm.makeMove(user, parsedMove);
+      const valid = Boolean(game);
+      await dl.saveMove(word, valid, { session });
+      if (!valid) {
+        res.status(400);
+        res.send("Invalid word");
+        return;
+      }
+      if (!game) {
+        res.sendStatus(500);
+        return;
+      }
+      newGame = game;
     } catch (e: unknown) {
       res.status(400);
       if (e instanceof Error) {
