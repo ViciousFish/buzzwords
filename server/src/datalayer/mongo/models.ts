@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 
-import { User, AuthToken } from "../../types";
+import { User, AuthToken, PushToken } from "../../types";
 
 import Game from "buzzwords-shared/Game";
 
@@ -160,9 +160,31 @@ const migrationSchema = new Schema<{ version: number }>(
 
 const MigrationModel = model<{ version: number }>("Migration", migrationSchema);
 
+const pushTokenSchema = new Schema<PushToken>({
+  token: {
+    type: String,
+    required: true,
+    unique: true,
+    index: true,
+  },
+  userId: {
+    type: String,
+    required: true,
+    index: true,
+  },
+  lastTouchedDate: {
+    type: Date,
+    required: true,
+    default: () => new Date(),
+  },
+});
+
+const PushTokenModel = model<PushToken>("PushToken", pushTokenSchema);
+
 export default {
   Game: GameModel,
   User: UserModel,
   AuthToken: AuthTokenModel,
   Migration: MigrationModel,
+  PushToken: PushTokenModel,
 };

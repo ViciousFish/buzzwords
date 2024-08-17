@@ -1,7 +1,7 @@
 import mongoose, { ClientSession } from "mongoose";
 import getConfig from "../../config";
 
-import { AuthToken, DataLayer, User } from "../../types";
+import { AuthToken, DataLayer, PushToken, User } from "../../types";
 import { withRetry } from "../../util";
 import Game from "buzzwords-shared/Game";
 import Models from "./models";
@@ -626,6 +626,46 @@ export default class Mongo implements DataLayer {
 
     const result = await Models.Game.aggregate(agg);
     return result[0]?.uniquePlayers ?? 0;
+  }
+
+  async storePushToken(token: string, userId: string): Promise<boolean> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    await Models.PushToken.findOneAndUpdate(
+      {
+        token,
+      },
+      {
+        token,
+        userId,
+        lastTouchedDate: new Date(),
+      },
+      {
+        upsert: true,
+      }
+    );
+    return true;
+  }
+
+  async deletePushToken(token: string): Promise<boolean> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    await Models.PushToken.deleteOne({
+      token,
+    });
+    return true;
+  }
+
+  async getPushTokensByUserId(userId: string): Promise<PushToken[]> {
+    if (!this.connected) {
+      throw new Error("Db not connected");
+    }
+    const res = await Models.PushToken.find({
+      userId,
+    });
+    return res;
   }
 
   async createContext(): Promise<ClientSession> {

@@ -14,6 +14,12 @@ export interface AuthToken {
   state: string | null;
 }
 
+export interface PushToken {
+  token: string;
+  userId: string;
+  lastTouchedDate: Date;
+}
+
 export interface DataLayer {
   createUser(id: string, options?: Record<string, unknown>): Promise<User>;
   deleteUser(id: string, options?: Record<string, unknown>): Promise<boolean>;
@@ -92,6 +98,19 @@ export interface DataLayer {
     userId: string,
     options?: Record<string, unknown>
   ): Promise<boolean>;
+  storePushToken(
+    token: string,
+    userId: string,
+    options?: Record<string, unknown>
+  ): Promise<boolean>;
+  deletePushToken(
+    token: string,
+    options?: Record<string, unknown>
+  ): Promise<boolean>;
+  getPushTokensByUserId(
+    userId: string,
+    options?: Record<string, unknown>
+  ): Promise<PushToken[]>;
   createContext(): Promise<unknown>;
   commitContext(context: unknown): Promise<boolean>;
   getActiveUsersBetweenDates(startDate: Date, endDate: Date): Promise<number>;

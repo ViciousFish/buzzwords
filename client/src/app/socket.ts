@@ -56,7 +56,6 @@ export const subscribeSocket = (dispatch: AppDispatch) => {
     dispatch(receiveGameUpdatedSocket(game));
   });
   socket.on("selection", ({ gameId, selection }: SelectionEventProps) => {
-    console.log("selection", selection);
     dispatch(receiveSelectionSocket(selection, gameId));
   });
   socket.on("nickname updated", (data: { id: string; nickname: string }) => {
@@ -82,7 +81,6 @@ export const emitSelection = (
     console.error("cannot emit: no socket!");
     return;
   }
-  console.log("emitting selection on game", gameId);
   socket.emit("selection", {
     selection,
     gameId,
