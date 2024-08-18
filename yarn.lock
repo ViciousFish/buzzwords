@@ -9396,7 +9396,7 @@ __metadata:
     copy-to-clipboard: ^3.3.1
     cross-env: ^7.0.3
     date-fns: ^3.6.0
-    electron: ^31.4.0
+    electron: 31.4.0
     electron-builder: ^23.1.0
     electron-context-menu: ^3.3.0
     electron-notarize: ^1.2.1
@@ -10843,7 +10843,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:^31.4.0":
+"electron@npm:31.4.0":
   version: 31.4.0
   resolution: "electron@npm:31.4.0"
   dependencies:
