@@ -12,6 +12,7 @@ WORKDIR /build
 
 COPY package.json yarn.lock .yarnrc.yml ./
 COPY .yarn/releases/ ./.yarn/releases/
+COPY .yarn/plugins ./.yarn/plugins
 COPY ./server/package.json ./server/
 COPY ./shared/package.json ./shared/
 
