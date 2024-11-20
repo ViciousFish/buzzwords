@@ -6,7 +6,7 @@
 # which has its own secret image registry and no
 # other mechanism for supplying secrets as a file.
 #######################
-FROM node:16 as build
+FROM node:20 as build
 
 WORKDIR /build
 
@@ -25,7 +25,7 @@ WORKDIR /build/server
 
 RUN yarn build
 
-FROM node:16-slim as app
+FROM node:20-slim as app
 
 WORKDIR /buzzwords
 
