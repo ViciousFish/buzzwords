@@ -262,7 +262,7 @@ const GameTile: React.FC<GameTileProps> = ({
       ref={group}
       position={position}
       onClick={
-        enableSelection && onSelect
+        enableSelection && letter && onSelect
           ? (e) => {
               e.stopPropagation();
               onSelect();

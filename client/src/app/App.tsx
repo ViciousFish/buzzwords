@@ -228,23 +228,48 @@ export const logtail = new Logtail("bTQ9NZVDhbZj4XmQsXbKDRmw");
 // }
 
 // export default App;
-import React from "react";
+import React, { useState } from "react";
 import { BoardProps, Client } from "boardgame.io/react";
 import { Buzzwords } from "buzzwords-shared/Buzzwords";
 import { GameBoardTiles } from "../features/game/GameBoardTiles";
 import Canvas from "../features/canvas/Canvas";
+import { QRCoord } from "../features/hexGrid/hexGrid";
+import { HexCoord } from "buzzwords-shared/types";
+import { ActionButton } from "../presentational/ActionButton";
 
-function BGIOGameBoard({ G, ctx }: BoardProps) {
-  console.log("🚀 ~ BGIOGameBoard ~ G:", G);
+function BGIOGameBoard({ G, ctx, moves }: BoardProps) {
+  const [selection, setSelection] = useState<HexCoord[]>([]);
+  const word = selection.map(({ q, r }) => G.grid[`${q},${r}`].value);
   return (
-    <div className="h-screen w-full">
+    <div className="h-screen w-[80%]">
+      <div className="flex justify-center">
+        <h1>{word}</h1>
+        <ActionButton
+          onPress={() => {
+            moves.playWord(selection);
+          }}
+        >
+          playWord
+        </ActionButton>
+      </div>
       <Canvas isGameboard>
         <GameBoardTiles
           revealLetters
           enableSelection
+          onToggleTile={(coord) => {
+            console.log("🚀 ~ BGIOGameBoard ~ coord:", coord);
+            const [q, r] = coord.split(",").map(Number);
+            const index = selection.findIndex(x => x.q === q && x.r === r)
+            if (index > -1) {
+              selection.splice(index, 1);
+              setSelection([...selection])
+              return;
+            }
+            setSelection([...selection, { q, r }]);
+          }}
           grid={G.grid}
-          selection={[]}
-          currentTurn={ctx.turn as 0 | 1}
+          selection={selection}
+          currentTurn={Number(ctx.currentPlayer) as 0 | 1}
         />
       </Canvas>
     </div>
