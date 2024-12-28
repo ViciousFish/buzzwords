@@ -5,8 +5,8 @@ import { toast } from "react-toastify";
 import { animated as a } from "@react-spring/web";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { nudgeGameById } from "./gameActions";
-import { clearReplay, toggleNudgeButton } from "./gameSlice";
+import { nudgeGameById } from "../game/gameActions";
+import { clearReplay, toggleNudgeButton } from "../game/gameSlice";
 import { use100vh } from "react-div-100vh";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGripLines, faPlayCircle } from "@fortawesome/free-solid-svg-icons";
@@ -15,6 +15,8 @@ import classNames from "classnames";
 import MoveListItem from "./MoveListItem";
 import { isFullGame } from "../gamelist/gamelistSlice";
 import useDimensions from "react-cool-dimensions";
+import { MoveDetailCard } from "./MoveDetailCard";
+import { ActionButton } from "../../presentational/ActionButton";
 
 interface MoveListProps {
   id: string;
@@ -27,16 +29,12 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
   const showingNudgeButton = useAppSelector(
     (state) => state.game.showingNudgeButton
   );
-  const replayState = useAppSelector((state) => state.game.replay.move);
-  const replayIndex = useAppSelector(
-    (state) => state.game.replay.moveListIndex
-  );
 
   const game = useAppSelector((state) =>
     id ? state.gamelist.games[id] : null
   );
 
-  const [drawerIsOpen, setDrawerIsOpen] = useState(false);
+  const [selectedMove, setSelectedMove] = useState<number | null>(null);
 
   const onNudgeClick = useCallback(() => {
     if (!id) {
@@ -52,20 +50,14 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
     }
   }, [dispatch, id]);
 
-  const onInitiateReplay = useCallback(() => {
-    setDrawerIsOpen(false);
-  }, []);
-
   const listRef = useRef<HTMLDivElement>(null);
 
-  const { height: drawerHeight, observe } = useDimensions();
-  // CQ: use cool-dimensions to measure game play area space?
   const windowHeight = use100vh() ?? window.innerHeight;
   const closedDrawerTop = windowHeight - (70 + 50);
-  const openDrawerTop = windowHeight - drawerHeight - 50;
+  const openDrawerTop = 20;
 
   const drawerSpring = useSpring({
-    top: drawerIsOpen ? openDrawerTop : closedDrawerTop,
+    top: selectedMove !== null ? openDrawerTop : closedDrawerTop,
     config: {
       clamp: true,
     },
@@ -91,14 +83,14 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
       } else {
         if (y < 50 && vy < 1) {
           drawerSpring.top.start(
-            drawerIsOpen ? openDrawerTop : closedDrawerTop
+            selectedMove !== null ? openDrawerTop : closedDrawerTop
           );
           return;
         }
-        if (my <= 0) {
-          setDrawerIsOpen(true);
+        if (my <= 0 && game && isFullGame(game)) {
+          setSelectedMove(game.moves.length - 1);
         } else {
-          setDrawerIsOpen(false);
+          setSelectedMove(null);
         }
       }
     }
@@ -122,7 +114,8 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
                   move={move}
                   index={index}
                   key={index}
-                  onInitiateReplay={onInitiateReplay}
+                  onPress={() => setSelectedMove(index)}
+                  isSelected={selectedMove === index}
                 />
               );
             })}
@@ -132,7 +125,7 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
     </>
   );
 
-  const topMove = replayState ? replayState : game.moves[game.moves.length - 1];
+  // const topMove = replayState ? replayState : game.moves[game.moves.length - 1];
 
   return (
     <>
@@ -144,12 +137,11 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
       >
         {!mobileLayout && moveListContent}
       </div>
-      {mobileLayout && topMove ? (
+      {mobileLayout ? (
         <a.div
-          ref={observe}
           style={{
             top: drawerSpring.top,
-            maxHeight: windowHeight - (50 + 5),
+            height: windowHeight - 70,
           }}
           className={`left-2 right-2 z-20 rounded-t-xl bg-darkbg absolute shadow-upward 
         text-text p-b-2 flex flex-col items-center`}
@@ -159,19 +151,35 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
             className="touch-none select-none flex-shrink-0 flex flex-col items-center justify-center w-full p-1"
           >
             <FontAwesomeIcon icon={faGripLines} />
-            <div className="flex items-center">
-              {replayState ? "Replaying: " : "Last move: "}
-              <div className="w-[200px]">
-                <MoveListItem
-                  key={topMove.letters.join()}
-                  move={topMove}
-                  index={replayState ? replayIndex : game.moves.length - 1}
-                  onInitiateReplay={onInitiateReplay}
-                />
+            <div className="w-full flex">
+              <div className="flex-auto flex items-baseline flex-nowrap overflow-x-auto">
+                <span className="font-bold mr-1">Moves</span>
+                {R.reverse(game.moves).map((move, i) => {
+                  const index = game.moves.length - i - 1;
+                  return (
+                    <MoveListItem
+                      move={move}
+                      index={index}
+                      key={index}
+                      onPress={() => setSelectedMove(index)}
+                      isSelected={selectedMove === index}
+                    />
+                  );
+                })}
               </div>
+              {selectedMove !== null && (
+                <ActionButton
+                  className="ml-1"
+                  onPress={() => setSelectedMove(null)}
+                >
+                  Dismiss
+                </ActionButton>
+              )}
             </div>
           </div>
-          {moveListContent}
+          {selectedMove !== null && (
+            <MoveDetailCard move={game.moves[selectedMove]} game={game} />
+          )}
         </a.div>
       ) : null}
     </>

@@ -27,7 +27,7 @@ export function GameBoardTiles({
   selection: HexCoord[];
   currentTurn: 0 | 1;
   enableSelection: boolean;
-  onToggleTile: (coord: QRCoord) => void;
+  onToggleTile: ((coord: QRCoord) => void) | null;
 } & Pick<GroupProps, "position">) {
   const tilesThatWillBeCaptured = useMemo(() => {
     const willBeCaptured = {};
@@ -70,9 +70,9 @@ export function GameBoardTiles({
             enableSelection={enableSelection}
             willBeReset={Boolean(tilesThatWillBeReset[coord])}
             willBeCaptured={tilesThatWillBeCaptured[coord]}
-            onSelect={() => {
+            onSelect={onToggleTile ? () => {
               onToggleTile(coord as QRCoord);
-            }}
+            } : undefined}
           />
         );
       })}

@@ -15,19 +15,21 @@ import relativeDate from "tiny-relative-date";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Button from "../../presentational/Button";
-import { initiateReplay } from "./gameActions";
-import { clearReplay } from "./gameSlice";
+import { initiateReplay } from "../game/gameActions";
+import { clearReplay } from "../game/gameSlice";
 
 interface MoveListItemProps {
   move: Move;
   index: number;
-  onInitiateReplay: () => void;
+  onPress: () => void;
+  isSelected: boolean;
 }
 
 const MoveListItem: React.FC<MoveListItemProps> = ({
   move,
   index,
-  onInitiateReplay,
+  onPress,
+  isSelected,
 }) => {
   const dispatch = useAppDispatch();
   const replayState = useAppSelector((state) =>
@@ -44,22 +46,6 @@ const MoveListItem: React.FC<MoveListItemProps> = ({
   if (move.forfeit) {
     word = "resign";
   }
-
-  const openPopover = useCallback(async () => {
-    setIsOpen(true);
-    try {
-      const res = await axios.get(
-        `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`,
-        { withCredentials: false }
-      );
-      setDictionaryData(res.data);
-    } catch (e) {
-      setDictionaryData({
-        type: "error",
-        status: e.response?.status,
-      });
-    }
-  }, [setIsOpen, word]);
 
   const popoverContent = (
     <div
@@ -133,7 +119,7 @@ const MoveListItem: React.FC<MoveListItemProps> = ({
             }
             dispatch(initiateReplay(index));
             setIsOpen(false);
-            onInitiateReplay();
+            onPress();
           }}
         >
           <FontAwesomeIcon
@@ -154,33 +140,27 @@ const MoveListItem: React.FC<MoveListItemProps> = ({
     </div>
   );
   return (
-    <Popover
-      containerClassName="z-30"
-      isOpen={isOpen}
-      positions={["left", "top", "bottom"]}
-      content={popoverContent}
-      onClickOutside={() => setIsOpen(false)}
-    >
-      <li className="flex">
+    // <Popover
+    //   containerClassName="z-30"
+    //   isOpen={isOpen}
+    //   positions={["left", "top", "bottom"]}
+    //   content={popoverContent}
+    //   onClickOutside={() => setIsOpen(false)}
+    // >
+      <li className="flex flex-shrink-0">
         <button
           type="button"
           className={classNames(
-            "flex-auto p-1 font-bold text-text text-center rounded-md m-1 hover:bg-opacity-70 inset-shadow",
-            isOpen && "outline-darkbrown outline",
+            "flex-auto p-1 font-bold text-text text-center rounded-full m-1 hover:bg-opacity-70 inset-shadow",
+            isSelected && "outline-darkbrown outline",
             move.player === 0 ? "bg-p1" : "bg-p2"
           )}
-          onClick={() => {
-            if (!isOpen) {
-              openPopover();
-            } else {
-              setIsOpen(false);
-            }
-          }}
+          onClick={onPress}
         >
           {word.toUpperCase()}
         </button>
       </li>
-    </Popover>
+    // </Popover>
   );
 };
 
