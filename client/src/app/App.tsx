@@ -228,11 +228,29 @@ export const logtail = new Logtail("bTQ9NZVDhbZj4XmQsXbKDRmw");
 // }
 
 // export default App;
-
-import { Client } from "boardgame.io/react";
+import React from "react";
+import { BoardProps, Client } from "boardgame.io/react";
 import { Buzzwords } from "buzzwords-shared/Buzzwords";
-import GameBoard from "../features/game/GameBoard";
+import { GameBoardTiles } from "../features/game/GameBoardTiles";
+import Canvas from "../features/canvas/Canvas";
 
-const App = Client({ game: Buzzwords });
+function BGIOGameBoard({ G, ctx }: BoardProps) {
+  console.log("🚀 ~ BGIOGameBoard ~ G:", G);
+  return (
+    <div className="h-screen w-full">
+      <Canvas isGameboard>
+        <GameBoardTiles
+          revealLetters
+          enableSelection
+          grid={G.grid}
+          selection={[]}
+          currentTurn={ctx.turn as 0 | 1}
+        />
+      </Canvas>
+    </div>
+  );
+}
+
+const App = Client({ game: Buzzwords, board: BGIOGameBoard });
 
 export default App;
