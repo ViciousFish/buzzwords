@@ -1,3 +1,4 @@
 {
-  "executable": "buzzwords"
+  "executable": "buzzwords",
+  "electronVersion": "31.4.0"
 }

@@ -6,12 +6,13 @@
 # which has its own secret image registry and no
 # other mechanism for supplying secrets as a file.
 #######################
-FROM node:16 as build
+FROM node:20 as build
 
 WORKDIR /build
 
 COPY package.json yarn.lock .yarnrc.yml ./
 COPY .yarn/releases/ ./.yarn/releases/
+COPY .yarn/plugins ./.yarn/plugins
 COPY ./server/package.json ./server/
 COPY ./shared/package.json ./shared/
 
@@ -25,12 +26,13 @@ WORKDIR /build/server
 
 RUN yarn build
 
-FROM node:16-slim as app
+FROM node:20-slim as app
 
 WORKDIR /buzzwords
 
 COPY package.json yarn.lock .yarnrc.yml ./
 COPY .yarn/releases/ ./.yarn/releases/
+COPY .yarn/plugins ./.yarn/plugins
 
 WORKDIR /buzzwords/server
 
