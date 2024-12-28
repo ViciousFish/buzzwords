@@ -82,35 +82,6 @@ const GameTile: React.FC<GameTileProps> = ({
 
   const theme = useAppSelector(getTheme);
 
-  // const gameOver = game.gameOver;
-
-  // const isSelectedState = useAppSelector((state) =>
-  //   coord ? state.game.selectedTiles[coord] : null
-  // );
-  // const currentTurn = game.turn;
-  // const currentMove = useAppSelector(getTileSelectionInParsedHexCoords);
-  // const gridState = isFullGame(game) ? game.grid : null;
-  // TODO: move replay stuff up to above GameBoardTile
-  // (also use selector)
-  // const replayMove = useAppSelector((state) => state.game.replay.move);
-  // const replayProgress = useAppSelector(
-  //   (state) => state.game.replay.playbackState
-  // );
-  // const replayTiles = useAppSelector(
-  //   getHightlightedCoordsForCurrentReplayState
-  // );
-
-  // const letter =
-  //   replayMove && coord ? replayMove.grid[coord]?.value : letterProp;
-  // const owner =
-  //   (replayMove && coord && replayMove.grid[coord].owner) ?? ownerProp;
-  // const isCapital =
-  //   (replayMove && coord && replayMove.grid[coord].capital) ?? isCapitalProp;
-  // const selected =
-  //   replayMove && coord ? Boolean(replayTiles[coord]) : isSelectedState;
-  // const turn = replayMove?.player ?? currentTurn;
-  // const grid = replayMove?.grid ?? gridState;
-
   let color = theme.colors.threed.primaryAccent;
   if (willBeReset && owner !== 2 && !selected) {
     color = theme.colors.threed.selected;
@@ -262,7 +233,7 @@ const GameTile: React.FC<GameTileProps> = ({
       ref={group}
       position={position}
       onClick={
-        enableSelection && onSelect
+        enableSelection && letter && onSelect
           ? (e) => {
               e.stopPropagation();
               onSelect();
