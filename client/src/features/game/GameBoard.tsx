@@ -33,6 +33,7 @@ import {
   toggleTileSelected,
 } from "./gameActions";
 import {
+  getHightlightedCoordsForCurrentReplayState,
   getOrderedTileSelectionCoords,
   getSelectedWordByGameId,
   getTileSelectionInParsedHexCoords,
@@ -98,24 +99,28 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   const portal = useRef<HTMLDivElement>(null);
 
   const currentMove = useAppSelector(getTileSelectionInParsedHexCoords);
+  const replayMove = useAppSelector((state) => state.game.replay.move);
+  const replayTiles = useAppSelector(
+    getHightlightedCoordsForCurrentReplayState
+  );
 
   const tilesThatWillBeCaptured = useMemo(() => {
     const willBeCaptured = {};
     currentMove.forEach((coord) => {
       willBeCaptured[`${coord.q},${coord.r}`] = willConnectToTerritory(
         game.grid,
-        currentMove,
+        replayMove?.coords ?? currentMove,
         coord,
         game.turn
       );
     });
     return willBeCaptured;
-  }, [currentMove, game.grid, game.turn]);
+  }, [currentMove, replayMove?.coords, game.grid, game.turn]);
 
   const tilesThatWillBeReset = useMemo(() => {
-    const cells = getCellsToBeReset(game.grid, currentMove, game.turn);
+    const cells = getCellsToBeReset(game.grid, replayMove?.coords ?? currentMove, game.turn);
     return R.groupBy((cell: Cell) => `${cell.q},${cell.r}`, cells);
-  }, [game.grid, game.turn, currentMove]);
+  }, [game.grid, game.turn, currentMove, replayMove?.coords]);
 
   return (
     <>
@@ -236,7 +241,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
               !submitting && !game.gameOver && userIndex === game.turn
             }
             position={[0, -7, 0]}
-            selection={selection}
+            selection={replayTiles ?? selection}
             currentTurn={game.turn}
             onToggleTile={(coord) => dispatch(toggleTileSelected(coord))}
             tilesThatWillBeCaptured={tilesThatWillBeCaptured}

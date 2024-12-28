@@ -48,7 +48,6 @@ export function GameBoardTiles({
             willBeReset={Boolean(tilesThatWillBeReset[coord])}
             willBeCaptured={tilesThatWillBeCaptured[coord]}
             onSelect={() => {
-              console.log('toggle', coord);
               onToggleTile(coord as QRCoord)
             }}
           />
