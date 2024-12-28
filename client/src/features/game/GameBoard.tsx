@@ -1,18 +1,12 @@
 import { Html, useProgress } from "@react-three/drei";
 import * as R from "ramda";
-import Game from "buzzwords-shared/Game";
-import React, { useCallback, useEffect, useState, useRef } from "react";
-
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import Canvas from "../canvas/Canvas";
-import { QRCoord } from "../hexGrid/hexGrid";
-import {
-  backspaceTileSelection,
-  clearTileSelection,
-  submitMove,
-} from "./gameActions";
-import { getSelectedWordByGameId } from "./gameSelectors";
-import GameTile from "./GameTile";
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+} from "react";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -22,6 +16,28 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import useHotkeys from "@reecelucas/react-use-hotkeys";
+
+import Game from "buzzwords-shared/Game";
+import {
+  getCellsToBeReset,
+  willConnectToTerritory,
+} from "buzzwords-shared/gridHelpers";
+import Cell from "buzzwords-shared/cell";
+
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import Canvas from "../canvas/Canvas";
+import {
+  backspaceTileSelection,
+  clearTileSelection,
+  submitMove,
+  toggleTileSelected,
+} from "./gameActions";
+import {
+  getOrderedTileSelectionCoords,
+  getSelectedWordByGameId,
+  getTileSelectionInParsedHexCoords,
+} from "./gameSelectors";
+import GameTile from "./GameTile";
 import { GameBoardTiles } from "./GameBoardTiles";
 
 interface GameBoardProps {
@@ -37,6 +53,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   const selectedWord = useAppSelector((state) =>
     getSelectedWordByGameId(state, id)
   );
+  const selection = useAppSelector(getOrderedTileSelectionCoords);
   const replayLetters = useAppSelector(
     (state) => state.game.replay.move?.letters
   );
@@ -80,6 +97,26 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
 
   const portal = useRef<HTMLDivElement>(null);
 
+  const currentMove = useAppSelector(getTileSelectionInParsedHexCoords);
+
+  const tilesThatWillBeCaptured = useMemo(() => {
+    const willBeCaptured = {};
+    currentMove.forEach((coord) => {
+      willBeCaptured[`${coord.q},${coord.r}`] = willConnectToTerritory(
+        game.grid,
+        currentMove,
+        coord,
+        game.turn
+      );
+    });
+    return willBeCaptured;
+  }, [currentMove, game.grid, game.turn]);
+
+  const tilesThatWillBeReset = useMemo(() => {
+    const cells = getCellsToBeReset(game.grid, currentMove, game.turn);
+    return R.groupBy((cell: Cell) => `${cell.q},${cell.r}`, cells);
+  }, [game.grid, game.turn, currentMove]);
+
   return (
     <>
       <Canvas isGameboard key={`play-${id}`}>
@@ -100,8 +137,13 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
               <GameTile
                 owner={0}
                 position={[0, 0, 0]}
-                isPlayerIdentity
-                currentGame={id}
+                isPlayerIdentity={!game.gameOver}
+                hasCrown={game.winner === 0}
+                currentTurn={game.turn}
+                enableSelection={false}
+                selected={false}
+                willBeCaptured={false}
+                willBeReset={false}
               />
             </group>
             <group position={[10, 0, 0]}>
@@ -109,8 +151,13 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 owner={1}
                 letter=""
                 position={[0, 0, 0]}
-                isPlayerIdentity
-                currentGame={id}
+                isPlayerIdentity={!game.gameOver}
+                hasCrown={game.winner === 1}
+                currentTurn={game.turn}
+                enableSelection={false}
+                selected={false}
+                willBeCaptured={false}
+                willBeReset={false}
               />
             </group>
           </group>
@@ -185,10 +232,15 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
           <GameBoardTiles
             grid={game.grid}
             revealLetters={revealLetters}
-            submitting={submitting}
-            currentGame={id}
-            userIndex={userIndex}
+            enableSelection={
+              !submitting && !game.gameOver && userIndex === game.turn
+            }
             position={[0, -7, 0]}
+            selection={selection}
+            currentTurn={game.turn}
+            onToggleTile={(coord) => dispatch(toggleTileSelected(coord))}
+            tilesThatWillBeCaptured={tilesThatWillBeCaptured}
+            tilesThatWillBeReset={tilesThatWillBeReset}
           />
         </React.Suspense>
       </Canvas>
