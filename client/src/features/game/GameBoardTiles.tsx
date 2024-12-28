@@ -1,8 +1,15 @@
+import React, { useMemo } from "react";
 import { GroupProps } from "@react-three/fiber";
+import * as R from "ramda";
+
 import Cell from "buzzwords-shared/cell";
 import HexGrid from "buzzwords-shared/hexgrid";
 import { HexCoord } from "buzzwords-shared/types";
-import React from "react";
+import {
+  getCellsToBeReset,
+  willConnectToTerritory,
+} from "buzzwords-shared/gridHelpers";
+
 import { QRCoord } from "../hexGrid/hexGrid";
 import GameTile from "./GameTile";
 
@@ -13,22 +20,36 @@ export function GameBoardTiles({
   selection,
   currentTurn,
   enableSelection,
-  tilesThatWillBeReset,
-  tilesThatWillBeCaptured,
   onToggleTile,
 }: {
   grid: HexGrid;
   revealLetters: boolean;
-  selection: string[];
+  selection: HexCoord[];
   currentTurn: 0 | 1;
   enableSelection: boolean;
-  tilesThatWillBeReset: Record<string, Cell[]>;
-  tilesThatWillBeCaptured: Record<string, boolean>;
   onToggleTile: (coord: QRCoord) => void;
 } & Pick<GroupProps, "position">) {
+  const tilesThatWillBeCaptured = useMemo(() => {
+    const willBeCaptured = {};
+    selection.forEach((coord) => {
+      willBeCaptured[`${coord.q},${coord.r}`] = willConnectToTerritory(
+        grid,
+        selection,
+        coord,
+        currentTurn
+      );
+    });
+    return willBeCaptured;
+  }, [grid, selection, currentTurn]);
+
+  const tilesThatWillBeReset = useMemo(() => {
+    const cells = getCellsToBeReset(grid, selection, currentTurn);
+    return R.groupBy((cell: Cell) => `${cell.q},${cell.r}`, cells);
+  }, [grid, selection, currentTurn]);
   return (
     <group position={position}>
       {Object.entries(grid).map(([coord, tile]) => {
+        const [q, r] = coord.split(",").map(Number);
         return (
           <GameTile
             isCapital={revealLetters ? tile.capital : false}
@@ -42,13 +63,15 @@ export function GameBoardTiles({
             ]}
             key={coord}
             owner={tile.owner}
-            selected={selection.includes(coord)}
+            selected={Boolean(
+              selection.find((hexcoord) => hexcoord.q === q && hexcoord.r === r)
+            )}
             currentTurn={currentTurn}
             enableSelection={enableSelection}
             willBeReset={Boolean(tilesThatWillBeReset[coord])}
             willBeCaptured={tilesThatWillBeCaptured[coord]}
             onSelect={() => {
-              onToggleTile(coord as QRCoord)
+              onToggleTile(coord as QRCoord);
             }}
           />
         );

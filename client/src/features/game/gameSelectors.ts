@@ -63,10 +63,7 @@ export const getHightlightedCoordsForCurrentReplayState = createSelector(
     if (!move) {
       return undefined;
     }
-    const tiles: QRCoord[] = R.pipe(
-      R.take(playbackState),
-      R.map(({ q, r }): QRCoord => `${q},${r}`),
-    )(move.coords);
+    const tiles: HexCoord[] = R.take(playbackState, move.coords);
     return tiles;
   }
 );
