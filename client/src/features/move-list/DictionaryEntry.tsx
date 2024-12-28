@@ -66,22 +66,22 @@ export function DictionaryEntry({
       )}
     >
       {isForfeit && (
-        <div className="font-serif italic p-1 rounded-md bg-black/10 text-center">
+        <div className="font-serif italic p-1 rounded-md bg-black/10 text-center mb-2">
           Player {playerIndex + 1} resigned
         </div>
       )}
-      <h1 className="capitalize text-4xl font-bold mr-2 font-serif">
-        {index + 1}. {word}
+      <h1 className="text-center capitalize text-4xl text-darkbrown mr-2 font-fredoka">
+        {word}
       </h1>
       {moveDate && (
         <span
           title={new Date(moveDate).toLocaleString()}
-          className="text-xs opacity-50"
+          className="text-center text-xs opacity-50"
         >
           {isMoreThanADayAgo(moveDate)
             ? relativeDate(moveDate)
             : df.format(moveDate)}{" "}
-          &bull; {word.length} letters
+          &bull; move {index + 1}
         </span>
       )}
       {dictionaryData ? (
