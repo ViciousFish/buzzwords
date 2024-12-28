@@ -24,7 +24,7 @@ export function MoveDetailCard({ move, mobileLayout, index }: MoveDetailCardProp
         "h-full w-full min-h-0 overflow-auto items-stretch",
         mobileLayout
           ? "grid grid-rows-[min(calc(90vw*1.2),75vh),min-content] grid-cols-1"
-          : "grid grid-cols-[minmax(0,1fr),min-content] grid-rows-1"
+          : "grid grid-cols-[minmax(0,calc(90vh/1.2)),min-content] justify-center grid-rows-1"
       )}
     >
       <Canvas>

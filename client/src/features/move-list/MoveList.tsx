@@ -35,6 +35,7 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
   );
 
   const [selectedMove, setSelectedMove] = useState<number | null>(null);
+  const [scroll, setScroll] = useState(false);
 
   const onNudgeClick = useCallback(() => {
     if (!id) {
@@ -60,6 +61,8 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
       clamp: true,
     },
     immediate: lowPowerMode,
+    onRest: () => setScroll(true),
+    onStart: () => setScroll(false)
   });
 
   const bind = useDrag(
@@ -110,7 +113,6 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
               return (
                 <MoveListItem
                   move={move}
-                  index={index}
                   key={index}
                   onPress={() => setSelectedMove(index)}
                   isSelected={selectedMove === index}
@@ -157,10 +159,10 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
                   return (
                     <MoveListItem
                       move={move}
-                      index={index}
                       key={index}
                       onPress={() => setSelectedMove(index)}
                       isSelected={selectedMove === index}
+                      scrollOnSelection={scroll}
                     />
                   );
                 })}
