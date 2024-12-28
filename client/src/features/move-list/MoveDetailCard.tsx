@@ -17,6 +17,7 @@ export function MoveDetailCard({ move, mobileLayout, index }: MoveDetailCardProp
     () => (move.forfeit ? "resign" : move.letters.join("")),
     [move.letters, move.forfeit]
   );
+  const actualMoveDate = useMemo(() => new Date(move.date as unknown as string), [move.date]);
   return (
     <div
       className={classNames(
@@ -40,7 +41,7 @@ export function MoveDetailCard({ move, mobileLayout, index }: MoveDetailCardProp
       <DictionaryEntry
         key={word}
         word={word}
-        moveDate={move.date}
+        moveDate={actualMoveDate}
         isForfeit={move.forfeit}
         playerIndex={move.player}
         mobileLayout={mobileLayout}

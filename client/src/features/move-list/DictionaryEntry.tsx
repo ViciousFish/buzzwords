@@ -8,6 +8,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import relativeDate from "tiny-relative-date";
 import classNames from "classnames";
+import { useDateFormatter } from "@react-aria/i18n";
+
+function isMoreThanADayAgo(input: Date) {
+  const today = new Date();
+  return 86400000 > today.getTime() - input.getTime();
+}
 
 interface DictionaryEntryProps {
   word: string;
@@ -17,6 +23,7 @@ interface DictionaryEntryProps {
   mobileLayout: boolean;
   index: number;
 }
+
 export function DictionaryEntry({
   word,
   moveDate,
@@ -40,6 +47,11 @@ export function DictionaryEntry({
       });
     }
   }, []);
+
+  const df = useDateFormatter({
+    dateStyle: "short",
+    timeStyle: "short",
+  });
 
   useEffect(() => {
     if (!dictionaryData) {
@@ -66,7 +78,10 @@ export function DictionaryEntry({
           title={new Date(moveDate).toLocaleString()}
           className="text-xs opacity-50"
         >
-          {relativeDate(moveDate)} &bull; {word.length} letters
+          {isMoreThanADayAgo(moveDate)
+            ? relativeDate(moveDate)
+            : df.format(moveDate)}{" "}
+          &bull; {word.length} letters
         </span>
       )}
       {dictionaryData ? (
@@ -97,7 +112,9 @@ export function DictionaryEntry({
                       {meaning.partOfSpeech}
                     </span>
                     {meaning.definitions.map(({ definition }, index) => (
-                      <p className="ml-4 -indent-2" key={index}>{definition}</p>
+                      <p className="ml-4 -indent-2" key={index}>
+                        {definition}
+                      </p>
                     ))}
                   </li>
                 );
