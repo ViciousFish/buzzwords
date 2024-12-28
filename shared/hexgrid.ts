@@ -1,4 +1,5 @@
 import * as R from "ramda";
+import type { DefaultPluginAPIs } from "boardgame.io";
 
 import { getRandomCharacter } from "./alphaHelpers";
 import Cell, { makeCell } from "./cell";
@@ -132,7 +133,8 @@ export const getNewCellValues = (
   resetTileTotal: number,
   wordsJson: {
     [key: string]: number;
-  }
+  },
+  random?: DefaultPluginAPIs["random"]
 ): string[] => {
   if (!resetTileTotal) {
     return [];
@@ -172,7 +174,12 @@ export const getNewCellValues = (
     throw "No possible combinations";
   }
 
-  const word = potentialWords[getRandomInt(0, potentialWords.length)];
+  let word;
+  if (random) {
+    word = potentialWords[random.Die(potentialWords.length) - 1];
+  } else {
+    word = potentialWords[getRandomInt(0, potentialWords.length)];
+  }
 
   const neededLetters = wordsToMissingLetters[word];
 
@@ -196,6 +203,9 @@ export const getNewCellValues = (
       .map(([k, v]) => k);
 
     filler.push(getRandomCharacter(omit));
+  }
+  if (random) {
+    return random.Shuffle([...neededLetters, ...filler]);
   }
   return shuffle([...neededLetters, ...filler]);
 };
