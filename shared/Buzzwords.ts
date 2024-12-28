@@ -15,16 +15,17 @@ import { WordsObject, wordsBySortedLetters } from "../server/src/words";
 import { HexCoord } from "./types";
 import { isValidWord } from "./alphaHelpers";
 import { getCellsToBeReset, willBecomeOwned } from "./gridHelpers";
+import Cell from "./cell";
 
-export interface MyGameState {
+export interface BuzzwordsGameState {
   id: string;
   grid: HexGrid;
 }
 
-export const Buzzwords: BoardGame<MyGameState> = {
+export const Buzzwords: BoardGame<BuzzwordsGameState> = {
   name: "buzzwords",
   setup: ({ ctx, ...plugins }, setupData) => {
-    const game: MyGameState = {
+    const game: BuzzwordsGameState = {
       id: nanoid(),
       grid: makeHexGrid(),
     };
@@ -56,14 +57,10 @@ export const Buzzwords: BoardGame<MyGameState> = {
   maxPlayers: 2,
   minPlayers: 2,
   moves: {
-    // TODO: there's gotta be a way to type the args?
-    playWord: ({ G, ctx, playerID, events, random, ...plugins }, ...args) => {
-      if (R.isNil(args) || args.length !== 1 || !Array.isArray(args[0])) {
-        return INVALID_MOVE;
-      }
-
+    // TODO: get this to expose its type externally
+    playWord: ({ G, ctx, playerID, events, random, ...plugins }, move: HexCoord[]) => {
       let word = "";
-      for (const coord of args[0]) {
+      for (const coord of move) {
         // All we know is this is an array. Need to validate each item.
         if (!R.is(Object, coord) || !R.has("q", coord) || !R.has("r", coord)) {
           return INVALID_MOVE;
@@ -89,13 +86,13 @@ export const Buzzwords: BoardGame<MyGameState> = {
       let capitalCaptured = false;
 
       // Make all tiles adjacent to move neutral and active
-      const resetTiles = getCellsToBeReset(G.grid, args[0], turn);
+      const resetTiles = getCellsToBeReset(G.grid, move, turn);
 
       // Parsed word, checked validity of move and word etc.
       // Have to check for what's attached to current territory to see what to expand
       // Have to check from above to see what is adjacent to enemy territory to see what to remove
       // change whose turn it is
-      const toBecomeOwned = willBecomeOwned(G.grid, args[0], turn);
+      const toBecomeOwned = willBecomeOwned(G.grid, move, turn);
 
       const toBeReset = R.difference(resetTiles, toBecomeOwned);
 
@@ -192,7 +189,7 @@ export const Buzzwords: BoardGame<MyGameState> = {
       }
 
       const cells = G.grid;
-      const opponentCells = [];
+      const opponentCells: Cell[] = [];
       let opponentHasCapital = false;
       for (const cell of Object.values(cells)) {
         if (cell.owner == Number(!turn)) {

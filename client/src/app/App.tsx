@@ -230,14 +230,14 @@ export const logtail = new Logtail("bTQ9NZVDhbZj4XmQsXbKDRmw");
 // export default App;
 import React, { useState } from "react";
 import { BoardProps, Client } from "boardgame.io/react";
-import { Buzzwords } from "buzzwords-shared/Buzzwords";
+import { Buzzwords, BuzzwordsGameState } from "buzzwords-shared/Buzzwords";
 import { GameBoardTiles } from "../features/game/GameBoardTiles";
 import Canvas from "../features/canvas/Canvas";
 import { QRCoord } from "../features/hexGrid/hexGrid";
 import { HexCoord } from "buzzwords-shared/types";
 import { ActionButton } from "../presentational/ActionButton";
 
-function BGIOGameBoard({ G, ctx, moves }: BoardProps) {
+function BGIOGameBoard({ G, ctx, moves }: BoardProps<BuzzwordsGameState>) {
   const [selection, setSelection] = useState<HexCoord[]>([]);
   const word = selection.map(({ q, r }) => G.grid[`${q},${r}`].value);
   return (
@@ -257,7 +257,6 @@ function BGIOGameBoard({ G, ctx, moves }: BoardProps) {
           revealLetters
           enableSelection
           onToggleTile={(coord) => {
-            console.log("🚀 ~ BGIOGameBoard ~ coord:", coord);
             const [q, r] = coord.split(",").map(Number);
             const index = selection.findIndex(x => x.q === q && x.r === r)
             if (index > -1) {
