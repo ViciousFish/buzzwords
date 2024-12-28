@@ -1,5 +1,9 @@
 {
-  "theme_color": "#d79e0f",
+  "name": "Buzzwords",
+  "short_name": "Buzzwords",
+  "start_url": "/",
+  "id": "/",
+  "theme_color": "#fae7b2",
   "icons": [
     { "src": "/icon-192.png", "type": "image/png", "sizes": "192x192" },
     { "src": "/icon-512.png", "type": "image/png", "sizes": "512x512" }
