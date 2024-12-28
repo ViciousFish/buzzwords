@@ -1,4 +1,5 @@
 import Game, { Move } from "buzzwords-shared/Game";
+import classNames from "classnames";
 import React, { useMemo } from "react";
 import { useAppSelector } from "../../app/hooks";
 import Canvas from "../canvas/Canvas";
@@ -7,17 +8,27 @@ import { DictionaryEntry } from "./DictionaryEntry";
 
 interface MoveDetailCardProps {
   move: Move;
-  game: Game;
+  mobileLayout: boolean;
+  index: number;
 }
 
-export function MoveDetailCard({ move, game }: MoveDetailCardProps) {
-  const word = useMemo(() => move.letters.join(''), [move.letters]);
+export function MoveDetailCard({ move, mobileLayout, index }: MoveDetailCardProps) {
+  const word = useMemo(
+    () => (move.forfeit ? "resign" : move.letters.join("")),
+    [move.letters, move.forfeit]
+  );
   return (
-    <div className="h-full overflow-hidden grid grid-rows-[min-content,minmax(0,auto)]">
-      <DictionaryEntry key={word} word={word} moveDate={move.date} />
+    <div
+      className={classNames(
+        "h-full w-full min-h-0 overflow-auto items-stretch",
+        mobileLayout
+          ? "grid grid-rows-[min(calc(90vw*1.2),75vh),min-content] grid-cols-1"
+          : "grid grid-cols-[minmax(0,1fr),min-content] grid-rows-1"
+      )}
+    >
       <Canvas>
         <GameBoardTiles
-        position={[0,0,0]}
+          position={[0, 0, 0]}
           enableSelection={false}
           onToggleTile={null}
           grid={move.grid}
@@ -26,6 +37,15 @@ export function MoveDetailCard({ move, game }: MoveDetailCardProps) {
           selection={move.coords}
         />
       </Canvas>
+      <DictionaryEntry
+        key={word}
+        word={word}
+        moveDate={move.date}
+        isForfeit={move.forfeit}
+        playerIndex={move.player}
+        mobileLayout={mobileLayout}
+        index={index}
+      />
     </div>
   );
 }

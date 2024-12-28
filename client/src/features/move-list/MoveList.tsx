@@ -50,10 +50,8 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
     }
   }, [dispatch, id]);
 
-  const listRef = useRef<HTMLDivElement>(null);
-
   const windowHeight = use100vh() ?? window.innerHeight;
-  const closedDrawerTop = windowHeight - (70 + 50);
+  const closedDrawerTop = windowHeight - (mobileLayout ? 70 + 50 : 0);
   const openDrawerTop = 20;
 
   const drawerSpring = useSpring({
@@ -104,7 +102,7 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
     <>
       <h3 className="w-[200px] text-text text-2xl font-bold m-0 pt-2">Moves</h3>
       <div className="flex-auto w-full overflow-y-auto">
-        <div ref={listRef} className="overflow-y-auto max-h-full">
+        <div className="overflow-y-auto max-h-full">
           <ul className="max-w-[200px] mx-auto">
             {/* @ts-ignore */}
             {R.reverse(game.moves).map((move, i) => {
@@ -137,14 +135,14 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
       >
         {!mobileLayout && moveListContent}
       </div>
-      {mobileLayout ? (
+      {game.moves.length ? (
         <a.div
           style={{
             top: drawerSpring.top,
             height: windowHeight - 70,
           }}
           className={`left-2 right-2 z-20 rounded-t-xl bg-darkbg absolute shadow-upward 
-        text-text p-b-2 flex flex-col items-center`}
+        text-text p-b-2 overflow-hidden grid grid-rows-[min-content,minmax(0,1fr)] items-stretch`}
         >
           <div
             {...bind()}
@@ -153,7 +151,7 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
             <FontAwesomeIcon icon={faGripLines} />
             <div className="w-full flex">
               <div className="flex-auto flex items-baseline flex-nowrap overflow-x-auto">
-                <span className="font-bold mr-1">Moves</span>
+                <span className="font-bold mx-2">Moves</span>
                 {R.reverse(game.moves).map((move, i) => {
                   const index = game.moves.length - i - 1;
                   return (
@@ -178,7 +176,11 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
             </div>
           </div>
           {selectedMove !== null && (
-            <MoveDetailCard move={game.moves[selectedMove]} game={game} />
+            <MoveDetailCard
+              mobileLayout={mobileLayout}
+              move={game.moves[selectedMove]}
+              index={selectedMove}
+            />
           )}
         </a.div>
       ) : null}

@@ -7,12 +7,24 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import relativeDate from "tiny-relative-date";
+import classNames from "classnames";
 
 interface DictionaryEntryProps {
   word: string;
   moveDate?: Date;
+  isForfeit?: boolean;
+  playerIndex: number;
+  mobileLayout: boolean;
+  index: number;
 }
-export function DictionaryEntry({ word, moveDate }: DictionaryEntryProps) {
+export function DictionaryEntry({
+  word,
+  moveDate,
+  isForfeit,
+  playerIndex,
+  mobileLayout,
+  index,
+}: DictionaryEntryProps) {
   const [dictionaryData, setDictionaryData] = useState(null as any | null);
   const fetchDefinition = useCallback(async (word: string) => {
     try {
@@ -35,14 +47,26 @@ export function DictionaryEntry({ word, moveDate }: DictionaryEntryProps) {
     }
   }, [fetchDefinition, word, dictionaryData]);
   return (
-    <div className="h-40 p-2 overflow-hidden flex flex-col">
-      <h1 className="capitalize text-4xl font-bold mr-2 font-serif">{word}</h1>
+    <div
+      className={classNames(
+        mobileLayout ? "w-full" : "h-full w-80 pt-8",
+        "p-2 overflow-hidden flex flex-col"
+      )}
+    >
+      {isForfeit && (
+        <div className="font-serif italic p-1 rounded-md bg-black/10 text-center">
+          Player {playerIndex + 1} resigned
+        </div>
+      )}
+      <h1 className="capitalize text-4xl font-bold mr-2 font-serif">
+        {index + 1}. {word}
+      </h1>
       {moveDate && (
         <span
           title={new Date(moveDate).toLocaleString()}
           className="text-xs opacity-50"
         >
-          {relativeDate(moveDate)}
+          {relativeDate(moveDate)} &bull; {word.length} letters
         </span>
       )}
       {dictionaryData ? (
@@ -60,18 +84,21 @@ export function DictionaryEntry({ word, moveDate }: DictionaryEntryProps) {
           )}
           {dictionaryData.type !== "error" && (
             <ul className="text-sm overflow-auto flex-auto">
-              {/* @ts-ignore */}
               {dictionaryData[0].meanings.map((meaning, index) => {
                 return (
-                  <li key={index} className="mb-2">
-                    <p className="font-serif inline-block opacity-75">
-                      <span className="italic mr-2 opacity-75">
-                        {meaning.partOfSpeech}
-                      </span>
-                      {meaning.definitions
-                        .map((def) => def.definition)
-                        .join("/")}
-                    </p>
+                  <li
+                    className={classNames(
+                      mobileLayout ? "mb-2" : "my-3",
+                      "font-serif opacity-75"
+                    )}
+                    key={index}
+                  >
+                    <span className="italic mr-2 opacity-75">
+                      {meaning.partOfSpeech}
+                    </span>
+                    {meaning.definitions.map(({ definition }, index) => (
+                      <p className="ml-4 -indent-2" key={index}>{definition}</p>
+                    ))}
                   </li>
                 );
               })}
