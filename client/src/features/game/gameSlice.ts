@@ -12,7 +12,7 @@ interface GameState {
   replay: {
     move: Move | null;
     moveListIndex: number;
-    playbackState: number;
+    playbackState: number | null;
     poisonToken: string;
   };
   showingTutorialModal: boolean;
@@ -30,7 +30,7 @@ const initialState: GameState = {
   replay: {
     move: null,
     moveListIndex: 0,
-    playbackState: 0,
+    playbackState: null,
     poisonToken: "",
   },
   showingTutorialModal: false,
@@ -64,8 +64,10 @@ export const gameSlice = createSlice({
       state.selectedTiles = {};
     },
     backspaceSelection: (state) => {
-      const sortedCoords = Object.keys(state.selectedTiles).sort((a, b) => state.selectedTiles[b] - state.selectedTiles[a])
-      delete state.selectedTiles[sortedCoords[0]]
+      const sortedCoords = Object.keys(state.selectedTiles).sort(
+        (a, b) => state.selectedTiles[b] - state.selectedTiles[a]
+      );
+      delete state.selectedTiles[sortedCoords[0]];
     },
     setCurrentGame: (state, action: PayloadAction<string | null>) => {
       state.currentGame = action.payload;
@@ -84,11 +86,14 @@ export const gameSlice = createSlice({
       state.replay.playbackState = 0;
     },
     advanceReplayPlaybackState: (state) => {
-      state.replay.playbackState = state.replay.playbackState + 1;
+      state.replay.playbackState =
+        state.replay.playbackState === null
+          ? 0
+          : state.replay.playbackState + 1;
     },
     clearReplay: (state) => {
       state.replay.move = null;
-      state.replay.playbackState = 0;
+      state.replay.playbackState = null;
       state.replay.poisonToken = "";
       state.replay.moveListIndex = 0;
     },
@@ -112,7 +117,7 @@ export const gameSlice = createSlice({
     },
     setFreezeGameBoard: (state, action: PayloadAction<boolean>) => {
       state.freezeGameBoard = action.payload;
-    }
+    },
   },
 });
 

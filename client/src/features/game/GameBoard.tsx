@@ -5,7 +5,6 @@ import React, {
   useEffect,
   useState,
   useRef,
-  useMemo,
 } from "react";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,11 +17,6 @@ import classNames from "classnames";
 import useHotkeys from "@reecelucas/react-use-hotkeys";
 
 import Game from "buzzwords-shared/Game";
-import {
-  getCellsToBeReset,
-  willConnectToTerritory,
-} from "buzzwords-shared/gridHelpers";
-import Cell from "buzzwords-shared/cell";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Canvas from "../canvas/Canvas";
@@ -33,8 +27,6 @@ import {
   toggleTileSelected,
 } from "./gameActions";
 import {
-  getHightlightedCoordsForCurrentReplayState,
-  getOrderedTileSelectionCoords,
   getSelectedWordByGameId,
   getTileSelectionInParsedHexCoords,
 } from "./gameSelectors";
@@ -98,11 +90,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
   const portal = useRef<HTMLDivElement>(null);
 
   const currentMove = useAppSelector(getTileSelectionInParsedHexCoords);
-  // const replayMove = useAppSelector((state) => state.game.replay.move);
-  const replayTiles = useAppSelector(
-    getHightlightedCoordsForCurrentReplayState
-  );
-
+  const lastMove = game.moves[game.moves.length - 1];
 
   return (
     <>
@@ -192,7 +180,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                   className="text-[60px] text-darkbrown font-fredoka overflow-hidden"
                 >
                   <span style={{ position: "relative", top: -15 }}>
-                    {replayLetters
+                    {replayProgress !== null && replayLetters
                       ? R.take(replayProgress, replayLetters)
                           .join("")
                           .toUpperCase()
@@ -217,14 +205,18 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
             </Html>
           </group>
           <GameBoardTiles
-            grid={game.grid}
+            grid={replayProgress !== null ? lastMove.grid : game.grid}
             revealLetters={revealLetters}
             enableSelection={
               !submitting && !game.gameOver && userIndex === game.turn
             }
             position={[0, -7, 0]}
-            selection={replayTiles ?? currentMove}
-            currentTurn={game.turn}
+            selection={
+              replayProgress !== null
+                ? R.take(replayProgress, lastMove.coords)
+                : currentMove
+            }
+            currentTurn={replayProgress !== null ? lastMove.player : game.turn}
             onToggleTile={(coord) => dispatch(toggleTileSelected(coord))}
           />
         </React.Suspense>
