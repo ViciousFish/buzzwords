@@ -6,15 +6,15 @@ import { animated as a } from "@react-spring/web";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { nudgeGameById } from "../game/gameActions";
-import { clearReplay, toggleNudgeButton } from "../game/gameSlice";
+import { toggleNudgeButton } from "../game/gameSlice";
 import { use100vh } from "react-div-100vh";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGripLines, faPlayCircle } from "@fortawesome/free-solid-svg-icons";
+// import { faGripLines } from "@fortawesome/free-solid-svg-icons";
 import { useDrag } from "@use-gesture/react";
 import classNames from "classnames";
 import MoveListItem from "./MoveListItem";
 import { isFullGame } from "../gamelist/gamelistSlice";
-import useDimensions from "react-cool-dimensions";
+// import useDimensions from "react-cool-dimensions";
 import { MoveDetailCard } from "./MoveDetailCard";
 import { ActionButton } from "../../presentational/ActionButton";
 
@@ -62,40 +62,44 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
     },
     immediate: lowPowerMode,
     onRest: () => setScroll(true),
-    onStart: () => setScroll(false)
+    onStart: () => setScroll(false),
   });
 
-  const bind = useDrag(
-    ({
-      down,
-      delta: [_dx, dy],
-      movement: [_mx, my],
-      distance: [_x, y],
-      velocity: [_vx, vy],
-      event,
-    }) => {
-      event.stopPropagation();
-      if (down) {
-        // drawerSpring.top.pause();
-        const dragPos = drawerSpring.top.get() + dy;
-        drawerSpring.top.set(
-          Math.max(Math.min(dragPos, closedDrawerTop), openDrawerTop)
-        );
-      } else {
-        if (y < 50 && vy < 1) {
-          drawerSpring.top.start(
-            selectedMove !== null ? openDrawerTop : closedDrawerTop
-          );
-          return;
-        }
-        if (my <= 0 && game && isFullGame(game)) {
-          setSelectedMove(game.moves.length - 1);
-        } else {
-          setSelectedMove(null);
-        }
-      }
-    }
-  );
+  const bind = useDrag(({event}) => {
+    event.stopPropagation();
+  })
+
+  // const bind = useDrag(
+  //   ({
+  //     down,
+  //     delta: [_dx, dy],
+  //     movement: [_mx, my],
+  //     distance: [_x, y],
+  //     velocity: [_vx, vy],
+  //     event,
+  //   }) => {
+  //     event.stopPropagation();
+  //     if (down) {
+  //       // drawerSpring.top.pause();
+  //       const dragPos = drawerSpring.top.get() + dy;
+  //       drawerSpring.top.set(
+  //         Math.max(Math.min(dragPos, closedDrawerTop), openDrawerTop)
+  //       );
+  //     } else {
+  //       if (y < 50 && vy < 1) {
+  //         drawerSpring.top.start(
+  //           selectedMove !== null ? openDrawerTop : closedDrawerTop
+  //         );
+  //         return;
+  //       }
+  //       if (my <= 0 && game && isFullGame(game)) {
+  //         setSelectedMove(game.moves.length - 1);
+  //       } else {
+  //         setSelectedMove(null);
+  //       }
+  //     }
+  //   }
+  // );
 
   if (!game || !id || !isFullGame(game)) {
     return null;
@@ -146,13 +150,9 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
           className={`left-2 right-2 z-20 rounded-t-xl bg-darkbg absolute shadow-upward 
         text-text p-b-2 overflow-hidden grid grid-rows-[min-content,minmax(0,1fr)] items-stretch`}
         >
-          <div
-            {...bind()}
-            className="touch-none select-none flex-shrink-0 flex flex-col items-center justify-center w-full p-1"
-          >
-            <FontAwesomeIcon icon={faGripLines} />
-            <div className="w-full flex">
-              <div className="flex-auto flex items-baseline flex-nowrap overflow-x-auto">
+          {/* <div className="touch-none select-none flex-shrink-0 flex flex-col items-center justify-center w-full"> */}
+            <div {...bind()} className="touch-none w-full flex items-center">
+              <div className="flex-auto flex items-baseline flex-nowrap overflow-x-auto p-3">
                 <span className="font-bold mx-2">Moves</span>
                 {R.reverse(game.moves).map((move, i) => {
                   const index = game.moves.length - i - 1;
@@ -169,14 +169,18 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
               </div>
               {selectedMove !== null && (
                 <ActionButton
-                  className="ml-1"
-                  onPress={() => setSelectedMove(null)}
+                  className="mx-2"
+                  onPress={(e) => {
+                    setTimeout(() => {
+                      setSelectedMove(null);
+                    }, 10);
+                  }}
                 >
                   Dismiss
                 </ActionButton>
               )}
             </div>
-          </div>
+          {/* </div> */}
           {selectedMove !== null && (
             <MoveDetailCard
               mobileLayout={mobileLayout}
