@@ -113,6 +113,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 owner={0}
                 position={[0, 0, 0]}
                 isPlayerIdentity={!game.gameOver}
+                isCapital
                 hasCrown={game.winner === 0}
                 currentTurn={game.turn}
                 enableSelection={false}
@@ -127,6 +128,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 letter=""
                 position={[0, 0, 0]}
                 isPlayerIdentity={!game.gameOver}
+                isCapital
                 hasCrown={game.winner === 1}
                 currentTurn={game.turn}
                 enableSelection={false}
