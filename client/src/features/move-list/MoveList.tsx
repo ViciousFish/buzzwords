@@ -147,7 +147,7 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
             top: drawerSpring.top,
             height: windowHeight - 70,
           }}
-          className={`left-2 right-2 z-20 rounded-t-xl bg-darkbg absolute shadow-upward 
+          className={`left-2 right-2 z-20 rounded-t-xl bg-darkbg border border-darkbrown absolute shadow-upward 
         text-text p-b-2 overflow-hidden grid grid-rows-[min-content,minmax(0,1fr)] items-stretch`}
         >
           {/* <div className="touch-none select-none flex-shrink-0 flex flex-col items-center justify-center w-full"> */}
