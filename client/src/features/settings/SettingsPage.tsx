@@ -24,6 +24,7 @@ function Android() {
 
 export const IS_MOBILE_BROWSER = iOS() || Android();
 
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import {
   faPencilAlt,
   faTimes,
@@ -46,6 +47,7 @@ import {
   setColorSchemeSetting,
   setLowPowerModeSetting,
   setPreferredDarkThemeSetting,
+  setPushNotificationsEnabledSetting,
   setTurnNotificationsSetting,
 } from "./settingsActions";
 import { ColorScheme, ThemeNames } from "./settingsSlice";
@@ -74,6 +76,9 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
   const turnNotificationsMuted = useAppSelector(
     ({ settings }) => settings.turnNotificationsMuted
   );
+  const pushNotificationsEnabled = useAppSelector(
+    ({ settings }) => settings.pushNotificationsEnabled
+  );
   const colorScheme = useAppSelector(({ settings }) => settings.colorScheme);
   const preferredDarkTheme = useAppSelector(
     (state) => state.settings.preferredDarkTheme
@@ -84,6 +89,14 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
   const toggleTurnNotificationsMute = useCallback(() => {
     dispatch(setTurnNotificationsSetting(!turnNotificationsMuted));
   }, [dispatch, turnNotificationsMuted]);
+
+  const togglePushNotifications = useCallback(
+    (enabled: boolean) => {
+      dispatch(setPushNotificationsEnabledSetting(enabled));
+    },
+    [dispatch]
+  );
+
   const switchColorScheme = useCallback(
     (key: string) => {
       console.log("key", key);
@@ -158,20 +171,30 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
         </SettingsPageSection>
         <SettingsPageSection>
           <Switch
+            onChange={togglePushNotifications}
+            isSelected={pushNotificationsEnabled}
+          >
+            <div className="flex items-start w-full flex-col pl-2">
+              <div className="m-0">
+                <FontAwesomeIcon icon={faVolumeUp} /> Push Notifications
+              </div>
+              <span className="text-xs opacity-75">Only works on iOS if you add to your home screen</span>
+            </div>
+          </Switch>
+        </SettingsPageSection>
+        {/* <SettingsPageSection>
+          <Switch
             onChange={toggleTurnNotificationsMute}
             isSelected={!turnNotificationsMuted}
           >
             <div className="flex items-start w-full flex-col pl-2">
               <div className="m-0">
-                <FontAwesomeIcon icon={faVolumeUp} /> Ring bell when it&apos;s
-                your turn
+                <FontAwesomeIcon icon={faVolumeUp} /> Notification bell sound
               </div>
-              {iOS() && (
-                <span className="text-xs opacity-75">does not work on iOS</span>
-              )}
+              <span className="text-xs opacity-75">may pause your music</span>
             </div>
           </Switch>
-        </SettingsPageSection>
+        </SettingsPageSection> */}
         <SettingsPageSection>
           <Select
             selectedKey={colorScheme}
@@ -194,8 +217,18 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
           )}
         </SettingsPageSection>
       </div>
-      <div className="text-xs opacity-75">
-        Buzzwords version {__APP_VERSION__}
+      <div className=" flex justify-center gap-2 items-baseline">
+        <span className="text-xs opacity-75">Buzzwords version {__APP_VERSION__}</span>
+        <a
+          className="block p-2 rounded-md text-darkbrown"
+          href="https://github.com/ViciousFish/buzzwords"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="buzzwords github"
+          data-tip="Github repo"
+        >
+          <FontAwesomeIcon icon={faGithub} />
+        </a> 
       </div>
     </div>
   );

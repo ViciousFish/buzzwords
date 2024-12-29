@@ -8,6 +8,13 @@ client side pass-the-device
 resolve CQx's
 install gameplay font locally
 
+pure-gameboard
+- [x] gameboard that doesn't rely on redux state
+  - [x] controlled selection
+- [ ] selected previous move displayed in modal
+- [ ] gesture modal sheet
+- [ ] replays on board still for bot games?
+
 better dark mode 
  - stoplights
  - fix gameheader menu

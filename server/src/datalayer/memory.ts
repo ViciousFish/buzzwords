@@ -1,5 +1,5 @@
 import Game from "buzzwords-shared/Game";
-import { AuthToken, DataLayer, User } from "../types";
+import { AuthToken, DataLayer, PushToken, User } from "../types";
 
 export default class Memory implements DataLayer {
   games: {
@@ -10,6 +10,9 @@ export default class Memory implements DataLayer {
   };
   authTokens: {
     [key: string]: AuthToken;
+  } = {};
+  pushTokens: {
+    [key: string]: PushToken;
   } = {};
   constructor() {
     this.games = {};
@@ -108,7 +111,7 @@ export default class Memory implements DataLayer {
     options?: Record<string, unknown>
   ): Promise<string | null> {
     const authToken = this.authTokens[token];
-    return authToken?.deleted ? null : authToken.userId;
+    return !authToken || authToken?.deleted ? null : authToken.userId;
   }
 
   async getUserById(
@@ -212,6 +215,24 @@ export default class Memory implements DataLayer {
 
   async getActiveUsersBetweenDates(): Promise<number> {
     return 0;
+  }
+
+  async storePushToken(token: string, userId: string): Promise<boolean> {
+    this.pushTokens[token] = {
+      token,
+      userId,
+      lastTouchedDate: new Date(),
+    };
+    return true;
+  }
+
+  async deletePushToken(token: string): Promise<boolean> {
+    delete this.pushTokens[token];
+    return true;
+  }
+
+  async getPushTokensByUserId(userId: string): Promise<PushToken[]> {
+    return Object.values(this.pushTokens).filter((pt) => pt.userId == userId);
   }
 
   async createContext(): Promise<null> {

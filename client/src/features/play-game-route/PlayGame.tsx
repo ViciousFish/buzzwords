@@ -10,14 +10,13 @@ import {
   markGameAsSeen,
 } from "../gamelist/gamelistActions";
 import GameBoard from "../game/GameBoard";
-import NicknameModal from "../user/NicknameModal";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import GameStateModal from "../game/GameStateModal";
 import { getOpponent } from "../user/userSelectors";
 import { fetchOpponent } from "../user/userActions";
 import { isFullGame } from "../gamelist/gamelistSlice";
 import GameHeader from "./GameHeader";
-import { MoveList } from "../game/MoveList";
+import { MoveList } from "../move-list/MoveList";
 import GameInvitation from "./GameInvitation";
 import GameInviteOpponentPrompt from "./GameInviteOpponentPrompt";
 import useDimensions from "react-cool-dimensions";
@@ -67,12 +66,12 @@ const PlayGame: React.FC = () => {
 
   useEffect(() => {
     if (id) {
-      console.log('id!', id)
+      console.log("id!", id);
       dispatch(setCurrentGame(id));
       dispatch(markGameAsSeen(id));
     } else {
-      alert("no id!")
-      navigate('/')
+      alert("no id!");
+      navigate("/");
     }
     return () => {
       dispatch(setCurrentGame(null));
@@ -138,54 +137,44 @@ const PlayGame: React.FC = () => {
     return null;
   }
 
-  if (game && currentUser && !isSpectating && !currentUser.nickname) {
-    return <NicknameModal />
-  }
-
-  if (game.users.length === 1 && userIndex !== null && userIndex === -1) {
-    return (
-      <GameInvitation
-        id={id}
-        setFourohfour={setFourohfour}
-        opponent={opponent}
-      />
-    );
-  }
-
-  if (game.users.length === 1 && userIndex !== null && userIndex > -1) {
-    return (
-      <>
-        <GameInviteOpponentPrompt id={id} gameUrl={getGameUrl(id)} />
-      </>
-    );
-  }
-
   return (
-    <div className="flex flex-1 h-full flex-col items-stretch">
-      <GameHeader game={game} />
-      <div
-        className={classNames(
-          "flex flex-1 w-full",
-          currentBreakpoint === "xs" ? "flex-col" : "flex-row"
-        )}
-        ref={observe}
-      >
-        {userIndex !== null && (
-          <div className="flex-1 flex-shrink min-w-0 min-h-0 lg:p-2">
-            <GameBoard id={id} game={game} userIndex={userIndex} />
-          </div>
-        )}
-        <MoveList mobileLayout={currentBreakpoint === "xs"} id={id} />
-        {gameStateModal && (
-          <GameStateModal
-            {...gameStateModal}
-            onDismiss={() =>
-              dispatch(dequeueOrDismissGameStateModalForGame(id))
-            }
-          />
-        )}
+    <>
+      {game.users.length === 1 && userIndex !== null && userIndex > -1 && (
+        <GameInviteOpponentPrompt id={id} gameUrl={getGameUrl(id)} />
+      )}
+      {game.users.length === 1 && userIndex !== null && userIndex === -1 && (
+        <GameInvitation
+          id={id}
+          setFourohfour={setFourohfour}
+          opponent={opponent}
+        />
+      )}
+      <div className="flex flex-1 h-full flex-col items-stretch">
+        <GameHeader game={game} userIndex={userIndex} />
+        <div
+          className={classNames(
+            "flex flex-1 w-full",
+            currentBreakpoint === "xs" ? "flex-col" : "flex-row"
+          )}
+          ref={observe}
+        >
+          {userIndex !== null && (
+            <div className="flex-1 flex-shrink min-w-0 min-h-0 lg:p-2">
+              <GameBoard id={id} game={game} userIndex={userIndex} />
+            </div>
+          )}
+          <MoveList mobileLayout={currentBreakpoint === "xs"} id={id} />
+          {gameStateModal && (
+            <GameStateModal
+              {...gameStateModal}
+              onDismiss={() =>
+                dispatch(dequeueOrDismissGameStateModalForGame(id))
+              }
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

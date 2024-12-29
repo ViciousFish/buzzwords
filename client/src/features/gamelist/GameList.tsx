@@ -55,7 +55,7 @@ const GameList: React.FC = () => {
           rel="noreferrer"
         >
           <FontAwesomeIcon icon={faTwitter} /> @BuzzwordsGG
-        </a>
+        </a> */}
         <div className="flex-auto" />
         <NavLink
           className={({ isActive }) =>
@@ -73,8 +73,8 @@ const GameList: React.FC = () => {
       </header>
       <nav className="flex flex-col flex-auto overflow-y-auto">
         <div className="flex-auto">
-          <div className="z-10 px-2 mt-0 flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-darkbrown">Games</h2>
+          <div className="z-10 px-2 mt-0 flex items-center justify-between gap-2">
+            <h2 className="text-2xl font-bold text-darkbrown flex-auto">Games</h2>
             <NavLink
               to="/play/"
               className={({ isActive }) =>
@@ -89,6 +89,19 @@ const GameList: React.FC = () => {
                 className="opacity-75 mr-2"
               />
               <span>New Game</span>
+            </NavLink>
+            <NavLink
+              className={({ isActive }) =>
+                classNames(
+                  isActive ? "bg-primary hover:bg-opacity-100" : "underline",
+                  "p-2 rounded-md block hover:bg-primary hover:bg-opacity-50 text-darkbrown"
+                )
+              }
+              to="/"
+              aria-label="home"
+              data-tip="Home"
+            >
+              <FontAwesomeIcon icon={faHome} />
             </NavLink>
           </div>
           {/* TODO: use useTransition to actually remove them from the dom on disappear? */}

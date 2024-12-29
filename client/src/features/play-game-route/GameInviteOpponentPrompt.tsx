@@ -1,14 +1,21 @@
-import { faShareSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faClipboard,
+  faShareSquare,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import React from "react";
 import useDimensions from "react-cool-dimensions";
 import QRCode from "react-qr-code";
 import { useNavigate } from "react-router-dom";
+import { twMerge } from "tailwind-merge";
+
 import { useAppDispatch } from "../../app/hooks";
 import { ActionButton } from "../../presentational/ActionButton";
 
 import CopyToClipboard from "../../presentational/CopyToClipboard";
+import { overlayStyles } from "../../presentational/Modal2";
 import {
   INPUT_BG,
   INPUT_BORDER,
@@ -41,7 +48,9 @@ export default function GameInviteOpponentPrompt({
   const lg = currentBreakpoint === "lg";
   return (
     <div
+      id="game-invite-opponent-prompt"
       ref={observe}
+      className={twMerge(overlayStyles.base, "overflow-hidden absolute z-20")}
       style={{
         justifyContent: lg ? "safe center" : "",
       }}
@@ -51,12 +60,14 @@ export default function GameInviteOpponentPrompt({
     >
       <div
         className={classNames(
-          "max-w-[1000px] w-full flex flex-shrink-0 gap-4 p-4",
-          lg ? "flex-row items-center" : "flex-col items-center"
+          "flex-shrink-0 my-auto mx-0 h-full w-full flex items-center p-4 gap-4 overflow-auto",
+          lg ? "justify-center" : "flex-col pt-6"
         )}
       >
         <div
           className={classNames(
+            "flex-shrink-0 flex flex-col justify-center p-4 items-center",
+            "rounded-xl bg-lighterbg shadow-lg w-full max-w-[450px]"
             "flex flex-col justify-center p-4 items-center",
             "rounded-xl shadow-lg w-full max-w-[500px]",
             COLORS
@@ -64,6 +75,11 @@ export default function GameInviteOpponentPrompt({
           )}
         >
           <span className="text-center">
+            <h2 className="text-2xl font-bold flex-wrap leading-6">
+              Invite an opponent
+            </h2>
+            <span className="text-sm text-text opacity-70 relative mt-[-5px]">
+              to start this game.
             <h2 className="text-2xl font-bold flex-wrap leading-6">
               Invite an opponent
             </h2>
@@ -104,7 +120,10 @@ export default function GameInviteOpponentPrompt({
               {gameUrl}
             </a>
             <div className="flex gap-1 mt-1">
-              <CopyToClipboard label="Copy" text={gameUrl} />
+              <CopyToClipboard
+                label={<FontAwesomeIcon icon={faClipboard} />}
+                text={gameUrl}
+              />
               {navigator.share && (
                 <ActionButton
                   onPress={() => {
@@ -119,11 +138,11 @@ export default function GameInviteOpponentPrompt({
             </div>
           </div>
         </div>
-        <div className="flex flex-col">
+        <div className="flex-shrink-0 flex flex-col">
           <div
             className={classNames(
               "flex flex-col justify-center p-4 items-center",
-              "rounded-xl shadow-lg w-full max-w-[500px]",
+              "rounded-xl shadow-lg w-full max-w-[450px]",
               COLORS
               // lg && "ml-0"
             )}
@@ -147,7 +166,7 @@ export default function GameInviteOpponentPrompt({
           <div
             className={classNames(
               COLORS,
-              "w-full p-4 mt-4 rounded-xl shadow-lg max-w-[500px] text-center"
+              "w-full p-4 mt-4 rounded-xl shadow-lg max-w-[450px] text-center"
             )}
           >
             {id && (
@@ -163,7 +182,7 @@ export default function GameInviteOpponentPrompt({
                   <FontAwesomeIcon className="mr-2" icon={faTrash} />
                   Delete
                 </ActionButton>
-                this link
+                this game
               </>
             )}
           </div>

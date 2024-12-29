@@ -11,6 +11,7 @@ import cors from "cors";
 import passport from "passport";
 import { OAuth2Strategy } from "passport-google-oauth";
 import urljoin from "url-join";
+import { applicationDefault, initializeApp } from "firebase-admin/app";
 
 import getConfig from "./config";
 import dl from "./datalayer";
@@ -20,6 +21,7 @@ import { isAnonymousUser } from "./util";
 import makeUserRouter from "./routes/user";
 import makeGameRouter from "./routes/game";
 import makeAdminRouter from "./routes/admin";
+import makePushTokenRouter from "./routes/pushToken";
 
 import runMigrations from "./migrations";
 
@@ -76,6 +78,7 @@ app.get(config.apiPrefix + "/", (req, res) => {
 app.use(config.apiPrefix + "/user", makeUserRouter(io));
 app.use(config.apiPrefix + "/game", makeGameRouter(io));
 app.use(config.apiPrefix + "/admin", makeAdminRouter());
+app.use(config.apiPrefix + "/pushToken", makePushTokenRouter());
 
 app.post(config.apiPrefix + "/logout", async (req, res) => {
   res.clearCookie("authToken");
@@ -338,6 +341,11 @@ const main = async () => {
     .db(config.mongoDbName)
     .collection(COLLECTION);
   io.adapter(createAdapter(mongoCollection));
+  if (config.enablePushNotifications) {
+    initializeApp({
+      credential: applicationDefault(),
+    });
+  }
   server.listen(config.port, () => {
     console.log("Server listening on port", config.port);
   });

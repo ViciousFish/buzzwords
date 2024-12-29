@@ -34,3 +34,5 @@ MONGO_URL=<your connection string>
 COOKIE_DOMAIN=<the domain you're hosting the API on>
 MONGO_DB_NAME=<the name of your db, should match what's after the slash in your connection string>
 ```
+
+TODO document FCM stuff. for now see https://firebase.google.com/docs/admin/setup#initialize_the_sdk_in_non-google_environments

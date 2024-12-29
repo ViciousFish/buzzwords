@@ -8,6 +8,7 @@ import {
   refreshReceived,
   setGameLoading,
   setIsRefreshing,
+  setShowTutorialCard,
   shiftGameStateModalQueueForGame,
   updateGame,
 } from "./gamelistSlice";
@@ -82,26 +83,6 @@ export const receiveGameUpdatedSocket =
       (user) => user === state.user.user?.id
     );
 
-    if (userIndex === game.turn && !game.gameOver) {
-      if (!state.settings.turnNotificationsMuted) {
-        DingAudio.play();
-      }
-      if (!state.game.windowHasFocus) {
-        const opponentNick = game.vsAI
-          ? "Computer"
-          : getAllUsers(state)[game.users[1 - userIndex]].nickname ??
-            "Your opponent";
-        const NOTIFICATION_TITLE = "Buzzwords";
-        const NOTIFICATION_BODY = `It's your turn against ${opponentNick}`;
-        const CLICK_MESSAGE = "Notification clicked!";
-
-        new Notification(NOTIFICATION_TITLE, {
-          body: NOTIFICATION_BODY,
-          silent: true,
-        }).onclick = () => console.log(CLICK_MESSAGE);
-      }
-    }
-
     const allKnownPlayersWithNicknames = R.pipe(
       R.filter((player: User) => Boolean(player.nickname)),
       R.keys
@@ -110,10 +91,40 @@ export const receiveGameUpdatedSocket =
       game.users,
       allKnownPlayersWithNicknames
     );
+    let opponentNamesPromise = Promise.resolve([] as void[]);
     if (missingPlayers.length) {
-      missingPlayers.forEach((missingPlayer) => {
-        dispatch(fetchOpponent(missingPlayer));
-      });
+      opponentNamesPromise = Promise.all(
+        missingPlayers.map((missingPlayer) =>
+          dispatch(fetchOpponent(missingPlayer))
+        )
+      );
+    }
+
+    if (userIndex === game.turn && !game.vsAI && !game.gameOver) {
+      await opponentNamesPromise;
+      if (!state.settings.turnNotificationsMuted) {
+        // DingAudio.play();
+      }
+      const opponentNick =
+        getAllUsers(getState())[game.users[1 - userIndex]]?.nickname ??
+        "Your opponent";
+      const word = game.moves[game.moves.length - 1]?.letters.join("");
+      let title = "Buzzwords: it's your turn";
+      let body = "";
+      if (!word) {
+        body = `${opponentNick} accepted your challenge`;
+      } else {
+        body = `${opponentNick} played ${word.toUpperCase()}`;
+      }
+      if (!state.game.windowHasFocus) {
+        new Notification(title, {
+          body: body,
+          image: "/apple-touch-icon.png",
+          silent: true,
+        }).onclick = () => console.log("clicked", game.id);
+      } else if (state.game.currentGame !== game.id) {
+        toast(body);
+      }
     }
 
     if (game.vsAI && game.turn === 1) {
@@ -204,16 +215,16 @@ export interface CreateBotGameParams {
 export type CreateGameParams = {
   type: CreateGameType;
   difficulty?: number;
-}
+};
 
 export const createGame =
   (params: CreateGameParams): AppThunk =>
   async (dispatch): Promise<string> => {
     switch (params.type) {
       case "hotseat":
-        return ""
+        return "";
       case "offline-bot":
-        return ""
+        return "";
       case "online-bot":
         try {
           const res = await Api.post<string>(getApiUrl("/game"), {
@@ -241,7 +252,7 @@ export const createGame =
           throw e.response?.data ?? e.message;
         }
       default:
-        throw "createGame default case reached"
+        throw "createGame default case reached";
     }
   };
 export const joinGameById =
@@ -325,3 +336,10 @@ export const forfeitGame =
   async (dispatch) => {
     const { data } = await Api.post<Game>(getApiUrl("/game", id, "forfeit"));
   };
+
+export const getHasDismissedTutorialCard = (): boolean =>
+  JSON.parse(localStorage.getItem("dismissedTutorialCard") ?? "false");
+export const dismissTutorialCard = (): AppThunk => (dispatch) => {
+  localStorage.setItem("dismissedTutorialCard", "true");
+  dispatch(setShowTutorialCard(false));
+};

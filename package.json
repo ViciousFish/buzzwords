@@ -11,7 +11,7 @@
     "docker": "concurrently \"yarn docker-server\" \"yarn docker-client\"",
     "dev:server": "yarn --cwd server dev",
     "dev:client": "yarn --cwd client dev",
-    "dev": "concurrently \"yarn dev:server\" \"yarn dev:client\""
+    "dev": "echo \"dont run dev in this folder it doesnt work for some reason\" && exit 1 && concurrently \"yarn dev:server\" \"yarn dev:client\""
   },
   "repository": {
     "type": "git",
@@ -34,6 +34,6 @@
   "devDependencies": {
     "concurrently": "^6.5.1"
   },
-  "packageManager": "yarn@3.2.3",
+  "packageManager": "yarn@4.5.3",
   "private": true
 }
