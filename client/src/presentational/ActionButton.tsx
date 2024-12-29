@@ -16,9 +16,9 @@ export function ActionButton({
         colorClasses ?? [
           INPUT_TEXT,
           "bg-bYellow-500 dark:bg-bBrown-700",
-          "border-2 border-bYellow-700 dark:border-bBrown-500",
+          "border-2 border-bYellow-900 dark:border-bBrown-300",
           "hover:bg-bYellow-600 dark:hover:bg-bBrown-500",
-          "hover:border-bYellow-900 dark:hover:border-bBrown-300",
+          // "hover:border-bYellow-900 dark:hover:border-bBrown-300",
         ]
       )}
       {...props}

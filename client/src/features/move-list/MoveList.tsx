@@ -152,7 +152,7 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
           className={classNames(
             "left-2 right-2 z-20 rounded-t-xl absolute shadow-upward",
             "p-b-2 overflow-hidden grid grid-rows-[min-content,minmax(0,1fr)] items-stretch",
-            "bg-bYellow-700 dark:bg-beeYellow-800 text-beeYellow-900 dark:text-beeYellow-200",
+            "bg-bYellow-700 dark:bg-bBrown-900 text-beeYellow-900 dark:text-beeYellow-200",
             "border-bBrown-900 dark:border-bYellow-900"
           )}
         >
