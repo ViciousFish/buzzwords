@@ -31,9 +31,10 @@ const MoveListItem: React.FC<MoveListItemProps> = ({
       <button
         type="button"
         className={classNames(
-          "flex-auto px-2 py-1 font-bold text-bBrown-900 text-center rounded-full m-1 inset-shadow",
-          isSelected && "dark:outline-bYellow-900 outline-bBrown-900 outline",
-          move.player === 0 ? "bg-p1" : "bg-p2"
+          "flex-auto px-2 py-1 font-bold text-bBrown-900 dark:text-bYellow-500 text-center rounded-full m-1 inset-shadow",
+          isSelected && "dark:outline-bYellow-500 outline-bBrown-900 outline",
+          move.player === 0 ? "bg-p1 dark:bg-p1-dark" : "bg-p2 dark:bg-p2-dark",
+          // isSelected && (move.player === 0 ? 'dark:bg-p1' : 'dark:bg-p2')
         )}
         onClick={onPress}
       >

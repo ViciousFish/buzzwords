@@ -1,9 +1,4 @@
-import React, {
-  useMemo,
-  useRef,
-  useLayoutEffect,
-  useState,
-} from "react";
+import React, { useMemo, useRef, useLayoutEffect, useState } from "react";
 import { Group, Mesh, Vector3 } from "three";
 import {
   useFrame,
@@ -226,6 +221,9 @@ const GameTile: React.FC<GameTileProps> = ({
     }
   });
 
+  console.log("🚀 ~ onSelect:", onSelect);
+  console.log("🚀 ~ letter:", letter);
+  console.log("🚀 ~ enableSelection:", enableSelection);
   return (
     // @ts-expect-error
     <a.group

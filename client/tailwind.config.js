@@ -42,7 +42,8 @@ module.exports = {
           500: "oklch(49% 0.09 82.07)",
           700: "oklch(41% 0.08 82.07)",
           900: "oklch(36% 0.07 82.07)",
-          950: "oklch(30% 0.055 82.07)"
+          950: "oklch(30% 0.055 82.07)",
+          975: "oklch(27% 0.055 82.07)",
         },
         // lighterbg: "oklch(var(--lighterbg))",
         // lightbg: 'rgb(var(--lightbg) / <alpha-value>)',

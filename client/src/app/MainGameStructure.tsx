@@ -143,7 +143,7 @@ const MainGameStructure: React.FC = () => {
   return (
     <ScreenHeightWraper className="grid grid-rows-[min-content_minmax(0_auto)] relative overflow-hidden">
       <TopBar />
-      <div className="bg-beeYellow-300 dark:bg-beeYellow-950 mt-[50px] overflow-hidden max-w-[100vw] flex flex-row safe-area-pad flex-auto">
+      <div className="bg-beeYellow-300 dark:bg-slate-950 mt-[50px] overflow-hidden max-w-[100vw] flex flex-row safe-area-pad flex-auto">
         <a.div
           className="w-[300px] flex-shrink-0 z-30"
           style={{ marginLeft: sidebarSpring.marginLeft }}
