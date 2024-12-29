@@ -16,7 +16,7 @@ import { getOpponent } from "../user/userSelectors";
 import { fetchOpponent } from "../user/userActions";
 import { isFullGame } from "../gamelist/gamelistSlice";
 import GameHeader from "./GameHeader";
-import { MoveList } from "../game/MoveList";
+import { MoveList } from "../move-list/MoveList";
 import GameInvitation from "./GameInvitation";
 import GameInviteOpponentPrompt from "./GameInviteOpponentPrompt";
 import useDimensions from "react-cool-dimensions";

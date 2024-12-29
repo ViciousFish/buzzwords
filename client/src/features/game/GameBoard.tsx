@@ -1,18 +1,11 @@
 import { Html, useProgress } from "@react-three/drei";
 import * as R from "ramda";
-import Game from "buzzwords-shared/Game";
-import React, { useCallback, useEffect, useState, useRef } from "react";
-
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import Canvas from "../canvas/Canvas";
-import { QRCoord } from "../hexGrid/hexGrid";
-import {
-  backspaceTileSelection,
-  clearTileSelection,
-  submitMove,
-} from "./gameActions";
-import { getSelectedWordByGameId } from "./gameSelectors";
-import GameTile from "./GameTile";
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -22,6 +15,23 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import useHotkeys from "@reecelucas/react-use-hotkeys";
+
+import Game from "buzzwords-shared/Game";
+
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import Canvas from "../canvas/Canvas";
+import {
+  backspaceTileSelection,
+  clearTileSelection,
+  submitMove,
+  toggleTileSelected,
+} from "./gameActions";
+import {
+  getSelectedWordByGameId,
+  getTileSelectionInParsedHexCoords,
+} from "./gameSelectors";
+import GameTile from "./GameTile";
+import { GameBoardTiles } from "./GameBoardTiles";
 
 interface GameBoardProps {
   id: string;
@@ -79,6 +89,9 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
 
   const portal = useRef<HTMLDivElement>(null);
 
+  const currentMove = useAppSelector(getTileSelectionInParsedHexCoords);
+  const lastMove = game.moves[game.moves.length - 1];
+
   return (
     <>
       <Canvas isGameboard key={`play-${id}`}>
@@ -99,8 +112,14 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
               <GameTile
                 owner={0}
                 position={[0, 0, 0]}
-                isPlayerIdentity
-                currentGame={id}
+                isPlayerIdentity={!game.gameOver}
+                isCapital
+                hasCrown={game.winner === 0}
+                currentTurn={game.turn}
+                enableSelection={false}
+                selected={false}
+                willBeCaptured={false}
+                willBeReset={false}
               />
             </group>
             <group position={[10, 0, 0]}>
@@ -108,8 +127,14 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 owner={1}
                 letter=""
                 position={[0, 0, 0]}
-                isPlayerIdentity
-                currentGame={id}
+                isPlayerIdentity={!game.gameOver}
+                isCapital
+                hasCrown={game.winner === 1}
+                currentTurn={game.turn}
+                enableSelection={false}
+                selected={false}
+                willBeCaptured={false}
+                willBeReset={false}
               />
             </group>
           </group>
@@ -157,7 +182,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                   className="text-[60px] text-darkbrown font-fredoka overflow-hidden"
                 >
                   <span style={{ position: "relative", top: -15 }}>
-                    {replayLetters
+                    {replayProgress !== null && replayLetters
                       ? R.take(replayProgress, replayLetters)
                           .join("")
                           .toUpperCase()
@@ -181,32 +206,21 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
               </div>
             </Html>
           </group>
-          <group position={[0, -7, 0]}>
-            {Object.keys(game.grid).map((coord: QRCoord) => {
-              const gridTile = game.grid[coord];
-              return (
-                <GameTile
-                  isSubmitting={submitting}
-                  isCapital={revealLetters ? gridTile.capital : false}
-                  coord={coord}
-                  letter={revealLetters ? gridTile.value : ""}
-                  position={[
-                    // https://www.redblobgames.com/grids/hexagons/#hex-to-pixel-axial
-                    3.1 * (3 / 2) * gridTile.q,
-                    -1 *
-                      3.1 *
-                      ((Math.sqrt(3) / 2) * gridTile.q +
-                        Math.sqrt(3) * gridTile.r),
-                    0,
-                  ]}
-                  key={coord}
-                  owner={gridTile.owner}
-                  currentGame={id}
-                  userIndex={userIndex}
-                />
-              );
-            })}
-          </group>
+          <GameBoardTiles
+            grid={replayProgress !== null ? lastMove.grid : game.grid}
+            revealLetters={revealLetters}
+            enableSelection={
+              !submitting && !game.gameOver && userIndex === game.turn
+            }
+            position={[0, -7, 0]}
+            selection={
+              replayProgress !== null
+                ? R.take(replayProgress, lastMove.coords)
+                : currentMove
+            }
+            currentTurn={replayProgress !== null ? lastMove.player : game.turn}
+            onToggleTile={(coord) => dispatch(toggleTileSelected(coord))}
+          />
         </React.Suspense>
       </Canvas>
       <div style={{ position: "absolute", top: "50px" }} ref={portal}></div>
