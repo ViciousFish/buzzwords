@@ -65,9 +65,9 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
     onStart: () => setScroll(false),
   });
 
-  const bind = useDrag(({event}) => {
+  const bind = useDrag(({ event }) => {
     event.stopPropagation();
-  })
+  });
 
   // const bind = useDrag(
   //   ({
@@ -107,7 +107,9 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
 
   const moveListContent = (
     <>
-      <h3 className="w-[200px] text-2xl font-bold m-0 pt-2 text-beeYellow-800 dark:text-beeYellow-200">Moves</h3>
+      <h3 className="w-[200px] text-2xl font-bold m-0 pt-2 text-beeYellow-800 dark:text-beeYellow-200">
+        Moves
+      </h3>
       <div className="flex-auto w-full overflow-y-auto">
         <div className="overflow-y-auto max-h-full">
           <ul className="max-w-[200px] mx-auto">
@@ -147,39 +149,43 @@ export function MoveList({ id, mobileLayout }: MoveListProps) {
             top: drawerSpring.top,
             height: windowHeight - 70,
           }}
-          className={`left-2 right-2 z-20 rounded-t-xl bg-darkbg border border-darkbrown absolute shadow-upward 
-        text-text p-b-2 overflow-hidden grid grid-rows-[min-content,minmax(0,1fr)] items-stretch`}
+          className={classNames(
+            "left-2 right-2 z-20 rounded-t-xl absolute shadow-upward",
+            "p-b-2 overflow-hidden grid grid-rows-[min-content,minmax(0,1fr)] items-stretch",
+            "bg-bYellow-700 dark:bg-beeYellow-800 text-beeYellow-900 dark:text-beeYellow-200",
+            "border-bBrown-900 dark:border-bYellow-900"
+          )}
         >
           {/* <div className="touch-none select-none flex-shrink-0 flex flex-col items-center justify-center w-full"> */}
-            <div {...bind()} className="touch-none w-full flex items-center">
-              <div className="flex-auto flex items-baseline flex-nowrap overflow-x-auto p-3">
-                <span className="font-bold mx-2">Moves</span>
-                {R.reverse(game.moves).map((move, i) => {
-                  const index = game.moves.length - i - 1;
-                  return (
-                    <MoveListItem
-                      move={move}
-                      key={index}
-                      onPress={() => setSelectedMove(index)}
-                      isSelected={selectedMove === index}
-                      scrollOnSelection={scroll}
-                    />
-                  );
-                })}
-              </div>
-              {selectedMove !== null && (
-                <ActionButton
-                  className="mx-2"
-                  onPress={(e) => {
-                    setTimeout(() => {
-                      setSelectedMove(null);
-                    }, 10);
-                  }}
-                >
-                  Dismiss
-                </ActionButton>
-              )}
+          <div {...bind()} className="touch-none w-full flex items-center">
+            <div className="flex-auto flex items-baseline flex-nowrap overflow-x-auto p-3">
+              <span className="font-bold mx-2">Moves</span>
+              {R.reverse(game.moves).map((move, i) => {
+                const index = game.moves.length - i - 1;
+                return (
+                  <MoveListItem
+                    move={move}
+                    key={index}
+                    onPress={() => setSelectedMove(index)}
+                    isSelected={selectedMove === index}
+                    scrollOnSelection={scroll}
+                  />
+                );
+              })}
             </div>
+            {selectedMove !== null && (
+              <ActionButton
+                className="mx-2"
+                onPress={(e) => {
+                  setTimeout(() => {
+                    setSelectedMove(null);
+                  }, 10);
+                }}
+              >
+                Dismiss
+              </ActionButton>
+            )}
+          </div>
           {/* </div> */}
           {selectedMove !== null && (
             <MoveDetailCard
