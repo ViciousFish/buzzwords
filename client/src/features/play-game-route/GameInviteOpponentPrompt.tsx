@@ -54,9 +54,10 @@ export default function GameInviteOpponentPrompt({
       style={{
         justifyContent: lg ? "safe center" : "",
       }}
-      className={classNames(
-        "w-full flex flex-col items-center h-full overflow-auto", INPUT_TEXT
-      )}
+      // className={classNames(
+      //   "w-full flex flex-col items-center h-full overflow-auto",
+      //   INPUT_TEXT
+      // )}
     >
       <div
         className={classNames(
@@ -67,19 +68,17 @@ export default function GameInviteOpponentPrompt({
         <div
           className={classNames(
             "flex-shrink-0 flex flex-col justify-center p-4 items-center",
-            "rounded-xl bg-lighterbg shadow-lg w-full max-w-[450px]"
-            "flex flex-col justify-center p-4 items-center",
+            "rounded-xl bg-lighterbg shadow-lg w-full max-w-[450px]",
             "rounded-xl shadow-lg w-full max-w-[500px]",
             COLORS
             // lg && "mr-0"
           )}
         >
-          <span className="text-center">
-            <h2 className="text-2xl font-bold flex-wrap leading-6">
-              Invite an opponent
-            </h2>
-            <span className="text-sm text-text opacity-70 relative mt-[-5px]">
-              to start this game.
+          <h2 className="text-2xl font-bold flex-wrap leading-6">
+            Invite an opponent
+          </h2>
+          <span className="text-sm text-text opacity-70 relative mt-[-5px]">
+            to start this game.
             <h2 className="text-2xl font-bold flex-wrap leading-6">
               Invite an opponent
             </h2>

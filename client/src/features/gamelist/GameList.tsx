@@ -55,7 +55,7 @@ const GameList: React.FC = () => {
           rel="noreferrer"
         >
           <FontAwesomeIcon icon={faTwitter} /> @BuzzwordsGG
-        </a> */}
+        </a>
         <div className="flex-auto" />
         <NavLink
           className={({ isActive }) =>
