@@ -78,6 +78,7 @@ export function DictionaryEntry({
           title={new Date(moveDate).toLocaleString()}
           className="text-center text-xs opacity-50"
         >
+          {" "}
           {isMoreThanADayAgo(moveDate)
             ? relativeDate(moveDate)
             : df.format(moveDate)}{" "}
@@ -87,11 +88,24 @@ export function DictionaryEntry({
       {dictionaryData ? (
         <>
           {dictionaryData.type === "error" && (
-            <div className="flex justify-center p-4 gap-1 items-center">
+            <div className="p-4 font-serif">
               <FontAwesomeIcon className="mr-1" icon={faBook} />
               <FontAwesomeIcon className="mr-1" icon={faExclamationTriangle} />
-              {dictionaryData.status === "404" ? (
-                <p>404: The dictionary API we use is missing a lot of words</p>
+              {dictionaryData.status === 404 ? (
+                <>
+                  <span className="font-sans">404</span>
+                  <p className="my-2">
+                    The dictionary API we use doesn&apos;t have this word.
+                  </p>
+                  <a
+                    className="underline"
+                    target="_blank"
+                    rel="noreferrer"
+                    href={`https://en.wiktionary.org/wiki/${word}`}
+                  >
+                    Search for &quot;{word}&quot; on Wiktionary &rarr;
+                  </a>
+                </>
               ) : (
                 dictionaryData.status
               )}
