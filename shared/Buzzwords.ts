@@ -267,7 +267,7 @@ export const Buzzwords: BoardGame<BuzzwordsGameState> = {
 const getUniqPermutations = (coordsPerLetter: HexCoord[][]): HexCoord[][] =>
   R.pipe(
     R.reduce(R.xprod),
-    R.map(R.unnest),
+    R.map(R.flatten),
     R.filter(onlyHasUniqElements)
   )(R.head(coordsPerLetter), R.tail(coordsPerLetter));
 
