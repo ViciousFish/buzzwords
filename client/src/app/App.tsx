@@ -247,6 +247,7 @@ function BGIOGameBoard({ G, ctx, moves }: BoardProps<BuzzwordsGameState>) {
         <ActionButton
           onPress={() => {
             moves.playWord(selection);
+            setSelection([]);
           }}
         >
           playWord
@@ -258,10 +259,10 @@ function BGIOGameBoard({ G, ctx, moves }: BoardProps<BuzzwordsGameState>) {
           enableSelection
           onToggleTile={(coord) => {
             const [q, r] = coord.split(",").map(Number);
-            const index = selection.findIndex(x => x.q === q && x.r === r)
+            const index = selection.findIndex((x) => x.q === q && x.r === r);
             if (index > -1) {
               selection.splice(index, 1);
-              setSelection([...selection])
+              setSelection([...selection]);
               return;
             }
             setSelection([...selection, { q, r }]);

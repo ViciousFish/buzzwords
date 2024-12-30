@@ -49,16 +49,19 @@ export const Buzzwords: BoardGame<BuzzwordsGameState> = {
   turn: {
     onEnd: ({ G, ctx, events, random, ...plugins }) => {
       // Check if the game needs to end?
-      events.endGame();
+      // events.endGame();
     },
-    maxMoves: 1,
+    maxMoves: 2,
     minMoves: 1,
   },
   maxPlayers: 2,
   minPlayers: 2,
   moves: {
     // TODO: get this to expose its type externally
-    playWord: ({ G, ctx, playerID, events, random, ...plugins }, move: HexCoord[]) => {
+    playWord: (
+      { G, ctx, playerID, events, random, ...plugins },
+      move: HexCoord[]
+    ) => {
       let word = "";
       for (const coord of move) {
         // All we know is this is an array. Need to validate each item.
@@ -211,9 +214,9 @@ export const Buzzwords: BoardGame<BuzzwordsGameState> = {
         setCell(G.grid, newCapital);
       }
 
-      // You get to go again!
-      if (capitalCaptured) {
-        events.endTurn({ next: playerID });
+      // Your turn is over unless you captured the capital
+      if (!capitalCaptured) {
+        events.endTurn();
       }
     },
   },
