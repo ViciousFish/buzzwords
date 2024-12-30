@@ -1,5 +1,5 @@
 // Game.ts
-import type { Game as BoardGame, Move } from "boardgame.io";
+import type { AiEnumerate, Game as BoardGame, Move } from "boardgame.io";
 import { INVALID_MOVE } from "boardgame.io/core";
 import Game from "./Game";
 import { nanoid } from "nanoid";
@@ -13,7 +13,7 @@ import HexGrid, {
 import * as R from "ramda";
 import { WordsObject, wordsBySortedLetters } from "../server/src/words";
 import { HexCoord } from "./types";
-import { isValidWord } from "./alphaHelpers";
+import { canMakeAValidWord, isValidWord } from "./alphaHelpers";
 import { getCellsToBeReset, willBecomeOwned } from "./gridHelpers";
 import Cell from "./cell";
 
@@ -220,4 +220,57 @@ export const Buzzwords: BoardGame<BuzzwordsGameState> = {
       }
     },
   },
+  ai: {
+    enumerate(G, ctx) {
+      // For word in the dictionary, get all possible combinations of coords that would enable you to play the move
+      const moves: AiEnumerate = [];
+      const cells = Object.values(G.grid).filter(
+        (c) => c.owner === 2 && c.value
+      );
+      const lettersToCoords: { [key: string]: HexCoord[] } = {};
+      for (let cell of cells) {
+        lettersToCoords[cell.value] = lettersToCoords[cell.value] || [];
+        lettersToCoords[cell.value].push({ q: cell.q, r: cell.r });
+      }
+
+      dictWord: for (const word of Object.keys(WordsObject)) {
+        const test = JSON.parse(JSON.stringify(lettersToCoords));
+        const wordLetters = word.split("");
+
+        // Can the word be made with the current board?
+        const letterCount = wordLetters.reduce(
+          (acc: { [key: string]: number }, letter) => {
+            acc[letter] = acc[letter] ? acc[letter] + 1 : 1;
+            return acc;
+          },
+          {}
+        );
+
+        for (const letter in letterCount) {
+          if (!test[letter] || test[letter].length < letterCount[letter]) {
+            continue dictWord;
+          }
+        }
+
+        // If so, get all possible combinations of coords that would enable you to play the move
+        const coordsPerLetter = wordLetters.map((letter) => test[letter]);
+        const possibleCoords = getUniqPermutations(coordsPerLetter);
+        for (const coords of possibleCoords) {
+          moves.push({ move: "playWord", args: [coords] });
+        }
+      }
+      return moves;
+    },
+  },
+};
+
+const getUniqPermutations = (coordsPerLetter: HexCoord[][]): HexCoord[][] =>
+  R.pipe(
+    R.reduce(R.xprod),
+    R.map(R.unnest),
+    R.filter(onlyHasUniqElements)
+  )(R.head(coordsPerLetter), R.tail(coordsPerLetter));
+
+const onlyHasUniqElements = (arr: any) => {
+  return R.uniq(arr).length === arr.length;
 };
