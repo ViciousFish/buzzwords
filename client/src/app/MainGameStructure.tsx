@@ -11,7 +11,8 @@ import SidebarRightSide from "./SidebarRightSide";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { toggleIsOpen } from "../features/gamelist/gamelistSlice";
 import { raf } from "@react-spring/shared";
-
+import DSC05151 from "../assets/DSC05151.jpg";
+import DSC02511 from "../assets/DSC02511.jpg";
 // default tailwind breakpoints
 export const BREAKPOINTS = {
   xs: 0,
@@ -87,72 +88,83 @@ const MainGameStructure: React.FC = () => {
     }
   );
 
-  const colors = (<><div className="flex">
-    {[
-      "bg-beeYellow-100",
-      "bg-beeYellow-200",
-      "bg-beeYellow-300",
-      "bg-beeYellow-400",
-      "bg-beeYellow-500",
-      "bg-beeYellow-510",
-      "bg-beeYellow-600",
-      "bg-beeYellow-700",
-      "bg-beeYellow-800",
-      "bg-beeYellow-900",
-      "bg-beeYellow-950",
-    ].map((className) => (
-      <div
-        key={className}
-        className={`p-2 flex-auto ${className} flex items-center justify-center`}
-      >
-        {className.split('-')[2]}
+  const colors = (
+    <div className="absolute bottom-0 left-0 right-0">
+      <div className="flex">
+        {[
+          "bg-beeYellow-100",
+          "bg-beeYellow-200",
+          "bg-beeYellow-300",
+          "bg-beeYellow-400",
+          "bg-beeYellow-500",
+          "bg-beeYellow-510",
+          "bg-beeYellow-600",
+          "bg-beeYellow-700",
+          "bg-beeYellow-800",
+          "bg-beeYellow-900",
+          "bg-beeYellow-950",
+        ].map((className) => (
+          <div
+            key={className}
+            className={`p-2 flex-auto ${className} flex items-center justify-center`}
+          >
+            {className.split("-")[2]}
+          </div>
+        ))}
       </div>
-    ))}
-  </div>
-  <div className="flex justify-stretch bg-black">
-    {[
-      "bg-bYellow-100",
-      "bg-bYellow-200",
-      "bg-bYellow-300",
-      "bg-bYellow-400",
-      "bg-bYellow-500",
-      "bg-bYellow-600",
-      "bg-bYellow-700",
-      "bg-bYellow-800",
-      "bg-bYellow-900",
-      "bg-bBrown-100",
-      "bg-bBrown-200",
-      "bg-bBrown-300",
-      "bg-bBrown-400",
-      "bg-bBrown-500",
-      "bg-bBrown-600",
-      "bg-bBrown-700",
-      "bg-bBrown-800",
-      "bg-bBrown-900",
-      "bg-bBrown-950",
-    ].map((className) => (
-      <div
-        key={className}
-        className={`p-2 flex-auto ${className} flex items-center justify-center`}
-      >
-        {className.split('-')[2]}
+      <div className="flex justify-stretch bg-black">
+        {[
+          "bg-bYellow-100",
+          "bg-bYellow-200",
+          "bg-bYellow-300",
+          "bg-bYellow-400",
+          "bg-bYellow-500",
+          "bg-bYellow-600",
+          "bg-bYellow-700",
+          "bg-bYellow-800",
+          "bg-bYellow-900",
+          "bg-bBrown-100",
+          "bg-bBrown-200",
+          "bg-bBrown-300",
+          "bg-bBrown-400",
+          "bg-bBrown-500",
+          "bg-bBrown-600",
+          "bg-bBrown-700",
+          "bg-bBrown-800",
+          "bg-bBrown-900",
+          "bg-bBrown-950",
+        ].map((className) => (
+          <div
+            key={className}
+            className={`p-2 flex-auto ${className} flex items-center justify-center`}
+          >
+            {className.split("-")[2]}
+          </div>
+        ))}
       </div>
-    ))}
-  </div></>)
+    </div>
+  );
 
   return (
     <ScreenHeightWraper className="grid grid-rows-[min-content_minmax(0_auto)] relative overflow-hidden">
       <TopBar />
-      <div className="bg-beeYellow-300 dark:bg-slate-950 mt-[50px] overflow-hidden max-w-[100vw] flex flex-row safe-area-pad flex-auto">
-        <a.div
+      <div
+        style={{
+          backgroundImage: `url(${DSC05151})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+        className=" mb-[50px] overflow-hidden max-w-[100vw] flex items-center justify-center safe-area-pad flex-auto"
+      >
+        {/* <a.div
           className="w-[300px] flex-shrink-0 z-30"
           style={{ marginLeft: sidebarSpring.marginLeft }}
         >
           <GameList />
-        </a.div>
-        <SidebarRightSide mobileLayout={mobileLayout} bindDragArgs={bind()}>
+        </a.div> */}
+        {/* <SidebarRightSide mobileLayout={mobileLayout} bindDragArgs={bind()}> */}
           <Outlet />
-        </SidebarRightSide>
+        {/* </SidebarRightSide> */}
       </div>
       {/* {colors} */}
     </ScreenHeightWraper>

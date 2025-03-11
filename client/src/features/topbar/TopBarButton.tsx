@@ -10,8 +10,8 @@ export const TopBarButton = React.forwardRef(function TopBarButtonImpl(
     <Button
       ref={ref as any}
       className={classNames(
-        "hover:bg-bYellow-800 hover:dark:bg-beeYellow-800 text-beeYellow-900 dark:text-beeYellow-300",
-        "rounded-md p-2 cursor-auto",
+        "hover:bg-bBrown-975 hover:dark:bg-bYellow-800 text-bYellow-300 dark:text-bBrown-300",
+        "rounded-md py-2 cursor-auto",
         className
       )}
       {...props}

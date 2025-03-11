@@ -25,6 +25,7 @@ import { getGameUrl } from "./PlayGame";
 import NicknameModal from "../user/NicknameModal";
 import { Modal2 } from "../../presentational/Modal2";
 import { Dialog } from "../../presentational/Dialog";
+import classNames from "classnames";
 
 interface GameHeaderProps {
   game: Game;
@@ -55,12 +56,12 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game, userIndex }) => {
     ) : null;
 
   return (
-    <div className="h-[50px] flex flex-shrink-0 bg-beeYellow-900 dark:bg-beeYellow-900 text-beeYellow-200 text-lg px-4">
+    <div className="h-[50px] flex flex-shrink-0 bg-beeYellow-900 dark:bg-beeYellow-900 text-beeYellow-200 text-lg pl-4">
       <div className="flex items-center justify-start flex-auto">
-        <span className="text-p1 font-bold">{p1Nick || "???"}</span>
+        <span className={classNames(game.turn === 0 ? "underline" : "", "text-p1 font-bold")}>{p1Nick || "???"}</span>
         {p1Nick && userIndex === 0 && editButton}
         <span className="mx-2 text-textInverse"> vs </span>
-        <span className="text-p2 font-bold">
+        <span className={classNames(game.turn === 1 ? "underline" : "", "text-p2 font-bold")}>
           {p2Nick || "???"}
           {game.vsAI && (
             <span className="font-normal opacity-50 no-underline ml-1">
@@ -85,6 +86,9 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game, userIndex }) => {
           </MenuTrigger>
         )}
       </div>
+      <Button className="px-2 mr-2">
+        <FontAwesomeIcon icon={faTimes} />
+      </Button>
     </div>
   );
 };

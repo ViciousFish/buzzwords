@@ -15,15 +15,15 @@ const TutorialCard: React.FC<{
   return (
     <div
       className={classNames(
-        "rounded-xl bg-primary p-4 mx-2",
-        "bg-beeYellow-500 dark:bg-beeYellow-800 text-beeYellow-900 dark:text-beeYellow-200",
+        "rounded-xl bg-primary mx-2 mb-4",
+        "bg-bYellow-500 dark:bg-beeYellow-800 text-beeYellow-900 dark:text-beeYellow-200",
         shadow ?
-          "shadow-xl border-2 border-beeYellow-600 dark:border-beeYellow-700" : "dark:bg-beeYellow-900"
+          "shadow-xl border-2 border-bBrown-900 dark:border-beeYellow-700" : "dark:bg-beeYellow-900"
       )}
     >
-      <h3 className="text-lg font-bold inline">How to play</h3>
-      {!hideDismiss && (
-        <div className="float-right text-lg">
+      <div className="flex items-center justify-between bg-bBrown-900 text-bYellow-300 pl-2 py-1">
+        <h3 className="text-lg font-bold inline">How to play</h3>
+        {!hideDismiss && (<div>
           <button
             className="hover:text-darkbrown mr-2"
             data-tip="Watch tutorial"
@@ -33,16 +33,17 @@ const TutorialCard: React.FC<{
             <FontAwesomeIcon icon={faFilm} />
           </button>
           <button
-            className="hover:text-darkbrown p-1"
+            className="hover:text-darkbrown p-1 mr-2"
             data-tip="Dismiss instructions"
             aria-label="dismiss instructions"
             onClick={() => dispatch(setShowTutorialCard(false))}
           >
             <FontAwesomeIcon icon={faTimes} />
-          </button>
-        </div>
-      )}
-      <ul className="list-disc list-outside pl-6 text-sm">
+            </button>
+          </div>
+        )}
+      </div>
+      <ul className="list-disc list-outside px-6 py-3 text-sm">
         <li>
           <h4 className="font-bold">Spell words</h4>
           <p>Tap any letter tile on the board</p>

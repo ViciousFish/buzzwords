@@ -68,7 +68,7 @@ export default React.memo(function BaseCanvas({
     );
   }
   return (
-    <div className="h-full w-full relative">
+    <div className={isGameboard ? "aspect-[9/10] p-4 w-full relative" : "w-full h-full relative"}>
       <div className="w-full h-full" ref={observe}>
         <canvas ref={canvasRef} />
       </div>

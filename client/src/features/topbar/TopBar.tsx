@@ -3,8 +3,11 @@ import {
   faBars,
   faCircle,
   faCog,
+  faDownload,
+  faSignOut,
   faSpinner,
   faSyncAlt,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
@@ -69,13 +72,14 @@ const TopBar: React.FC = () => {
   return (
     <div
       className={classNames(
-        "fixed top-0 z-30 text-beeYellow-800",
-        "bg-gradient-to-t from-beeYellow-510 to-beeYellow-500 dark:from-beeYellow-900 dark:to-beeYellow-800",
+        "fixed bottom-0 z-30 text-beeYellow-800",
+        // "bg-gradient-to-t from-bBrown-950 to-bBrown-900",
+        "bg-bBrown-900",
         "h-[calc(50px+var(--sat))] w-screen p-t-safe"
       )}
     >
       <div className="flex h-full p-0 items-center topbar">
-        <div className="flex h-full gap-1 items-center">
+        <div className="flex h-full gap-4 items-center">
           {PLATFORM === "darwin" && (
             <div className="stoplights h-full w-[90px] dark:w-[75px] mr-2" />
           )}
@@ -88,7 +92,8 @@ const TopBar: React.FC = () => {
               }
             }}
           >
-            <FontAwesomeIcon icon={faBars} />
+            {/* <FontAwesomeIcon icon={faBars} /> */}
+            <span>Menu</span>
             <span className="absolute text-sm left-[14px] top-[calc(0.25rem+var(--sat))]">
               {hamburgerNotification}
             </span>
@@ -106,11 +111,12 @@ const TopBar: React.FC = () => {
               aria-label="toggle game settings"
               // className="p-2 rounded-md hover:bg-lightbg hover:bg-opacity-50"
             >
-              <FontAwesomeIcon icon={faCog} />
+              {/* <FontAwesomeIcon icon={faCog} /> */}
+              <span>Settings</span>
             </TopBarButton>
           </Popover>
           <Popover
-            positions={["bottom"]}
+            positions={["top"]}
             content={<TutorialCard shadow />}
             isOpen={!gamelistIsOpen && showTutorialCard}
             containerClassName="z-30 w-full max-w-[300px]"
@@ -124,9 +130,13 @@ const TopBar: React.FC = () => {
                 gamelistIsOpen && showTutorialCard && "hidden"
               )}
             >
-              <FontAwesomeIcon icon={faCircleQuestion} />
+              {/* <FontAwesomeIcon icon={faCircleQuestion} /> */}
+              <span className={classNames("p-2 rounded",showTutorialCard && "border")}>Tutorial</span>
             </TopBarButton>
           </Popover>
+          <TopBarButton>
+            <span className={classNames("p-2 rounded","border")}>Chuck vs Computer (5)</span>
+          </TopBarButton>
         </div>
         <div className="h-full flex-auto window-drag" />
         <div className="flex items-center pr-2">
@@ -157,7 +167,7 @@ const TopBar: React.FC = () => {
                 className="ml-2"
                 onPress={() => setNativeAppAd(!nativeAppAd)}
               >
-                Download
+                <FontAwesomeIcon icon={faDownload} />
               </TopBarButton>
             </Popover>
           )}
@@ -173,14 +183,14 @@ const TopBar: React.FC = () => {
                   className="ml-2 rounded-md"
                   onPress={() => dispatch(logout())}
                 >
-                  Logout
+                  <FontAwesomeIcon icon={faSignOut} />
                 </TopBarButton>
               ) : (
                 <TopBarButton
                   onPress={() => setAuthPrompt(true)}
                   className="ml-2 rounded-md"
                 >
-                  Login
+                  <FontAwesomeIcon icon={faUser} />
                 </TopBarButton>
               )}
             </Popover>

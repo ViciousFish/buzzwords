@@ -149,8 +149,12 @@ const PlayGame: React.FC = () => {
           opponent={opponent}
         />
       )}
-      <div className="flex flex-1 h-full flex-col items-stretch">
-        <GameHeader game={game} userIndex={userIndex} />
+      <div
+        className="flex flex-col items-stretch w-[450px] bg-beeYellow-300 border-2 border-bBrown-900 rounded-xl overflow-hidden shadow-xl"
+      >
+        <div className="h-8 bg-bBrown-900">
+          <GameHeader game={game} userIndex={userIndex} />
+        </div>
         <div
           className={classNames(
             "flex flex-1 w-full",
@@ -159,11 +163,11 @@ const PlayGame: React.FC = () => {
           ref={observe}
         >
           {userIndex !== null && (
-            <div className="flex-1 flex-shrink min-w-0 min-h-0 lg:p-2">
+            <div className="flex-1 flex-shrink min-w-0 min-h-0 lg:p-2 ">
               <GameBoard id={id} game={game} userIndex={userIndex} />
             </div>
           )}
-          <MoveList mobileLayout={currentBreakpoint === "xs"} id={id} />
+          {/* <MoveList mobileLayout={currentBreakpoint === "xs"} id={id} /> */}
           {gameStateModal && (
             <GameStateModal
               {...gameStateModal}

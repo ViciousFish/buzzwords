@@ -1,11 +1,6 @@
 import { Html, useProgress } from "@react-three/drei";
 import * as R from "ramda";
-import React, {
-  useCallback,
-  useEffect,
-  useState,
-  useRef,
-} from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -94,6 +89,67 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
 
   return (
     <>
+      <div className="flex justify-center items-center mt-4" style={{ height: "100px" }}>
+        {selectedWord?.length && game.turn === userIndex ? (
+          <button
+            onClick={() => {
+              dispatch(backspaceTileSelection());
+            }}
+            disabled={submitting}
+            type="button"
+            className={classNames(
+              "mx-1 text-sm",
+              submitting
+                ? "text-gray-400"
+                : "text-beeYellow-800 dark:text-beeYellow-300"
+            )}
+          >
+            <FontAwesomeIcon icon={faBackspace} size="2x" />
+          </button>
+        ) : null}
+        {selectedWord?.length && game.turn === userIndex ? (
+          <button
+            onClick={() => {
+              dispatch(clearTileSelection());
+            }}
+            disabled={submitting}
+            type="button"
+            className={classNames(
+              "mx-1 text-sm",
+              submitting
+                ? "text-gray-400"
+                : "text-beeYellow-800 dark:text-beeYellow-300"
+            )}
+          >
+            <FontAwesomeIcon icon={faTimesCircle} size="2x" />
+          </button>
+        ) : null}
+        <div
+          className="text-[50px] font-fredoka overflow-hidden text-beeYellow-800 dark:text-beeYellow-300"
+        >
+          <span>
+            {replayProgress !== null && replayLetters
+              ? R.take(replayProgress, replayLetters).join("").toUpperCase()
+              : selectedWord ?? ""}
+          </span>
+        </div>
+        {selectedWord?.length && game.turn === userIndex ? (
+          <button
+            // variant='quiet'
+            onClick={onSubmit}
+            disabled={submitting}
+            type="button"
+            className={classNames(
+              "font-bold text-beeYellow-300 dark:text-beeYellow-950 bg-opacity-100 rounded-md p-1 mx-1 text-sm",
+              submitting
+                ? "bg-gray-400"
+                : "bg-beeYellow-800 dark:bg-beeYellow-300"
+            )}
+          >
+            Submit
+          </button>
+        ) : null}
+      </div>
       <Canvas isGameboard key={`play-${id}`}>
         {/* <CameraControls /> */}
         <React.Suspense
@@ -107,7 +163,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
             </Html>
           }
         >
-          <group position={[0, 20, 0]}>
+          {/* <group position={[0, 20, 0]}>
             <group position={[-10, 0, 0]}>
               <GameTile
                 owner={0}
@@ -137,8 +193,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 willBeReset={false}
               />
             </group>
-          </group>
-          <group position={[0, 14, 0]}>
+          </group> */}
+          {/* <group position={[0, 20, 0]}>
             <Html
               center
               zIndexRange={[20, 0]}
@@ -211,14 +267,14 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
                 ) : null}
               </div>
             </Html>
-          </group>
+          </group> */}
           <GameBoardTiles
             grid={replayProgress !== null ? lastMove.grid : game.grid}
             revealLetters={revealLetters}
             enableSelection={
               !submitting && !game.gameOver && userIndex === game.turn
             }
-            position={[0, -7, 0]}
+            position={[0, 0, 0]}
             selection={
               replayProgress !== null
                 ? R.take(replayProgress, lastMove.coords)

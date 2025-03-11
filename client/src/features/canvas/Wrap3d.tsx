@@ -37,11 +37,11 @@ const setZoom = (
     });
     return -1;
   }
-  if (isGameboard) {
-    boundingBox.setFromPoints(GAMEBOARD_BOUNDING_POINTS);
-  } else {
+  // if (isGameboard) {
+  //   boundingBox.setFromPoints(GAMEBOARD_BOUNDING_POINTS);
+  // } else {
     boundingBox.setFromObject(group);
-  }
+  // }
   const wzoom = width / (boundingBox.max.x - boundingBox.min.x);
   const hzoom = height / (boundingBox.max.y - boundingBox.min.y);
   const zoom = Math.min(wzoom, hzoom);
