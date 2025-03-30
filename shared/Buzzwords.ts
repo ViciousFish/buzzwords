@@ -22,6 +22,26 @@ export interface BuzzwordsGameState {
   grid: HexGrid;
 }
 
+export function getWordFromMove(G: BuzzwordsGameState, move: HexCoord[]) {
+  let word = "";
+  for (const coord of move) {
+    // All we know is this is an array. Need to validate each item.
+    if (!R.is(Object, coord) || !R.has("q", coord) || !R.has("r", coord)) {
+      return INVALID_MOVE;
+    }
+    const validCoord = coord as HexCoord;
+
+    const cell = getCell(G.grid, validCoord.q, validCoord.r);
+    if (cell && cell.owner == 2 && cell.value) {
+      word += cell.value;
+    } else {
+      return INVALID_MOVE;
+    }
+  }
+  return word;
+}
+
+
 export const Buzzwords: BoardGame<BuzzwordsGameState> = {
   name: "buzzwords",
   setup: ({ ctx, ...plugins }, setupData) => {
@@ -62,22 +82,10 @@ export const Buzzwords: BoardGame<BuzzwordsGameState> = {
       { G, ctx, playerID, events, random, ...plugins },
       move: HexCoord[]
     ) => {
-      let word = "";
-      for (const coord of move) {
-        // All we know is this is an array. Need to validate each item.
-        if (!R.is(Object, coord) || !R.has("q", coord) || !R.has("r", coord)) {
-          return INVALID_MOVE;
-        }
-        const validCoord = coord as HexCoord;
-
-        const cell = getCell(G.grid, validCoord.q, validCoord.r);
-        if (cell && cell.owner == 2 && cell.value) {
-          word += cell.value;
-        } else {
-          return INVALID_MOVE;
-        }
+      const word = getWordFromMove(G, move);
+      if (word === INVALID_MOVE) {
+        return INVALID_MOVE;
       }
-
       if (!isValidWord(word, WordsObject)) {
         return INVALID_MOVE;
       }
