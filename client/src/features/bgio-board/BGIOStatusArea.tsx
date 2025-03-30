@@ -34,8 +34,14 @@ export function BGIOStatusArea({
       setError(null);
     }
   }, [word]);
+  // if (!yourTurn)
+  //   return (
+  //     <div className="text-[2vh] mx-auto max-w-[600px] h-[20vh] flex flex-col justify-center items-center p-4 lg:p-8 w-full">
+  //       Waiting for your opponent
+  //     </div>
+  //   );
   return (
-    <div className="text-[2vh] mx-auto max-w-[600px] h-[20vh] flex flex-col justify-center items-center p-4 lg:p-8 w-full">
+    <div className="text-4xl mx-auto max-w-[600px] h-[20vh] flex flex-col justify-center items-center p-4 lg:p-8 w-full">
       {word.length > 0 ? (
         <div className="flex gap-2 p-4 justify-center items-center">
           <Button
@@ -72,22 +78,24 @@ export function BGIOStatusArea({
           {error ? (
             <>
               <p className="font-bold">That wasn&apos;t a valid word</p>
-              <p className="text-[1.5vh]">Select a word</p>
+              <p className="text-xl">Select a word</p>
             </>
           ) : (
             <>
-              <h1 className="font-bold">
-                Welcome to{" "}
-                <img
-                  className="inline drop-shadow mb-1 ml-1 relative bottom-1"
-                  style={{ width: 30, height: 30 }}
-                  src="/bee.png"
-                />{" "}
-                <span className="text-darkbrown font-fredoka uppercase">
-                  Buzzwords
-                </span>
-              </h1>
-              <p className="text-[1.5vh]">
+              {yourTurn && (
+                <h1 className="font-bold">
+                  Welcome to{" "}
+                  <span className="text-darkbrown font-fredoka uppercase text-nowrap">
+                    <img
+                      className="inline drop-shadow mb-1 ml-1 relative bottom-1"
+                      style={{ width: 30, height: 30 }}
+                      src="/bee.png"
+                    />{" "}
+                    Buzzwords
+                  </span>
+                </h1>
+              )}
+              <p className="text-xl">
                 {yourTurn
                   ? "It's your turn. Select a word"
                   : "Waiting for your opponent"}
