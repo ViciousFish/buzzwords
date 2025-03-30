@@ -14,12 +14,12 @@ declare module "@react-three/fiber" {
 }
 
 const GAMEBOARD_BOUNDING_POINTS = [
-  new Vector3(-17, 27, 0),
-  new Vector3(17, 27, 0),
-  new Vector3(0, -26, 0),
+  new Vector3(-17, 20, 0),
+  new Vector3(17, 20, 0),
+  new Vector3(0, -19, 0),
 ];
 
-const PAD_FACTOR = 1;
+const PAD_FACTOR = 0;
 
 const setZoom = (
   group: Group,

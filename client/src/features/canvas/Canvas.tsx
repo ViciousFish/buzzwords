@@ -42,7 +42,7 @@ export default React.memo(function BaseCanvas({
       events,
       orthographic: true,
       camera: {
-        position: [0, 0, 20],
+        position: [0, 0, 15],
         zoom: 5,
       },
       flat: true,

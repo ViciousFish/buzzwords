@@ -1,0 +1,3 @@
+.bgio-client {
+  @apply flex-auto flex flex-col;
+}

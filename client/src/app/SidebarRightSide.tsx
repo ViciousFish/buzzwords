@@ -30,7 +30,7 @@ const SidebarRightSide: React.FC<{
   return (
     <div
       className={classNames(
-        "flex-auto overflow-hidden h-full touch-none relative",
+        "flex-auto overflow-hidden h-full touch-none relative flex flex-col",
         mobileLayout && "min-w-[100vw]"
       )}
       {...bindDragArgs}
