@@ -79,12 +79,12 @@ const TopBar: React.FC = () => {
       )}
     >
       <div className="flex h-full p-0 items-center topbar">
-        <div className="flex h-full gap-4 items-center">
+        <div className="flex h-full gap-2 items-center">
           {PLATFORM === "darwin" && (
             <div className="stoplights h-full w-[90px] dark:w-[75px] mr-2" />
           )}
           <TopBarButton
-            className="ml-2"
+            className="ml-4 mr-1"
             onPress={() => {
               dispatch(toggleIsOpen());
               if (gamelistIsOpen) {
@@ -109,6 +109,7 @@ const TopBar: React.FC = () => {
                 setSettingsPanel(true);
               }}
               aria-label="toggle game settings"
+
               // className="p-2 rounded-md hover:bg-lightbg hover:bg-opacity-50"
             >
               {/* <FontAwesomeIcon icon={faCog} /> */}
@@ -139,7 +140,7 @@ const TopBar: React.FC = () => {
           </TopBarButton>
         </div>
         <div className="h-full flex-auto window-drag" />
-        <div className="flex items-center pr-2">
+        <div className="flex items-center pr-2 mr-2 gap-2">
           {isLoading && (
             <FontAwesomeIcon icon={faSpinner} className="mr-2 animate-spin" />
           )}

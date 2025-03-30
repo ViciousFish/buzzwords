@@ -22,7 +22,7 @@ const TutorialCard: React.FC<{
       )}
     >
       <div className="flex items-center justify-between bg-bBrown-900 text-bYellow-300 pl-2 py-1">
-        <h3 className="text-lg font-bold inline">How to play</h3>
+        <h3 className="text-lg font-bold inline">Tutorial</h3>
         {!hideDismiss && (<div>
           <button
             className="hover:text-darkbrown mr-2"

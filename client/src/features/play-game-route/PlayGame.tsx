@@ -149,8 +149,9 @@ const PlayGame: React.FC = () => {
           opponent={opponent}
         />
       )}
-      <div
-        className="flex flex-col items-stretch w-[450px] bg-beeYellow-300 border-2 border-bBrown-900 rounded-xl overflow-hidden shadow-xl"
+      <div className={classNames( "flex flex-col items-stretch w-[450px] border-2 border-bBrown-900 rounded-xl overflow-hidden shadow-xl",
+          "bg-beeYellow-300 backdrop-blur"
+        )}
       >
         <div className="h-8 bg-bBrown-900">
           <GameHeader game={game} userIndex={userIndex} />

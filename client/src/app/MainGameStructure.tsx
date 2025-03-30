@@ -13,6 +13,8 @@ import { toggleIsOpen } from "../features/gamelist/gamelistSlice";
 import { raf } from "@react-spring/shared";
 import DSC05151 from "../assets/DSC05151.jpg";
 import DSC02511 from "../assets/DSC02511.jpg";
+import DSC05470 from "../assets/DSC05470-positive.jpg";
+import DSC9347 from "../assets/_DSC9347.jpg";
 // default tailwind breakpoints
 export const BREAKPOINTS = {
   xs: 0,
@@ -150,20 +152,22 @@ const MainGameStructure: React.FC = () => {
       <TopBar />
       <div
         style={{
-          backgroundImage: `url(${DSC05151})`,
+          backgroundImage: `url(${DSC02511})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
         className=" mb-[50px] overflow-hidden max-w-[100vw] flex items-center justify-center safe-area-pad flex-auto"
       >
-        {/* <a.div
+        <a.div
           className="w-[300px] flex-shrink-0 z-30"
           style={{ marginLeft: sidebarSpring.marginLeft }}
         >
           <GameList />
-        </a.div> */}
+        </a.div>
         {/* <SidebarRightSide mobileLayout={mobileLayout} bindDragArgs={bind()}> */}
+        <div className="flex-auto flex items-center justify-center">
           <Outlet />
+        </div>
         {/* </SidebarRightSide> */}
       </div>
       {/* {colors} */}

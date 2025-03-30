@@ -7,6 +7,7 @@ import {
   DirectionalLight,
   AmbientLight,
   PlaneGeometry,
+  ACESFilmicToneMapping,
 } from "three";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { extend, createRoot, events, ReconcilerRoot } from "@react-three/fiber";
@@ -15,6 +16,7 @@ import { ReactReduxContext } from "react-redux";
 import useDimensions from "react-cool-dimensions";
 
 import Wrap3d from "./Wrap3d";
+import { useEffect } from "hoist-non-react-statics/node_modules/@types/react";
 
 extend({
   Group,
@@ -24,7 +26,7 @@ extend({
   DirectionalLight,
   AmbientLight,
   TextGeometry,
-  PlaneGeometry
+  PlaneGeometry,
 });
 interface BaseCanvasProps {
   children: React.ReactNode;
@@ -58,8 +60,11 @@ export default React.memo(function BaseCanvas({
       frameloop: "demand",
       gl: {
         powerPreference: "low-power",
+        // toneMapping: ACESFilmicToneMapping,
+        // toneMappingExposure: 1.5,
       },
-      dpr: Math.max(window.devicePixelRatio, 1),
+      // dpr: Math.max(window.devicePixelRatio, 1),
+      dpr: 0.4,
     });
     root.current.render(
       <ReduxProvider>
@@ -67,10 +72,19 @@ export default React.memo(function BaseCanvas({
       </ReduxProvider>
     );
   }
+  // useEffect(() => {
+  //   const canvas = canvasRef.current;
+  //   if (canvas) {
+  //     const ctx = canvas.getContext("webgl"); 
+  //     if (ctx) {
+  //       ctx.imageSmoothingEnabled = false;
+  //     }
+  //   }
+  // }, []);
   return (
     <div className={isGameboard ? "aspect-[9/10] p-4 w-full relative" : "w-full h-full relative"}>
       <div className="w-full h-full" ref={observe}>
-        <canvas ref={canvasRef} />
+        <canvas style={{ imageRendering: "pixelated" }} ref={canvasRef} />
       </div>
     </div>
   );

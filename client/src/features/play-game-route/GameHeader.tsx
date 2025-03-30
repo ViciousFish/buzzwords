@@ -59,7 +59,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game, userIndex }) => {
     <div className="h-[50px] flex flex-shrink-0 bg-beeYellow-900 dark:bg-beeYellow-900 text-beeYellow-200 text-lg pl-4">
       <div className="flex items-center justify-start flex-auto">
         <span className={classNames(game.turn === 0 ? "underline" : "", "text-p1 font-bold")}>{p1Nick || "???"}</span>
-        {p1Nick && userIndex === 0 && editButton}
+        {/* {p1Nick && userIndex === 0 && editButton} */}
         <span className="mx-2 text-textInverse"> vs </span>
         <span className={classNames(game.turn === 1 ? "underline" : "", "text-p2 font-bold")}>
           {p2Nick || "???"}
@@ -68,7 +68,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game, userIndex }) => {
               ({game.difficulty})
             </span>
           )}
-          {p2Nick && userIndex === 1 && editButton}
+          {/* {p2Nick && userIndex === 1 && editButton} */}
         </span>
       </div>
       <div className="lg:w-[200px] flex items-center justify-end">
