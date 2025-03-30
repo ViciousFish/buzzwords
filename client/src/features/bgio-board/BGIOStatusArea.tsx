@@ -82,7 +82,8 @@ export function BGIOStatusArea({
             </>
           ) : (
             <>
-              {yourTurn && (
+              {yourTurn ? (
+                <>
                 <h1 className="font-bold">
                   Welcome to{" "}
                   <span className="text-darkbrown font-fredoka uppercase text-nowrap">
@@ -92,14 +93,20 @@ export function BGIOStatusArea({
                       src="/bee.png"
                     />{" "}
                     Buzzwords
-                  </span>
-                </h1>
+                    </span>
+                  </h1>
+                  <p className="text-xl">
+                    {"It's your turn. Select a word"}
+                  </p>
+                </>
+              ) : (
+                <>
+                <h1 className="font-bold">Waiting for your opponent...</h1>
+                  <p className="text-xl">
+                    FYI: you can play any letter on the board.
+                  </p>
+                </>
               )}
-              <p className="text-xl">
-                {yourTurn
-                  ? "It's your turn. Select a word"
-                  : "Waiting for your opponent"}
-              </p>
             </>
           )}
         </div>

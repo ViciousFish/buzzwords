@@ -8,8 +8,6 @@ import { BGIOStatusArea } from "./BGIOStatusArea";
 
 export function BGIOGameBoard(props: BoardProps<BuzzwordsGameState>) {
   const [selection, setSelection] = useState<HexCoord[]>([]);
-  const word = selection.map(({ q, r }) => props.G.grid[`${q},${r}`].value);
-  const yourTurn = props.ctx.currentPlayer === "0";
   return (
     <div className="flex flex-col flex-auto">
       <BGIOStatusArea
@@ -20,6 +18,7 @@ export function BGIOGameBoard(props: BoardProps<BuzzwordsGameState>) {
       <div className="flex-auto relative px-4">
         <Canvas isGameboard>
           <GameBoardTiles
+            tutorialOnlyShowStartingTiles={props.ctx.turn === 1}
             revealLetters
             enableSelection
             onToggleTile={(coord) => {

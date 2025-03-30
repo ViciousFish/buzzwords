@@ -13,6 +13,16 @@ import {
 import { QRCoord } from "../hexGrid/hexGrid";
 import GameTile from "./GameTile";
 
+const STARTING_TILES = [
+  { q: -3, r: 0 },
+  { q: -2, r: 0 },
+  { q: -2, r: -2 },
+  { q: -1, r: -1 },
+  { q: -3, r: -1 },
+  { q: -1, r: -2 },
+  { q: -2, r: -1 },
+];
+
 export function GameBoardTiles({
   grid,
   revealLetters,
@@ -21,6 +31,7 @@ export function GameBoardTiles({
   currentTurn,
   enableSelection,
   onToggleTile,
+  tutorialOnlyShowStartingTiles = false,
 }: {
   grid: HexGrid;
   revealLetters: boolean;
@@ -28,6 +39,7 @@ export function GameBoardTiles({
   currentTurn: 0 | 1;
   enableSelection: boolean;
   onToggleTile: (coord: QRCoord) => void;
+  tutorialOnlyShowStartingTiles?: boolean;
 } & Pick<GroupProps, "position">) {
   const tilesThatWillBeCaptured = useMemo(() => {
     const willBeCaptured = {};
@@ -50,8 +62,14 @@ export function GameBoardTiles({
     <group position={position}>
       {Object.entries(grid).map(([coord, tile]) => {
         const [q, r] = coord.split(",").map(Number);
+        const hidden =
+          tutorialOnlyShowStartingTiles &&
+          !STARTING_TILES.some(
+            (startingTile) => startingTile.q === q && startingTile.r === r
+          );
         return (
           <GameTile
+            hidden={hidden}
             isCapital={revealLetters ? tile.capital : false}
             coord={coord as QRCoord}
             letter={revealLetters ? tile.value : ""}

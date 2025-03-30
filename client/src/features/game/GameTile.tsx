@@ -26,6 +26,7 @@ import { Sakura } from "../../assets/Sakura";
 import { HexOutlineSolid } from "../../assets/Hexoutlinesolid";
 import Crown from "../../assets/Crown";
 import { getTheme } from "../settings/settingsSelectors";
+import { Html } from "@react-three/drei";
 
 interface GameTileProps {
   coord?: QRCoord;
@@ -41,6 +42,7 @@ interface GameTileProps {
   selected: boolean;
   willBeReset: boolean;
   willBeCaptured: boolean;
+  hidden: boolean;
 }
 
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
@@ -59,6 +61,7 @@ const GameTile: React.FC<GameTileProps> = ({
   willBeCaptured,
   isCapital,
   isPlayerIdentity,
+  hidden,
 }) => {
   const invalidate = useThree(({ invalidate }) => invalidate);
 
@@ -148,6 +151,14 @@ const GameTile: React.FC<GameTileProps> = ({
       invalidate();
     },
     immediate: lowPowerMode,
+  });
+
+  const opacitySpring = useSpring({
+    opacity: hidden ? 0 : 1,
+    config: {
+      ...springConfig.stiff,
+      clamp: true,
+    },
   });
 
   const outline = isPlayerIdentity && currentTurn === owner;
@@ -271,20 +282,30 @@ const GameTile: React.FC<GameTileProps> = ({
       }
       {...colorAndScaleSpring}
     >
-      {/* <Html>{coord}</Html> */}
+      <Html>
+        <div className="z-10 w-20 h-20 bg-white text-black">{coord}</div>
+      </Html>
       {letter && (
         <mesh ref={characterMesh} position={[0, 0, 0.2]}>
           <textGeometry args={[letter.toUpperCase(), fontConfig]} />
-          <meshStandardMaterial color={theme.colors.threed.secondaryAccent} />
+          <a.meshStandardMaterial
+            transparent
+            opacity={opacitySpring.opacity}
+            color={theme.colors.threed.secondaryAccent}
+          />
         </mesh>
       )}
       {prevLetter && !letter && (
         <mesh ref={characterMesh} position={[0, 0, 0.2]}>
           <textGeometry args={[prevLetter.toUpperCase(), fontConfig]} />
-          <meshStandardMaterial color={theme.colors.threed.secondaryAccent} />
+          <a.meshStandardMaterial
+            transparent
+            opacity={opacitySpring.opacity}
+            color={theme.colors.threed.secondaryAccent}
+          />
         </mesh>
       )}
-      {(isCapital || (prevCapital && !letter) || isPlayerIdentity) &&
+      {(isCapital || (prevCapital && !letter) || isPlayerIdentity) && !hidden &&
         {
           0: <Flower01 />,
           1: <Sakura />,
@@ -299,7 +320,11 @@ const GameTile: React.FC<GameTileProps> = ({
           />
         )}
         <HexTile orientation="flat">
-          <a.meshStandardMaterial color={colorAndScaleSpring.color} />
+          <a.meshStandardMaterial
+            transparent
+            color={colorAndScaleSpring.color}
+            opacity={opacitySpring.opacity}
+          />
         </HexTile>
       </group>
       {/* @ts-ignore */}
