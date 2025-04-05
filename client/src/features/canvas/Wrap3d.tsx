@@ -94,22 +94,6 @@ const Wrap3d = ({ children, isGameboard }: Wrap3dProps) => {
             isGameboard
           );
           invalidate();
-          // if (zoom <= 0) {
-          //   setTimeout(() => {
-          //     if (groupRef.current) {
-          //       console.log('zoom was out of bounds, running again')
-          //       setZoom(
-          //         groupRef.current,
-          //         width,
-          //         height,
-          //         boundingBox,
-          //         camera,
-          //         isGameboard
-          //       );
-          //       invalidate();
-          //     }
-          //   }, 200);
-          // }
         }
       });
     }

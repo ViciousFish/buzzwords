@@ -29,13 +29,13 @@ export default React.memo(function BaseCanvas({
   const ReduxProvider = useContextBridge(ReactReduxContext);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const root = React.useRef<ReconcilerRoot<HTMLElement>>(null!);
+  const root = React.useRef<ReconcilerRoot<HTMLCanvasElement>>(null!);
 
   const { observe, width, height } = useDimensions();
 
   if (canvasRef.current) {
     if (!root.current) {
-      root.current = createRoot<HTMLElement>(canvasRef.current);
+      root.current = createRoot<HTMLCanvasElement>(canvasRef.current);
     }
     root.current.configure({
       size: { width, height, top: 0, left: 0 },

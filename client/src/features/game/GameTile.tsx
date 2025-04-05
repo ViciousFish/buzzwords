@@ -1,9 +1,4 @@
-import React, {
-  useMemo,
-  useRef,
-  useLayoutEffect,
-  useState,
-} from "react";
+import React, { useMemo, useRef, useLayoutEffect, useState } from "react";
 import { Group, Mesh, Vector3 } from "three";
 import {
   useFrame,
@@ -131,7 +126,7 @@ const GameTile: React.FC<GameTileProps> = ({
     }
   }
 
-  let scale = owner !== 2 || selected ? 1 : 0.9;
+  let scale = hidden ? 0 : owner !== 2 || selected ? 1 : 0.9;
 
   if (isPlayerIdentity && currentTurn === owner) {
     scale = 1;
@@ -145,6 +140,7 @@ const GameTile: React.FC<GameTileProps> = ({
     color,
     config: {
       ...springConfig.stiff,
+      friction: 40,
       clamp: true,
     },
     onChange: () => {
@@ -153,13 +149,13 @@ const GameTile: React.FC<GameTileProps> = ({
     immediate: lowPowerMode,
   });
 
-  const opacitySpring = useSpring({
-    opacity: hidden ? 0 : 1,
-    config: {
-      ...springConfig.stiff,
-      clamp: true,
-    },
-  });
+  // const opacitySpring = useSpring({
+  //   opacity: hidden ? 0 : 1,
+  //   config: {
+  //     ...springConfig.stiff,
+  //     clamp: true,
+  //   },
+  // });
 
   const outline = isPlayerIdentity && currentTurn === owner;
 
@@ -206,7 +202,6 @@ const GameTile: React.FC<GameTileProps> = ({
   const prevLetter = usePrevious(letter);
   const prevCapital = usePrevious(isCapital);
   useLayoutEffect(() => {
-    // CQ: TODO: low power mode
     if (
       (letter?.length || isCapital) &&
       (prevLetter !== letter || isCapital !== prevCapital) &&
@@ -283,29 +278,22 @@ const GameTile: React.FC<GameTileProps> = ({
       {...colorAndScaleSpring}
     >
       <Html>
-        <div className="z-10 w-20 h-20 bg-white text-black">{coord}</div>
+        <div className="bg-white text-black">{coord}</div>
       </Html>
       {letter && (
         <mesh ref={characterMesh} position={[0, 0, 0.2]}>
           <textGeometry args={[letter.toUpperCase(), fontConfig]} />
-          <a.meshStandardMaterial
-            transparent
-            opacity={opacitySpring.opacity}
-            color={theme.colors.threed.secondaryAccent}
-          />
+          <a.meshStandardMaterial color={theme.colors.threed.secondaryAccent} />
         </mesh>
       )}
       {prevLetter && !letter && (
         <mesh ref={characterMesh} position={[0, 0, 0.2]}>
           <textGeometry args={[prevLetter.toUpperCase(), fontConfig]} />
-          <a.meshStandardMaterial
-            transparent
-            opacity={opacitySpring.opacity}
-            color={theme.colors.threed.secondaryAccent}
-          />
+          <a.meshStandardMaterial color={theme.colors.threed.secondaryAccent} />
         </mesh>
       )}
-      {(isCapital || (prevCapital && !letter) || isPlayerIdentity) && !hidden &&
+      {(isCapital || (prevCapital && !letter) || isPlayerIdentity) &&
+        !hidden &&
         {
           0: <Flower01 />,
           1: <Sakura />,
@@ -320,11 +308,7 @@ const GameTile: React.FC<GameTileProps> = ({
           />
         )}
         <HexTile orientation="flat">
-          <a.meshStandardMaterial
-            transparent
-            color={colorAndScaleSpring.color}
-            opacity={opacitySpring.opacity}
-          />
+          <a.meshStandardMaterial color={colorAndScaleSpring.color} />
         </HexTile>
       </group>
       {/* @ts-ignore */}

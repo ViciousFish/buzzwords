@@ -41,7 +41,6 @@ export function getWordFromMove(G: BuzzwordsGameState, move: HexCoord[]) {
   return word;
 }
 
-
 export const Buzzwords: BoardGame<BuzzwordsGameState> = {
   name: "buzzwords",
   setup: ({ ctx, ...plugins }, setupData) => {

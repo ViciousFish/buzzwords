@@ -1,7 +1,7 @@
 import { Client } from "boardgame.io/react";
-import { Buzzwords } from "buzzwords-shared/Buzzwords";
+import { TutorialBuzzwords } from "buzzwords-shared/Tutorial";
 import { BGIOGameBoard } from "./BGIOGameBoard";
 import "./BGIOClient.css";
-const App = Client({ game: Buzzwords, board: BGIOGameBoard });
+const App = Client({ game: TutorialBuzzwords, board: BGIOGameBoard });
 
 export default App;

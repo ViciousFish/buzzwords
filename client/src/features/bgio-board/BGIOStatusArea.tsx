@@ -15,14 +15,12 @@ export function BGIOStatusArea({
   G,
   ctx,
   moves,
-  log,
   selection,
   setSelection,
 }: BoardProps<BuzzwordsGameState> & {
   selection: HexCoord[];
   setSelection: (selection: HexCoord[]) => void;
 }) {
-  console.log("🚀 ~ BGIOStatusArea ~ log:", log);
   const [error, setError] = useState<string | null>(null);
   const yourTurn = ctx.currentPlayer === "0";
   const word = useMemo(
