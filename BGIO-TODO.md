@@ -1,0 +1,3 @@
+- [ ] game over state
+- [ ] detect bonus move from BGIO props
+- [ ] working bot

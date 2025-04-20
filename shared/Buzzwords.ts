@@ -81,6 +81,7 @@ export const Buzzwords: BoardGame<BuzzwordsGameState> = {
       { G, ctx, playerID, events, random, ...plugins },
       move: HexCoord[]
     ) => {
+      console.log("🚀 ~ playerID:", playerID)
       const word = getWordFromMove(G, move);
       if (word === INVALID_MOVE) {
         return INVALID_MOVE;
@@ -222,7 +223,9 @@ export const Buzzwords: BoardGame<BuzzwordsGameState> = {
       }
 
       // Your turn is over unless you captured the capital
-      if (!capitalCaptured) {
+      if (capitalCaptured) {
+        events.endTurn({ next: playerID });
+      } else {
         events.endTurn();
       }
     },
@@ -276,6 +279,7 @@ const getUniqPermutations = (coordsPerLetter: HexCoord[][]): HexCoord[][] =>
     R.reduce(R.xprod),
     R.map(R.flatten),
     R.filter(onlyHasUniqElements)
+    // @ts-expect-error ramda bs
   )(R.head(coordsPerLetter), R.tail(coordsPerLetter));
 
 const onlyHasUniqElements = (arr: any) => {
