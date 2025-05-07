@@ -110,6 +110,9 @@ export const Buzzwords: BoardGame<BuzzwordsGameState> = {
         return INVALID_MOVE;
       }
 
+      // Clear selection after validating the move
+      G.selection = [];
+
       // TODO: are we storing playerID as 0 or 1?
       // TODO: If not, we need to map playerID back to 0 or 1
       // TODO: or rewrite all the gridHelpers

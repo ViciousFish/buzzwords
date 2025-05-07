@@ -216,41 +216,43 @@ export function BGIOStatusArea({
           <h1 className="text-4xl font-fredoka text-darkbrown uppercase text-center">
             {word}
           </h1>
-          <div className={`flex gap-1 ${preferred_alignment}`}>
-            <Button
-              className="bg-darkbrown text-lightbg rounded-full px-3 py-1 text-sm"
-              onPress={() => {
-                setSelection(selection.slice(0, selection.length - 1));
-              }}
-            >
-              <FontAwesomeIcon icon={faBackspace} /> Backspace
-            </Button>{" "}
-            <Button
-              className="bg-darkbrown text-lightbg rounded-full px-3 py-1 text-sm"
-              onPress={() => {
-                setSelection([]);
-              }}
-            >
-              Clear
-            </Button>
-            <Button
-              className="bg-green-600 text-lightbg rounded-full px-3 py-1 text-sm"
-              onPress={() => {
-                const word = getWordFromMove(G, selection);
-                const validWord = isValidWord(word, WordsObject);
-                if (word === INVALID_MOVE || !validWord) {
+          {ctx.currentPlayer === "0" && (
+            <div className={`flex gap-1 ${preferred_alignment}`}>
+              <Button
+                className="bg-darkbrown text-lightbg rounded-full px-3 py-1 text-sm"
+                onPress={() => {
+                  setSelection(selection.slice(0, selection.length - 1));
+                }}
+              >
+                <FontAwesomeIcon icon={faBackspace} /> Backspace
+              </Button>{" "}
+              <Button
+                className="bg-darkbrown text-lightbg rounded-full px-3 py-1 text-sm"
+                onPress={() => {
                   setSelection([]);
-                  setError(INVALID_MOVE);
-                  return;
-                }
-                moves.playWord(selection);
-                setError(null);
-                setSelection([]);
-              }}
-            >
-              <FontAwesomeIcon icon={faPlay} /> Submit
-            </Button>
-          </div>
+                }}
+              >
+                Clear
+              </Button>
+              <Button
+                className="bg-green-600 text-lightbg rounded-full px-3 py-1 text-sm"
+                onPress={() => {
+                  const word = getWordFromMove(G, selection);
+                  const validWord = isValidWord(word, WordsObject);
+                  if (word === INVALID_MOVE || !validWord) {
+                    setSelection([]);
+                    setError(INVALID_MOVE);
+                    return;
+                  }
+                  moves.playWord(selection);
+                  setError(null);
+                  setSelection([]);
+                }}
+              >
+                <FontAwesomeIcon icon={faPlay} /> Submit
+              </Button>
+            </div>
+          )}
         </div>
       ) : (
         <div className="w-full text-darkbrown flex-auto flex flex-col justify-center items-stretch">
