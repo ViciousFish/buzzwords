@@ -66,7 +66,7 @@ export function GameBoardTiles({
     <group position={position}>
       {Object.entries(grid).map(([coord, tile]) => {
         const [q, r] = coord.split(",").map(Number);
-        const hidden = !revealedTiles.has(coord);
+        const hidden = !revealedTiles[coord];
         return (
           <GameTile
             hidden={hidden}
