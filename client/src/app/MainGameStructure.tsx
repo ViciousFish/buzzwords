@@ -59,45 +59,48 @@ const MainGameStructure: React.FC = () => {
 
   useEffect(() => {
     // requestAnimationFrame(() => raf.advance());
-  }, [gamelistIsOpen])
+  }, [gamelistIsOpen]);
 
   const isDown = useRef(false);
 
-  const bind = useDrag(({ down, distance: [x], delta: [dx], movement: [mx] }) => {
-    if (!mobileLayout) {
-      return;
-    }
-    if ((gamelistIsOpen && mx > 0) || (!gamelistIsOpen && mx < 0)) {
-      return;
-    }
-    // requestAnimationFrame(() => raf.advance())
-    if (down) {
-      isDown.current = true;
-      sidebarSpring.marginLeft.set(
-        Math.min(0, dx + sidebarSpring.marginLeft.get())
-      );
-    } else {
-      if (x > 40 || (gamelistIsOpen && x < 2)) {
-        dispatch(toggleIsOpen());
+  const bind = useDrag(
+    ({ down, distance: [x], delta: [dx], movement: [mx] }) => {
+      if (!mobileLayout) {
+        return;
+      }
+      if ((gamelistIsOpen && mx > 0) || (!gamelistIsOpen && mx < 0)) {
+        return;
+      }
+      // requestAnimationFrame(() => raf.advance())
+      if (down) {
+        isDown.current = true;
+        sidebarSpring.marginLeft.set(
+          Math.min(0, dx + sidebarSpring.marginLeft.get())
+        );
       } else {
-        sidebarSpring.marginLeft.start(gamelistIsOpen ? 0 : mlValue)
+        if (x > 40 || (gamelistIsOpen && x < 2)) {
+          dispatch(toggleIsOpen());
+        } else {
+          sidebarSpring.marginLeft.start(gamelistIsOpen ? 0 : mlValue);
+        }
       }
     }
-  });
+  );
 
   return (
     <ScreenHeightWraper className="grid grid-rows-[min-content_minmax(0_auto)] relative overflow-hidden">
       <TopBar />
-      <div
-        className="bg-lightbg mt-[50px] overflow-hidden max-w-[100vw] flex flex-row safe-area-pad flex-auto"
-      >
+      <div className="bg-lightbg mt-[50px] overflow-hidden max-w-[100vw] flex flex-row safe-area-pad flex-auto">
         <a.div
           className="w-[300px] flex-shrink-0 z-30"
           style={{ marginLeft: sidebarSpring.marginLeft }}
         >
           <GameList />
         </a.div>
-        <SidebarRightSide mobileLayout={mobileLayout} bindDragArgs={bind()}>
+        <SidebarRightSide
+          mobileLayout={mobileLayout}
+          // bindDragArgs={bind()}
+        >
           <Outlet />
         </SidebarRightSide>
       </div>

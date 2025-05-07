@@ -15,8 +15,9 @@ import {
   faChevronLeft,
   faChevronRight,
   faPlay,
-  faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
+import Canvas from "../canvas/Canvas";
+import Bee from "../../assets/Bee";
 
 const HINT_MESSAGES = [
   "You can use any letter on the board",
@@ -80,10 +81,15 @@ function OpponentFirstTurnStatus() {
 
 function OpponentTurnStatus() {
   return (
-    <>
-      <h1 className="text-4xl font-bold">Nice one</h1>
-      <p className="text-xl">Now it&apos;s your opponent&apos;s turn</p>
-    </>
+    <div className="grid grid-cols-[1fr,128px]">
+      <div className="flex flex-col justify-center">
+        <h1 className="text-4xl font-bold">Nice one</h1>
+        <p className="text-xl">Now it&apos;s your opponent&apos;s turn</p>
+      </div>
+      <div className="p-2">
+      <Canvas><Bee /></Canvas>
+      </div>
+    </div>
   );
 }
 
@@ -102,9 +108,7 @@ function YourTurnStatus({ turn }: { turn: number }) {
     <>
       <div className="flex-auto flex flex-col justify-center">
         <span className="text-md">It&apos;s your turn</span>
-        <p className="text-2xl font-bold">
-          {HINT_MESSAGES[hintIndex]}
-        </p>
+        <p className="text-2xl font-bold">{HINT_MESSAGES[hintIndex]}</p>
       </div>
       <div className={`flex ${preferred_alignment}`}>
         <div className="flex relative top-[-2px] self-end items-center text-xs font-normal text-lightbg bg-darkbrown rounded-full">
