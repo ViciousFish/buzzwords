@@ -87,7 +87,9 @@ function OpponentTurnStatus() {
         <p className="text-xl">Now it&apos;s The Bee&apos;s turn</p>
       </div>
       <div className="p-2">
-      <Canvas><Bee /></Canvas>
+        <Canvas>
+          <Bee />
+        </Canvas>
       </div>
     </div>
   );
@@ -148,9 +150,9 @@ function YourTurnStatus({ turn }: { turn: number }) {
 function YourBonusTurnStatus() {
   return (
     <>
-      <h1 className="font-bold">You get a bonus turn</h1>
+      <h1 className="font-bold text-4xl">You get a bonus turn</h1>
       <p className="text-xl">
-        Now&apos; your chance to win. Try to eliminate all of your
+        Now&apos;s your chance to win. Try to eliminate all of your
         opponent&apos;s territory.
       </p>
     </>
@@ -160,7 +162,7 @@ function YourBonusTurnStatus() {
 function OpponentBonusTurnStatus() {
   return (
     <>
-      <h1 className="font-bold">The Bee gets a bonus turn</h1>
+      <h1 className="font-bold text-4xl">The Bee gets a bonus turn</h1>
       <p className="text-xl">
         The Bee is trying to eliminate all of your territory.
       </p>
@@ -172,11 +174,11 @@ function GameOverStatus({ winner }: { winner: string }) {
   return (
     <>
       <h1 className="text-4xl font-bold">
-        {winner === "0" ? "You won!" : "The Bee won!"}
+        {winner === "0" ? "You won" : "The Bee won!"}
       </h1>
       <p className="text-xl">
-        {winner === "0" 
-          ? "Congratulations on your victory!" 
+        {winner === "0"
+          ? "Welcome to Buzzwords! Play again against The Bee or invite a friend."
           : "Better luck next time!"}
       </p>
     </>
@@ -198,6 +200,9 @@ function renderStatus(
   }
   if (yourTurn && isBonusTurn) {
     return <YourBonusTurnStatus />;
+  }
+  if (!yourTurn && isBonusTurn) {
+    return <OpponentBonusTurnStatus />;
   }
   if (turn === 1) {
     return <InitialTurnStatus />;
@@ -222,7 +227,15 @@ export function BGIOStatusArea({
 }) {
   const [error, setError] = useState<string | null>(null);
   const yourTurn = ctx.currentPlayer === "0";
-  const bonusTurn = log[log.length - 1]; // TODO figure out how to tell
+  const bonusTurn = useMemo(() => {
+    if (!log || log.length === 0) return false;
+    const lastMove = log[log.length - 1];
+    // If the last move was by the current player, it means they captured a capital
+    // and got a bonus turn
+    return yourTurn
+      ? lastMove.action.payload.playerID === ctx.currentPlayer
+      : lastMove.action.payload.playerID !== ctx.currentPlayer;
+  }, [log, ctx.currentPlayer, yourTurn]);
   const word = useMemo(
     () => selection.map(({ q, r }) => G.grid[`${q},${r}`].value).join(""),
     [selection, G.grid]
@@ -282,7 +295,7 @@ export function BGIOStatusArea({
         </div>
       ) : (
         <div className="w-full text-darkbrown flex-auto flex flex-col justify-center items-stretch">
-          {renderStatus(ctx.turn, yourTurn, error, false, ctx.gameover)}
+          {renderStatus(ctx.turn, yourTurn, error, bonusTurn, ctx.gameover)}
         </div>
       )}
     </div>
