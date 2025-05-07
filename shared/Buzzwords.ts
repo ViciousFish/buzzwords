@@ -1,7 +1,6 @@
 // Game.ts
-import type { AiEnumerate, Game as BoardGame, Move } from "boardgame.io";
+import type { Game as BoardGame } from "boardgame.io";
 import { INVALID_MOVE } from "boardgame.io/core";
-import Game from "./Game";
 import { nanoid } from "nanoid";
 import HexGrid, {
   makeHexGrid,
@@ -24,18 +23,6 @@ export interface BuzzwordsGameState {
   difficulty: number;
   selection: HexCoord[];
 }
-
-// Plugin to handle selection updates
-const SelectionPlugin = {
-  name: 'selection',
-  fnWrap: (fn: any) => (G: any, ctx: any, ...args: any[]) => {
-    const [selection, ...rest] = args;
-    if (selection && Array.isArray(selection)) {
-      G.selection = selection;
-    }
-    return fn(G, ctx, ...rest);
-  },
-};
 
 export function getWordFromMove(G: BuzzwordsGameState, move: HexCoord[]) {
   let word = "";
@@ -91,7 +78,6 @@ export const Buzzwords: BoardGame<BuzzwordsGameState> = {
   },
   maxPlayers: 2,
   minPlayers: 2,
-  plugins: [SelectionPlugin],
   moves: {
     updateSelection: ({ G }, selection: HexCoord[]) => {
       G.selection = selection;
