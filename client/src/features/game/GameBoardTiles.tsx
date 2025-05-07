@@ -12,6 +12,7 @@ import {
 
 import { QRCoord } from "../hexGrid/hexGrid";
 import GameTile from "./GameTile";
+import { useTileReveal } from "./useTileReveal";
 
 const STARTING_TILES = [
   { q: -3, r: 0 },
@@ -41,6 +42,8 @@ export function GameBoardTiles({
   onToggleTile: (coord: QRCoord) => void;
   tutorialOnlyShowStartingTiles?: boolean;
 } & Pick<GroupProps, "position">) {
+  const { revealedTiles } = useTileReveal(grid, tutorialOnlyShowStartingTiles);
+
   const tilesThatWillBeCaptured = useMemo(() => {
     const willBeCaptured = {};
     selection.forEach((coord) => {
@@ -58,15 +61,12 @@ export function GameBoardTiles({
     const cells = getCellsToBeReset(grid, selection, currentTurn);
     return R.groupBy((cell: Cell) => `${cell.q},${cell.r}`, cells);
   }, [grid, selection, currentTurn]);
+
   return (
     <group position={position}>
       {Object.entries(grid).map(([coord, tile]) => {
         const [q, r] = coord.split(",").map(Number);
-        const hidden =
-          tutorialOnlyShowStartingTiles &&
-          !STARTING_TILES.some(
-            (startingTile) => startingTile.q === q && startingTile.r === r
-          );
+        const hidden = !revealedTiles.has(coord);
         return (
           <GameTile
             hidden={hidden}
