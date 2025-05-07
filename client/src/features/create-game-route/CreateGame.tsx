@@ -166,11 +166,6 @@ function CreateGame() {
               value="online-bot"
               title="Online against a bot"
               subtitle="Start here"
-              // subtitle={
-              //   loggedIn
-              //     ? "Sync game across devices. Game will only be playable online"
-              //     : "Log in to sync bot games across devices"
-              // }
               icon={
                 <>
                   <FontAwesomeIcon size="lg" icon={faGlobe} />
@@ -189,11 +184,10 @@ function CreateGame() {
                 </>
               }
             />
-            {/* <GameType
-              disabled
+            <GameType
               value="hotseat"
               title="Offline against a human"
-              subtitle="Both players take turns on this device. Coming soon"
+              subtitle="Both players take turns on this device"
               icon={
                 <>
                   <FontAwesomeIcon size="lg" icon={faUser} />
@@ -201,16 +195,15 @@ function CreateGame() {
               }
             />
             <GameType
-              disabled
               value="offline-bot"
               title="Offline against a bot"
-              subtitle="Works without an internet connection. Coming soon"
+              subtitle="Works without an internet connection"
               icon={
                 <>
                   <FontAwesomeIcon size="lg" icon={faRobot} />
                 </>
               }
-            /> */}
+            />
           </RadioGroup>
         </div>
         <div

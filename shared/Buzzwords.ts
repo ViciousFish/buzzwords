@@ -16,10 +16,12 @@ import { HexCoord } from "./types";
 import { canMakeAValidWord, isValidWord } from "./alphaHelpers";
 import { getCellsToBeReset, willBecomeOwned } from "./gridHelpers";
 import Cell from "./cell";
+import { getBotMove } from "./bot";
 
 export interface BuzzwordsGameState {
   id: string;
   grid: HexGrid;
+  difficulty: number;
 }
 
 export function getWordFromMove(G: BuzzwordsGameState, move: HexCoord[]) {
@@ -47,6 +49,7 @@ export const Buzzwords: BoardGame<BuzzwordsGameState> = {
     const game: BuzzwordsGameState = {
       id: nanoid(),
       grid: makeHexGrid(),
+      difficulty: setupData?.difficulty ?? 5,
     };
     const neighbors = [
       ...getCellNeighbors(game.grid, -2, -1),
@@ -232,44 +235,17 @@ export const Buzzwords: BoardGame<BuzzwordsGameState> = {
   },
   ai: {
     enumerate(G, ctx) {
-      // For word in the dictionary, get all possible combinations of coords that would enable you to play the move
-      const moves: AiEnumerate = [];
-      const cells = Object.values(G.grid).filter(
-        (c) => c.owner === 2 && c.value
-      );
-      const lettersToCoords: { [key: string]: HexCoord[] } = {};
-      for (let cell of cells) {
-        lettersToCoords[cell.value] = lettersToCoords[cell.value] || [];
-        lettersToCoords[cell.value].push({ q: cell.q, r: cell.r });
+      try {
+        const botMove = getBotMove(G.grid, {
+          difficulty: G.difficulty,
+          words: WordsObject,
+          bannedWords: {},
+        });
+        return [{ move: "playWord", args: [botMove] }];
+      } catch (e) {
+        // If bot can't find a move, pass
+        return [{ move: "pass", args: [] }];
       }
-
-      dictWord: for (const word of Object.keys(WordsObject)) {
-        const test = JSON.parse(JSON.stringify(lettersToCoords));
-        const wordLetters = word.split("");
-
-        // Can the word be made with the current board?
-        const letterCount = wordLetters.reduce(
-          (acc: { [key: string]: number }, letter) => {
-            acc[letter] = acc[letter] ? acc[letter] + 1 : 1;
-            return acc;
-          },
-          {}
-        );
-
-        for (const letter in letterCount) {
-          if (!test[letter] || test[letter].length < letterCount[letter]) {
-            continue dictWord;
-          }
-        }
-
-        // If so, get all possible combinations of coords that would enable you to play the move
-        const coordsPerLetter = wordLetters.map((letter) => test[letter]);
-        const possibleCoords = getUniqPermutations(coordsPerLetter);
-        for (const coords of possibleCoords) {
-          moves.push({ move: "playWord", args: [coords] });
-        }
-      }
-      return moves;
     },
   },
 };

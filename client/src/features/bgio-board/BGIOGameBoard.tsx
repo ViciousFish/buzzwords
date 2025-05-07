@@ -1,13 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BoardProps } from "boardgame.io/react";
 import { BuzzwordsGameState } from "buzzwords-shared/Buzzwords";
 import { HexCoord } from "buzzwords-shared/types";
 import Canvas from "../canvas/Canvas";
 import { GameBoardTiles } from "../game/GameBoardTiles";
 import { BGIOStatusArea } from "./BGIOStatusArea";
+import { TutorialBuzzwords } from "buzzwords-shared/Tutorial";
 
 export function BGIOGameBoard(props: BoardProps<BuzzwordsGameState>) {
   const [selection, setSelection] = useState<HexCoord[]>([]);
+
+  // Handle AI moves
+  useEffect(() => {
+    if (props.ctx.currentPlayer === "1" && !props.ctx.gameover) {
+      const timer = setTimeout(() => {
+        try {
+          const moves = TutorialBuzzwords.ai?.enumerate(props.G, props.ctx, "1");
+          if (moves && moves.length > 0) {
+            const botMove = moves[0];
+            if (botMove && 'move' in botMove && botMove.args) {
+              props.moves.playWord(botMove.args[0]);
+            } else if (botMove && 'move' in botMove && botMove.move === 'pass') {
+              props.moves.pass();
+            }
+          }
+        } catch (e) {
+          console.error("AI failed to make a move:", e);
+          props.moves.pass();
+        }
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [props.ctx.currentPlayer, props.ctx.gameover, props.G, props.ctx, props.moves]);
+
   return (
     <div className="flex flex-col flex-auto">
       <BGIOStatusArea
