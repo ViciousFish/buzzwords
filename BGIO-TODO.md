@@ -1,3 +1,5 @@
-- [ ] game over state
+- [x] apply territory capture to winning move
+- [ ] game over state/messaging
 - [ ] detect bonus move from BGIO props
 - [ ] working bot
+- [ ] fix gameboard for normal games

@@ -81,7 +81,7 @@ export const Buzzwords: BoardGame<BuzzwordsGameState> = {
       { G, ctx, playerID, events, random, ...plugins },
       move: HexCoord[]
     ) => {
-      console.log("🚀 ~ playerID:", playerID)
+      console.log("🚀 ~ playerID:", playerID);
       const word = getWordFromMove(G, move);
       if (word === INVALID_MOVE) {
         return INVALID_MOVE;
@@ -131,17 +131,6 @@ export const Buzzwords: BoardGame<BuzzwordsGameState> = {
         .filter(([k, c]) => c.owner == Number(!turn))
         .map(([k, c]) => k);
 
-      const gameOver =
-        R.difference(
-          opponentKeys,
-          [...toBeReset, ...toBecomeOwned].map((c) => `${c.q},${c.r}`)
-        ).length === 0;
-
-      if (gameOver) {
-        events.endGame(playerID);
-        return;
-      }
-
       try {
         const newCellValues = getNewCellValues(
           letters,
@@ -186,6 +175,17 @@ export const Buzzwords: BoardGame<BuzzwordsGameState> = {
           newCellValues.splice(0, 1);
           setCell(G.grid, tile);
         }
+      }
+
+      const gameOver =
+        R.difference(
+          opponentKeys,
+          [...toBeReset, ...toBecomeOwned].map((c) => `${c.q},${c.r}`)
+        ).length === 0;
+
+      if (gameOver) {
+        events.endGame(playerID);
+        return;
       }
 
       for (const cell of Object.values(G.grid)) {

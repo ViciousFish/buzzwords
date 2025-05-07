@@ -10,7 +10,13 @@ import { INVALID_MOVE } from "boardgame.io/core";
 import { isValidWord } from "buzzwords-shared/alphaHelpers";
 import { WordsObject } from "../../../../server/src/words";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRefresh } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronCircleLeft,
+  faChevronCircleRight,
+  faChevronLeft,
+  faChevronRight,
+  faRefresh,
+} from "@fortawesome/free-solid-svg-icons";
 
 const HINT_MESSAGES = [
   "You can use any letter on the board",
@@ -33,12 +39,10 @@ const STATUS_AREA_STATES = [
   "OPPONENT_BONUS_TURN",
 ] as const;
 
-type StatusState = typeof STATUS_AREA_STATES[number];
-
 function InvalidWordStatus() {
   return (
     <>
-      <p className="font-bold">That wasn&apos;t a valid word</p>
+      <p className="text-4xl font-bold">That wasn&apos;t a valid word</p>
       <p className="text-xl">Select a word</p>
     </>
   );
@@ -47,7 +51,7 @@ function InvalidWordStatus() {
 function InitialTurnStatus() {
   return (
     <>
-      <h1 className="font-bold">
+      <h1 className="text-4xl font-bold">
         Welcome to{" "}
         <span className="font-fredoka uppercase text-nowrap">
           <img
@@ -68,7 +72,7 @@ function InitialTurnStatus() {
 function OpponentFirstTurnStatus() {
   return (
     <>
-      <h1 className="font-bold">Hello to you too</h1>
+      <h1 className="text-4xl font-bold">Hello to you too</h1>
       <p className="text-xl">Now it&apos;s your opponent&apos;s turn</p>
     </>
   );
@@ -77,7 +81,7 @@ function OpponentFirstTurnStatus() {
 function OpponentTurnStatus() {
   return (
     <>
-      <h1 className="font-bold">Nice one</h1>
+      <h1 className="text-4xl font-bold">Nice one</h1>
       <p className="text-xl">Now it&apos;s your opponent&apos;s turn</p>
     </>
   );
@@ -93,10 +97,25 @@ function YourTurnStatus({ turn }: { turn: number }) {
   const [hintIndex, setHintIndex] = useState(initialHintIndex);
 
   return (
-    <>
-      <h1 className="font-bold">It&apos;s your turn</h1>
-      <p className="text-xl">
-        {HINT_MESSAGES[hintIndex]}{" "}
+    <div className="px-4 py-2 flex-auto flex flex-col">
+      <span className="text-md">It&apos;s your turn</span>
+      <p className="text-2xl font-bold w-full flex-auto">{HINT_MESSAGES[hintIndex]}</p>
+      <span className="flex relative top-[-2px] self-end items-center text-xs font-normal text-lightbg bg-darkbrown rounded-full">
+        <Button
+          onPress={() => {
+            setHintIndex((index) =>
+              index === 0 ? HINT_MESSAGES.length - 1 : index - 1
+            );
+          }}
+          type="button"
+          className="self-end text-sm px-2"
+          aria-label="Press to show next hint"
+        >
+          <FontAwesomeIcon icon={faChevronLeft} />
+        </Button>
+        <span className="">
+          {hintIndex + 1} / {HINT_MESSAGES.length}
+        </span>
         <Button
           onPress={() => {
             setHintIndex((index) =>
@@ -104,13 +123,13 @@ function YourTurnStatus({ turn }: { turn: number }) {
             );
           }}
           type="button"
-          className="self-end text-sm px-1"
+          className="self-end text-sm px-2"
           aria-label="Press to show next hint"
         >
-          <FontAwesomeIcon icon={faRefresh} />
+          <FontAwesomeIcon icon={faChevronRight} />
         </Button>
-      </p>
-    </>
+      </span>
+    </div>
   );
 }
 
@@ -130,7 +149,8 @@ function renderStatus(
   turn: number,
   yourTurn: boolean,
   error: string | null,
-  isBonusTurn: boolean
+  isBonusTurn: boolean,
+  winner?: string
 ) {
   if (error) {
     return <InvalidWordStatus />;
@@ -162,7 +182,6 @@ export function BGIOStatusArea({
   selection: HexCoord[];
   setSelection: (selection: HexCoord[]) => void;
 }) {
-  console.log("🚀 ~ playerID:", playerID);
   const [error, setError] = useState<string | null>(null);
   const yourTurn = ctx.currentPlayer === "0";
   const bonusTurn = log[log.length - 1]; // TODO figure out how to tell
@@ -177,7 +196,7 @@ export function BGIOStatusArea({
   }, [word]);
 
   return (
-    <div className="text-4xl mx-auto max-w-[600px] h-[20vh] flex flex-col justify-center items-center p-4 lg:p-8 w-full">
+    <div className="mx-auto max-w-[600px] h-[20vh] flex flex-col justify-center items-center p-4 lg:p-8 w-full">
       {word.length > 0 ? (
         <div className="flex flex-col items-center">
           <h1 className="text-4xl font-fredoka text-darkbrown uppercase">
@@ -212,8 +231,8 @@ export function BGIOStatusArea({
           </div>
         </div>
       ) : (
-        <div className="text-darkbrown">
-          {renderStatus(ctx.turn, yourTurn, error, false)}
+        <div className="w-full text-darkbrown flex-auto flex flex-col justify-center">
+          {renderStatus(ctx.turn, yourTurn, error, false, ctx.gameover)}
         </div>
       )}
     </div>

@@ -11,6 +11,6 @@ install gameplay font locally
 pure-gameboard
 - [x] gameboard that doesn't rely on redux state
   - [x] controlled selection
-- [ ] selected previous move displayed in modal
+- [x] selected previous move displayed in modal
 - [ ] gesture modal sheet
 - [ ] replays on board still for bot games?
