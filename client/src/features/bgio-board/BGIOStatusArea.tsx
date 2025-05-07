@@ -11,11 +11,11 @@ import { isValidWord } from "buzzwords-shared/alphaHelpers";
 import { WordsObject } from "../../../../server/src/words";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faChevronCircleLeft,
-  faChevronCircleRight,
+  faBackspace,
   faChevronLeft,
   faChevronRight,
-  faRefresh,
+  faPlay,
+  faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 
 const HINT_MESSAGES = [
@@ -96,40 +96,48 @@ function YourTurnStatus({ turn }: { turn: number }) {
   }, [turn]);
   const [hintIndex, setHintIndex] = useState(initialHintIndex);
 
+  const preferred_alignment = "justify-center";
+
   return (
-    <div className="px-4 py-2 flex-auto flex flex-col">
-      <span className="text-md">It&apos;s your turn</span>
-      <p className="text-2xl font-bold w-full flex-auto">{HINT_MESSAGES[hintIndex]}</p>
-      <span className="flex relative top-[-2px] self-end items-center text-xs font-normal text-lightbg bg-darkbrown rounded-full">
-        <Button
-          onPress={() => {
-            setHintIndex((index) =>
-              index === 0 ? HINT_MESSAGES.length - 1 : index - 1
-            );
-          }}
-          type="button"
-          className="self-end text-sm px-2"
-          aria-label="Press to show next hint"
-        >
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </Button>
-        <span className="">
-          {hintIndex + 1} / {HINT_MESSAGES.length}
-        </span>
-        <Button
-          onPress={() => {
-            setHintIndex((index) =>
-              index === HINT_MESSAGES.length - 1 ? 0 : index + 1
-            );
-          }}
-          type="button"
-          className="self-end text-sm px-2"
-          aria-label="Press to show next hint"
-        >
-          <FontAwesomeIcon icon={faChevronRight} />
-        </Button>
-      </span>
-    </div>
+    <>
+      <div className="flex-auto flex flex-col justify-center">
+        <span className="text-md">It&apos;s your turn</span>
+        <p className="text-2xl font-bold">
+          {HINT_MESSAGES[hintIndex]}
+        </p>
+      </div>
+      <div className={`flex ${preferred_alignment}`}>
+        <div className="flex relative top-[-2px] self-end items-center text-xs font-normal text-lightbg bg-darkbrown rounded-full">
+          <Button
+            onPress={() => {
+              setHintIndex((index) =>
+                index === 0 ? HINT_MESSAGES.length - 1 : index - 1
+              );
+            }}
+            type="button"
+            className="self-end text-sm px-2"
+            aria-label="Press to show next hint"
+          >
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </Button>
+          <span className="">
+            {hintIndex + 1} / {HINT_MESSAGES.length}
+          </span>
+          <Button
+            onPress={() => {
+              setHintIndex((index) =>
+                index === HINT_MESSAGES.length - 1 ? 0 : index + 1
+              );
+            }}
+            type="button"
+            className="self-end text-sm px-2"
+            aria-label="Press to show next hint"
+          >
+            <FontAwesomeIcon icon={faChevronRight} />
+          </Button>
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -195,16 +203,26 @@ export function BGIOStatusArea({
     }
   }, [word]);
 
+  const preferred_alignment = "justify-center";
+
   return (
-    <div className="mx-auto max-w-[600px] h-[20vh] flex flex-col justify-center items-center p-4 lg:p-8 w-full">
+    <div className="mx-auto max-w-[600px] h-[20vh] grid items-stretch py-2 px-6 lg:px-8 w-full">
       {word.length > 0 ? (
-        <div className="flex flex-col items-center">
-          <h1 className="text-4xl font-fredoka text-darkbrown uppercase">
+        <div className="flex-auto grid grid-rows-[1fr_min-content] items-center">
+          <h1 className="text-4xl font-fredoka text-darkbrown uppercase text-center">
             {word}
           </h1>
-          <div className="flex gap-2 justify-center items-center">
+          <div className={`flex gap-1 ${preferred_alignment}`}>
             <Button
-              className="bg-darkbrown opacity-80 text-lightbg rounded-full px-3 py-1 text-sm"
+              className="bg-darkbrown text-lightbg rounded-full px-3 py-1 text-sm"
+              onPress={() => {
+                setSelection(selection.slice(0, selection.length - 1));
+              }}
+            >
+              <FontAwesomeIcon icon={faBackspace} /> Backspace
+            </Button>{" "}
+            <Button
+              className="bg-darkbrown text-lightbg rounded-full px-3 py-1 text-sm"
               onPress={() => {
                 setSelection([]);
               }}
@@ -212,7 +230,7 @@ export function BGIOStatusArea({
               Clear
             </Button>
             <Button
-              className="bg-darkbrown text-lightbg rounded-full px-3 py-1 text-sm"
+              className="bg-green-600 text-lightbg rounded-full px-3 py-1 text-sm"
               onPress={() => {
                 const word = getWordFromMove(G, selection);
                 const validWord = isValidWord(word, WordsObject);
@@ -226,12 +244,12 @@ export function BGIOStatusArea({
                 setSelection([]);
               }}
             >
-              Submit
+              <FontAwesomeIcon icon={faPlay} /> Submit
             </Button>
           </div>
         </div>
       ) : (
-        <div className="w-full text-darkbrown flex-auto flex flex-col justify-center">
+        <div className="w-full text-darkbrown flex-auto flex flex-col justify-center items-stretch">
           {renderStatus(ctx.turn, yourTurn, error, false, ctx.gameover)}
         </div>
       )}
