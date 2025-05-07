@@ -18,15 +18,22 @@ export function BGIOGameBoard(props: BoardProps<BuzzwordsGameState>) {
           const moves = TutorialBuzzwords.ai?.enumerate(props.G, props.ctx, "1");
           if (moves && moves.length > 0) {
             const botMove = moves[0];
-            if (botMove && 'move' in botMove && botMove.args) {
-              props.moves.playWord(botMove.args[0]);
+            if (botMove && 'move' in botMove && botMove.args && botMove.args[0]) {
+              // Delay the actual move by 2 seconds
+              setTimeout(() => {
+                props.moves.playWord(botMove.args?.[0]);
+              }, 2000);
             } else if (botMove && 'move' in botMove && botMove.move === 'pass') {
-              props.moves.pass();
+              setTimeout(() => {
+                props.moves.pass();
+              }, 2000);
             }
           }
         } catch (e) {
           console.error("AI failed to make a move:", e);
-          props.moves.pass();
+          setTimeout(() => {
+            props.moves.pass();
+          }, 2000);
         }
       }, 1000);
       return () => clearTimeout(timer);

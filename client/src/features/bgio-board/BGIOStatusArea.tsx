@@ -84,7 +84,7 @@ function OpponentTurnStatus() {
     <div className="grid grid-cols-[1fr,128px]">
       <div className="flex flex-col justify-center">
         <h1 className="text-4xl font-bold">Nice one</h1>
-        <p className="text-xl">Now it&apos;s your opponent&apos;s turn</p>
+        <p className="text-xl">Now it&apos;s The Bee&apos;s turn</p>
       </div>
       <div className="p-2">
       <Canvas><Bee /></Canvas>
