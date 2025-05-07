@@ -328,7 +328,7 @@ export const TutorialBuzzwords: BoardGame<BuzzwordsGameState> = {
     const game: BuzzwordsGameState = {
       id: nanoid(),
       grid: R.clone(tutorialInitialBoard),
-      difficulty: setupData?.difficulty ?? 5,
+      difficulty: setupData?.difficulty ?? 2,
       selection: [],
     };
     // const neighbors = [

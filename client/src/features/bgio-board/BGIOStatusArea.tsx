@@ -157,6 +157,32 @@ function YourBonusTurnStatus() {
   );
 }
 
+function OpponentBonusTurnStatus() {
+  return (
+    <>
+      <h1 className="font-bold">The Bee gets a bonus turn</h1>
+      <p className="text-xl">
+        The Bee is trying to eliminate all of your territory.
+      </p>
+    </>
+  );
+}
+
+function GameOverStatus({ winner }: { winner: string }) {
+  return (
+    <>
+      <h1 className="text-4xl font-bold">
+        {winner === "0" ? "You won!" : "The Bee won!"}
+      </h1>
+      <p className="text-xl">
+        {winner === "0" 
+          ? "Congratulations on your victory!" 
+          : "Better luck next time!"}
+      </p>
+    </>
+  );
+}
+
 function renderStatus(
   turn: number,
   yourTurn: boolean,
@@ -164,6 +190,9 @@ function renderStatus(
   isBonusTurn: boolean,
   winner?: string
 ) {
+  if (winner) {
+    return <GameOverStatus winner={winner} />;
+  }
   if (error) {
     return <InvalidWordStatus />;
   }
@@ -173,9 +202,6 @@ function renderStatus(
   if (turn === 1) {
     return <InitialTurnStatus />;
   }
-  // if (turn === 2) {
-  //   return <OpponentFirstTurnStatus />
-  // }
   if (yourTurn) {
     return <YourTurnStatus turn={turn} />;
   }
@@ -216,7 +242,7 @@ export function BGIOStatusArea({
           <h1 className="text-4xl font-fredoka text-darkbrown uppercase text-center">
             {word}
           </h1>
-          {ctx.currentPlayer === "0" && (
+          {ctx.currentPlayer === "0" && !ctx.gameover && (
             <div className={`flex gap-1 ${preferred_alignment}`}>
               <Button
                 className="bg-darkbrown text-lightbg rounded-full px-3 py-1 text-sm"

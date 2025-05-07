@@ -21,7 +21,7 @@ export function BGIOGameBoard(props: BoardProps<BuzzwordsGameState>) {
           <GameBoardTiles
             tutorialOnlyShowStartingTiles={props.ctx.turn === 1}
             revealLetters
-            enableSelection
+            enableSelection={props.ctx.currentPlayer === "0" && !props.ctx.gameover}
             onToggleTile={(coord) => {
               const [q, r] = coord.split(",").map(Number);
               const index = props.G.selection.findIndex(
