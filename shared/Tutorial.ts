@@ -1,4 +1,4 @@
-import type { AiEnumerate, Game as BoardGame, Move } from "boardgame.io";
+import type { Game as BoardGame } from "boardgame.io";
 import { Buzzwords, BuzzwordsGameState } from "./Buzzwords";
 import { nanoid } from "nanoid";
 import HexGrid from "./hexgrid";
@@ -328,20 +328,9 @@ export const TutorialBuzzwords: BoardGame<BuzzwordsGameState> = {
     const game: BuzzwordsGameState = {
       id: nanoid(),
       grid: R.clone(tutorialInitialBoard),
-      difficulty: setupData?.difficulty ?? 2,
+      difficulty: setupData?.difficulty ?? 3,
       selection: [],
     };
-    // const neighbors = [
-    //   ...getCellNeighbors(game.grid, -2, -1),
-    //   ...getCellNeighbors(game.grid, 2, 1),
-    // ];
-    // const newValues = getNewCellValues([], 12, WordsObject);
-    // let i = 0;
-    // for (const cell of neighbors) {
-    //   cell.value = newValues[i];
-    //   i++;
-    //   game.grid = setCell(game.grid, cell);
-    // }
     game.grid["-2,-1"].capital = true;
     game.grid["-2,-1"].owner = 0;
     game.grid["2,1"].capital = true;
