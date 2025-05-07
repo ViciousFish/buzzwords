@@ -208,7 +208,7 @@ export function BGIOStatusArea({
   return (
     <div className="mx-auto max-w-[600px] h-[20vh] grid items-stretch py-2 px-6 lg:px-8 w-full">
       {word.length > 0 ? (
-        <div className="flex-auto grid grid-rows-[1fr_min-content] items-center">
+        <div className="flex-auto flex flex-col justify-center gap-2 items-center">
           <h1 className="text-4xl font-fredoka text-darkbrown uppercase text-center">
             {word}
           </h1>
