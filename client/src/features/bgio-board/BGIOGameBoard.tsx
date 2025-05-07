@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { BoardProps } from "boardgame.io/react";
 import { BuzzwordsGameState } from "buzzwords-shared/Buzzwords";
 import { HexCoord } from "buzzwords-shared/types";
@@ -8,8 +8,6 @@ import { BGIOStatusArea } from "./BGIOStatusArea";
 import { TutorialBuzzwords } from "buzzwords-shared/Tutorial";
 
 export function BGIOGameBoard(props: BoardProps<BuzzwordsGameState>) {
-  const [selection, setSelection] = useState<HexCoord[]>([]);
-
   // Handle AI moves
   useEffect(() => {
     if (props.ctx.currentPlayer === "1" && !props.ctx.gameover) {
@@ -43,8 +41,8 @@ export function BGIOGameBoard(props: BoardProps<BuzzwordsGameState>) {
   return (
     <div className="flex flex-col flex-auto">
       <BGIOStatusArea
-        selection={selection}
-        setSelection={setSelection}
+        selection={props.G.selection}
+        setSelection={(selection) => props.moves.updateSelection(selection)}
         {...props}
       />
       <div className="flex-auto relative px-4">
@@ -55,16 +53,17 @@ export function BGIOGameBoard(props: BoardProps<BuzzwordsGameState>) {
             enableSelection
             onToggleTile={(coord) => {
               const [q, r] = coord.split(",").map(Number);
-              const index = selection.findIndex((x) => x.q === q && x.r === r);
+              const index = props.G.selection.findIndex((x) => x.q === q && x.r === r);
+              const newSelection = [...props.G.selection];
               if (index > -1) {
-                selection.splice(index, 1);
-                setSelection([...selection]);
-                return;
+                newSelection.splice(index, 1);
+              } else {
+                newSelection.push({ q, r });
               }
-              setSelection([...selection, { q, r }]);
+              props.moves.updateSelection(newSelection);
             }}
             grid={props.G.grid}
-            selection={selection}
+            selection={props.G.selection}
             currentTurn={Number(props.ctx.currentPlayer) as 0 | 1}
           />
         </Canvas>

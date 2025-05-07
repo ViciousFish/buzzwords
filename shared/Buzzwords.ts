@@ -22,7 +22,20 @@ export interface BuzzwordsGameState {
   id: string;
   grid: HexGrid;
   difficulty: number;
+  selection: HexCoord[];
 }
+
+// Plugin to handle selection updates
+const SelectionPlugin = {
+  name: 'selection',
+  fnWrap: (fn: any) => (G: any, ctx: any, ...args: any[]) => {
+    const [selection, ...rest] = args;
+    if (selection && Array.isArray(selection)) {
+      G.selection = selection;
+    }
+    return fn(G, ctx, ...rest);
+  },
+};
 
 export function getWordFromMove(G: BuzzwordsGameState, move: HexCoord[]) {
   let word = "";
@@ -50,6 +63,7 @@ export const Buzzwords: BoardGame<BuzzwordsGameState> = {
       id: nanoid(),
       grid: makeHexGrid(),
       difficulty: setupData?.difficulty ?? 5,
+      selection: [],
     };
     const neighbors = [
       ...getCellNeighbors(game.grid, -2, -1),
@@ -73,12 +87,15 @@ export const Buzzwords: BoardGame<BuzzwordsGameState> = {
       // Check if the game needs to end?
       // events.endGame();
     },
-    maxMoves: 2,
     minMoves: 1,
   },
   maxPlayers: 2,
   minPlayers: 2,
+  plugins: [SelectionPlugin],
   moves: {
+    updateSelection: ({ G }, selection: HexCoord[]) => {
+      G.selection = selection;
+    },
     // TODO: get this to expose its type externally
     playWord: (
       { G, ctx, playerID, events, random, ...plugins },

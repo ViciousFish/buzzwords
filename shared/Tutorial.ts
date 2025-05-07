@@ -329,6 +329,7 @@ export const TutorialBuzzwords: BoardGame<BuzzwordsGameState> = {
       id: nanoid(),
       grid: R.clone(tutorialInitialBoard),
       difficulty: setupData?.difficulty ?? 5,
+      selection: [],
     };
     // const neighbors = [
     //   ...getCellNeighbors(game.grid, -2, -1),
