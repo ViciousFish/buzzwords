@@ -98,7 +98,11 @@ export const getBotMove = (
       const coord = `${tiles[idx].q},${tiles[idx].r}`;
       for (let i = 0; i < coordTypes.length; i++) {
         if (coordTypes[i].includes(coord)) {
-          score *= Math.pow(10, i);
+          const capitalDefenseMultiplier = Math.max(
+            1,
+            Math.pow(10, i) * (options.difficulty / 3)
+          );
+          score *= capitalDefenseMultiplier;
           break;
         }
       }
@@ -135,7 +139,8 @@ export const getBotMove = (
         10,
         3,
         Math.min(openTiles.length, 12)
-      )
+      ) *
+        (1 + (1 - options.difficulty / 10) * 0.3)
     ) - 2
   );
   for (let i = maxWordLength; i >= 3; i--) {
