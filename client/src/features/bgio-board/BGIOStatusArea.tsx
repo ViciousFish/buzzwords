@@ -246,6 +246,29 @@ export function BGIOStatusArea({
     }
   }, [word]);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!yourTurn || ctx.gameover) return;
+      
+      if (e.key === 'Enter' && word.length > 0) {
+        const validWord = isValidWord(word, WordsObject);
+        if (word === INVALID_MOVE || !validWord) {
+          setSelection([]);
+          setError(INVALID_MOVE);
+          return;
+        }
+        moves.playWord(selection);
+        setError(null);
+        setSelection([]);
+      } else if (e.key === 'Backspace' && selection.length > 0) {
+        setSelection(selection.slice(0, selection.length - 1));
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [word, selection, yourTurn, ctx.gameover, moves, setSelection]);
+
   const preferred_alignment = "justify-center";
 
   return (
