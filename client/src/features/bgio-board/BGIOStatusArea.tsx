@@ -43,8 +43,8 @@ const STATUS_AREA_STATES = [
 function InvalidWordStatus() {
   return (
     <>
-      <p className="text-4xl font-bold">That wasn&apos;t a valid word</p>
-      <p className="text-xl">Select a word</p>
+      <p className="text-[5vh] font-bold">That wasn&apos;t a valid word</p>
+      <p className="text-[3vh]">Select a word</p>
     </>
   );
 }
@@ -52,7 +52,7 @@ function InvalidWordStatus() {
 function InitialTurnStatus() {
   return (
     <>
-      <h1 className="text-4xl font-bold">
+      <h1 className="text-[4vh] font-bold">
         Welcome to{" "}
         <span className="font-fredoka uppercase text-nowrap">
           <img
@@ -63,7 +63,7 @@ function InitialTurnStatus() {
           Buzzwords
         </span>
       </h1>
-      <p className="text-xl">
+      <p className="text-[3vh]">
         {"It's your turn. Press letters to spell a word"}
       </p>
     </>
@@ -73,8 +73,8 @@ function InitialTurnStatus() {
 function OpponentFirstTurnStatus() {
   return (
     <>
-      <h1 className="text-4xl font-bold">Hello to you too</h1>
-      <p className="text-xl">Now it&apos;s your opponent&apos;s turn</p>
+      <h1 className="text-[5vh] font-bold">Hello to you too</h1>
+      <p className="text-[3vh]">Now it&apos;s your opponent&apos;s turn</p>
     </>
   );
 }
@@ -83,8 +83,8 @@ function OpponentTurnStatus() {
   return (
     <div className="grid grid-cols-[1fr,128px]">
       <div className="flex flex-col justify-center">
-        <h1 className="text-4xl font-bold">Nice one</h1>
-        <p className="text-xl">Now it&apos;s The Bee&apos;s turn</p>
+        <h1 className="text-[5vh] font-bold">Nice one</h1>
+        <p className="text-[3vh]">Now it&apos;s The Bee&apos;s turn</p>
       </div>
       <div className="p-2">
         <Canvas>
@@ -109,8 +109,8 @@ function YourTurnStatus({ turn }: { turn: number }) {
   return (
     <>
       <div className="flex-auto flex flex-col justify-center">
-        <span className="text-md">It&apos;s your turn</span>
-        <p className="text-2xl font-bold">{HINT_MESSAGES[hintIndex]}</p>
+        <span className="">It&apos;s your turn</span>
+        <p className="text-[3vh] font-bold">{HINT_MESSAGES[hintIndex]}</p>
       </div>
       <div className={`flex ${preferred_alignment}`}>
         <div className="flex relative top-[-2px] self-end items-center text-xs font-normal text-lightbg bg-darkbrown rounded-full">
@@ -150,8 +150,8 @@ function YourTurnStatus({ turn }: { turn: number }) {
 function YourBonusTurnStatus() {
   return (
     <>
-      <h1 className="font-bold text-4xl">You get a bonus turn</h1>
-      <p className="text-xl">
+      <h1 className="font-bold text-[5vh]">You get a bonus turn</h1>
+      <p className="text-[3vh]">
         Now&apos;s your chance to win. Try to eliminate all of your
         opponent&apos;s territory.
       </p>
@@ -162,8 +162,8 @@ function YourBonusTurnStatus() {
 function OpponentBonusTurnStatus() {
   return (
     <>
-      <h1 className="font-bold text-4xl">The Bee gets a bonus turn</h1>
-      <p className="text-xl">
+      <h1 className="font-bold text-[5vh]">The Bee gets a bonus turn</h1>
+      <p className="text-[3vh]">
         The Bee is trying to eliminate all of your territory.
       </p>
     </>
@@ -173,10 +173,10 @@ function OpponentBonusTurnStatus() {
 function GameOverStatus({ winner }: { winner: string }) {
   return (
     <>
-      <h1 className="text-4xl font-bold">
+      <h1 className="text-[5vh] font-bold">
         {winner === "0" ? "You won" : "The Bee won!"}
       </h1>
-      <p className="text-xl">
+      <p className="text-[3vh]">
         {winner === "0"
           ? "Welcome to Buzzwords! Play again against The Bee or invite a friend."
           : "Better luck next time!"}
@@ -228,7 +228,13 @@ export function BGIOStatusArea({
   const [error, setError] = useState<string | null>(null);
   const yourTurn = ctx.currentPlayer === "0";
   const bonusTurn = useMemo(() => {
-    if (!log || log.length === 0) return false;
+    console.log(log.length);
+    if (
+      !log ||
+      log.filter((entry) => entry.action.payload.type === "playWord").length ===
+        0
+    )
+      return false;
     const lastMove = log[log.length - 1];
     // If the last move was by the current player, it means they captured a capital
     // and got a bonus turn
@@ -249,8 +255,8 @@ export function BGIOStatusArea({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!yourTurn || ctx.gameover) return;
-      
-      if (e.key === 'Enter' && word.length > 0) {
+
+      if (e.key === "Enter" && word.length > 0) {
         const validWord = isValidWord(word, WordsObject);
         if (word === INVALID_MOVE || !validWord) {
           setSelection([]);
@@ -260,22 +266,22 @@ export function BGIOStatusArea({
         moves.playWord(selection);
         setError(null);
         setSelection([]);
-      } else if (e.key === 'Backspace' && selection.length > 0) {
+      } else if (e.key === "Backspace" && selection.length > 0) {
         setSelection(selection.slice(0, selection.length - 1));
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [word, selection, yourTurn, ctx.gameover, moves, setSelection]);
 
   const preferred_alignment = "justify-center";
 
   return (
-    <div className="mx-auto max-w-[600px] h-[20vh] grid items-stretch py-2 px-6 lg:px-8 w-full">
+    <div className="mx-auto aspect-[3.7] h-[20vh] text-[2vh] grid items-stretch py-2 px-6 lg:px-8">
       {word.length > 0 ? (
         <div className="flex-auto flex flex-col justify-center gap-2 items-center">
-          <h1 className="text-4xl font-fredoka text-darkbrown uppercase text-center">
+          <h1 className="text-[5vh] font-fredoka text-darkbrown uppercase text-center">
             {word}
           </h1>
           {ctx.currentPlayer === "0" && !ctx.gameover && (

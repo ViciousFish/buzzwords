@@ -16,12 +16,14 @@ export function BGIOGameBoard(props: BoardProps<BuzzwordsGameState>) {
         setSelection={(selection) => props.moves.updateSelection(selection)}
         {...props}
       />
-      <div className="flex-auto relative px-4">
+      <div className="flex-auto relative px-4 min-h-0 basis-0">
         <Canvas isGameboard>
           <GameBoardTiles
             tutorialOnlyShowStartingTiles={props.ctx.turn === 1}
             revealLetters
-            enableSelection={props.ctx.currentPlayer === "0" && !props.ctx.gameover}
+            enableSelection={
+              props.ctx.currentPlayer === "0" && !props.ctx.gameover
+            }
             onToggleTile={(coord) => {
               const [q, r] = coord.split(",").map(Number);
               const index = props.G.selection.findIndex(
