@@ -278,7 +278,7 @@ export function BGIOStatusArea({
   const preferred_alignment = "justify-center";
 
   return (
-    <div className="mx-auto aspect-[3.7] h-[20vh] text-[2vh] grid items-stretch py-2 px-6 lg:px-8">
+    <div className="mx-auto aspect-[3.7] h-[25vh] text-[2vh] grid items-stretch py-2 px-6 lg:px-8 max-w-full">
       {word.length > 0 ? (
         <div className="flex-auto flex flex-col justify-center gap-2 items-center">
           <h1 className="text-[5vh] font-fredoka text-darkbrown uppercase text-center">
