@@ -88,7 +88,7 @@ const MainGameStructure: React.FC = () => {
   );
 
   return (
-    <ScreenHeightWraper className="grid grid-rows-[min-content_minmax(0_auto)] relative overflow-hidden">
+    <div className="grid grid-rows-[min-content_minmax(0_auto)] relative overflow-hidden h-[100svh]">
       <TopBar />
       <div className="bg-lightbg mt-[50px] overflow-hidden max-w-[100vw] flex flex-row safe-area-pad flex-auto">
         <a.div
@@ -104,7 +104,7 @@ const MainGameStructure: React.FC = () => {
           <Outlet />
         </SidebarRightSide>
       </div>
-    </ScreenHeightWraper>
+    </div>
   );
 };
 

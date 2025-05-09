@@ -26,9 +26,10 @@ const ScreenHeightWraper: React.FC<
       {...props}
       style={{
         ...style,
-        height: height
-          ? `${height - (safeAreaBottom + safeAreaTop + (insetTop ?? 0))}px`
-          : "100vh",
+        // height: height
+        //   ? `${height - (safeAreaBottom + safeAreaTop + (insetTop ?? 0) + 1)}px`
+        //   : "100vh",
+        height: '100svh'
       }}
     >
       {children}

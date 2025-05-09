@@ -21,24 +21,12 @@ import Bee from "../../assets/Bee";
 
 const HINT_MESSAGES = [
   "You can use any letter on the board",
-  "You'll only capture tiles that connect to your territory",
-  <>
-    Try to protect your flower tile. Your opponent gets an extra turn if they
-    capture it
-  </>,
-  "Try to capture your opponent's flower tile",
+  "You'll capture tiles that you use that connect to your territory",
+  "The objective is to capture all of your opponent's territory",
+  "Try to capture your opponent's flower tile. You'll get an extra turn when you do", // TODO: always display this hint when flower tile is capturable
+  "Try to protect your flower tile",
   "There is no penalty for trying a word that doesn't exist",
 ];
-
-const STATUS_AREA_STATES = [
-  "INVALID_WORD",
-  "INITIAL_TURN",
-  "OPPONENT_FIRST_TURN",
-  "YOUR_TURN",
-  "OPPONENT_TURN",
-  "YOUR_BONUS_TURN",
-  "OPPONENT_BONUS_TURN",
-] as const;
 
 function InvalidWordStatus() {
   return (
@@ -57,7 +45,7 @@ function InitialTurnStatus() {
         <span className="font-fredoka uppercase text-nowrap">
           <img
             className="inline drop-shadow mb-1 ml-1 relative bottom-1"
-            style={{ width: 30, height: 30 }}
+            style={{ width: "4vh", aspectRatio: "1" }}
             src="/bee.png"
           />{" "}
           Buzzwords
@@ -84,7 +72,7 @@ function OpponentTurnStatus() {
     <div className="grid grid-cols-[1fr,128px]">
       <div className="flex flex-col justify-center">
         <h1 className="text-[5vh] font-bold">Nice one</h1>
-        <p className="text-[3vh]">Now it&apos;s The Bee&apos;s turn</p>
+        <p className="text-[3vh]">Now it&apos;s your opponent&apos;s turn</p>
       </div>
       <div className="p-2">
         <Canvas>
@@ -162,9 +150,9 @@ function YourBonusTurnStatus() {
 function OpponentBonusTurnStatus() {
   return (
     <>
-      <h1 className="font-bold text-[5vh]">The Bee gets a bonus turn</h1>
+      <h1 className="font-bold text-[5vh]">Your opponent gets a bonus turn</h1>
       <p className="text-[3vh]">
-        The Bee is trying to eliminate all of your territory.
+        They are trying to eliminate all of your territory.
       </p>
     </>
   );
@@ -174,12 +162,12 @@ function GameOverStatus({ winner }: { winner: string }) {
   return (
     <>
       <h1 className="text-[5vh] font-bold">
-        {winner === "0" ? "You won" : "The Bee won!"}
+        {winner === "0" ? "You won!" : "The Bee won!"}
       </h1>
       <p className="text-[3vh]">
         {winner === "0"
-          ? "Welcome to Buzzwords! Play again against The Bee or invite a friend."
-          : "Better luck next time!"}
+          ? "Play again against the bot or invite a friend."
+          : "Better luck next time."}
       </p>
     </>
   );
