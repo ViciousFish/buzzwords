@@ -18,12 +18,16 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Canvas from "../canvas/Canvas";
 import Bee from "../../assets/Bee";
+import HexGrid from "buzzwords-shared/hexgrid";
+import { getCellNeighbors } from "buzzwords-shared/hexgrid";
+import { willConnectToTerritory } from "buzzwords-shared/gridHelpers";
+import Cell from "buzzwords-shared/cell";
 
 const HINT_MESSAGES = [
   "You can use any letter on the board",
   "You'll capture tiles that you use that connect to your territory",
   "The objective is to capture all of your opponent's territory",
-  "Try to capture your opponent's flower tile. You'll get an extra turn when you do", // TODO: always display this hint when flower tile is capturable
+  "Try to capture your opponent's flower tile. You'll get an extra turn when you do",
   "Try to protect your flower tile",
   "There is no penalty for trying a word that doesn't exist",
 ];
@@ -83,6 +87,57 @@ function OpponentTurnStatus() {
   );
 }
 
+function YourBonusTurnStatus() {
+  return (
+    <>
+      <h1 className="font-bold text-[3vh]">You get a bonus turn</h1>
+      <p className="">
+        Now&apos;s your chance to win. Try to eliminate all of your
+        opponent&apos;s territory.
+      </p>
+    </>
+  );
+}
+
+function OpponentBonusTurnStatus() {
+  return (
+    <>
+      <h1 className="font-bold text-[3vh]">Your opponent gets a bonus turn</h1>
+      <p className="">
+        They are trying to eliminate all of your territory.
+      </p>
+    </>
+  );
+}
+
+function FlowerCapturableStatus() {
+  return (
+    <>
+      <h1 className="font-bold text-[3vh]">Try to capture the green flower</h1>
+      <p className="">
+        Your opponent&apos;s flower tile is now reachable from your territory.
+        If you can use an unbroken chain of letters to connect to it, you&apos;ll
+        capture it and get a bonus turn!
+      </p>
+    </>
+  );
+}
+
+function GameOverStatus({ winner }: { winner: string }) {
+  return (
+    <>
+      <h1 className="text-[5vh] font-bold">
+        {winner === "0" ? "You won!" : "The Bee won!"}
+      </h1>
+      <p className="text-[3vh]">
+        {winner === "0"
+          ? "Play again against the bot or invite a friend."
+          : "Better luck next time."}
+      </p>
+    </>
+  );
+}
+
 function YourTurnStatus({ turn }: { turn: number }) {
   const initialHintIndex = useMemo(() => {
     if (turn <= HINT_MESSAGES.length * 2) {
@@ -135,51 +190,62 @@ function YourTurnStatus({ turn }: { turn: number }) {
   );
 }
 
-function YourBonusTurnStatus() {
-  return (
-    <>
-      <h1 className="font-bold text-[5vh]">You get a bonus turn</h1>
-      <p className="text-[3vh]">
-        Now&apos;s your chance to win. Try to eliminate all of your
-        opponent&apos;s territory.
-      </p>
-    </>
+function isFlowerCapturable(grid: HexGrid, player: 0 | 1): boolean {
+  // Find opponent's flower tile
+  const opponentFlower = Object.entries(grid).find(
+    ([_, cell]) => cell.capital && cell.owner === Number(!player)
   );
+  if (!opponentFlower) return false;
+
+  // Check if any neutral tile adjacent to the flower connects to player's territory
+  const [_, flowerCell] = opponentFlower;
+  const neighbors = getCellNeighbors(grid, flowerCell.q, flowerCell.r);
+  
+  // For each neutral neighbor, check if there's a path to player territory
+  return neighbors.some(neighbor => {
+    // Skip non-neutral tiles or neutral tiles without letters
+    if (neighbor.owner !== 2 || neighbor.value === "") return false;
+    
+    // Use a flood fill to find if there's a path to player territory
+    const visited = new Set<string>();
+    const stack: Cell[] = [neighbor];
+    
+    while (stack.length > 0) {
+      const current = stack.pop()!;
+      const key = `${current.q},${current.r}`;
+      if (visited.has(key)) continue;
+      visited.add(key);
+      
+      // If we found player territory, we have a path!
+      if (current.owner === player) return true;
+      
+      // Only continue through neutral tiles that have letters
+      if (current.owner === 2 && current.value !== "") {
+        stack.push(...getCellNeighbors(grid, current.q, current.r));
+      }
+    }
+    
+    return false;
+  });
 }
 
-function OpponentBonusTurnStatus() {
-  return (
-    <>
-      <h1 className="font-bold text-[5vh]">Your opponent gets a bonus turn</h1>
-      <p className="text-[3vh]">
-        They are trying to eliminate all of your territory.
-      </p>
-    </>
-  );
+interface StatusSwitchProps {
+  turn: number;
+  yourTurn: boolean;
+  error: string | null;
+  isBonusTurn: boolean;
+  winner?: string;
+  flowerCapturable?: boolean;
 }
 
-function GameOverStatus({ winner }: { winner: string }) {
-  return (
-    <>
-      <h1 className="text-[5vh] font-bold">
-        {winner === "0" ? "You won!" : "The Bee won!"}
-      </h1>
-      <p className="text-[3vh]">
-        {winner === "0"
-          ? "Play again against the bot or invite a friend."
-          : "Better luck next time."}
-      </p>
-    </>
-  );
-}
-
-function renderStatus(
-  turn: number,
-  yourTurn: boolean,
-  error: string | null,
-  isBonusTurn: boolean,
-  winner?: string
-) {
+function StatusSwitch({
+  turn,
+  yourTurn,
+  error,
+  isBonusTurn,
+  winner,
+  flowerCapturable,
+}: StatusSwitchProps) {
   if (winner) {
     return <GameOverStatus winner={winner} />;
   }
@@ -194,6 +260,9 @@ function renderStatus(
   }
   if (turn === 1) {
     return <InitialTurnStatus />;
+  }
+  if (yourTurn && flowerCapturable) {
+    return <FlowerCapturableStatus />;
   }
   if (yourTurn) {
     return <YourTurnStatus turn={turn} />;
@@ -215,8 +284,8 @@ export function BGIOStatusArea({
 }) {
   const [error, setError] = useState<string | null>(null);
   const yourTurn = ctx.currentPlayer === "0";
+
   const bonusTurn = useMemo(() => {
-    console.log(log.length);
     if (
       !log ||
       log.filter((entry) => entry.action.payload.type === "playWord").length ===
@@ -230,10 +299,17 @@ export function BGIOStatusArea({
       ? lastMove.action.payload.playerID === ctx.currentPlayer
       : lastMove.action.payload.playerID !== ctx.currentPlayer;
   }, [log, ctx.currentPlayer, yourTurn]);
+
+  const flowerCapturable = useMemo(() => {
+    if (!yourTurn) return false;
+    return isFlowerCapturable(G.grid, 0);
+  }, [G.grid, yourTurn]);
+
   const word = useMemo(
     () => selection.map(({ q, r }) => G.grid[`${q},${r}`].value).join(""),
     [selection, G.grid]
   );
+
   useEffect(() => {
     if (word.length > 0) {
       setError(null);
@@ -312,7 +388,14 @@ export function BGIOStatusArea({
         </div>
       ) : (
         <div className="w-full text-darkbrown flex-auto flex flex-col justify-center items-stretch">
-          {renderStatus(ctx.turn, yourTurn, error, bonusTurn, ctx.gameover)}
+          <StatusSwitch
+            turn={ctx.turn}
+            yourTurn={yourTurn}
+            error={error}
+            isBonusTurn={bonusTurn}
+            winner={ctx.gameover}
+            flowerCapturable={flowerCapturable}
+          />
         </div>
       )}
     </div>
