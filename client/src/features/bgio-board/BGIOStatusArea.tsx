@@ -75,15 +75,15 @@ function OpponentFirstTurnStatus() {
 
 function OpponentTurnStatus() {
   return (
-    <div className="grid grid-cols-[1fr,128px]">
-      <div className="flex flex-col justify-center">
-        <h1 className="text-[5vh] font-bold">Nice one</h1>
-        <p className="text-[3vh]">Now it&apos;s your opponent&apos;s turn</p>
-      </div>
+    <div className="grid grid-cols-[128px,1fr]">
       <div className="p-2">
         <Canvas>
           <Bee />
         </Canvas>
+      </div>
+      <div className="flex flex-col justify-center">
+        <h1 className="text-[3vh] font-bold">Nice one</h1>
+        <p className="">Waiting for your opponent to play</p>
       </div>
     </div>
   );
@@ -208,10 +208,10 @@ function isFlowerCapturable(grid: HexGrid, player: 0 | 1): boolean {
 
     // Use a flood fill to find if there's a path to player territory
     const visited = new Set<string>();
-    const stack: Cell[] = [neighbor];
+    const stack: { cell: Cell; chainLength: number }[] = [{ cell: neighbor, chainLength: 1 }];
 
     while (stack.length > 0) {
-      const current = stack.pop()!;
+      const { cell: current, chainLength } = stack.pop()!;
       const key = `${current.q},${current.r}`;
       if (visited.has(key)) continue;
       visited.add(key);
@@ -219,9 +219,12 @@ function isFlowerCapturable(grid: HexGrid, player: 0 | 1): boolean {
       // If we found player territory, we have a path!
       if (current.owner === player) return true;
 
-      // Only continue through neutral tiles that have letters
-      if (current.owner === 2 && current.value !== "") {
-        stack.push(...getCellNeighbors(grid, current.q, current.r));
+      // Only continue through neutral tiles that have letters and haven't exceeded chain length
+      if (current.owner === 2 && current.value !== "" && chainLength < 3) {
+        stack.push(...getCellNeighbors(grid, current.q, current.r).map(cell => ({
+          cell,
+          chainLength: chainLength + 1
+        })));
       }
     }
 
@@ -387,19 +390,20 @@ export function BGIOStatusArea({
   const yourTurn = ctx.currentPlayer === "0";
 
   const bonusTurn = useMemo(() => {
-    if (
-      !log ||
-      log.filter((entry) => entry.action.payload.type === "playWord").length ===
-        0
-    )
-      return false;
-    const lastMove = log[log.length - 1];
-    // If the last move was by the current player, it means they captured a capital
-    // and got a bonus turn
-    return yourTurn
-      ? lastMove.action.payload.playerID === ctx.currentPlayer
-      : lastMove.action.payload.playerID !== ctx.currentPlayer;
-  }, [log, ctx.currentPlayer, yourTurn]);
+    if (!log) return false;
+    
+    // Find the last playWord move
+    const playWordMoves = log.filter(entry => entry.action.payload.type === "playWord");
+    if (playWordMoves.length === 0) return false;
+    
+    const lastPlayWordMove = playWordMoves[playWordMoves.length - 1];
+    // Only consider it a bonus turn if the move was successful (not an invalid move)
+    if (lastPlayWordMove.action.payload.args?.[0] === INVALID_MOVE) return false;
+
+    // For player's turn: check if their last move was successful
+    // For opponent's turn: check if their last move was successful
+    return lastPlayWordMove.action.payload.playerID === ctx.currentPlayer
+  }, [log, ctx.currentPlayer]);
 
   const flowerCapturable = useMemo(() => {
     if (!yourTurn) return false;
