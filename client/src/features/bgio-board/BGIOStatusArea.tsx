@@ -23,12 +23,20 @@ import { getCellNeighbors } from "buzzwords-shared/hexgrid";
 import { willConnectToTerritory } from "buzzwords-shared/gridHelpers";
 import Cell from "buzzwords-shared/cell";
 import classNames from "classnames";
-import fancyButtonStyles from "../../presentational/FancyButton.module.css";
+import GameTile from "../game/GameTile";
 
 const HINT_MESSAGES = [
   "You can use any letter on the board",
   "You'll capture letters that you use that connect to your territory",
-  "Capture all of your opponent's territory to win",
+  <>
+    Capture all of your opponent&apos;s territory
+    <span className="inline-block aspect-square w-[3vh] mb-[-0.5vh]">
+      <Canvas>
+        <GameTile owner={1} selected={false} currentTurn={0} enableSelection={false} position={[0, 0, 0]} willBeReset={false} willBeCaptured={false} hidden={false} />
+      </Canvas>
+    </span>{" "}
+    to win
+  </>,
   "Try to capture your opponent's flower tile. You'll get an extra turn when you do",
   "Try to protect your flower tile",
   "There is no penalty for trying a word that doesn't exist",
@@ -208,7 +216,9 @@ function isFlowerCapturable(grid: HexGrid, player: 0 | 1): boolean {
 
     // Use a flood fill to find if there's a path to player territory
     const visited = new Set<string>();
-    const stack: { cell: Cell; chainLength: number }[] = [{ cell: neighbor, chainLength: 1 }];
+    const stack: { cell: Cell; chainLength: number }[] = [
+      { cell: neighbor, chainLength: 1 },
+    ];
 
     while (stack.length > 0) {
       const { cell: current, chainLength } = stack.pop()!;
@@ -221,10 +231,12 @@ function isFlowerCapturable(grid: HexGrid, player: 0 | 1): boolean {
 
       // Only continue through neutral tiles that have letters and haven't exceeded chain length
       if (current.owner === 2 && current.value !== "" && chainLength < 3) {
-        stack.push(...getCellNeighbors(grid, current.q, current.r).map(cell => ({
-          cell,
-          chainLength: chainLength + 1
-        })));
+        stack.push(
+          ...getCellNeighbors(grid, current.q, current.r).map((cell) => ({
+            cell,
+            chainLength: chainLength + 1,
+          }))
+        );
       }
     }
 
@@ -358,12 +370,7 @@ function WordInputStatus({
             Clear
           </Button>
           <Button
-            className={classNames(
-              "bg-green-600 text-lightbg rounded-full px-3 py-1 text-sm transition-transform"
-              // {
-              //   "scale-125 ": willCapture,
-              // }
-            )}
+            className="bg-green-600 text-lightbg rounded-full px-3 py-1 text-sm transition-transform"
             onPress={() => onPlayWord(selection)}
           >
             <FontAwesomeIcon icon={faPlay} /> Submit
@@ -391,18 +398,21 @@ export function BGIOStatusArea({
 
   const bonusTurn = useMemo(() => {
     if (!log) return false;
-    
+
     // Find the last playWord move
-    const playWordMoves = log.filter(entry => entry.action.payload.type === "playWord");
+    const playWordMoves = log.filter(
+      (entry) => entry.action.payload.type === "playWord"
+    );
     if (playWordMoves.length === 0) return false;
-    
+
     const lastPlayWordMove = playWordMoves[playWordMoves.length - 1];
     // Only consider it a bonus turn if the move was successful (not an invalid move)
-    if (lastPlayWordMove.action.payload.args?.[0] === INVALID_MOVE) return false;
+    if (lastPlayWordMove.action.payload.args?.[0] === INVALID_MOVE)
+      return false;
 
     // For player's turn: check if their last move was successful
     // For opponent's turn: check if their last move was successful
-    return lastPlayWordMove.action.payload.playerID === ctx.currentPlayer
+    return lastPlayWordMove.action.payload.playerID === ctx.currentPlayer;
   }, [log, ctx.currentPlayer]);
 
   const flowerCapturable = useMemo(() => {
