@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { parseDate, today } from "@internationalized/date";
+import bunyan from "bunyan";
 
 import dl from "../datalayer";
 import getConfig from "../config";
@@ -8,12 +9,16 @@ const API_KEY = getConfig().adminApiKey;
 
 const DEFAULT_TZ = "America/New_York";
 
+const logger = bunyan.createLogger({
+  name: "buzzwords-server",
+});
+
 export default (): Router => {
   const adminRouter = Router();
 
   adminRouter.use((req, res, next) => {
     if (req.headers.authorization !== `Bearer ${API_KEY}`) {
-      console.log("failed request to admin API", req.path);
+      logger.info({reqPath: req.path}, "failed request to admin API");
       res.sendStatus(404);
       return;
     }

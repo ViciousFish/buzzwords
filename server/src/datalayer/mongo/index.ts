@@ -1,4 +1,5 @@
 import mongoose, { ClientSession } from "mongoose";
+import bunyan from "bunyan";
 import getConfig from "../../config";
 
 import { AuthToken, DataLayer, PushToken, User } from "../../types";
@@ -8,6 +9,10 @@ import Models from "./models";
 
 import { performance } from "perf_hooks";
 
+const logger = bunyan.createLogger({
+  name: "buzzwords-server",
+});
+
 interface Options extends Record<string, unknown> {
   session?: ClientSession;
 }
@@ -15,7 +20,7 @@ export default class Mongo implements DataLayer {
   connected = false;
   constructor() {
     this.createConnection().then(() => {
-      console.log("Connecting to db...");
+      logger.info("Connecting to db...");
     });
   }
 
@@ -27,22 +32,22 @@ export default class Mongo implements DataLayer {
       const db = mongoose.connection;
       db.on("error", () => {
         this.connected = false;
-        console.log("DB error! Not connected");
+        logger.error("DB error! Not connected");
       });
       db.on("open", () => {
         this.connected = true;
-        console.log("Connected to db!");
+        logger.info("Connected to db!");
       });
       db.on("disconnected", () => {
-        console.log("disconnected from db");
+        logger.info("disconnected from db");
         this.connected = false;
       });
       db.on("reconnected", () => {
-        console.log("reconnected to db");
+        logger.info("reconnected to db");
         this.connected = true;
       });
     } catch (e) {
-      console.log(e);
+      logger.error(e);
     }
   }
 
@@ -63,7 +68,7 @@ export default class Mongo implements DataLayer {
       );
       return res[0].toObject();
     } catch (e) {
-      console.log(e);
+      logger.error(e);
       throw e;
     }
   }
@@ -83,7 +88,7 @@ export default class Mongo implements DataLayer {
       );
       return res.deletedCount === 1;
     } catch (e) {
-      console.log(e);
+      logger.error(e);
       throw e;
     }
   }
@@ -110,7 +115,7 @@ export default class Mongo implements DataLayer {
       );
       return true;
     } catch (e) {
-      console.log(e);
+      logger.error(e);
       throw e;
     }
   }
@@ -133,7 +138,7 @@ export default class Mongo implements DataLayer {
       );
       return true;
     } catch (e) {
-      console.log(e);
+      logger.error(e);
       throw e;
     }
   }
@@ -160,7 +165,7 @@ export default class Mongo implements DataLayer {
       );
       return true;
     } catch (e) {
-      console.log(e);
+      logger.error(e);
       throw e;
     }
   }
@@ -184,7 +189,7 @@ export default class Mongo implements DataLayer {
       );
       return res ? res?.toObject() : null;
     } catch (e) {
-      console.log(e);
+      logger.error(e);
       throw e;
     }
   }
@@ -232,7 +237,7 @@ export default class Mongo implements DataLayer {
       );
       return true;
     } catch (e) {
-      console.log(e);
+      logger.error(e);
       throw e;
     }
   }
@@ -270,7 +275,7 @@ export default class Mongo implements DataLayer {
 
       return res?.toObject()?.userId;
     } catch (e) {
-      console.log(e);
+      logger.error(e);
       throw e;
     }
   }
@@ -294,7 +299,7 @@ export default class Mongo implements DataLayer {
       }
       return res.toObject();
     } catch (e) {
-      console.log(e);
+      logger.error(e);
       throw e;
     }
   }
@@ -321,7 +326,7 @@ export default class Mongo implements DataLayer {
       }
       return res.toObject();
     } catch (e) {
-      console.log(e);
+      logger.error(e);
       throw e;
     }
   }
@@ -350,7 +355,7 @@ export default class Mongo implements DataLayer {
       );
       return res.modifiedCount == 1 || res.upsertedCount == 1;
     } catch (e) {
-      console.log(e);
+      logger.error(e);
       throw e;
     }
   }
@@ -379,7 +384,7 @@ export default class Mongo implements DataLayer {
       );
       return res.modifiedCount == 1 || res.upsertedCount == 1;
     } catch (e) {
-      console.log(e);
+      logger.error(e);
       throw e;
     }
   }
@@ -403,7 +408,7 @@ export default class Mongo implements DataLayer {
       }
       return res.toObject().nickname;
     } catch (e) {
-      console.log(e);
+      logger.error(e);
       throw e;
     }
   }
@@ -433,7 +438,7 @@ export default class Mongo implements DataLayer {
       }
       return nicknames;
     } catch (e) {
-      console.log(e);
+      logger.error(e);
       throw e;
     }
   }
@@ -458,10 +463,10 @@ export default class Mongo implements DataLayer {
           lean: true,
         }
       );
-      console.log("[perf] refresh query took", performance.now() - qstart);
+      logger.info({queryTime: Number(performance.now() - qstart)}, "[perf] refresh query took");
       return res;
     } catch (e) {
-      console.log(e);
+      logger.error(e);
       throw e;
     }
   }
@@ -485,7 +490,7 @@ export default class Mongo implements DataLayer {
       const game = res.toObject({ flattenMaps: true });
       return game;
     } catch (e) {
-      console.log(e);
+      logger.error(e);
       throw e;
     }
   }
@@ -516,7 +521,7 @@ export default class Mongo implements DataLayer {
       );
       return res.modifiedCount == 1;
     } catch (e) {
-      console.log(e);
+      logger.error(e);
       return false;
     }
   }
@@ -542,7 +547,7 @@ export default class Mongo implements DataLayer {
       );
       return res.modifiedCount == 1;
     } catch (e) {
-      console.log(e);
+      logger.error(e);
       return false;
     }
   }
@@ -562,7 +567,7 @@ export default class Mongo implements DataLayer {
       });
       return true;
     } catch (e) {
-      console.log(e);
+      logger.error(e);
       return false;
     }
   }
