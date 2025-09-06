@@ -5,7 +5,7 @@ require("esbuild") // eslint-disable-line
     platform: "node",
     outfile: "./dist/index.js",
     sourcemap: true,
-    watch: Boolean(process.env.BUZZ_BUILD_WATCH) || false,
+    // watch: Boolean(process.env.BUZZ_BUILD_WATCH) || false,
     external: [
       "http",
       "express",
@@ -26,7 +26,8 @@ require("esbuild") // eslint-disable-line
       "@opentelemetry/instrumentation-bunyan",
       "@opentelemetry/instrumentation-fs",
       "@opentelemetry/sdk-node",
-      "@opentelemetry/exporter-logs-otlp-http"
+      "@opentelemetry/exporter-logs-otlp-http",
+      "dtrace-provider"
     ],
     // plugins: require("./plugins"),
   })
