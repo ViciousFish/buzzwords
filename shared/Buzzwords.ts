@@ -56,7 +56,7 @@ export const Buzzwords: BoardGame<BuzzwordsGameState> = {
       ...getCellNeighbors(game.grid, -2, -1),
       ...getCellNeighbors(game.grid, 2, 1),
     ];
-    const newValues = getNewCellValues([], 12, WordsObject);
+    const newValues = getNewCellValues([], 12, WordsObject, plugins.random);
     let i = 0;
     for (const cell of neighbors) {
       cell.value = newValues[i];
@@ -87,7 +87,6 @@ export const Buzzwords: BoardGame<BuzzwordsGameState> = {
       { G, ctx, playerID, events, random, ...plugins },
       move: HexCoord[]
     ) => {
-      console.log("🚀 ~ playerID:", playerID);
       const word = getWordFromMove(G, move);
       if (word === INVALID_MOVE) {
         return INVALID_MOVE;

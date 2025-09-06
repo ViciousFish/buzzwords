@@ -48,6 +48,7 @@ export function useBotPlayer(props: BoardProps<BuzzwordsGameState>) {
       props.ctx.gameover ||
       isBotMoving.current
     ) {
+      debugger;
       return;
     }
 

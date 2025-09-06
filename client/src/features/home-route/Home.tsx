@@ -4,7 +4,7 @@ import BGIOClient from "../bgio-board/BGIOClient";
 const Home: React.FC = () => {
   return (
     <>
-      <BGIOClient />
+      <BGIOClient playerID="0" matchID="tutorial" />
     </>
   );
 };
