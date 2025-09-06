@@ -26,6 +26,7 @@ require("esbuild") // eslint-disable-line
       "@opentelemetry/instrumentation-bunyan",
       "@opentelemetry/instrumentation-fs",
       "@opentelemetry/sdk-node",
+      "@opentelemetry/exporter-logs-otlp-http"
     ],
     // plugins: require("./plugins"),
   })
