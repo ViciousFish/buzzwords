@@ -22,6 +22,10 @@ require("esbuild") // eslint-disable-line
       "@grpc/grpc-js",
       "@opentelemetry/resources",
       "@opentelemetry/semantic-conventions",
+      "@opentelemetry/auto-instrumentations-node",
+      "@opentelemetry/instrumentation-bunyan",
+      "@opentelemetry/instrumentation-fs",
+      "@opentelemetry/sdk-node",
     ],
     // plugins: require("./plugins"),
   })
