@@ -1,8 +1,13 @@
 import mongoose from "mongoose";
+import bunyan from "bunyan";
 import getConfig from "../config";
 import Models from "../datalayer/mongo/models";
 
 import Migration0 from "./0";
+
+const logger = bunyan.createLogger({
+  name: "buzzwords-server",
+});
 
 /**
  * To add another migration, create the subsequent <number>.ts
@@ -18,7 +23,7 @@ export default () => {
     mongoose.connect(config.mongoUrl, {});
     const db = mongoose.connection;
     db.on("open", async () => {
-      console.log("Connected to db!");
+      logger.info("Connected to db!");
       const session = await db.startSession();
       session.startTransaction();
       const result = await Models.Migration.find({}, {}, { session });
@@ -29,14 +34,14 @@ export default () => {
         }
         return max;
       }, -1);
-      console.log(
-        "🚀 ~ file: index.ts ~ line 32 ~ maxMigration ~ maxMigration",
-        maxMigration
+      logger.info(
+        {maxMigration},
+        "maxMigration"
       );
 
       for (let idx = 0; idx < migrations.length; idx++) {
         if (idx > maxMigration) {
-          console.log("Running migration: ", idx);
+          logger.info({idx}, "Running migration");
           await migrations[idx](session);
           await Models.Migration.create(
             [

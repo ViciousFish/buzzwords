@@ -1,79 +1,49 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+import * as opentelemetry from "@opentelemetry/api";
+import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express";
+import { MongoDBInstrumentation } from "@opentelemetry/instrumentation-mongodb";
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-grpc";
+import { NodeSDK, logs } from "@opentelemetry/sdk-node";
+import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-http";
+import { BunyanInstrumentation } from "@opentelemetry/instrumentation-bunyan";
+import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 
-const { DiagConsoleLogger, DiagLogLevel, diag } = require("@opentelemetry/api");
-// import otel dependencies
-const opentelemetry = require("@opentelemetry/api");
-const { ConsoleLogger } = require("@opentelemetry/core");
-const { NodeTracerProvider } = require("@opentelemetry/sdk-trace-node");
-const {
-  SimpleSpanProcessor,
-  ConsoleSpanExporter,
-  BatchSpanProcessor,
-} = require("@opentelemetry/sdk-trace-base");
-const { HttpInstrumentation } = require("@opentelemetry/instrumentation-http");
-const {
-  ExpressInstrumentation,
-} = require("@opentelemetry/instrumentation-express");
-const {
-  MongoDBInstrumentation,
-} = require("@opentelemetry/instrumentation-mongodb");
-const {
-  OTLPTraceExporter,
-} = require("@opentelemetry/exporter-trace-otlp-grpc");
-const { registerInstrumentations } = require("@opentelemetry/instrumentation");
-const grpc = require("@grpc/grpc-js");
-const { Resource } = require("@opentelemetry/resources");
-const {
-  SemanticResourceAttributes,
-} = require("@opentelemetry/semantic-conventions");
 
-module.exports = () => {
+export default function initTracing() {
   opentelemetry.diag.setLogger(
     new opentelemetry.DiagConsoleLogger(),
     opentelemetry.DiagLogLevel.WARN
   );
 
-  const provider = new NodeTracerProvider({
-    resource: new Resource({
-      [SemanticResourceAttributes.SERVICE_NAME]:
-        process.env.SERVICE_NAME || "buzzwords-api",
-    }),
-  });
-
-  const metadata = new grpc.Metadata();
-  const apikey = process.env.HONEYCOMB_API_KEY;
-  const dataset = process.env.HONEYCOMB_DATASET || "otel-nodejs";
+  const apikey = process.env.OTEL_EXPORTER_OTLP_HEADERS;
   if (apikey) {
-    metadata.set("x-honeycomb-team", apikey);
-    metadata.set("x-honeycomb-dataset", dataset);
-    const creds = grpc.credentials.createSsl();
-    provider.addSpanProcessor(
-      new BatchSpanProcessor(
-        new OTLPTraceExporter({
-          url: "grpc://api.honeycomb.io:443/",
-          credentials: creds,
-          metadata,
-        })
-      )
-    );
-
-    // uncomment this to see traces in stdout
-    // provider.addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
-
-    provider.register();
-
-    // turn on autoinstrumentation for traces you're likely to want
-    registerInstrumentations({
-      tracerProvider: provider,
-      instrumentations: [
-        new HttpInstrumentation(),
-        new ExpressInstrumentation(),
-        new MongoDBInstrumentation(),
+    const sdk = new NodeSDK({
+      traceExporter: new OTLPTraceExporter(),
+      logRecordProcessors: [
+        new logs.SimpleLogRecordProcessor(new OTLPLogExporter()),
       ],
+      instrumentations: [
+        getNodeAutoInstrumentations({
+          // we recommend disabling fs autoinstrumentation since it can be noisy
+          // and expensive during startup
+          '@opentelemetry/instrumentation-fs': {
+            enabled: false,
+          },
+        }),
+        new ExpressInstrumentation(),
+        new MongoDBInstrumentation({
+          // TODO figure out why allowing it to serialize causes a stack overflow
+          dbStatementSerializer: () => '[Redacted]'
+        }),
+        new BunyanInstrumentation(),
+      ]
     });
 
-    return opentelemetry.trace.getTracer(
-      process.env.SERVICE_NAME || "buzzwords-api"
-    );
+    sdk.start();
+
+    process.on('SIGTERM', () => {
+      sdk
+        .shutdown()
+        .finally(() => process.exit(0));
+    });
   }
-};
+}

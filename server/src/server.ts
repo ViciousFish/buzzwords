@@ -12,6 +12,7 @@ import passport from "passport";
 import { OAuth2Strategy } from "passport-google-oauth";
 import urljoin from "url-join";
 import { applicationDefault, initializeApp } from "firebase-admin/app";
+import bunyan from "bunyan";
 
 import getConfig from "./config";
 import dl from "./datalayer";
@@ -28,6 +29,10 @@ import runMigrations from "./migrations";
 const COLLECTION = "socket.io-adapter-events";
 
 const config = getConfig();
+
+const logger = bunyan.createLogger({
+  name: "buzzwords-server",
+});
 
 const app = express();
 const server = createServer(app);
@@ -168,13 +173,13 @@ app.get(
 );
 
 passport.serializeUser((user, done) => {
-  console.log("SERIALIZE", user);
   const u = user as User;
+  logger.info({userId: u.id}, "SERIALIZE");
   done(null, u.id);
 });
 
 passport.deserializeUser((id: string, done) => {
-  console.log("DESERIALIZE", id);
+  logger.info({userId: id}, "DESERIALIZE");
   dl.getUserById(id)
     .then((user) => {
       done(null, user);
@@ -297,7 +302,7 @@ io.on("connection", async (socket) => {
     socket.handshake.headers.authorization?.split(" ")[1] ?? cookies?.authToken;
 
   if (!authToken) {
-    console.log("socket missing authorization header");
+    logger.info("socket missing authorization header");
     socket.emit("error", "rejected socket connection: no authToken provided");
     return;
   }
@@ -305,16 +310,16 @@ io.on("connection", async (socket) => {
   const userId = await dl.getUserIdByAuthToken(authToken);
 
   if (!userId) {
-    console.log("rejected socket connection: couldn't find userId from token");
+    logger.info("rejected socket connection: couldn't find userId from token");
     socket.emit("error", "rejected socket connection: couldn't find userId");
     return;
   }
   socket.join(userId);
-  console.log("a user connected", userId);
+  logger.info("a user connected", userId);
   socket.on("selection", async ({ selection, gameId }: SelectionEventProps) => {
     const game = await dl.getGameById(gameId);
     if (!game) {
-      console.log("no game", gameId);
+      logger.info({gameId}, "no game");
       return;
     }
     game.users.forEach((user) => {
@@ -322,7 +327,7 @@ io.on("connection", async (socket) => {
     });
   });
   socket.on("disconnect", (reason) => {
-    console.log(`user ${userId} disconnected: ${reason}`);
+    logger.info({userId, reason}, `user disconnected`);
   });
 });
 
@@ -347,7 +352,7 @@ const main = async () => {
     });
   }
   server.listen(config.port, () => {
-    console.log("Server listening on port", config.port);
+    logger.info({port: config.port}, "Server listening on port");
   });
 };
 

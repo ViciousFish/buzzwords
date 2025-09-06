@@ -3,6 +3,8 @@ import express, { Router } from "express";
 import { Server } from "socket.io";
 import { getMessaging, Notification } from "firebase-admin/messaging";
 import urljoin from "url-join";
+import bunyan from "bunyan";
+import * as opentelemetry from "@opentelemetry/api";
 
 import { getBotMove } from "buzzwords-shared/bot";
 import { HexCoord } from "buzzwords-shared/types";
@@ -14,6 +16,12 @@ import GameManager from "../GameManager";
 import { WordsObject, BannedWordsObject } from "../words";
 import { removeMongoId } from "../util";
 import { ensureNickname } from "./user";
+
+const logger = bunyan.createLogger({
+  name: "buzzwords-server",
+});
+
+const tracer = opentelemetry.trace.getTracer("buzzwords-game-routes");
 
 async function sendPush(
   notificationRecipient: string,
@@ -160,7 +168,7 @@ export default (io: Server): Router => {
       ensureNickname(userId, io);
       return;
     } catch (e) {
-      console.log(e);
+      logger.error(e);
       res.sendStatus(500);
     }
   });
@@ -275,6 +283,7 @@ export default (io: Server): Router => {
     try {
       pass(game.id, user);
     } catch (e) {
+      logger.error(e);
       res.status(500);
       if (e instanceof Error) {
         res.send(e.message);
@@ -288,48 +297,155 @@ export default (io: Server): Router => {
   });
 
   const doBotMoves = async (gameId: string): Promise<void> => {
-    const session = await dl.createContext();
-
-    let game = await dl.getGameById(gameId, {
-      session,
-    });
-
-    if (!game) {
-      return;
-    }
-
-    const gm = new GameManager(game);
-    let lastMessage = Date.now();
-
-    while (!game.gameOver && game.vsAI && game.turn) {
-      let botMove: HexCoord[];
+    return tracer.startActiveSpan("doBotMoves", async (span) => {
       try {
-        botMove = getBotMove(game.grid, {
-          words: WordsObject,
-          difficulty: game.difficulty,
-          bannedWords: BannedWordsObject,
+        span.setAttributes({
+          "game.id": gameId,
+          "bot.player": "AI"
         });
-      } catch (e) {
-        console.log("BOT FAILED TO FIND MOVE. PASSING");
+
+        const session = await dl.createContext();
+
+        let game = await dl.getGameById(gameId, {
+          session,
+        });
+
+        if (!game) {
+          span.setStatus({ 
+            code: opentelemetry.SpanStatusCode.ERROR, 
+            message: "Game not found" 
+          });
+          return;
+        }
+
+        span.setAttributes({
+          "game.difficulty": game.difficulty,
+          "game.vsAI": game.vsAI,
+          "game.gameOver": game.gameOver,
+          "game.turn": game.turn
+        });
+
+        const gm = new GameManager(game);
+        let lastMessage = Date.now();
+        let moveCount = 0;
+
+        while (!game.gameOver && game.vsAI && game.turn) {
+          await tracer.startActiveSpan("botMove", async (moveSpan) => {
+            try {
+              moveCount++;
+              moveSpan.setAttributes({
+                "bot.moveNumber": moveCount,
+                "game.difficulty": game!.difficulty,
+                "game.turn": game!.turn
+              });
+
+              let botMove: HexCoord[];
+              try {
+                botMove = await tracer.startActiveSpan("getBotMove", async (getBotSpan) => {
+                  try {
+                    const move = getBotMove(game!.grid, {
+                      words: WordsObject,
+                      difficulty: game!.difficulty,
+                      bannedWords: BannedWordsObject,
+                    });
+                    
+                    getBotSpan.setAttributes({
+                      "bot.moveLength": move.length,
+                      "bot.difficulty": game!.difficulty
+                    });
+                    
+                    getBotSpan.setStatus({ code: opentelemetry.SpanStatusCode.OK });
+                    return move;
+                  } catch (error) {
+                    getBotSpan.recordException(error as Error);
+                    getBotSpan.setStatus({ 
+                      code: opentelemetry.SpanStatusCode.ERROR, 
+                      message: (error as Error).message 
+                    });
+                    throw error;
+                  } finally {
+                    getBotSpan.end();
+                  }
+                });
+              } catch (e) {
+                logger.info("BOT FAILED TO FIND MOVE. PASSING");
+                moveSpan.setAttributes({
+                  "bot.action": "pass",
+                  "bot.reason": "no_valid_move"
+                });
+                await dl.commitContext(session);
+                pass(game!.id, "AI");
+                moveSpan.setStatus({ 
+                  code: opentelemetry.SpanStatusCode.OK,
+                  message: "Bot passed - no valid move found"
+                });
+                return;
+              }
+              
+              logger.info({botMove}, "Bot move");
+              moveSpan.setAttributes({
+                "bot.action": "move",
+                "bot.word": botMove.map(coord => {
+                  const cell = game!.grid[`${coord.q},${coord.r}`];
+                  return cell?.value || '';
+                }).join(''),
+                "bot.moveCoords": JSON.stringify(botMove)
+              });
+
+              game = gm.makeMove("AI", botMove);
+              await dl.saveGame(gameId, game, {
+                session,
+              });
+              
+              const delay = 2000 - (Date.now() - lastMessage);
+              game.users.forEach((user) => {
+                const copy = R.clone(removeMongoId(game));
+                setTimeout(() => {
+                  io.to(user).emit("game updated", copy);
+                }, delay);
+              });
+              lastMessage = Date.now() + delay;
+
+              moveSpan.setAttributes({
+                "game.gameOver": game.gameOver,
+                "game.winner": game.winner || -1,
+                "bot.delay": delay
+              });
+
+              moveSpan.setStatus({ code: opentelemetry.SpanStatusCode.OK });
+            } catch (error) {
+              moveSpan.recordException(error as Error);
+              moveSpan.setStatus({ 
+                code: opentelemetry.SpanStatusCode.ERROR, 
+                message: (error as Error).message 
+              });
+              throw error;
+            } finally {
+              moveSpan.end();
+            }
+          });
+        }
+        
         await dl.commitContext(session);
-        pass(game.id, "AI");
-        return;
+        
+        span.setAttributes({
+          "bot.totalMoves": moveCount,
+          "game.finalGameOver": game.gameOver,
+          "game.finalWinner": game.winner || -1
+        });
+        
+        span.setStatus({ code: opentelemetry.SpanStatusCode.OK });
+      } catch (error) {
+        span.recordException(error as Error);
+        span.setStatus({ 
+          code: opentelemetry.SpanStatusCode.ERROR, 
+          message: (error as Error).message 
+        });
+        throw error;
+      } finally {
+        span.end();
       }
-      console.log("Bot move", botMove);
-      game = gm.makeMove("AI", botMove);
-      await dl.saveGame(gameId, game, {
-        session,
-      });
-      const delay = 2000 - (Date.now() - lastMessage);
-      game.users.forEach((user) => {
-        const copy = R.clone(removeMongoId(game));
-        setTimeout(() => {
-          io.to(user).emit("game updated", copy);
-        }, delay);
-      });
-      lastMessage = Date.now() + delay;
-    }
-    await dl.commitContext(session);
+    });
   };
 
   router.post("/:id/nudge", async (req, res) => {
@@ -354,6 +470,7 @@ export default (io: Server): Router => {
         doBotMoves(gameId);
       }
     } catch (e) {
+      logger.error(e);
       res.status(500);
       if (e instanceof Error) {
         res.send(e.message);
@@ -410,6 +527,7 @@ export default (io: Server): Router => {
       });
       await dl.commitContext(session);
     } catch (e) {
+      logger.error(e);
       res.sendStatus(500);
       return;
     }
