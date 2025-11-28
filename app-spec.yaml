@@ -14,9 +14,42 @@ static_sites:
   routes:
   - path: /
   source_dir: /
+- dockerfile_path: client/Dockerfile
+  github:
+    branch: staging
+    deploy_on_push: true
+    repo: ViciousFish/buzzwords
+  name: buzzwords-staging
+  output_dir: /build/client/dist
+  routes:
+  - path: /
+  source_dir: /
 domains:
 - domain: buzzwords.gg
   type: PRIMARY
+- domain: staging.buzzwords.gg
+  type: ALIAS
+ingress:
+  rules:
+  - component:
+      name: buzzwords
+    match:
+      authority:
+        exact: buzzwords.gg
+      path:
+        prefix: /
+  - component:
+      name: buzzwords-staging
+    match:
+      authority:
+        exact: staging.buzzwords.gg
+      path:
+        prefix: /
+  - component:
+      name: buzzwords-api
+    match:
+      path:
+        prefix: /api
 envs:
 - key: COOKIE_DOMAIN
   scope: RUN_AND_BUILD_TIME
