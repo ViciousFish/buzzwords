@@ -11,8 +11,6 @@ static_sites:
     repo: ViciousFish/buzzwords
   name: buzzwords
   output_dir: /build/client/dist
-  routes:
-  - path: /
   source_dir: /
 - dockerfile_path: client/Dockerfile
   github:
@@ -21,8 +19,6 @@ static_sites:
     repo: ViciousFish/buzzwords
   name: buzzwords-staging
   output_dir: /build/client/dist
-  routes:
-  - path: /
   source_dir: /
 domains:
 - domain: buzzwords.gg
@@ -68,6 +64,4 @@ services:
   instance_count: 1
   instance_size_slug: basic-xs
   name: buzzwords-api
-  routes:
-  - path: /api
   source_dir: /
