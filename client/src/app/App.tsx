@@ -50,6 +50,7 @@ FaviconNotification.init({
 const MM = window.matchMedia("(prefers-color-scheme: dark)");
 
 const HomeLazy = lazy(() => import("../features/home-route/Home"));
+const LocalGameContainerLazy = lazy(() => import("../features/home-route/LocalGameContainer"));
 const CreateLazy = lazy(
   () => import("../features/create-game-route/CreateGame")
 );
@@ -200,6 +201,14 @@ function App() {
                 element={
                   <React.Suspense fallback={<></>}>
                     <PlayLazy />
+                  </React.Suspense>
+                }
+              />
+              <Route
+                path="/local/:gameId"
+                element={
+                  <React.Suspense fallback={<></>}>
+                    <LocalGameContainerLazy />
                   </React.Suspense>
                 }
               />

@@ -19,9 +19,12 @@ import { toggleCompletedGames } from "./gamelistSlice";
 import ScreenHeightWraper from "../../presentational/ScreenHeightWrapper";
 import GameListItem from "./GameListItem";
 import TutorialCard from "./TutorialCard";
+import LocalBotGameListItem from "./LocalBotGameListItem";
+import { useLocation } from "react-router-dom";
 
 const GameList: React.FC = () => {
   const dispatch = useAppDispatch();
+  const location = useLocation();
 
   const games = useAppSelector((state) => state.gamelist.games);
   const gamesLoaded = useAppSelector((state) => state.gamelist.gamesLoaded);
@@ -34,6 +37,21 @@ const GameList: React.FC = () => {
   );
   const incompleteGames = Object.values(games).filter((game) => !game.gameOver);
   const completedGames = Object.values(games).filter((game) => game.gameOver);
+
+  // Get local bot games
+  const localBotGames = useAppSelector((state) => state.localBot.games);
+  const localBotGamesList = Object.values(localBotGames);
+  const incompleteLocalBotGames = localBotGamesList.filter(
+    (game) => !game.gameover
+  );
+  const completedLocalBotGames = localBotGamesList.filter(
+    (game) => game.gameover
+  );
+
+  // Check if current route is a local bot game
+  const currentLocalGameId = location.pathname.startsWith("/local/")
+    ? location.pathname.split("/local/")[1]
+    : null;
 
   return (
     <ScreenHeightWraper insetTop={50} className="flex flex-col bg-darkbg">
@@ -82,28 +100,75 @@ const GameList: React.FC = () => {
               <FontAwesomeIcon icon={faHome} />
             </NavLink>
           </div>
-          {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
-          <ul className="px-2 text-text">
-            {incompleteGames.map((game) => (
-              <GameListItem key={game.id} game={game} />
-            ))}
-            {(Object.keys(games).length === 0 || !gamesLoaded) && (
-              <div className="p-2">
-                {!gamesLoaded && (
-                  <>
-                    <FontAwesomeIcon
-                      className="mr-2 animate-spin"
-                      icon={faSpinner}
-                    />
-                    Loading games
-                  </>
-                )}
-                {gamesLoaded && <>No games</>}
+          {/* Local Bot Games Section */}
+          {incompleteLocalBotGames.length > 0 && (
+            <>
+              <div className="px-2 mt-2">
+                <h3 className="text-lg font-bold text-darkbrown">Local Games</h3>
               </div>
-            )}
-          </ul>
+              <ul className="px-2 text-text">
+                {incompleteLocalBotGames.map((game) => (
+                  <LocalBotGameListItem
+                    key={game.id}
+                    game={game}
+                    isActive={currentLocalGameId === game.id}
+                  />
+                ))}
+              </ul>
+            </>
+          )}
+          {/* Online Games Section */}
+          {(incompleteGames.length > 0 || !gamesLoaded || (gamesLoaded && Object.keys(games).length === 0)) && (
+            <>
+              {incompleteGames.length > 0 && (
+                <div className="px-2 mt-2">
+                  <h3 className="text-lg font-bold text-darkbrown">Online Games</h3>
+                </div>
+              )}
+              {/* TODO: use useTransition to actually remove them from the dom on disappear? */}
+              <ul className="px-2 text-text">
+                {incompleteGames.map((game) => (
+                  <GameListItem key={game.id} game={game} />
+                ))}
+                {(Object.keys(games).length === 0 || !gamesLoaded) && (
+                  <div className="p-2">
+                    {!gamesLoaded && (
+                      <>
+                        <FontAwesomeIcon
+                          className="mr-2 animate-spin"
+                          icon={faSpinner}
+                        />
+                        Loading games
+                      </>
+                    )}
+                    {gamesLoaded && incompleteLocalBotGames.length === 0 && <>No games</>}
+                  </div>
+                )}
+              </ul>
+            </>
+          )}
+          {/* Completed Local Bot Games */}
+          {completedLocalBotGames.length > 0 && (
+            <div className="px-2 mt-2">
+              <h3 className="text-lg font-bold text-darkbrown">
+                Completed Local Games
+              </h3>
+            </div>
+          )}
+          {completedLocalBotGames.length > 0 && (
+            <ul className="px-2">
+              {completedLocalBotGames.map((game) => (
+                <LocalBotGameListItem
+                  key={game.id}
+                  game={game}
+                  isActive={currentLocalGameId === game.id}
+                />
+              ))}
+            </ul>
+          )}
+          {/* Completed Online Games */}
           {completedGames.length ? (
-            <div className="px-2 ">
+            <div className="px-2 mt-2">
               <button
                 className="flex items-center text-darkbrown w-full"
                 onClick={() => dispatch(toggleCompletedGames())}

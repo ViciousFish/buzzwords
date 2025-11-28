@@ -3,6 +3,30 @@ import { HexCoord } from "./types";
 import HexGrid, { getCell, getCellNeighbors } from "./hexgrid";
 import Cell from "./cell";
 
+/**
+ * Calculates the distance between two hex coordinates in axial coordinates (q,r).
+ * In axial coordinates, moving one step in any direction changes two coordinates.
+ * The distance is calculated by:
+ * 1. Converting axial coordinates to cube coordinates (q,r,s) where q + r + s = 0
+ * 2. Taking the maximum of the absolute differences between each coordinate
+ * 
+ * For example:
+ * - Distance between (0,0) and (1,0) is 1
+ * - Distance between (0,0) and (1,1) is 1
+ * - Distance between (0,0) and (2,0) is 2
+ */
+export const calculateHexDistance = (
+  coord1: HexCoord,
+  coord2: HexCoord
+): number => {
+  return (
+    (Math.abs(coord1.q - coord2.q) +
+      Math.abs(coord1.q + coord1.r - coord2.q - coord2.r) +
+      Math.abs(coord1.r - coord2.r)) /
+    2
+  );
+};
+
 // If you can make it to user territory that isn't in move, then its valid.
 export const willConnectToTerritory = (
   grid: HexGrid,

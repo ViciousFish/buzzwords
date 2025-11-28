@@ -1,11 +1,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
-import {
-  BuzzwordsGameState,
-  getWordFromMove,
-} from "buzzwords-shared/Buzzwords";
+import { getWordFromMove } from "buzzwords-shared/Buzzwords";
 import { Button } from "react-aria-components";
 import { HexCoord } from "buzzwords-shared/types";
-import { BoardProps } from "boardgame.io/dist/types/packages/react";
 import { INVALID_MOVE } from "boardgame.io/core";
 import { isValidWord } from "buzzwords-shared/alphaHelpers";
 import { WordsObject } from "../../../../server/src/words";
@@ -24,21 +20,150 @@ import { willConnectToTerritory } from "buzzwords-shared/gridHelpers";
 import Cell from "buzzwords-shared/cell";
 import classNames from "classnames";
 import GameTile from "../game/GameTile";
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import { updateSelection } from "./localBotSlice";
+import { playWord } from "./localBotThunks";
+import Crown from "../../assets/Crown";
 
 const HINT_MESSAGES = [
-  "You can use any letter on the board",
-  "You'll capture letters that you use that connect to your territory",
+  "Use any letter on the board to spell a word",
   <>
-    Capture all of your opponent&apos;s territory
+    When you use letters that connect to your{" "}
     <span className="inline-block aspect-square w-[3vh] mb-[-0.5vh]">
       <Canvas>
-        <GameTile owner={1} selected={false} currentTurn={0} enableSelection={false} position={[0, 0, 0]} willBeReset={false} willBeCaptured={false} hidden={false} />
+        <GameTile
+          owner={0}
+          selected={false}
+          currentTurn={0}
+          enableSelection={false}
+          position={[0, 0, 0]}
+          willBeReset={false}
+          willBeCaptured={false}
+          hidden={false}
+        />
+      </Canvas>
+    </span>
+    , they'll turn{" "}
+    <span className="inline-block aspect-square w-[3vh] mb-[-0.5vh]">
+      <Canvas>
+        <GameTile
+          owner={0}
+          selected={false}
+          currentTurn={0}
+          enableSelection={false}
+          position={[0, 0, 0]}
+          willBeReset={false}
+          willBeCaptured={false}
+          hidden={false}
+        />
+      </Canvas>
+    </span>{" "}
+    and become yours
+  </>,
+  <>
+    When a tile turns {}
+    <span className="inline-block aspect-square w-[3vh] mb-[-0.5vh]">
+      <Canvas>
+        <GameTile
+          owner={0}
+          selected={false}
+          currentTurn={0}
+          enableSelection={false}
+          position={[0, 0, 0]}
+          willBeReset={false}
+          willBeCaptured={false}
+          hidden={false}
+        />
+      </Canvas>
+    </span>
+    , any adjacent opponent{" "}
+    <span className="inline-block aspect-square w-[3vh] mb-[-0.5vh]">
+      <Canvas>
+        <GameTile
+          owner={1}
+          selected={false}
+          currentTurn={0}
+          enableSelection={false}
+          position={[0, 0, 0]}
+          willBeReset={false}
+          willBeCaptured={false}
+          hidden={false}
+        />
+      </Canvas>
+    </span>{" "}
+    turn neutral{" "}
+    <span className="inline-block aspect-square w-[3vh] mb-[-0.5vh]">
+      <Canvas>
+        <GameTile
+          owner={2}
+          selected={false}
+          currentTurn={0}
+          enableSelection={false}
+          position={[0, 0, 0]}
+          willBeReset={false}
+          willBeCaptured={false}
+          hidden={false}
+        />
+      </Canvas>
+    </span>
+  </>,
+  <>
+    Neutralize all of your opponent's{" "}
+    <span className="inline-block aspect-square w-[3vh] mb-[-0.5vh]">
+      <Canvas>
+        <GameTile
+          key="opponent"
+          owner={1}
+          selected={false}
+          currentTurn={0}
+          enableSelection={false}
+          position={[0, 0, 0]}
+          willBeReset={false}
+          willBeCaptured={false}
+          hidden={false}
+        />
       </Canvas>
     </span>{" "}
     to win
   </>,
-  "Try to capture your opponent's flower tile. You'll get an extra turn when you do",
-  "Try to protect your flower tile",
+  <>
+    Try to neutralize your opponent's flower{" "}
+    <span className="inline-block aspect-square w-[3vh] mb-[-0.5vh]">
+      <Canvas>
+        <GameTile
+          key="flower"
+          owner={1}
+          isCapital={true}
+          selected={false}
+          currentTurn={0}
+          enableSelection={false}
+          position={[0, 0, 0]}
+          willBeReset={false}
+          willBeCaptured={false}
+          hidden={false}
+        />
+      </Canvas>
+    </span>
+    . You'll get an extra turn when you do
+  </>,
+  <>
+    Try to protect your flower{" "}
+    <span className="inline-block aspect-square w-[3vh] mb-[-0.5vh]">
+      <Canvas>
+        <GameTile
+          owner={0}
+          isCapital={true}
+          selected={false}
+          currentTurn={0}
+          enableSelection={false}
+          position={[0, 0, 0]}
+          willBeReset={false}
+          willBeCaptured={false}
+          hidden={false}
+        />
+      </Canvas>
+    </span>
+  </>,
   "There is no penalty for trying a word that doesn't exist",
 ];
 
@@ -121,11 +246,46 @@ function OpponentBonusTurnStatus() {
 function FlowerCapturableStatus() {
   return (
     <>
-      <h1 className="font-bold text-[3vh]">Try to capture the green flower</h1>
+      <h1 className="font-bold text-[3vh]">
+        Try to neutralize the{" "}
+        <span className="inline-block aspect-square w-[4vh] mb-[-0.5vh]">
+          <Canvas>
+            <GameTile
+              key="flower"
+              owner={1}
+              isCapital={true}
+              selected={false}
+              currentTurn={0}
+              enableSelection={false}
+              position={[0, 0, 0]}
+              willBeReset={false}
+              willBeCaptured={false}
+              hidden={false}
+            />
+          </Canvas>
+        </span>{" "}
+        green flower
+      </h1>
       <p className="">
         Your opponent&apos;s flower tile is now reachable from your territory.
-        If you can use an unbroken chain of letters to connect to it,
-        you&apos;ll capture it and get a bonus turn!
+        If you can use an unbroken chain of{" "}
+        <span className="inline-block aspect-square w-[3vh] mb-[-0.5vh]">
+          <Canvas>
+            <GameTile
+              key="pink"
+              owner={0}
+              isCapital={false}
+              selected={false}
+              currentTurn={0}
+              enableSelection={false}
+              position={[0, 0, 0]}
+              willBeReset={false}
+              willBeCaptured={false}
+              hidden={false}
+            />
+          </Canvas>
+        </span>{" "}
+        to connect to it, you&apos;ll earn a bonus turn!
       </p>
     </>
   );
@@ -135,7 +295,30 @@ function GameOverStatus({ winner }: { winner: string }) {
   return (
     <>
       <h1 className="text-[5vh] font-bold">
-        {winner === "0" ? "You won!" : "The Bee won!"}
+        {winner === "0" ? (
+          <>
+            You won!{" "}
+            <span className="inline-block h-[9vh] w-[7vh] mb-[-2vh]">
+              <Canvas>
+                <GameTile
+                  key="pink"
+                  owner={0}
+                  isCapital={true}
+                  hasCrown
+                  selected={false}
+                  currentTurn={0}
+                  enableSelection={false}
+                  position={[0, 0, 0]}
+                  willBeReset={false}
+                  willBeCaptured={false}
+                  hidden={false}
+                />
+              </Canvas>
+            </span>{" "}
+          </>
+        ) : (
+          "The Bee won!"
+        )}
       </h1>
       <p className="text-[3vh]">
         {winner === "0"
@@ -265,7 +448,7 @@ interface StatusSwitchProps {
   yourTurn: boolean;
   error: string | null;
   isBonusTurn: boolean;
-  winner?: string;
+  winner?: string | null;
   flowerCapturable?: boolean;
 }
 
@@ -309,7 +492,7 @@ interface WordInputStatusProps {
   isGameOver: boolean;
   onPlayWord: (selection: HexCoord[]) => void;
   setError: (error: string | null) => void;
-  gameState: BuzzwordsGameState;
+  grid: HexGrid;
 }
 
 function WordInputStatus({
@@ -320,12 +503,12 @@ function WordInputStatus({
   isGameOver,
   onPlayWord,
   setError,
-  gameState,
+  grid,
 }: WordInputStatusProps) {
   const preferred_alignment = "justify-center";
   const willCapture = useMemo(
-    () => yourTurn && willCaptureFlower(gameState.grid, selection, 0),
-    [gameState.grid, selection, yourTurn]
+    () => yourTurn && willCaptureFlower(grid, selection, 0),
+    [grid, selection, yourTurn]
   );
 
   return (
@@ -381,48 +564,44 @@ function WordInputStatus({
   );
 }
 
-export function BGIOStatusArea({
-  G,
-  ctx,
-  moves,
-  selection,
-  setSelection,
-  playerID,
-  log,
-}: BoardProps<BuzzwordsGameState> & {
-  selection: HexCoord[];
-  setSelection: (selection: HexCoord[]) => void;
-}) {
+interface BGIOStatusAreaProps {
+  gameId: string;
+}
+
+export function BGIOStatusArea({ gameId }: BGIOStatusAreaProps) {
+  const dispatch = useAppDispatch();
+  const game = useAppSelector((state) => state.localBot.games[gameId]);
   const [error, setError] = useState<string | null>(null);
-  const yourTurn = ctx.currentPlayer === "0";
 
+  if (!game) {
+    return <div>Game not found</div>;
+  }
+
+  const yourTurn = game.currentPlayer === 0;
+
+  // Determine if this is a bonus turn based on last move
+  // Bonus turn occurs when the last move captured a capital and the current player
+  // is the same as the player who made that move (they get to go again)
   const bonusTurn = useMemo(() => {
-    if (!log) return false;
-
-    // Find the last playWord move
-    const playWordMoves = log.filter(
-      (entry) => entry.action.payload.type === "playWord"
+    if (game.moves.length === 0) return false;
+    const lastMove = game.moves[game.moves.length - 1];
+    // Bonus turn if last move captured capital and current player is the one who made it
+    return (
+      game.lastMoveCapitalCaptured && lastMove.player === game.currentPlayer
     );
-    if (playWordMoves.length === 0) return false;
-
-    const lastPlayWordMove = playWordMoves[playWordMoves.length - 1];
-    // Only consider it a bonus turn if the move was successful (not an invalid move)
-    if (lastPlayWordMove.action.payload.args?.[0] === INVALID_MOVE)
-      return false;
-
-    // For player's turn: check if their last move was successful
-    // For opponent's turn: check if their last move was successful
-    return lastPlayWordMove.action.payload.playerID === ctx.currentPlayer;
-  }, [log, ctx.currentPlayer]);
+  }, [game.moves, game.lastMoveCapitalCaptured, game.currentPlayer]);
 
   const flowerCapturable = useMemo(() => {
     if (!yourTurn) return false;
-    return isFlowerCapturable(G.grid, 0);
-  }, [G.grid, yourTurn]);
+    return isFlowerCapturable(game.grid, 0);
+  }, [game.grid, yourTurn]);
 
   const word = useMemo(
-    () => selection.map(({ q, r }) => G.grid[`${q},${r}`].value).join(""),
-    [selection, G.grid]
+    () =>
+      game.selection
+        .map(({ q, r }) => game.grid[`${q},${r}`]?.value || "")
+        .join(""),
+    [game.selection, game.grid]
   );
 
   useEffect(() => {
@@ -433,56 +612,70 @@ export function BGIOStatusArea({
 
   const handlePlayWord = useCallback(
     (selection: HexCoord[]) => {
-      const word = getWordFromMove(G, selection);
+      const word = getWordFromMove(game, selection);
       const validWord = isValidWord(word, WordsObject);
       if (word === INVALID_MOVE || !validWord) {
-        setSelection([]);
+        dispatch(updateSelection({ gameId, selection: [] }));
         setError(INVALID_MOVE);
         return;
       }
-      moves.playWord(selection);
+      dispatch(playWord({ gameId, move: selection }));
       setError(null);
-      setSelection([]);
+      dispatch(updateSelection({ gameId, selection: [] }));
     },
-    [G, setSelection, setError, moves]
+    [game, dispatch, gameId]
+  );
+
+  const handleSetSelection = useCallback(
+    (selection: HexCoord[]) => {
+      dispatch(updateSelection({ gameId, selection }));
+    },
+    [dispatch, gameId]
   );
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!yourTurn || ctx.gameover) return;
+      if (!yourTurn || game.gameover) return;
 
       if (e.key === "Enter" && word.length > 0) {
-        handlePlayWord(selection);
-      } else if (e.key === "Backspace" && selection.length > 0) {
-        setSelection(selection.slice(0, selection.length - 1));
+        handlePlayWord(game.selection);
+      } else if (e.key === "Backspace" && game.selection.length > 0) {
+        handleSetSelection(game.selection.slice(0, game.selection.length - 1));
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [word, selection, yourTurn, ctx.gameover, handlePlayWord, setSelection]);
+  }, [
+    word,
+    game.selection,
+    yourTurn,
+    game.gameover,
+    handlePlayWord,
+    handleSetSelection,
+  ]);
 
   return (
     <div className="mx-auto aspect-[3.7] h-[25vh] text-[2vh] grid items-stretch py-2 px-6 lg:px-8 max-w-full">
       {word.length > 0 ? (
         <WordInputStatus
           word={word}
-          selection={selection}
-          setSelection={setSelection}
+          selection={game.selection}
+          setSelection={handleSetSelection}
           yourTurn={yourTurn}
-          isGameOver={ctx.gameover}
+          isGameOver={game.gameover}
           onPlayWord={handlePlayWord}
           setError={setError}
-          gameState={G}
+          grid={game.grid}
         />
       ) : (
         <div className="w-full text-darkbrown flex-auto flex flex-col justify-center items-stretch">
           <StatusSwitch
-            turn={ctx.turn}
+            turn={game.turn}
             yourTurn={yourTurn}
             error={error}
             isBonusTurn={bonusTurn}
-            winner={ctx.gameover}
+            winner={game.winner}
             flowerCapturable={flowerCapturable}
           />
         </div>

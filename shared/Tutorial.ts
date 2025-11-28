@@ -262,7 +262,7 @@ export const tutorialInitialBoard: HexGrid = {
     "r": 0,
     "capital": false,
     "owner": 2,
-    "value": "i"
+    "value": "n"
   },
   "2,1": {
     "q": 2,
@@ -311,14 +311,14 @@ export const tutorialInitialBoard: HexGrid = {
     "r": 0,
     "capital": false,
     "owner": 2,
-    "value": "w"
+    "value": "o"
   },
   "3,1": {
     "q": 3,
     "r": 1,
     "capital": false,
     "owner": 2,
-    "value": "t"
+    "value": "y"
   },
 };
 

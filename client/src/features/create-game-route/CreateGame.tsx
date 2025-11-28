@@ -30,7 +30,10 @@ import {
   CreateGameType,
 } from "../gamelist/gamelistActions";
 import { useNavigate } from "react-router";
-import { FancyButton, FancyButtonVariant } from "../../presentational/FancyButton";
+import {
+  FancyButton,
+  FancyButtonVariant,
+} from "../../presentational/FancyButton";
 
 function GameType({
   title,
@@ -56,7 +59,7 @@ function GameType({
           isFocusVisible && "outline",
           isSelected ? "bg-primary" : "bg-lighterbg",
           isDisabled ? "opacity-40" : !isSelected && "hover:bg-darkbg",
-          "flex box-border justify-between items-center p-4 lg:p-8 rounded-xl shadow-lg overflow-hidden",
+          "flex box-border justify-between items-center p-4 rounded-xl shadow-lg overflow-hidden",
           "my-6 first:mt-0 last:mb-0"
         )
       }
@@ -103,8 +106,7 @@ export const WIZARD_BREAKPOINTS = pick(["xs", "lg"], BREAKPOINTS);
 function CreateGame() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [selectedMode, setSelectedMode] =
-    useState<CreateGameType | null>(null);
+  const [selectedMode, setSelectedMode] = useState<CreateGameType | null>(null);
   const [difficulty, setDifficulty] = useState(5);
   const [isSubmitting, setSubmitting] = useState(false);
   const loggedIn = useAppSelector((state) =>
@@ -112,16 +114,21 @@ function CreateGame() {
   );
   const playButtonPress = useCallback(async () => {
     setSubmitting(true);
-    const bot = selectedMode && selectedMode.endsWith("bot");
+    const bot =
+      selectedMode &&
+      (selectedMode.endsWith("bot") || selectedMode === "tutorial");
     const params = {
       type: selectedMode!,
     };
-    if (bot) {
+    if (bot && selectedMode !== "tutorial") {
       (params as CreateBotGameParams).difficulty = difficulty;
     }
     try {
-      const game = await dispatch(createGame(params));
-      navigate(`/play/${game}`);
+      const gameId = await dispatch(createGame(params));
+      // Navigate to local route for offline games, online route for online games
+      const isLocalGame =
+        selectedMode === "offline-bot" || selectedMode === "tutorial";
+      navigate(isLocalGame ? `/local/${gameId}` : `/play/${gameId}`);
     } catch (e) {
       setSubmitting(false);
     }
@@ -131,12 +138,15 @@ function CreateGame() {
     updateOnBreakpointChange: true,
   });
   const lg = currentBreakpoint === "lg";
-  const bot = selectedMode && selectedMode.endsWith("bot");
+  const bot =
+    selectedMode &&
+    (selectedMode.endsWith("bot") || selectedMode === "tutorial");
+  const showDifficulty = bot && selectedMode !== "tutorial";
   return (
     <div
       ref={observe}
       className={classNames(
-        "w-full h-full overflow-auto text-text relative flex justify-center items-center",
+        "w-full h-full overflow-auto text-text relative flex justify-center items-center"
         // lg && "items-center"
       )}
     >
@@ -149,7 +159,7 @@ function CreateGame() {
       >
         <div
           className={classNames(
-            "flex flex-col justify-center p-4 mx-4",
+            "flex flex-col justify-center p-4 mx-4"
             // lg && "mr-0 w-full"
           )}
         >
@@ -159,16 +169,26 @@ function CreateGame() {
             // @ts-expect-error allowed mode types too narrow
             onChange={setSelectedMode}
           >
-          <Label className="text-lg font-bold text-text block text-center mb-4">
-            Pick a game type
-          </Label>
+            <Label className="text-lg font-bold text-text block text-center mb-4">
+              Pick a game type
+            </Label>
+
             <GameType
-              value="online-bot"
-              title="Online against a bot"
-              subtitle="Start here"
+              value="tutorial"
+              title="Tutorial"
+              subtitle="Learn how to play"
               icon={
                 <>
-                  <FontAwesomeIcon size="lg" icon={faGlobe} />
+                  <FontAwesomeIcon size="lg" icon={faRobot} />
+                </>
+              }
+            />
+            <GameType
+              value="offline-bot"
+              title="Offline against a bot"
+              subtitle="Works without an internet connection"
+              icon={
+                <>
                   <FontAwesomeIcon size="lg" icon={faRobot} />
                 </>
               }
@@ -184,47 +204,35 @@ function CreateGame() {
                 </>
               }
             />
-            <GameType
-              value="hotseat"
-              title="Offline against a human"
-              subtitle="Both players take turns on this device"
+            {loggedIn && <GameType
+              value="online-bot"
+              title="Online against a bot"
+              subtitle="Deprecated - only useful if you're signed in to an account"
               icon={
                 <>
-                  <FontAwesomeIcon size="lg" icon={faUser} />
-                </>
-              }
-            />
-            <GameType
-              value="offline-bot"
-              title="Offline against a bot"
-              subtitle="Works without an internet connection"
-              icon={
-                <>
+                  <FontAwesomeIcon size="lg" icon={faGlobe} />
                   <FontAwesomeIcon size="lg" icon={faRobot} />
                 </>
               }
-            />
+            />}
           </RadioGroup>
         </div>
         <div
           className={classNames(
-            "p-4 m-4 flex flex-col gap-5 justify-center items-stretch",
+            "p-4 m-4 flex flex-col gap-5 justify-center items-stretch"
             // lg && "w-full ml-0"
           )}
         >
           {selectedMode && (
             <div
-              className={classNames(
-                selectedMode !== "hotseat" && "bg-lighterbg shadow-lg",
-                "p-3 rounded-xl"
-              )}
+              className={classNames("bg-lighterbg shadow-lg", "p-3 rounded-xl")}
             >
-              {!bot && selectedMode !== "hotseat" && (
+              {!bot && (
                 <p className="p-4 mb-4 text-center">
                   We&apos;ll generate a link for you to send to your opponent
                 </p>
               )}
-              {bot && (
+              {showDifficulty && (
                 <div className="p-4 mb-4 relative self-stretch">
                   <Slider
                     value={difficulty}

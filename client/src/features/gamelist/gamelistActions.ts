@@ -24,6 +24,10 @@ import {
   toggleNudgeButton,
 } from "../game/gameSlice";
 import { initiateReplay, maybeShowNudge } from "../game/gameActions";
+import { initializeLocalBotGame } from "../bgio-board/localBotSlice";
+import { tutorialInitialBoard } from "buzzwords-shared/Tutorial";
+import { makeHexGrid, getCellNeighbors, setCell, getNewCellValues } from "buzzwords-shared/hexgrid";
+import { WordsObject } from "../../../../server/src/words";
 
 import chord from "../../assets/ding.mp3?url";
 import { batch } from "react-redux";
@@ -202,7 +206,8 @@ export type CreateGameType =
   | "offline-bot"
   | "online-pvp"
   | "online-bot"
-  | "hotseat";
+  | "hotseat"
+  | "tutorial";
 interface CreateHumanGameParams {
   type: "online-pvp" | "hotseat";
 }
@@ -218,12 +223,49 @@ export type CreateGameParams = {
 };
 
 export const createGame =
-  (params: CreateGameParams): AppThunk =>
-  async (dispatch): Promise<string> => {
+  (params: CreateGameParams): AppThunk<string> =>
+  async (dispatch, getState): Promise<string> => {
     switch (params.type) {
+      case "tutorial": {
+        // Create tutorial game with tutorial board
+        dispatch(initializeLocalBotGame({
+          grid: tutorialInitialBoard,
+          difficulty: 3,
+          isTutorial: true,
+        }));
+        // Get the gameId from state after dispatch
+        const state = getState();
+        return state.localBot.mostRecentGameId!;
+      }
+      case "offline-bot": {
+        // Create local bot game with regular grid
+        const grid = makeHexGrid();
+        const neighbors = [
+          ...getCellNeighbors(grid, -2, -1),
+          ...getCellNeighbors(grid, 2, 1),
+        ];
+        const newValues = getNewCellValues([], 12, WordsObject);
+        let i = 0;
+        for (const cell of neighbors) {
+          cell.value = newValues[i];
+          i++;
+          setCell(grid, cell);
+        }
+        grid["-2,-1"].capital = true;
+        grid["-2,-1"].owner = 0;
+        grid["2,1"].capital = true;
+        grid["2,1"].owner = 1;
+
+        dispatch(initializeLocalBotGame({
+          grid,
+          difficulty: (params as CreateBotGameParams).difficulty ?? 5,
+          isTutorial: false,
+        }));
+        // Get the gameId from state after dispatch
+        const state = getState();
+        return state.localBot.mostRecentGameId!;
+      }
       case "hotseat":
-        return "";
-      case "offline-bot":
         return "";
       case "online-bot":
         try {

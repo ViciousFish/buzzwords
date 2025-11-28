@@ -122,6 +122,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
           <group position={[0, 20, 0]}>
             <group position={[-10, 0, 0]}>
               <GameTile
+                hidden={false}
                 owner={0}
                 position={[0, 0, 0]}
                 isPlayerIdentity={!game.gameOver}
@@ -135,6 +136,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
             </group>
             <group position={[10, 0, 0]}>
               <GameTile
+                hidden={false}
                 owner={1}
                 letter=""
                 position={[0, 0, 0]}

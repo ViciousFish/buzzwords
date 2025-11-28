@@ -33,6 +33,8 @@ export function GameBoardTiles({
   enableSelection,
   onToggleTile,
   tutorialOnlyShowStartingTiles = false,
+  tutorialDoStaggeredReveal = false,
+  skipRevealAnimation = false,
 }: {
   grid: HexGrid;
   revealLetters: boolean;
@@ -41,8 +43,10 @@ export function GameBoardTiles({
   enableSelection: boolean;
   onToggleTile: (coord: QRCoord) => void;
   tutorialOnlyShowStartingTiles?: boolean;
+  tutorialDoStaggeredReveal?: boolean;
+  skipRevealAnimation?: boolean;
 } & Pick<GroupProps, "position">) {
-  const { revealedTiles } = useTileReveal(grid, tutorialOnlyShowStartingTiles);
+  const { revealedTiles } = useTileReveal(grid, tutorialOnlyShowStartingTiles, tutorialDoStaggeredReveal);
 
   const tilesThatWillBeCaptured = useMemo(() => {
     const willBeCaptured = {};
@@ -69,6 +73,7 @@ export function GameBoardTiles({
         const hidden = !revealedTiles[coord];
         return (
           <GameTile
+            skipRevealAnimation={skipRevealAnimation}
             hidden={hidden}
             isCapital={revealLetters ? tile.capital : false}
             coord={coord as QRCoord}

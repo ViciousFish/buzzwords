@@ -38,6 +38,7 @@ interface GameTileProps {
   willBeReset: boolean;
   willBeCaptured: boolean;
   hidden: boolean;
+  skipRevealAnimation?: boolean;
 }
 
 // Computing text positions: https://codesandbox.io/s/r3f-gltf-fonts-c671i?file=/src/Text.js:326-516
@@ -57,6 +58,7 @@ const GameTile: React.FC<GameTileProps> = ({
   isCapital,
   isPlayerIdentity,
   hidden,
+  skipRevealAnimation,
 }) => {
   const invalidate = useThree(({ invalidate }) => invalidate);
 
@@ -216,13 +218,13 @@ const GameTile: React.FC<GameTileProps> = ({
       setTimeout(
         () => {
           const to = { x: 0, y: 0 };
-          if (lowPowerMode) {
+          if (lowPowerMode || skipRevealAnimation) {
             rotateSpringApi.set(to);
           } else {
             rotateSpringApi.start(to);
           }
         },
-        lowPowerMode
+        lowPowerMode || skipRevealAnimation
           ? 0
           : 100 + Number(r) * 80 + Number(q) * 80 + Math.random() * 70
       );
@@ -232,7 +234,7 @@ const GameTile: React.FC<GameTileProps> = ({
         x: Math.PI * 2,
         y: 0,
       };
-      if (lowPowerMode) {
+      if (lowPowerMode || skipRevealAnimation) {
         rotateSpringApi.set(to);
       } else {
         rotateSpringApi.start(to);
