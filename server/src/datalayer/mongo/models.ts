@@ -58,6 +58,10 @@ const gameSchema = new Schema<Game>({
         type: Boolean,
         default: false,
       },
+      timeout: {
+        type: Boolean,
+        default: false,
+      },
       player: Number,
       letters: [String],
       coords: [{ q: Number, r: Number }],
@@ -71,6 +75,9 @@ const gameSchema = new Schema<Game>({
           owner: Number,
         },
         _id: false,
+      },
+      startedAt: {
+        type: Date,
       },
       date: {
         type: Date,
@@ -97,6 +104,19 @@ const gameSchema = new Schema<Game>({
     type: Date,
     required: true,
     default: () => new Date(),
+  },
+  timerConfig: {
+    type: {
+      timePerPlayer: Number,
+    },
+    _id: false,
+  },
+  timeRemaining: {
+    type: [Number],
+  },
+  timerStartedAt: {
+    type: Number,
+    default: null,
   },
 });
 

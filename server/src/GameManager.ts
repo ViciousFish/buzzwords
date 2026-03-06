@@ -9,7 +9,7 @@ const logger = bunyan.createLogger({
 
 const tracer = opentelemetry.trace.getTracer("buzzwords-game-manager");
 
-import Game from "buzzwords-shared/Game";
+import Game, { TimerConfig } from "buzzwords-shared/Game";
 import { HexCoord } from "buzzwords-shared/types";
 import {
   getCellsToBeReset,
@@ -27,10 +27,80 @@ import HexGrid, {
 import { WordsObject, wordsBySortedLetters } from "./words";
 import Cell from "buzzwords-shared/cell";
 
+/**
+ * Returns the start time for the current move.
+ * For timed games: when the player started their timer.
+ * For untimed games: when the previous move was submitted (or game creation for the first move).
+ */
+function getMoveStartedAt(game: Game): Date {
+  if (game.timerStartedAt) {
+    return new Date(game.timerStartedAt);
+  }
+  const lastMove = game.moves[game.moves.length - 1];
+  if (lastMove?.date) {
+    return new Date(lastMove.date);
+  }
+  return game.createdDate ? new Date(game.createdDate) : new Date();
+}
+
+/**
+ * Checks if the current player has exceeded their time budget.
+ * Mutates game in place if timed out. Returns true if game ended by timeout.
+ */
+export function checkAndApplyTimeout(game: Game): boolean {
+  if (!game.timerConfig || game.gameOver || !game.timerStartedAt) return false;
+  const elapsed = Date.now() - game.timerStartedAt;
+  if (game.timeRemaining![game.turn] - elapsed <= 0) {
+    game.timeRemaining![game.turn] = 0;
+    const startedAt = new Date(game.timerStartedAt);
+    game.timerStartedAt = null;
+    game.winner = Number(!game.turn) as 0 | 1;
+    game.gameOver = true;
+    game.moves.push({
+      coords: [],
+      grid: game.grid,
+      letters: [],
+      player: game.turn,
+      startedAt,
+      date: new Date(),
+      timeout: true,
+    });
+    return true;
+  }
+  return false;
+}
+
 export default class GameManager {
   game: Game | null;
   constructor(game: Game | null) {
     this.game = game;
+  }
+
+  startTurn(userId: string): Game {
+    if (!this.game) {
+      throw new Error("Game Manager has no game!");
+    }
+    if (!this.game.timerConfig) {
+      throw new Error("This game has no timer");
+    }
+    if (!this.game.users.includes(userId)) {
+      throw new Error("Not your game");
+    }
+    if (this.game.gameOver) {
+      throw new Error("Game is over");
+    }
+    const turnUser = this.game.users[this.game.turn];
+    if (userId !== turnUser) {
+      throw new Error("Not your turn");
+    }
+    if (this.game.users.length !== 2) {
+      throw new Error("Need another player");
+    }
+    if (this.game.timerStartedAt !== null && this.game.timerStartedAt !== undefined) {
+      throw new Error("Timer already running");
+    }
+    this.game.timerStartedAt = Date.now();
+    return this.game;
   }
 
   pass(userId: string): Game {
@@ -51,6 +121,32 @@ export default class GameManager {
       throw new Error("Need another player");
     }
 
+    // Timer enforcement
+    if (this.game.timerConfig) {
+      if (!this.game.timerStartedAt) {
+        throw new Error("You must start your turn timer first");
+      }
+      const elapsed = Date.now() - this.game.timerStartedAt;
+      this.game.timeRemaining![this.game.turn] -= elapsed;
+      if (this.game.timeRemaining![this.game.turn] <= 0) {
+        this.game.timeRemaining![this.game.turn] = 0;
+        const startedAt = new Date(this.game.timerStartedAt);
+        this.game.timerStartedAt = null;
+        this.game.winner = Number(!this.game.turn) as 0 | 1;
+        this.game.gameOver = true;
+        this.game.moves.push({
+          coords: [],
+          grid: this.game.grid,
+          letters: [],
+          player: this.game.turn,
+          startedAt,
+          date: new Date(),
+          timeout: true,
+        });
+        return this.game;
+      }
+    }
+
     let opponentHasCapital = false;
     const opponentCells = [];
     for (const cell of Object.values(this.game.grid)) {
@@ -69,11 +165,18 @@ export default class GameManager {
       setCell(this.game.grid, newCapital);
     }
 
+    const startedAt = getMoveStartedAt(this.game);
+    if (this.game.timerConfig) {
+      this.game.timerStartedAt = null;
+    }
+
     this.game.moves.push({
       coords: [],
       grid: this.game.grid,
       letters: [],
       player: this.game.turn,
+      startedAt,
+      date: new Date(),
       pass: true,
     });
     const nextTurn = Number(!this.game.turn) as 0 | 1;
@@ -96,6 +199,15 @@ export default class GameManager {
     }
 
     const idx = this.game.users.indexOf(userId) as 0 | 1;
+
+    // Deduct any elapsed timer time for accurate records
+    if (this.game.timerConfig && this.game.timerStartedAt) {
+      const elapsed = Date.now() - this.game.timerStartedAt;
+      this.game.timeRemaining![idx] = Math.max(0, this.game.timeRemaining![idx] - elapsed);
+      this.game.timerStartedAt = null;
+    }
+
+    const startedAt = getMoveStartedAt(this.game);
     this.game.winner = Number(!idx) as 0 | 1;
     this.game.gameOver = true;
     this.game.moves.push({
@@ -103,6 +215,8 @@ export default class GameManager {
       grid: this.game.grid,
       letters: [],
       player: idx,
+      startedAt,
+      date: new Date(),
       forfeit: true,
     });
     return this.game;
@@ -135,6 +249,35 @@ export default class GameManager {
           throw new Error("Need another player");
         }
 
+        // Timer enforcement
+        if (this.game.timerConfig) {
+          if (!this.game.timerStartedAt) {
+            throw new Error("You must start your turn timer first");
+          }
+          const elapsed = Date.now() - this.game.timerStartedAt;
+          this.game.timeRemaining![this.game.turn] -= elapsed;
+          if (this.game.timeRemaining![this.game.turn] <= 0) {
+            this.game.timeRemaining![this.game.turn] = 0;
+            const startedAt = new Date(this.game.timerStartedAt);
+            this.game.timerStartedAt = null;
+            this.game.winner = Number(!this.game.turn) as 0 | 1;
+            this.game.gameOver = true;
+            this.game.moves.push({
+              coords: [],
+              grid: this.game.grid,
+              letters: [],
+              player: this.game.turn,
+              startedAt,
+              date: new Date(),
+              timeout: true,
+            });
+            span.setStatus({ code: opentelemetry.SpanStatusCode.OK });
+            return this.game;
+          }
+        }
+
+        const moveStartedAt = getMoveStartedAt(this.game);
+
         let word = "";
         tracer.startActiveSpan("GameManager.validateMove", (validateSpan) => {
           try {
@@ -151,7 +294,7 @@ export default class GameManager {
               }
             }
             logger.info({word}, "move received word");
-            
+
             validateSpan.setAttributes({
               "game.word": word,
               "game.wordLength": word.length
@@ -165,9 +308,9 @@ export default class GameManager {
             validateSpan.setStatus({ code: opentelemetry.SpanStatusCode.OK });
           } catch (error) {
             validateSpan.recordException(error as Error);
-            validateSpan.setStatus({ 
-              code: opentelemetry.SpanStatusCode.ERROR, 
-              message: (error as Error).message 
+            validateSpan.setStatus({
+              code: opentelemetry.SpanStatusCode.ERROR,
+              message: (error as Error).message
             });
             throw error;
           } finally {
@@ -192,6 +335,7 @@ export default class GameManager {
                 (m) => getCell(this.game!.grid as HexGrid, m.q, m.r)?.value ?? ""
               ),
               player: this.game!.turn,
+              startedAt: moveStartedAt,
               date: new Date(),
               shuffle: false,
             };
@@ -296,13 +440,16 @@ export default class GameManager {
               this.game!.moves.push(gameMove);
               this.game!.gameOver = true;
               this.game!.winner = this.game!.turn;
-              
+              if (this.game!.timerConfig) {
+                this.game!.timerStartedAt = null;
+              }
+
               gridSpan.setAttributes({
                 "game.gameOver": true,
                 "game.winner": this.game!.turn,
                 "game.capitalCaptured": capitalCaptured
               });
-              
+
               gridSpan.setStatus({ code: opentelemetry.SpanStatusCode.OK });
               return this.game!;
             }
@@ -345,21 +492,31 @@ export default class GameManager {
               ? this.game!.turn
               : (Number(!this.game!.turn) as 0 | 1);
             this.game!.turn = nextTurn;
-            
+
+            // Update timer: auto-continue on bonus turn, reset for new player
+            if (this.game!.timerConfig) {
+              if (capitalCaptured) {
+                // Same player gets another turn — auto-restart the timer
+                this.game!.timerStartedAt = Date.now();
+              } else {
+                this.game!.timerStartedAt = null;
+              }
+            }
+
             gridSpan.setAttributes({
               "game.gameOver": this.game!.gameOver,
               "game.winner": this.game!.winner || -1,
               "game.nextTurn": nextTurn,
               "game.capitalCaptured": capitalCaptured
             });
-            
+
             gridSpan.setStatus({ code: opentelemetry.SpanStatusCode.OK });
             return this.game!;
           } catch (error) {
             gridSpan.recordException(error as Error);
-            gridSpan.setStatus({ 
-              code: opentelemetry.SpanStatusCode.ERROR, 
-              message: (error as Error).message 
+            gridSpan.setStatus({
+              code: opentelemetry.SpanStatusCode.ERROR,
+              message: (error as Error).message
             });
             throw error;
           } finally {
@@ -368,9 +525,9 @@ export default class GameManager {
         });
       } catch (error) {
         span.recordException(error as Error);
-        span.setStatus({ 
-          code: opentelemetry.SpanStatusCode.ERROR, 
-          message: (error as Error).message 
+        span.setStatus({
+          code: opentelemetry.SpanStatusCode.ERROR,
+          message: (error as Error).message
         });
         throw error;
       } finally {
@@ -379,7 +536,7 @@ export default class GameManager {
     });
   }
 
-  createGame(userId: string): Game {
+  createGame(userId: string, timerConfig?: TimerConfig): Game {
     const game: Game = {
       id: nanoid(),
       turn: 0 as 0 | 1,
@@ -392,6 +549,11 @@ export default class GameManager {
       difficulty: 1,
       deleted: false,
     };
+    if (timerConfig) {
+      game.timerConfig = timerConfig;
+      game.timeRemaining = [timerConfig.timePerPlayer, timerConfig.timePerPlayer];
+      game.timerStartedAt = null;
+    }
     const neighbors = [
       ...getCellNeighbors(game.grid, -2, -1),
       ...getCellNeighbors(game.grid, 2, 1),

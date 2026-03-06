@@ -2,6 +2,7 @@ import { AppThunk } from "../../app/store";
 import { configure_firebase_messaging, get_token } from "../../app/firebase";
 import {
   ColorScheme,
+  setAutoStartTimer,
   setColorScheme,
   setLowPowerMode,
   setPreferredDarkTheme,
@@ -134,6 +135,16 @@ export const setColorSchemeSetting =
     }
     localStorage.setItem("colorScheme", scheme);
     dispatch(setColorScheme(scheme));
+  };
+
+export const getAutoStartTimerSetting = (): boolean =>
+  JSON.parse(localStorage.getItem("autoStartTimer") ?? "false");
+
+export const setAutoStartTimerSetting =
+  (enabled: boolean): AppThunk =>
+  (dispatch) => {
+    localStorage.setItem("autoStartTimer", JSON.stringify(enabled));
+    dispatch(setAutoStartTimer(enabled));
   };
 
 export const getPreferredDarkThemeSetting = () =>

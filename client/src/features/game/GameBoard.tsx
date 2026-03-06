@@ -26,6 +26,7 @@ import {
   submitMove,
   toggleTileSelected,
 } from "./gameActions";
+import { startTurn } from "../gamelist/gamelistActions";
 import {
   getSelectedWordByGameId,
   getTileSelectionInParsedHexCoords,
@@ -53,8 +54,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
     (state) => state.game.replay.playbackState
   );
 
-  const [revealLetters, setRevealLetters] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [startingTurn, setStartingTurn] = useState(false);
 
   const onSubmit = useCallback(async () => {
     try {
@@ -69,11 +70,20 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
     }
   }, [dispatch, id]);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setRevealLetters(true);
-    }, 500);
-  });
+  // Letters are hidden for the active player in a timed game until they start their timer
+  const revealLetters =
+    !game.timerConfig ||          // untimed: always reveal
+    game.turn !== userIndex ||    // not your turn: always reveal (opponent watching)
+    Boolean(game.timerStartedAt); // your turn: reveal once timer is running
+
+  const onStartTurn = useCallback(async () => {
+    setStartingTurn(true);
+    try {
+      await dispatch(startTurn(id));
+    } finally {
+      setStartingTurn(false);
+    }
+  }, [dispatch, id]);
 
   useHotkeys("Enter", () => {
     if (id && selectedWord?.length && game.turn === userIndex) {
@@ -147,6 +157,19 @@ const GameBoard: React.FC<GameBoardProps> = ({ id, game, userIndex }) => {
               portal={portal}
             >
               <div className="flex justify-center items-center">
+                {game.timerConfig && !game.gameOver && game.turn === userIndex && !game.timerStartedAt ? (
+                  <button
+                    onClick={onStartTurn}
+                    disabled={startingTurn}
+                    type="button"
+                    className={classNames(
+                      "font-bold rounded-md p-2 text-base",
+                      startingTurn ? "bg-gray-400 text-gray-200" : "bg-darkbrown text-lightbg"
+                    )}
+                  >
+                    {startingTurn ? "Starting…" : "Start Turn"}
+                  </button>
+                ) : null}
                 {selectedWord?.length && game.turn === userIndex ? (
                   <button
                     onClick={() => {

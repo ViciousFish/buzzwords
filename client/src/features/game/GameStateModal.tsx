@@ -10,7 +10,9 @@ export type GameStateModalType =
   | "extra-turn-p1"
   | "extra-turn-p2"
   | "victory"
-  | "defeat";
+  | "defeat"
+  | "timeout-victory"
+  | "timeout-defeat";
 
 export interface GameStateModalProps {
   type: GameStateModalType;
@@ -21,10 +23,10 @@ interface GameStateModalOwnprops extends GameStateModalProps {
 }
 
 const getThreeDText = (type: GameStateModalOwnprops["type"]) => {
-  if (type === "victory") {
+  if (type === "victory" || type === "timeout-victory") {
     return "VICTORY";
   }
-  if (type === "defeat") {
+  if (type === "defeat" || type === "timeout-defeat") {
     return "DEFEAT";
   }
   if (type.startsWith("extra-turn")) {
@@ -54,6 +56,16 @@ const getTwoDText = (
   if (type === "victory") {
     return {
       body: "Congratulations!",
+    };
+  }
+  if (type === "timeout-defeat") {
+    return {
+      body: "You ran out of time",
+    };
+  }
+  if (type === "timeout-victory") {
+    return {
+      body: "Your opponent ran out of time",
     };
   }
   return null;
@@ -93,7 +105,7 @@ const GameStateModal: React.FC<GameStateModalOwnprops> = ({
         )}
         <div className="flex items-center">
           <Button onClick={onDismiss}>Dismiss</Button>
-          {(type === "defeat" || type === "victory") && (
+          {(type === "defeat" || type === "victory" || type === "timeout-defeat" || type === "timeout-victory") && (
                 <NavLink
                   to="/play/"
                   className="bg-primary ml-2 inset-shadow text-text p-2 rounded-full"

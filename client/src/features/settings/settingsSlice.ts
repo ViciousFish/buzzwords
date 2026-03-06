@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getColorSchemeSetting, getLowPowerModeSetting, getPreferredDarkThemeSetting, getPushNotificationsEnabledSetting, getTurnNotificationsSetting } from "./settingsActions";
+import { getAutoStartTimerSetting, getColorSchemeSetting, getLowPowerModeSetting, getPreferredDarkThemeSetting, getPushNotificationsEnabledSetting, getTurnNotificationsSetting } from "./settingsActions";
 import { getCurrentSystemScheme } from "./settingsSelectors";
 
 export enum ColorScheme {
@@ -17,6 +17,7 @@ interface SettingsState {
   preferredDarkTheme: ThemeNames;
   currentSystemScheme: ColorScheme.Dark | ColorScheme.Light;
   lowPowerMode: boolean;
+  autoStartTimer: boolean;
 }
 
 // Define the initial state using that type
@@ -28,6 +29,7 @@ const initialState: SettingsState = {
   preferredDarkTheme: getPreferredDarkThemeSetting(),
   currentSystemScheme: getCurrentSystemScheme(),
   lowPowerMode: getLowPowerModeSetting(),
+  autoStartTimer: getAutoStartTimerSetting(),
 };
 
 export const settingsSlice = createSlice({
@@ -54,7 +56,10 @@ export const settingsSlice = createSlice({
     },
     setLowPowerMode: (state, action: PayloadAction<boolean>) => {
       state.lowPowerMode = action.payload;
-    }
+    },
+    setAutoStartTimer: (state, action: PayloadAction<boolean>) => {
+      state.autoStartTimer = action.payload;
+    },
   },
 });
 
@@ -66,6 +71,7 @@ export const {
   setPreferredDarkTheme,
   setCurrentSystemScheme,
   setLowPowerMode,
+  setAutoStartTimer,
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

@@ -21,6 +21,7 @@ import { getGameUrl } from "./PlayGame";
 import NicknameModal from "../user/NicknameModal";
 import { Modal2 } from "../../presentational/Modal2";
 import { Dialog } from "../../presentational/Dialog";
+import TurnTimer from "../game/TurnTimer";
 
 interface GameMenuProps {
   id: string;
@@ -154,6 +155,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game, userIndex }) => {
           )}
           {p2Nick && userIndex === 1 && editButton}
         </span>
+        <TurnTimer game={game} userIndex={userIndex} />
       </div>
       <div className="lg:w-[200px] flex items-center justify-end">
         <Popover

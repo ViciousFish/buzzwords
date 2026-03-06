@@ -12,7 +12,7 @@ import Game from "buzzwords-shared/Game";
 
 import dl from "../datalayer";
 import getConfig from "../config";
-import GameManager from "../GameManager";
+import GameManager, { checkAndApplyTimeout } from "../GameManager";
 import { WordsObject, BannedWordsObject } from "../words";
 import { removeMongoId } from "../util";
 import { ensureNickname } from "./user";
@@ -101,11 +101,17 @@ export default (io: Server): Router => {
   router.get("/:id", async (req, res) => {
     const gameId = req.params.id;
     const game = await dl.getGameById(gameId);
-    if (game) {
-      res.send(game);
-    } else {
+    if (!game) {
       res.sendStatus(404);
+      return;
     }
+    if (checkAndApplyTimeout(game)) {
+      const session = await dl.createContext();
+      await dl.saveGame(gameId, game, { session });
+      await dl.commitContext(session);
+      game.users.forEach((u) => io.to(u).emit("game updated", game));
+    }
+    res.send(game);
   });
 
   router.post("/", async (req, res) => {
@@ -128,8 +134,20 @@ export default (io: Server): Router => {
     }
 
     const options = req.body;
+    let timerConfig: { timePerPlayer: number } | undefined;
+    if (options.timerConfig) {
+      const timePerPlayer =
+        typeof options.timerConfig.timePerPlayer === "number"
+          ? options.timerConfig.timePerPlayer
+          : parseInt(options.timerConfig.timePerPlayer);
+      if (isNaN(timePerPlayer) || timePerPlayer <= 0) {
+        res.status(400).json({ message: "timerConfig.timePerPlayer must be a positive number (ms)" });
+        return;
+      }
+      timerConfig = { timePerPlayer };
+    }
     const gm = new GameManager(null);
-    const game = gm.createGame(userId);
+    const game = gm.createGame(userId, timerConfig);
     if (options.vsAI) {
       game.vsAI = true;
       game.users.push("AI");
@@ -553,6 +571,57 @@ export default (io: Server): Router => {
       .forEach((u) => sendPush(u, { title, body }, newGame.id));
 
     doBotMoves(gameId);
+  });
+
+  router.post("/:id/start-turn", async (req, res) => {
+    const user = res.locals.userId as string;
+    const gameId = req.params.id;
+    const session = await dl.createContext();
+    const game = await dl.getGameById(gameId, { session });
+    if (!game || !game.users.includes(user)) {
+      res.sendStatus(404);
+      return;
+    }
+    const gm = new GameManager(game);
+    let newGame: Game;
+    try {
+      newGame = gm.startTurn(user);
+    } catch (e: unknown) {
+      res.status(400);
+      if (e instanceof Error) {
+        res.send(e.message);
+      } else {
+        res.send();
+      }
+      return;
+    }
+    try {
+      await dl.saveGame(gameId, newGame, { session });
+      await dl.commitContext(session);
+    } catch (e) {
+      logger.error(e);
+      res.sendStatus(500);
+      return;
+    }
+    res.sendStatus(201);
+    newGame.users.forEach((u) => io.to(u).emit("game updated", newGame));
+  });
+
+  router.post("/:id/check-timeout", async (req, res) => {
+    const user = res.locals.userId as string;
+    const gameId = req.params.id;
+    const game = await dl.getGameById(gameId);
+    if (!game || !game.users.includes(user)) {
+      res.sendStatus(404);
+      return;
+    }
+    if (checkAndApplyTimeout(game)) {
+      const session = await dl.createContext();
+      await dl.saveGame(gameId, game, { session });
+      await dl.commitContext(session);
+      game.users.forEach((u) => io.to(u).emit("game updated", game));
+    }
+    res.send(game);
   });
 
   router.post("/:id/forfeit", async (req, res) => {

@@ -45,7 +45,12 @@ const gameUpdateEventGetGameStateModalType = (
     const selfUser = state.user.user?.id;
     const userIndex = game.users.findIndex((userId) => selfUser === userId);
     if (userIndex > -1) {
-      gameStateModalType = game.winner === userIndex ? "victory" : "defeat";
+      const lastMove = game.moves[game.moves.length - 1];
+      if (lastMove?.timeout) {
+        gameStateModalType = game.winner === userIndex ? "timeout-victory" : "timeout-defeat";
+      } else {
+        gameStateModalType = game.winner === userIndex ? "victory" : "defeat";
+      }
     }
   }
   return gameStateModalType;
@@ -172,6 +177,19 @@ export const receiveGameUpdatedSocket =
         gameStateModalToQueue: gameStateModalType,
       })
     );
+
+    // Auto-start timer if the setting is on, it's our turn, tab is visible
+    const updatedState = getState();
+    if (
+      game.timerConfig &&
+      !game.gameOver &&
+      userIndex === game.turn &&
+      !game.timerStartedAt &&
+      updatedState.settings.autoStartTimer &&
+      document.visibilityState === "visible"
+    ) {
+      dispatch(startTurn(game.id));
+    }
   };
 
 export const dequeueOrDismissGameStateModalForGame =
@@ -215,6 +233,7 @@ export interface CreateBotGameParams {
 export type CreateGameParams = {
   type: CreateGameType;
   difficulty?: number;
+  timerConfig?: { timePerPlayer: number };
 };
 
 export const createGame =
@@ -230,6 +249,7 @@ export const createGame =
           const res = await Api.post<string>(getApiUrl("/game"), {
             vsAI: true,
             difficulty: (params as CreateBotGameParams).difficulty,
+            timerConfig: params.timerConfig,
           });
           await dispatch(fetchGameById(res.data));
           return res.data;
@@ -242,7 +262,9 @@ export const createGame =
         }
       case "online-pvp":
         try {
-          const res = await Api.post<string>(getApiUrl("/game"));
+          const res = await Api.post<string>(getApiUrl("/game"), {
+            timerConfig: params.timerConfig,
+          });
           await dispatch(fetchGameById(res.data));
           return res.data;
         } catch (e) {
@@ -335,6 +357,27 @@ export const forfeitGame =
   (id: string): AppThunk =>
   async (dispatch) => {
     const { data } = await Api.post<Game>(getApiUrl("/game", id, "forfeit"));
+  };
+
+export const startTurn =
+  (gameId: string): AppThunk =>
+  async () => {
+    try {
+      await Api.post(getApiUrl("/game", gameId, "start-turn"));
+    } catch (e) {
+      // Server will broadcast game updated if successful; ignore errors silently
+    }
+  };
+
+export const checkTimeout =
+  (gameId: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      const { data } = await Api.post<Game>(getApiUrl("/game", gameId, "check-timeout"));
+      dispatch(updateGame({ game: data, gameStateModalToQueue: null }));
+    } catch (e) {
+      // Ignore errors — server is the authority
+    }
   };
 
 export const getHasDismissedTutorialCard = (): boolean =>

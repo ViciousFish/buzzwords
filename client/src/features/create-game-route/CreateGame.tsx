@@ -100,12 +100,23 @@ const DifficultyLabels = [
 
 export const WIZARD_BREAKPOINTS = pick(["xs", "lg"], BREAKPOINTS);
 
+const TIMER_PRESETS = [
+  { label: "15 min", value: 15 * 60 * 1000 },
+  { label: "1 hr", value: 60 * 60 * 1000 },
+  { label: "3 hr", value: 3 * 60 * 60 * 1000 },
+  { label: "12 hr", value: 12 * 60 * 60 * 1000 },
+  { label: "1 day", value: 24 * 60 * 60 * 1000 },
+  { label: "3 days", value: 3 * 24 * 60 * 60 * 1000 },
+];
+
 function CreateGame() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [selectedMode, setSelectedMode] =
     useState<CreateGameType | null>(null);
   const [difficulty, setDifficulty] = useState(5);
+  const [timerEnabled, setTimerEnabled] = useState(false);
+  const [timerPreset, setTimerPreset] = useState(TIMER_PRESETS[1].value); // 1 hr default
   const [isSubmitting, setSubmitting] = useState(false);
   const loggedIn = useAppSelector((state) =>
     Boolean(state.user.user?.googleId)
@@ -119,6 +130,9 @@ function CreateGame() {
     if (bot) {
       (params as CreateBotGameParams).difficulty = difficulty;
     }
+    if (timerEnabled) {
+      params.timerConfig = { timePerPlayer: timerPreset };
+    }
     try {
       const game = await dispatch(createGame(params));
       navigate(`/play/${game}`);
@@ -126,8 +140,7 @@ function CreateGame() {
       setSubmitting(false);
     }
   }, [selectedMode, difficulty, dispatch, navigate]);
-  const { currentBreakpoint, observe } = useDimensions({
-    breakpoints: WIZARD_BREAKPOINTS,
+  const { currentBreakpoint, observe } = useDimensions({    breakpoints: WIZARD_BREAKPOINTS,
     updateOnBreakpointChange: true,
   });
   const lg = currentBreakpoint === "lg";
@@ -267,6 +280,41 @@ function CreateGame() {
                   </Slider>
                 </div>
               )}
+              <div className="p-4 mb-4">
+                <label className="flex items-center gap-3 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={timerEnabled}
+                    onChange={(e) => setTimerEnabled(e.target.checked)}
+                    className="w-4 h-4"
+                  />
+                  <span className="font-medium">Enable turn timer</span>
+                </label>
+                {timerEnabled && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {TIMER_PRESETS.map((preset) => (
+                      <button
+                        key={preset.value}
+                        type="button"
+                        onClick={() => setTimerPreset(preset.value)}
+                        className={classNames(
+                          "px-3 py-1 rounded-full text-sm font-medium border-2 transition-colors",
+                          timerPreset === preset.value
+                            ? "bg-primary border-primary text-text"
+                            : "border-primary/40 text-text hover:border-primary"
+                        )}
+                      >
+                        {preset.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {timerEnabled && (
+                  <p className="text-sm opacity-60 mt-2">
+                    Each player has {TIMER_PRESETS.find(p => p.value === timerPreset)?.label} of total thinking time for the whole game.
+                  </p>
+                )}
+              </div>
               <div className="flex justify-center">
                 <FancyButton
                   isDisabled={isSubmitting}

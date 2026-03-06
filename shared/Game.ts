@@ -6,10 +6,16 @@ export interface Move {
   coords: HexCoord[];
   letters: string[];
   player: 0 | 1;
-  date?: Date;
+  startedAt?: Date; // when the player started this turn
+  date?: Date;      // when the move was submitted
   shuffle?: boolean;
   pass?: boolean;
   forfeit?: boolean;
+  timeout?: boolean;
+}
+
+export interface TimerConfig {
+  timePerPlayer: number; // total milliseconds for the whole game
 }
 
 export default interface Game {
@@ -25,6 +31,9 @@ export default interface Game {
   createdDate?: Date;
   updatedDate?: Date;
   deleted: boolean;
+  timerConfig?: TimerConfig;
+  timeRemaining?: [number, number]; // ms remaining per player [p0, p1]
+  timerStartedAt?: number | null;   // ms epoch when current turn timer was started; null = not started
 }
 
 export type ShallowGame = Omit<Game, "moves" | "grid">;

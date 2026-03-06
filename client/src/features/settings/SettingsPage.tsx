@@ -38,6 +38,7 @@ import { Select, Item } from "../../presentational/Select";
 import { Switch } from "../../presentational/Switch";
 import { NicknameForm } from "./NicknameForm";
 import {
+  setAutoStartTimerSetting,
   setColorSchemeSetting,
   setLowPowerModeSetting,
   setPreferredDarkThemeSetting,
@@ -74,6 +75,7 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
   );
   const nickname = useAppSelector(({ user }) => user.user?.nickname);
   const lowPowerMode = useAppSelector(({ settings }) => settings.lowPowerMode);
+  const autoStartTimer = useAppSelector(({ settings }) => settings.autoStartTimer);
 
   const toggleTurnNotificationsMute = useCallback(() => {
     dispatch(setTurnNotificationsSetting(!turnNotificationsMuted));
@@ -102,6 +104,12 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
   const toggleLowPowerMode = useCallback(
     (mode: boolean) => {
       dispatch(setLowPowerModeSetting(mode));
+    },
+    [dispatch]
+  );
+  const toggleAutoStartTimer = useCallback(
+    (enabled: boolean) => {
+      dispatch(setAutoStartTimerSetting(enabled));
     },
     [dispatch]
   );
@@ -144,6 +152,14 @@ export const SettingsPage = ({ onDismiss }: SettingsPageProps) => {
             )}
           </SettingsPageSection>
         )}
+        <SettingsPageSection>
+          <Switch onChange={toggleAutoStartTimer} isSelected={autoStartTimer}>
+            <div className="flex items-start w-full flex-col pl-2">
+              <div className="m-0">Auto-start turn timer</div>
+              <span className="text-xs opacity-75">Starts your timer automatically when it&apos;s your turn and the tab is active</span>
+            </div>
+          </Switch>
+        </SettingsPageSection>
         <SettingsPageSection>
           <Switch onChange={toggleLowPowerMode} isSelected={lowPowerMode}>
             <div className="flex items-start w-full flex-col pl-2">
