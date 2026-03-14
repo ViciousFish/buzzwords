@@ -2,7 +2,7 @@ import * as R from "ramda";
 
 import HexGrid, { getCellNeighbors } from "./hexgrid";
 
-import { getRandomInt, shuffle } from "./utils";
+import { getRandomInt, RNG, shuffle } from "./utils";
 import { normalize } from "./alphaHelpers";
 import { HexCoord } from "./types";
 
@@ -30,7 +30,8 @@ export const getBotMove = (
     bannedWords: {
       [key: string]: number;
     };
-  }
+  },
+  rng: RNG = Math.random
 ): HexCoord[] => {
   // Helper function to run with or without tracing
   const runWithTracing = (fn: () => HexCoord[]) => {
@@ -88,7 +89,8 @@ export const getBotMove = (
     const capitalNeighbors = shuffle(
       getCellNeighbors(grid, botCapital.q, botCapital.r).filter(
         (c) => c.owner == 2
-      )
+      ),
+      rng
     );
 
     const nonCapitalNeighbors = shuffle(
@@ -107,7 +109,8 @@ export const getBotMove = (
             !getCellNeighbors(grid, cell.q, cell.r)
               .map((c) => c.capital && Boolean(c.owner))
               .includes(true)
-        )
+        ),
+      rng
     );
 
     const capitalNeighborCoords = capitalNeighbors.map((c) => `${c.q},${c.r}`);
@@ -120,7 +123,8 @@ export const getBotMove = (
         (c) =>
           !capitalNeighborCoords.includes(`${c.q},${c.r}`) &&
           !nonCapitalNeighborCoords.includes(`${c.q},${c.r}`)
-      )
+      ),
+      rng
     );
     const nonNeighborCoords = nonNeighborTiles.map((c) => `${c.q},${c.r}`);
 
@@ -206,7 +210,7 @@ export const getBotMove = (
       wordScoresByWordLength[wordInfo.word.length - 3].push(wordInfo);
     }
 
-    const jitter = getRandomInt(-1, 2);
+    const jitter = getRandomInt(-1, 2, rng);
 
     const maxWordLength = R.clamp(
       3,
@@ -245,7 +249,7 @@ export const getBotMove = (
       const selectedWord =
         sortedWordScores[
           sortedWordScores.length -
-            getRandomInt(1, Math.min(sortedWordScores.length, 5))
+            getRandomInt(1, Math.min(sortedWordScores.length, 5), rng)
         ];
 
       // Add final tracing attributes if available

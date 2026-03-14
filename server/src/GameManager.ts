@@ -23,14 +23,17 @@ import HexGrid, {
   setCell,
   getNewCellValues,
 } from "buzzwords-shared/hexgrid";
+import { createRNG, RNG } from "buzzwords-shared/utils";
 
 import { WordsObject, wordsBySortedLetters } from "./words";
 import Cell from "buzzwords-shared/cell";
 
 export default class GameManager {
   game: Game | null;
-  constructor(game: Game | null) {
+  private rng: RNG;
+  constructor(game: Game | null, rng?: RNG) {
     this.game = game;
+    this.rng = rng ?? createRNG((Math.random() * 2 ** 32) >>> 0);
   }
 
   pass(userId: string): Game {
@@ -64,7 +67,7 @@ export default class GameManager {
 
     if (!opponentHasCapital) {
       const newCapital =
-        opponentCells[Math.floor(Math.random() * opponentCells.length)];
+        opponentCells[Math.floor(this.rng() * opponentCells.length)];
       newCapital.capital = true;
       setCell(this.game.grid, newCapital);
     }
@@ -249,7 +252,8 @@ export default class GameManager {
                 const newCellValues = getNewCellValues(
                   letters,
                   toBeReset.length,
-                  WordsObject
+                  WordsObject,
+                  this.rng
                 );
                 for (let i = 0; i < toBeReset.length; i++) {
                   const tile = toBeReset[i];
@@ -265,7 +269,7 @@ export default class GameManager {
                 // No possible combinations. Need to regenerate the whole board!!
                 logger.info({ gameId: this.game!.id }, "No valid letter combinations. Shuffling board...");
                 const newLetterCount = letters.length + toBeReset.length;
-                const newCellValues = getNewCellValues([], newLetterCount, WordsObject);
+                const newCellValues = getNewCellValues([], newLetterCount, WordsObject, this.rng);
                 for (const tile of keys
                   .map((k) => grid[k])
                   .filter((k) => Boolean(k.value))) {
@@ -336,7 +340,7 @@ export default class GameManager {
             // randomly assign one of their cells to be capital
             if (!capitalCaptured && !opponentHasCapital) {
               const newCapital =
-                opponentCells[Math.floor(Math.random() * opponentCells.length)];
+                opponentCells[Math.floor(this.rng() * opponentCells.length)];
               newCapital.capital = true;
               setCell(this.game!.grid, newCapital);
             }
@@ -396,7 +400,7 @@ export default class GameManager {
       ...getCellNeighbors(game.grid, -2, -1),
       ...getCellNeighbors(game.grid, 2, 1),
     ];
-    const newValues = getNewCellValues([], 12, WordsObject);
+    const newValues = getNewCellValues([], 12, WordsObject, this.rng);
     let i = 0;
     for (const cell of neighbors) {
       cell.value = newValues[i];

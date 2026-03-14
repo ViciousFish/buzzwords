@@ -1,5 +1,22 @@
 import * as R from "ramda";
 
+export type RNG = () => number;
+
+/**
+ * Creates a seeded pseudo-random number generator using the mulberry32 algorithm.
+ * Use a constant seed in tests for deterministic behavior.
+ * In production, seed with something like `Date.now()` or `Math.random() * 2**32`.
+ */
+export const createRNG = (seed: number): RNG => {
+  let s = seed >>> 0;
+  return () => {
+    s = (s + 0x6d2b79f5) >>> 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+};
+
 export function* combinationN<T>(array: T[], n: number): Iterable<T[]> {
   if (n === 1) {
     for (const a of array) {
@@ -34,16 +51,20 @@ export function* permutationN<T>(array: T[], n: number): Iterable<T[]> {
   }
 }
 
-export const getRandomInt = (min: number, max: number): number => {
+export const getRandomInt = (
+  min: number,
+  max: number,
+  rng: RNG = Math.random
+): number => {
   min = Math.ceil(min);
   max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min) + min);
+  return Math.floor(rng() * (max - min) + min);
 };
 
-export const shuffle = <T>(arr: T[]): T[] => {
+export const shuffle = <T>(arr: T[], rng: RNG = Math.random): T[] => {
   const a = R.clone(arr);
   for (let i = 0; i < a.length; i++) {
-    const x = getRandomInt(0, a.length);
+    const x = getRandomInt(0, a.length, rng);
     const tmp = a[i];
     a[i] = a[x];
     a[x] = tmp;
