@@ -1,20 +1,16 @@
 import * as R from "ramda";
+import seedrandom from "seedrandom";
 
 export type RNG = () => number;
 
 /**
- * Creates a seeded pseudo-random number generator using the mulberry32 algorithm.
+ * Creates a seeded pseudo-random number generator using seedrandom (ARC4-based).
+ * Accepts a string or numeric seed — string seeds are useful for storing alongside
+ * a game record and replaying deterministically (e.g. a game ID or nanoid).
  * Use a constant seed in tests for deterministic behavior.
- * In production, seed with something like `Date.now()` or `Math.random() * 2**32`.
  */
-export const createRNG = (seed: number): RNG => {
-  let s = seed >>> 0;
-  return () => {
-    s = (s + 0x6d2b79f5) >>> 0;
-    let t = Math.imul(s ^ (s >>> 15), 1 | s);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
+export const createRNG = (seed: string | number): RNG => {
+  return seedrandom(String(seed));
 };
 
 export function* combinationN<T>(array: T[], n: number): Iterable<T[]> {
