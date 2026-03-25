@@ -347,7 +347,7 @@ export default (io: Server): Router => {
                       words: WordsObject,
                       difficulty: game!.difficulty,
                       bannedWords: BannedWordsObject,
-                    });
+                    }, gm.rng);
                     
                     getBotSpan.setAttributes({
                       "bot.moveLength": move.length,

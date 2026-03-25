@@ -30,7 +30,7 @@ import Cell from "buzzwords-shared/cell";
 
 export default class GameManager {
   game: Game | null;
-  private rng: RNG;
+  rng: RNG;
   constructor(game: Game | null, rng?: RNG) {
     this.game = game;
     this.rng = rng ?? createRNG((Math.random() * 2 ** 32) >>> 0);

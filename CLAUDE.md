@@ -69,6 +69,33 @@ yarn dev:server
 yarn dev:client
 ```
 
+### Interacting with the game in the browser (Claude)
+
+When testing or developing features that require interacting with the game UI, use the **Claude Chrome Extension** browser tools. This allows you to navigate to the local dev server, click on game elements, take screenshots, and verify UI behavior directly in Chrome.
+
+Key workflow:
+1. Ensure dev servers are running (see below).
+2. Navigate to `http://localhost:5173` in the browser.
+3. Use the Chrome extension tools to inspect, interact with, and screenshot the game UI.
+
+Prefer browser interaction over manual testing instructions whenever you need to verify UI changes end-to-end.
+
+---
+
+### Running dev servers for testing/development (Claude)
+
+When you need the dev servers running to test or develop a feature, start both as background tasks:
+
+```bash
+# From server/ directory
+cd server && yarn dev
+
+# From client/ directory
+cd client && yarn dev
+```
+
+Use `run_in_background: true` for both. The server starts on port 8080 and the client on port 5173. The server uses ts-node so takes ~10 seconds to be ready. To check if they're running, use `lsof -i :8080 -i :5173 | grep LISTEN`.
+
 Create `server/.env` with at minimum:
 ```
 API_PREFIX=/api
