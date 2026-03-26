@@ -260,7 +260,7 @@ export default (io: Server): Router => {
     });
     await dl.commitContext(session);
     newGame.users.forEach((user) => {
-      io.to(user).emit("game updated", sanitizeGame(game));
+      io.to(user).emit("game updated", sanitizeGame(newGame));
     });
   };
 

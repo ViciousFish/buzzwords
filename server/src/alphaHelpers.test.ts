@@ -1,6 +1,6 @@
 import { getRandomCharacter, isValidWord } from "buzzwords-shared/alphaHelpers";
 import { getNewCellValues } from "buzzwords-shared/hexgrid";
-import { createRNG, getRandomInt, shuffle } from "buzzwords-shared/utils";
+import { createRNG, restoreRNG, getRandomInt, shuffle } from "buzzwords-shared/utils";
 import { WordsObject } from "./words";
 
 const TEST_SEED = 12345;
@@ -82,6 +82,24 @@ test("getNewCellValues with seeded RNG is deterministic", () => {
   const result1 = getNewCellValues(["c", "a"], 2, WordsObject, rng1);
   const result2 = getNewCellValues(["c", "a"], 2, WordsObject, rng2);
   expect(result1).toEqual(result2);
+});
+
+test("restoreRNG resumes sequence from saved state", () => {
+  const rng = createRNG(TEST_SEED);
+  // Advance past a few values
+  rng();
+  rng();
+  rng();
+  // Snapshot state, then record the next few values
+  const state = rng.state();
+  const v1 = rng();
+  const v2 = rng();
+  const v3 = rng();
+  // Restore from snapshot and confirm the sequence repeats exactly
+  const restored = restoreRNG(state);
+  expect(restored()).toBe(v1);
+  expect(restored()).toBe(v2);
+  expect(restored()).toBe(v3);
 });
 
 test("getNewCellValues returns correct number of letters", () => {
