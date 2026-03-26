@@ -65,8 +65,7 @@ export default (): Router => {
     } = req.query as unknown as PlayersByDaterangeParams;
 
     if (!_startDate || !_endDate || !timezone) {
-      res.status(400);
-      res.send("missing param");
+      res.status(400).send("missing param");
       return;
     }
 
