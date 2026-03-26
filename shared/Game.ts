@@ -1,5 +1,6 @@
 import HexGrid from "./hexgrid";
 import { HexCoord } from "./types";
+import { RNGState } from "./utils";
 
 export interface Move {
   grid: HexGrid;
@@ -25,6 +26,8 @@ export default interface Game {
   createdDate?: Date;
   updatedDate?: Date;
   deleted: boolean;
+  rngSeed?: string;
+  rngState?: RNGState;
 }
 
 export type ShallowGame = Omit<Game, "moves" | "grid">;

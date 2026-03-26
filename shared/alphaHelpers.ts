@@ -1,6 +1,6 @@
 import * as R from "ramda";
 
-import { combinationN } from "./utils";
+import { combinationN, RNG } from "./utils";
 
 export const letters = [
   "a",
@@ -72,8 +72,11 @@ export const isValidWord = (
   return true;
 };
 
-export const getRandomCharacter = (omit?: string[]): string => {
-  let n = Math.random();
+export const getRandomCharacter = (
+  omit?: string[],
+  rng: RNG = Math.random
+): string => {
+  let n = rng();
   const cdf = R.clone(cdfObj);
   if (omit && omit.length) {
     let total = 0;

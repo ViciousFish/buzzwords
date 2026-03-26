@@ -9200,6 +9200,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/seedrandom@npm:^3.0.8":
+  version: 3.0.8
+  resolution: "@types/seedrandom@npm:3.0.8"
+  checksum: 10/9651de4ecb5ad060053678d6a42403dd78222bcca80016417c23b58b4f739e544b7197a78b97d6862cf417ea80fd2df612cc50ca0fa387fbe794e326a382ab0b
+  languageName: node
+  linkType: hard
+
 "@types/send@npm:*":
   version: 0.17.4
   resolution: "@types/send@npm:0.17.4"
@@ -10734,7 +10741,9 @@ __metadata:
   resolution: "buzzwords-shared@workspace:shared"
   dependencies:
     "@types/ramda": "npm:^0.27.62"
+    "@types/seedrandom": "npm:^3.0.8"
     ramda: "npm:^0.27.1"
+    seedrandom: "npm:^3.0.5"
   languageName: unknown
   linkType: soft
 
@@ -18873,6 +18882,13 @@ __metadata:
     postprocessing: ">=6.28.0"
     three: ">=0.141.0"
   checksum: 10/8cdafeb5955f536606c63335ed3c906c092bb5a99b6d8cc05221a8f79f990e31a67582aeab5dbf325939fe1d3c43b3217d0aabc0f55c800c851b20fe5a1a2960
+  languageName: node
+  linkType: hard
+
+"seedrandom@npm:^3.0.5":
+  version: 3.0.5
+  resolution: "seedrandom@npm:3.0.5"
+  checksum: 10/acad5e516c04289f61c2fb9848f449b95f58362b75406b79ec51e101ec885293fc57e3675d2f39f49716336559d7190f7273415d185fead8cd27b171ebf7d8fb
   languageName: node
   linkType: hard
 

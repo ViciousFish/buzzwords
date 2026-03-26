@@ -2,7 +2,7 @@ import * as R from "ramda";
 
 import { getRandomCharacter } from "./alphaHelpers";
 import Cell, { makeCell } from "./cell";
-import { combinationN, getRandomInt, shuffle } from "./utils";
+import { combinationN, getRandomInt, RNG, shuffle } from "./utils";
 
 const QRLookup = (q: number): number => {
   switch (q) {
@@ -78,7 +78,8 @@ export const getPotentialWords = (
   toBeResetLength: number,
   words: {
     [key: string]: number;
-  }
+  },
+  rng: RNG = Math.random
 ): string[] => {
   let w = Object.keys(words);
   let potentialWords: string[] = [];
@@ -89,7 +90,7 @@ export const getPotentialWords = (
     for (let i = 1; i <= letters.length; i++) {
       combos = [...combos, ...combinationN(letters, i)];
     }
-    combos = shuffle(combos);
+    combos = shuffle(combos, rng);
 
     for (let combo of combos) {
       const validWords = w.filter((word) => {
@@ -132,7 +133,8 @@ export const getNewCellValues = (
   resetTileTotal: number,
   wordsJson: {
     [key: string]: number;
-  }
+  },
+  rng: RNG = Math.random
 ): string[] => {
   if (!resetTileTotal) {
     return [];
@@ -172,7 +174,7 @@ export const getNewCellValues = (
     throw "No possible combinations";
   }
 
-  const word = potentialWords[getRandomInt(0, potentialWords.length)];
+  const word = potentialWords[getRandomInt(0, potentialWords.length, rng)];
 
   const neededLetters = wordsToMissingLetters[word];
 
@@ -195,7 +197,7 @@ export const getNewCellValues = (
       .filter(([k, v]) => v >= MAX_REPEATED_LETTER)
       .map(([k, v]) => k);
 
-    filler.push(getRandomCharacter(omit));
+    filler.push(getRandomCharacter(omit, rng));
   }
-  return shuffle([...neededLetters, ...filler]);
+  return shuffle([...neededLetters, ...filler], rng);
 };
