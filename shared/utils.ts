@@ -3,14 +3,29 @@ import seedrandom from "seedrandom";
 
 export type RNG = () => number;
 
+export type RNGState = seedrandom.State.Arc4;
+
+export type StatefulRNG = seedrandom.StatefulPRNG<seedrandom.State.Arc4>;
+
 /**
  * Creates a seeded pseudo-random number generator using seedrandom (ARC4-based).
  * Accepts a string or numeric seed — string seeds are useful for storing alongside
  * a game record and replaying deterministically (e.g. a game ID or nanoid).
  * Use a constant seed in tests for deterministic behavior.
+ *
+ * Returns a StatefulRNG whose .state() can be serialized and later passed to
+ * restoreRNG() to resume the sequence from exactly that point.
  */
-export const createRNG = (seed: string | number): RNG => {
-  return seedrandom(String(seed));
+export const createRNG = (seed: string | number): StatefulRNG => {
+  return seedrandom(String(seed), { state: true });
+};
+
+/**
+ * Restores a StatefulRNG from a previously snapshotted state object.
+ * The restored RNG will produce the same sequence as if it had never stopped.
+ */
+export const restoreRNG = (state: RNGState): StatefulRNG => {
+  return seedrandom("", { state });
 };
 
 export function* combinationN<T>(array: T[], n: number): Iterable<T[]> {

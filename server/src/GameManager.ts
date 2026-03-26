@@ -23,17 +23,23 @@ import HexGrid, {
   setCell,
   getNewCellValues,
 } from "buzzwords-shared/hexgrid";
-import { createRNG, RNG } from "buzzwords-shared/utils";
+import { createRNG, restoreRNG, StatefulRNG } from "buzzwords-shared/utils";
 
 import { WordsObject, wordsBySortedLetters } from "./words";
 import Cell from "buzzwords-shared/cell";
 
 export default class GameManager {
   game: Game | null;
-  rng: RNG;
-  constructor(game: Game | null, rng?: RNG) {
+  rng: StatefulRNG;
+  constructor(game: Game | null) {
     this.game = game;
-    this.rng = rng ?? createRNG((Math.random() * 2 ** 32) >>> 0);
+    if (game?.rngState) {
+      this.rng = restoreRNG(game.rngState);
+    } else if (game?.rngSeed) {
+      this.rng = createRNG(game.rngSeed);
+    } else {
+      this.rng = createRNG((Math.random() * 2 ** 32) >>> 0);
+    }
   }
 
   pass(userId: string): Game {
@@ -81,6 +87,7 @@ export default class GameManager {
     });
     const nextTurn = Number(!this.game.turn) as 0 | 1;
     this.game.turn = nextTurn;
+    this.game.rngState = this.rng.state();
     return this.game;
   }
 
@@ -300,13 +307,14 @@ export default class GameManager {
               this.game!.moves.push(gameMove);
               this.game!.gameOver = true;
               this.game!.winner = this.game!.turn;
-              
+              this.game!.rngState = this.rng.state();
+
               gridSpan.setAttributes({
                 "game.gameOver": true,
                 "game.winner": this.game!.turn,
                 "game.capitalCaptured": capitalCaptured
               });
-              
+
               gridSpan.setStatus({ code: opentelemetry.SpanStatusCode.OK });
               return this.game!;
             }
@@ -349,7 +357,8 @@ export default class GameManager {
               ? this.game!.turn
               : (Number(!this.game!.turn) as 0 | 1);
             this.game!.turn = nextTurn;
-            
+            this.game!.rngState = this.rng.state();
+
             gridSpan.setAttributes({
               "game.gameOver": this.game!.gameOver,
               "game.winner": this.game!.winner || -1,
@@ -384,6 +393,8 @@ export default class GameManager {
   }
 
   createGame(userId: string): Game {
+    const seed = nanoid();
+    this.rng = createRNG(seed);
     const game: Game = {
       id: nanoid(),
       turn: 0 as 0 | 1,
@@ -395,6 +406,7 @@ export default class GameManager {
       vsAI: false,
       difficulty: 1,
       deleted: false,
+      rngSeed: seed,
     };
     const neighbors = [
       ...getCellNeighbors(game.grid, -2, -1),
@@ -412,6 +424,7 @@ export default class GameManager {
     game.grid["2,1"].capital = true;
     game.grid["2,1"].owner = 1;
 
+    game.rngState = this.rng.state();
     this.game = game;
     return game;
   }

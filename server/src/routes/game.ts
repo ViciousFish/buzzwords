@@ -14,7 +14,7 @@ import dl from "../datalayer";
 import getConfig from "../config";
 import GameManager from "../GameManager";
 import { WordsObject, BannedWordsObject } from "../words";
-import { removeMongoId } from "../util";
+import { sanitizeGame } from "../util";
 import { ensureNickname } from "./user";
 
 const logger = bunyan.createLogger({
@@ -102,7 +102,7 @@ export default (io: Server): Router => {
     const gameId = req.params.id;
     const game = await dl.getGameById(gameId);
     if (game) {
-      res.send(game);
+      res.send(sanitizeGame(game));
     } else {
       res.sendStatus(404);
     }
@@ -217,7 +217,7 @@ export default (io: Server): Router => {
       await ensureNickname(user, io);
 
       game.users.forEach((user) => {
-        io.to(user).emit("game updated", game);
+        io.to(user).emit("game updated", sanitizeGame(game));
       });
 
       const title = "Buzzwords: it's your turn";
@@ -260,7 +260,7 @@ export default (io: Server): Router => {
     });
     await dl.commitContext(session);
     newGame.users.forEach((user) => {
-      io.to(user).emit("game updated", game);
+      io.to(user).emit("game updated", sanitizeGame(game));
     });
   };
 
@@ -399,7 +399,7 @@ export default (io: Server): Router => {
               
               const delay = 2000 - (Date.now() - lastMessage);
               game.users.forEach((user) => {
-                const copy = R.clone(removeMongoId(game));
+                const copy = sanitizeGame(R.clone(game!));
                 setTimeout(() => {
                   io.to(user).emit("game updated", copy);
                 }, delay);
@@ -533,10 +533,10 @@ export default (io: Server): Router => {
     }
 
     res.status(201);
-    res.send(newGame);
+    res.send(sanitizeGame(newGame));
 
     newGame.users.forEach(async (user) => {
-      io.to(user).emit("game updated", newGame);
+      io.to(user).emit("game updated", sanitizeGame(newGame));
     });
 
     const opponent =
@@ -593,9 +593,9 @@ export default (io: Server): Router => {
     }
 
     res.status(201);
-    res.send(newGame);
+    res.send(sanitizeGame(newGame));
     newGame.users.forEach((user) => {
-      io.to(user).emit("game updated", newGame);
+      io.to(user).emit("game updated", sanitizeGame(newGame));
     });
   });
 

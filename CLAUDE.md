@@ -315,6 +315,20 @@ yarn docker-client   # multi-platform client image
 - Keep `shared/` dependency-free except Ramda.
 - Do not import from `client/` or `server/` inside `shared/`.
 
+### Pure functions
+- Prefer pure functions (no side effects) whenever possible. If logic can be expressed as a transformation of inputs to outputs without mutating state or depending on external state, write it that way.
+- Always add tests for newly created pure functions. Tests live in `server/src/alphaHelpers.test.ts` (or a new `*.test.ts` file alongside the module). Use Jest.
+
+---
+
+## Testing
+
+Always run `yarn test` from the `server/` directory before considering any change complete. All tests must pass.
+
+```bash
+cd server && yarn test
+```
+
 ---
 
 ## Environment Variables Reference

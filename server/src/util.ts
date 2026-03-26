@@ -1,5 +1,6 @@
 import * as R from "ramda";
 import { User } from "./types";
+import Game from "buzzwords-shared/Game";
 
 export const sleep = async (ms: number): Promise<void> => {
   return new Promise((resolve, reject) => {
@@ -34,7 +35,7 @@ export const isAnonymousUser = (user: User): boolean => {
   return !user.googleId;
 };
 
-export const removeMongoId = <T>(thing: any): T => {
+const stripMongoIds = <T>(thing: any): T => {
   // eslint-disable-line
   if (!R.is(Object, thing)) {
     return thing;
@@ -42,9 +43,13 @@ export const removeMongoId = <T>(thing: any): T => {
     // @ts-expect-error no clue lol
     return thing;
   } else if (Array.isArray(thing)) {
-    return R.map(removeMongoId, thing) as unknown as T;
+    return R.map(stripMongoIds, thing) as unknown as T;
   } else {
     thing = R.dissoc("_id", thing);
-    return R.map(removeMongoId, thing) as unknown as T;
+    return R.map(stripMongoIds, thing) as unknown as T;
   }
+};
+
+export const sanitizeGame = (game: Game): Omit<Game, "rngSeed" | "rngState"> => {
+  return R.omit(["rngSeed", "rngState"], stripMongoIds(game));
 };
