@@ -278,10 +278,11 @@ export default (io: Server): Router => {
       res.status(400).json({
         message: "It is not your turn",
       });
+      return;
     }
 
     try {
-      pass(game.id, user);
+      await pass(game.id, user);
     } catch (e) {
       logger.error(e);
       res.status(500);
@@ -374,7 +375,7 @@ export default (io: Server): Router => {
                   "bot.reason": "no_valid_move"
                 });
                 await dl.commitContext(session);
-                pass(game!.id, "AI");
+                await pass(game!.id, "AI");
                 moveSpan.setStatus({ 
                   code: opentelemetry.SpanStatusCode.OK,
                   message: "Bot passed - no valid move found"
@@ -465,19 +466,19 @@ export default (io: Server): Router => {
       return;
     }
 
-    try {
-      if (game.users[game.turn] == "AI") {
-        doBotMoves(gameId);
+    if (game.users[game.turn] == "AI") {
+      try {
+        await doBotMoves(gameId);
+      } catch (e) {
+        logger.error(e);
+        res.status(500);
+        if (e instanceof Error) {
+          res.send(e.message);
+        } else {
+          res.send();
+        }
+        return;
       }
-    } catch (e) {
-      logger.error(e);
-      res.status(500);
-      if (e instanceof Error) {
-        res.send(e.message);
-      } else {
-        res.send();
-      }
-      return;
     }
 
     res.sendStatus(201);
@@ -552,7 +553,7 @@ export default (io: Server): Router => {
       .filter((u) => u !== user && u !== "AI")
       .forEach((u) => sendPush(u, { title, body }, newGame.id));
 
-    doBotMoves(gameId);
+    doBotMoves(gameId).catch((e) => logger.error(e));
   });
 
   router.post("/:id/forfeit", async (req, res) => {
