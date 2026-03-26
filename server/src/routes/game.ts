@@ -55,14 +55,20 @@ async function sendPush(
     },
     tokens,
   });
-  res.responses.forEach((r, i) => {
-    if (r.success) {
-      return;
-    }
-    if (r.error?.code === "messaging/registration-token-not-registered") {
-      dl.deletePushToken(tokens[i]);
-    }
-  });
+  await Promise.all(
+    res.responses.map(async (r, i) => {
+      if (r.success) {
+        return;
+      }
+      if (r.error?.code === "messaging/registration-token-not-registered") {
+        try {
+          await dl.deletePushToken(tokens[i]);
+        } catch (e) {
+          logger.error({ token: tokens[i], error: e }, "Failed to delete invalid push token");
+        }
+      }
+    })
+  );
 }
 
 export default (io: Server): Router => {
@@ -374,9 +380,13 @@ export default (io: Server): Router => {
                   "bot.action": "pass",
                   "bot.reason": "no_valid_move"
                 });
+                game = gm.pass("AI");
+                await dl.saveGame(gameId, game, { session });
                 await dl.commitContext(session);
-                await pass(game!.id, "AI");
-                moveSpan.setStatus({ 
+                game.users.forEach((user) => {
+                  io.to(user).emit("game updated", sanitizeGame(game!));
+                });
+                moveSpan.setStatus({
                   code: opentelemetry.SpanStatusCode.OK,
                   message: "Bot passed - no valid move found"
                 });
