@@ -285,12 +285,7 @@ export default (io: Server): Router => {
       await pass(game.id, user);
     } catch (e) {
       logger.error(e);
-      res.status(500);
-      if (e instanceof Error) {
-        res.send(e.message);
-      } else {
-        res.send();
-      }
+      res.status(500).send(e instanceof Error ? e.message : "Internal server error");
       return;
     }
 
@@ -471,12 +466,7 @@ export default (io: Server): Router => {
         await doBotMoves(gameId);
       } catch (e) {
         logger.error(e);
-        res.status(500);
-        if (e instanceof Error) {
-          res.send(e.message);
-        } else {
-          res.send();
-        }
+        res.status(500).send(e instanceof Error ? e.message : "Internal server error");
         return;
       }
     }
@@ -514,12 +504,7 @@ export default (io: Server): Router => {
     try {
       newGame = gm.makeMove(user, parsedMove);
     } catch (e: unknown) {
-      res.status(400);
-      if (e instanceof Error) {
-        res.send(e.message);
-      } else {
-        res.send();
-      }
+      res.status(400).send(e instanceof Error ? e.message : "Bad request");
       return;
     }
     try {
@@ -533,8 +518,7 @@ export default (io: Server): Router => {
       return;
     }
 
-    res.status(201);
-    res.send(sanitizeGame(newGame));
+    res.status(201).send(sanitizeGame(newGame));
 
     newGame.users.forEach(async (user) => {
       io.to(user).emit("game updated", sanitizeGame(newGame));
@@ -575,12 +559,7 @@ export default (io: Server): Router => {
     try {
       newGame = gm.forfeit(user);
     } catch (e: unknown) {
-      res.status(400);
-      if (e instanceof Error) {
-        res.send(e.message);
-      } else {
-        res.send();
-      }
+      res.status(400).send(e instanceof Error ? e.message : "Bad request");
       return;
     }
     try {
@@ -593,8 +572,7 @@ export default (io: Server): Router => {
       return;
     }
 
-    res.status(201);
-    res.send(sanitizeGame(newGame));
+    res.status(201).send(sanitizeGame(newGame));
     newGame.users.forEach((user) => {
       io.to(user).emit("game updated", sanitizeGame(newGame));
     });
