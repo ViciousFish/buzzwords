@@ -317,14 +317,18 @@ io.on("connection", async (socket) => {
   socket.join(userId);
   logger.info("a user connected", userId);
   socket.on("selection", async ({ selection, gameId }: SelectionEventProps) => {
-    const game = await dl.getGameById(gameId);
-    if (!game) {
-      logger.info({gameId}, "no game");
-      return;
+    try {
+      const game = await dl.getGameById(gameId);
+      if (!game) {
+        logger.info({gameId}, "no game");
+        return;
+      }
+      game.users.forEach((user) => {
+        io.to(user).emit("selection", { selection, gameId });
+      });
+    } catch (e) {
+      logger.error({ gameId, error: e }, "Error handling selection event");
     }
-    game.users.forEach((user) => {
-      io.to(user).emit("selection", { selection, gameId });
-    });
   });
   socket.on("disconnect", (reason) => {
     logger.info({userId, reason}, `user disconnected`);
@@ -337,7 +341,7 @@ const main = async () => {
   try {
     await mongoClient.db(config.mongoDbName).createCollection(COLLECTION, {
       capped: true,
-      size: 1e6,
+      size: 1e8,
     });
   } catch (e) {
     // Collection already exists. Do nothing

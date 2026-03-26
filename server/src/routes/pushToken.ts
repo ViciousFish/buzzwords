@@ -1,6 +1,10 @@
 import { Router } from "express";
-// import { MongoServerError } from "mongodb";
+import bunyan from "bunyan";
 import dl from "../datalayer";
+
+const logger = bunyan.createLogger({
+  name: "buzzwords-server",
+});
 
 export default (): Router => {
   const pushTokenRouter = Router();
@@ -15,15 +19,12 @@ export default (): Router => {
       return;
     }
     try {
-      const success = await dl.storePushToken(token, userId);
-      if (success) {
-        res.sendStatus(201);
-        return;
-      }
+      await dl.storePushToken(token, userId);
+      res.sendStatus(201);
     } catch (e) {
-      console.error(e);
+      logger.error(e, "Failed to register push token");
+      res.sendStatus(500);
     }
-    res.sendStatus(500);
   });
 
   pushTokenRouter.post("/unregister", async (req, res) => {
@@ -35,15 +36,12 @@ export default (): Router => {
       return;
     }
     try {
-      const success = await dl.deletePushToken(token);
-      if (success) {
-        res.sendStatus(200);
-        return;
-      }
+      await dl.deletePushToken(token);
+      res.sendStatus(200);
     } catch (e) {
-      console.error(e);
+      logger.error(e, "Failed to unregister push token");
+      res.sendStatus(500);
     }
-    res.sendStatus(500);
   });
 
   // TODO: route to disable notifications for given device (token?)
