@@ -98,6 +98,12 @@ const gameSchema = new Schema<Game>({
     required: true,
     default: () => new Date(),
   },
+  rngSeed: {
+    type: String,
+  },
+  rngState: {
+    type: Schema.Types.Mixed,
+  },
 });
 
 const GameModel = model<Game>("Game", gameSchema);
