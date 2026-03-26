@@ -253,12 +253,13 @@ function CreateGame() {
                         }
                       </SliderOutput>
                     </div>
-                    <SliderTrack className="h-[4px] rounded mt-2 bg-gradient-to-r from-purple-500 to-pink-500">
+                    <SliderTrack className="relative h-8 mt-2 cursor-pointer">
+                      <div className="absolute top-1/2 -translate-y-1/2 h-[4px] w-full rounded bg-gradient-to-r from-purple-500 to-pink-500 pointer-events-none" />
                       <SliderThumb
                         className={({ isFocusVisible }) =>
                           classNames(
                             isFocusVisible && "outline",
-                            "relative top-[2px] w-[25px] h-[25px] rounded-full shadow",
+                            "top-1/2 -translate-y-1/2 w-[25px] h-[25px] rounded-full shadow",
                             "bg-gradient-to-t from-slate-200 to-slate-100 border-2 border-blue-300"
                           )
                         }
