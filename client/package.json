@@ -20,7 +20,9 @@
     "pretty": "prettier --write .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
-    "dist-mac": "CSC_NAME=\"Charles Dries (775SDZM9Q3)\" electron-builder"
+    "dist-mac": "CSC_NAME=\"Charles Dries (775SDZM9Q3)\" electron-builder",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@capacitor/app": "^4.0.1",
@@ -103,11 +105,13 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "jsdom": "^22.0.0",
     "postcss": "^8.4.41",
     "prettier": "2.3.2",
     "tailwindcss-react-aria-components": "^1.1.4",
     "typescript": "^4.3.4",
     "vite": "^3.0.7",
-    "vite-plugin-electron": "^0.8.3"
+    "vite-plugin-electron": "^0.8.3",
+    "vitest": "^0.34.0"
   }
 }
