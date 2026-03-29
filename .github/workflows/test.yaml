@@ -8,7 +8,7 @@ on:
 
 jobs:
   server:
-    name: Server (Jest)
+    name: Server + Shared (Jest)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
-      - name: Run server tests
+      - name: Run server and shared tests
         run: yarn test
         working-directory: server
 

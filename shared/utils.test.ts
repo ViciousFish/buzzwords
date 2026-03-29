@@ -1,4 +1,4 @@
-import { combinationN, permutationN } from "buzzwords-shared/utils";
+import { combinationN, permutationN } from "./utils";
 
 // ─── combinationN ─────────────────────────────────────────────────────────
 

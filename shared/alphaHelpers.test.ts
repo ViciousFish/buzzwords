@@ -6,10 +6,10 @@ import {
   hasTwoConsonants,
   getMaxRepeatedLetter,
   canMakeAValidWord,
-} from "buzzwords-shared/alphaHelpers";
-import { getNewCellValues } from "buzzwords-shared/hexgrid";
-import { createRNG, restoreRNG, getRandomInt, shuffle } from "buzzwords-shared/utils";
-import { WordsObject, wordsBySortedLetters } from "./words";
+} from "./alphaHelpers";
+import { getNewCellValues } from "./hexgrid";
+import { createRNG, restoreRNG, getRandomInt, shuffle } from "./utils";
+import { WordsObject, wordsBySortedLetters } from "./testWords";
 
 const TEST_SEED = 12345;
 

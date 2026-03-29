@@ -1,8 +1,7 @@
-import { getBotMove } from "buzzwords-shared/bot";
-import { makeHexGrid, setCell } from "buzzwords-shared/hexgrid";
-import { createRNG } from "buzzwords-shared/utils";
-import { WordsObject, BannedWordsObject } from "./words";
-import HexGrid from "buzzwords-shared/hexgrid";
+import { getBotMove } from "./bot";
+import HexGrid, { makeHexGrid, setCell } from "./hexgrid";
+import { createRNG } from "./utils";
+import { WordsObject, BannedWordsObject } from "./testWords";
 
 const TEST_SEED = 12345;
 

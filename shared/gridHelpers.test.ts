@@ -2,8 +2,8 @@ import {
   willConnectToTerritory,
   getCellsToBeReset,
   willBecomeOwned,
-} from "buzzwords-shared/gridHelpers";
-import HexGrid, { makeHexGrid, setCell } from "buzzwords-shared/hexgrid";
+} from "./gridHelpers";
+import HexGrid, { makeHexGrid, setCell } from "./hexgrid";
 
 // Set ownership/value on an existing grid cell
 function own(
@@ -66,9 +66,7 @@ describe("willConnectToTerritory", () => {
   it("returns true for player 1 when adjacent to player 1 territory", () => {
     const grid = makeHexGrid();
     own(grid, 2, 1, 1); // player 1 owns (2,1)
-    // (1,1) is a neighbor of (2,1): getCellNeighbors(2,1) includes (1,1) via offset (q+1,r) → (3,1) no, let me use the known offset
-    // offsets from (2,1): (1,1),(1,2),(2,0),(2,2),(3,0),(3,1)
-    // (1,1) is getCellNeighbors offset (q-1,r) = (1,1) ✓
+    // (1,1) is a neighbor of (2,1)
     const move = [{ q: 1, r: 1 }];
     expect(willConnectToTerritory(grid, move, { q: 1, r: 1 }, 1)).toBe(true);
   });

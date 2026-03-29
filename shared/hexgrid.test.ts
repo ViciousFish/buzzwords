@@ -5,10 +5,10 @@ import {
   getCellNeighbors,
   getPotentialWords,
   getNewCellValues,
-} from "buzzwords-shared/hexgrid";
-import { makeCell } from "buzzwords-shared/cell";
-import { createRNG } from "buzzwords-shared/utils";
-import { WordsObject } from "./words";
+} from "./hexgrid";
+import { makeCell } from "./cell";
+import { createRNG } from "./utils";
+import { WordsObject } from "./testWords";
 
 const TEST_SEED = 12345;
 
